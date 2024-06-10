@@ -18,6 +18,7 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { login } from "@/utils/(routes)/(auth)/login";
+import Link from "next/link";
 
 export function SubmitForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -31,9 +32,9 @@ export function SubmitForm() {
 
   const formHandler = (data: z.infer<typeof loginSchema>) => {
     toast.promise(login(data, setDisabled), {
-      loading: "registering...",
-      success:
-        "Registered successfully, we have sent a verification link to your email.",
+      loading: "logging in...",
+      success: "logged in successfully!",
+      error: (err) => err as string,
     });
   };
 
@@ -71,8 +72,8 @@ export function SubmitForm() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button disabled={disabled} variant="outline">
-            Cancel
+          <Button disabled={disabled} asChild variant="outline">
+            <Link href="/register">register</Link>
           </Button>
           <Button disabled={disabled} type="submit">
             Log In

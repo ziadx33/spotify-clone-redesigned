@@ -1,8 +1,9 @@
 "use client";
 
 import Loading from "@/components/ui/loading";
+import { AUTH_ROUTES } from "@/constants";
 import { SessionProvider, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 
 type AuthProviderProps = Readonly<{
@@ -12,13 +13,15 @@ type AuthProviderProps = Readonly<{
 function Provider({ children }: AuthProviderProps) {
   const { status, data } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
+  const isCurrentPathnameIsAuthRoute = AUTH_ROUTES.includes(pathname);
 
   useEffect(() => {
-    if (!data?.user) router.push("/login");
-    else router.push("/home");
+    if (!data?.user && !isCurrentPathnameIsAuthRoute) router.push("/login");
+    else if (data?.user && isCurrentPathnameIsAuthRoute) router.push("/home");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [status, isCurrentPathnameIsAuthRoute]);
 
   if (status === "loading") return <Loading />;
   return children;
