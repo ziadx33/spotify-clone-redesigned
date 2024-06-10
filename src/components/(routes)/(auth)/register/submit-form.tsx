@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { type z } from "zod";
 import { useCallback, useRef, useState } from "react";
-import { type registerSchema } from "@/schemas";
+import { registerSchema } from "@/schemas";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { register } from "@/utils/(routes)/(auth)/register";
@@ -27,6 +27,7 @@ export function SubmitForm() {
     return (fullProgress && 100) || (currentInputIndex / dataLength) * 100;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentInputIndex, fullProgress]);
+  const [error, setError] = useState<null | string>(null);
   const currentInput = Object.keys(data.current)[
     currentInputIndex
   ] as keyof z.infer<typeof registerSchema>;
@@ -37,7 +38,17 @@ export function SubmitForm() {
     data.current[currentInput] = inputValue!;
   };
 
+  const getValidationErrors = () => {
+    return registerSchema
+      .partial()
+      .safeParse({ [currentInput]: inputRef.current?.value })
+      .error?.issues.find((issue) => issue.path[0] === currentInput);
+  };
+
   const submitHandler = () => {
+    const error = getValidationErrors();
+    if (error) return setError(error.message);
+    else setError(null);
     saveCurrentInputValue();
     setFullProgress(true);
     setDisabled(true);
@@ -55,6 +66,9 @@ export function SubmitForm() {
   };
 
   const nextInputHandler = () => {
+    const error = getValidationErrors();
+    if (error) return setError(error.message);
+    else setError(null);
     saveCurrentInputValue();
     setCurrentInputIndex((c) => c + 1);
   };
@@ -65,7 +79,12 @@ export function SubmitForm() {
         <div className="grid w-full items-center gap-4">
           <Progress value={progressValue()} className="mb-2" />
           <div className="flex flex-col space-y-1.5">
-            <Label htmlFor={currentInput}>{currentInput}</Label>
+            <Label
+              htmlFor={currentInput}
+              className={error ? "text-destructive" : ""}
+            >
+              {currentInput}
+            </Label>
             <Input
               type={currentInput !== "password" ? "text" : "password"}
               disabled={disabled}
@@ -74,6 +93,7 @@ export function SubmitForm() {
               placeholder={currentInput}
               ref={inputRef}
             />
+            <p className="text-destructive">{error}</p>
           </div>
         </div>
       </CardContent>
