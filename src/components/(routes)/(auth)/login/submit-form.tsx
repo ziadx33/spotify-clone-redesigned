@@ -19,7 +19,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { login } from "@/utils/(routes)/(auth)/login";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 export function SubmitForm() {
@@ -31,7 +30,6 @@ export function SubmitForm() {
     },
   });
   const [disabled, setDisabled] = useState(false);
-  const router = useRouter();
 
   const formHandler = (data: z.infer<typeof loginSchema>) => {
     setDisabled(true);
@@ -45,10 +43,7 @@ export function SubmitForm() {
     };
     toast.promise(loginFn(data), {
       loading: "logging in...",
-      success: () => {
-        router.push("/home");
-        return "logged in successfully!";
-      },
+      success: "logged in successfully!",
       error: (err) => {
         setDisabled(false);
         return (err as { error: string }).error;

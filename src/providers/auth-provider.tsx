@@ -20,8 +20,11 @@ function Provider({ children }: AuthProviderProps) {
   );
 
   useEffect(() => {
+    if (status === "loading") return;
     if (!data?.user && !isCurrentPathnameIsAuthRoute) router.push("/login");
-    else if (data?.user && isCurrentPathnameIsAuthRoute) router.push("/home");
+    else if (data?.user && isCurrentPathnameIsAuthRoute) {
+      location.pathname = "/home";
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, isCurrentPathnameIsAuthRoute]);
