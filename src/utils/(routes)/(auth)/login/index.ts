@@ -1,13 +1,18 @@
 import { type loginSchema } from "@/schemas";
-import { type Dispatch, type SetStateAction } from "react";
+import { comparePassword, getUserByEmail } from "@/server/actions/user";
 import { type z } from "zod";
 
-export const login = async (
-  data: z.infer<typeof loginSchema>,
-  setLoading: Dispatch<SetStateAction<boolean>>,
-) => {
-  setLoading(true);
-  console.log(data);
-  await new Promise((res) => setTimeout(res, 5000));
-  setLoading(false);
+export const login = async (data: z.infer<typeof loginSchema>) => {
+  const user = await getUserByEmail(data.email);
+  if (!user?.emailVerified) {
+    throw { error: "email does not exist!" };
+  }
+  const isCorrectPassword = await comparePassword(
+    data.password,
+    user.password!,
+  );
+
+  if (!isCorrectPassword) {
+    throw { error: "wrong password!" };
+  }
 };

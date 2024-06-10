@@ -2,7 +2,8 @@
 
 import Loading from "@/components/ui/loading";
 import { AUTH_ROUTES } from "@/constants";
-import { SessionProvider, useSession } from "next-auth/react";
+import { useSession } from "@/hooks/use-session";
+import { SessionProvider } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 
@@ -14,7 +15,9 @@ function Provider({ children }: AuthProviderProps) {
   const { status, data } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const isCurrentPathnameIsAuthRoute = AUTH_ROUTES.includes(pathname);
+  const isCurrentPathnameIsAuthRoute = AUTH_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  );
 
   useEffect(() => {
     if (!data?.user && !isCurrentPathnameIsAuthRoute) router.push("/login");

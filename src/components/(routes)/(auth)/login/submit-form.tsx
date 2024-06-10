@@ -19,6 +19,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { login } from "@/utils/(routes)/(auth)/login";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export function SubmitForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -29,12 +31,28 @@ export function SubmitForm() {
     },
   });
   const [disabled, setDisabled] = useState(false);
+  const router = useRouter();
 
   const formHandler = (data: z.infer<typeof loginSchema>) => {
-    toast.promise(login(data, setDisabled), {
+    setDisabled(true);
+    const loginFn = async (data: z.infer<typeof loginSchema>) => {
+      await login(data);
+      await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+    };
+    toast.promise(loginFn(data), {
       loading: "logging in...",
-      success: "logged in successfully!",
-      error: (err) => err as string,
+      success: () => {
+        router.push("/home");
+        return "logged in successfully!";
+      },
+      error: (err) => {
+        setDisabled(false);
+        return (err as { error: string }).error;
+      },
     });
   };
 
@@ -63,7 +81,12 @@ export function SubmitForm() {
                 <FormItem>
                   <FormLabel htmlFor="password">Password</FormLabel>
                   <FormControl>
-                    <Input id="password" placeholder="Password" {...field} />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

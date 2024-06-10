@@ -1,6 +1,5 @@
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmitForm } from "./submit-form";
-
 export function Register() {
   return (
     <>

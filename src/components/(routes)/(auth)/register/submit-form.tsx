@@ -30,6 +30,7 @@ export function SubmitForm() {
   const currentInput = Object.keys(data.current)[
     currentInputIndex
   ] as keyof z.infer<typeof registerSchema>;
+  const isSubmit = currentInputIndex === Object.keys(data.current).length - 1;
 
   const saveCurrentInputValue = () => {
     const inputValue = inputRef.current?.value;
@@ -39,15 +40,18 @@ export function SubmitForm() {
   const submitHandler = () => {
     saveCurrentInputValue();
     setFullProgress(true);
-    toast.promise(
-      register({ ...data.current, origin: location.origin }, setDisabled),
-      {
-        loading: "registering...",
-        success:
-          "Registered successfully, we have sent a verification link to your email.",
-        error: (err) => err as string,
+    setDisabled(true);
+    toast.promise(register({ ...data.current, origin: location.origin }), {
+      loading: "registering...",
+      success: () => {
+        setDisabled(false);
+        return "Registered successfully, we have sent a verification link to your email.";
       },
-    );
+      error: (err) => {
+        setDisabled(false);
+        return err as string;
+      },
+    });
   };
 
   const nextInputHandler = () => {
@@ -80,13 +84,9 @@ export function SubmitForm() {
         <Button
           disabled={disabled}
           type="submit"
-          onClick={
-            currentInputIndex === Object.keys(data.current).length - 1
-              ? submitHandler
-              : nextInputHandler
-          }
+          onClick={isSubmit ? submitHandler : nextInputHandler}
         >
-          Next
+          {isSubmit ? "submit" : "next"}
         </Button>
       </CardFooter>
     </form>
