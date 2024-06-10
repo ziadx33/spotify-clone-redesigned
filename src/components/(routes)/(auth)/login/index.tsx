@@ -1,3 +1,13 @@
+import { CardHeader, CardTitle } from "@/components/ui/card";
+import { SubmitForm } from "./submit-form";
+
 export function Login() {
-  return <h1>Login page</h1>;
+  return (
+    <>
+      <CardHeader>
+        <CardTitle>Log in to spotify</CardTitle>
+      </CardHeader>
+      <SubmitForm />
+    </>
+  );
 }

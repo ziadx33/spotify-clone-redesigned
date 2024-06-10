@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/components/ui/loading";
 import { SessionProvider, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
@@ -19,7 +20,7 @@ function Provider({ children }: AuthProviderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  if (status === "loading") return "loading...";
+  if (status === "loading") return <Loading />;
   return children;
 }
 
