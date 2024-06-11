@@ -1,9 +1,5 @@
 import "@/styles/globals.css";
-
-import { GeistSans } from "geist/font/sans";
-import { AuthProvider } from "../providers/auth-provider";
-import { ThemeProvider } from "next-themes";
-import { Toaster } from "@/components/ui/sonner";
+import { Layout } from "@/components/layout";
 
 export const metadata = {
   title: "Spotify clone",
@@ -16,22 +12,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body className={GeistSans.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          forcedTheme="dark"
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+  return <Layout>{children}</Layout>;
 }
