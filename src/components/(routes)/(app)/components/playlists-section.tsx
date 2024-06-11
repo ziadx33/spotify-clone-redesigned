@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { TbBooks } from "react-icons/tb";
-import { Albums } from "./playlists";
+import { PlaylistFilters } from "./playlists-filters";
 import { SlMagnifier } from "react-icons/sl";
 import { FiPlus } from "react-icons/fi";
 
-export function AlbumsSection() {
+export async function PlaylistSection() {
   return (
     <div className="px-4">
       <div className="mb-4 flex items-center justify-between">
@@ -22,7 +22,7 @@ export function AlbumsSection() {
           </Button>
         </div>
       </div>
-      <Albums />
+      <PlaylistFilters />
     </div>
   );
 }

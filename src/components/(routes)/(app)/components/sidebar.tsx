@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { TiHome } from "react-icons/ti";
 import { SlMagnifier } from "react-icons/sl";
-import { AlbumsSection } from "./playlists-section";
+import { PlaylistSection } from "./playlists-section";
 
 export function Sidebar() {
   return (
@@ -29,7 +29,7 @@ export function Sidebar() {
           </Link>
         </Button>
       </div>
-      <AlbumsSection />
+      <PlaylistSection />
     </aside>
   );
 }

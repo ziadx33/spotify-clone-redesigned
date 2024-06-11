@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes";
 import { type ReactNode } from "react";
 import { Toaster } from "./ui/sonner";
 import { GeistSans } from "geist/font/sans";
+import { ReduxProvider } from "@/providers/redux-provider";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -16,7 +17,7 @@ export function Layout({ children }: { children: ReactNode }) {
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
+            <ReduxProvider>{children}</ReduxProvider>
             <Toaster />
           </AuthProvider>
         </ThemeProvider>

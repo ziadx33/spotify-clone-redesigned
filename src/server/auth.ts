@@ -1,11 +1,11 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import {
-  type User,
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
+import { type User } from "@prisma/client";
 
 import { db } from "@/server/db";
 import { getUserByEmail, getUserById } from "./actions/user";
