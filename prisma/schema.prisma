@@ -51,6 +51,7 @@ model User {
     password      String?
     accounts      Account[]
     sessions      Session[]
+    Album         Album[]
 }
 
 model VerificationToken {
@@ -60,4 +61,16 @@ model VerificationToken {
     expires DateTime
 
     @@unique([email, token])
+}
+
+// Album & track models
+
+model Album {
+    id          String @id @default(cuid())
+    title       String
+    description String
+    imageSrc    String @default("https://hvillzcyzejfbqcubhwi.supabase.co/storage/v1/object/public/images/no-image-src-album")
+
+    author   User   @relation(fields: [authorId], references: [id])
+    authorId String
 }
