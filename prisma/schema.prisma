@@ -43,15 +43,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
     password      String?
     accounts      Account[]
     sessions      Session[]
-    Album         Album[]
+    Album         Playlist[]
 }
 
 model VerificationToken {
@@ -63,9 +63,9 @@ model VerificationToken {
     @@unique([email, token])
 }
 
-// Album & track models
+// Playlist & track models
 
-model Album {
+model Playlist {
     id          String @id @default(cuid())
     title       String
     description String

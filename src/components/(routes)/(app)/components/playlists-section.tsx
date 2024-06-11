@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { TbBooks } from "react-icons/tb";
-import { Albums } from "./albums";
+import { Albums } from "./playlists";
 import { SlMagnifier } from "react-icons/sl";
 import { FiPlus } from "react-icons/fi";
 

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { TiHome } from "react-icons/ti";
 import { SlMagnifier } from "react-icons/sl";
-import { AlbumsSection } from "./albums-section";
+import { AlbumsSection } from "./playlists-section";
 
 export function Sidebar() {
   return (
