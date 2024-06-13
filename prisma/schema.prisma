@@ -71,6 +71,8 @@ model Playlist {
     description String
     imageSrc    String @default("https://hvillzcyzejfbqcubhwi.supabase.co/storage/v1/object/public/images/no-image-src-album")
 
-    author   User   @relation(fields: [authorId], references: [id])
+    creator   User   @relation(fields: [authorId], references: [id])
+    creatorId String
+
     authorId String
 }
