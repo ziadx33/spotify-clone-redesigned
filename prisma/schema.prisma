@@ -52,6 +52,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     Album         Playlist[]
+    Track         Track[]
 }
 
 model VerificationToken {
@@ -92,4 +93,19 @@ model Playlist {
 
     sortBy PLAYLIST_SORT_BY @default(DATE_ADDED)
     viewAs PLAYLIST_VIEW_AS @default(LIST)
+    Track  Track[]
+}
+
+model Track {
+    id        String   @id @default(cuid())
+    title     String
+    author    User     @relation(fields: [authorId], references: [id])
+    authorId  String
+    imgSrc    String
+    trackSrc  String
+    album     Playlist @relation(fields: [albumId], references: [id])
+    albumId   String
+    coreAlbum String
+    dateAdded DateTime @default(now())
+    duration  Int
 }
