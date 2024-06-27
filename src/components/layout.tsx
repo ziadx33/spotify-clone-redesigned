@@ -4,6 +4,7 @@ import { type ReactNode } from "react";
 import { Toaster } from "./ui/sonner";
 import { GeistSans } from "geist/font/sans";
 import { ReduxProvider } from "@/providers/redux-provider";
+import { QueryProvider } from "@/providers/query-provider";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -17,7 +18,9 @@ export function Layout({ children }: { children: ReactNode }) {
           disableTransitionOnChange
         >
           <AuthProvider>
-            <ReduxProvider>{children}</ReduxProvider>
+            <ReduxProvider>
+              <QueryProvider>{children}</QueryProvider>
+            </ReduxProvider>
             <Toaster />
           </AuthProvider>
         </ThemeProvider>

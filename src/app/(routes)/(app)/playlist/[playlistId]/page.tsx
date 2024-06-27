@@ -1,9 +1,11 @@
-import { Playlist } from "@/components/(routes)/(app)/playlist/[playlistId]";
+"use client";
 
-export default async function PlaylistPage({
-  params: { playlistId },
-}: {
-  params: { playlistId: string };
-}) {
+import { Playlist } from "@/components/(routes)/(app)/playlist/[playlistId]";
+import { notFound, useParams } from "next/navigation";
+
+export default function PlaylistPage() {
+  const params = useParams();
+  const playlistId = params.playlistId as string | null;
+  if (!playlistId) notFound();
   return <Playlist id={playlistId} />;
 }

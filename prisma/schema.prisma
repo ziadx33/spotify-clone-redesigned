@@ -65,6 +65,20 @@ model VerificationToken {
 
 // Playlist & track models
 
+enum PLAYLIST_SORT_BY {
+    TITLE
+    ARTIST
+    ALBUM
+    DATE_ADDED
+    DURATION
+    CUSTOM_ORDER
+}
+
+enum PLAYLIST_VIEW_AS {
+    COMPACT
+    LIST
+}
+
 model Playlist {
     id          String @id @default(cuid())
     title       String
@@ -75,4 +89,7 @@ model Playlist {
     creatorId String
 
     authorId String
+
+    sortBy PLAYLIST_SORT_BY @default(DATE_ADDED)
+    viewAs PLAYLIST_VIEW_AS @default(LIST)
 }
