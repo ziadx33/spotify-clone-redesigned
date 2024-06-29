@@ -105,7 +105,7 @@ model Track {
     trackSrc  String
     album     Playlist @relation(fields: [albumId], references: [id])
     albumId   String
-    coreAlbum String
+    playlists String[] @default([])
     dateAdded DateTime @default(now())
     duration  Int
 }

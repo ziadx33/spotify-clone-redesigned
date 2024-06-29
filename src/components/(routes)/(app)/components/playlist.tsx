@@ -4,7 +4,6 @@ import { type User, type Playlist } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaCircle } from "react-icons/fa";
 
 type PlaylistProps = {
   userData?: User;
@@ -38,8 +37,7 @@ export function Playlist({
         <h4 className="flex w-full flex-col items-start gap-1">
           <span>{title}</span>
           <span className="flex items-center gap-1.5 text-muted-foreground">
-            {creatorId !== userData?.id ? "Playlist" : "Album"}{" "}
-            <FaCircle size="5" /> 0 tracks
+            {creatorId === userData?.id ? "Playlist" : "Album"}
           </span>
         </h4>
       </Link>
