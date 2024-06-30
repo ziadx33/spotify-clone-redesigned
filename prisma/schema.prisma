@@ -52,6 +52,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     Album         Playlist[]
+    playlists     String[]   @default([])
     Track         Track[]
 }
 
@@ -86,14 +87,10 @@ model Playlist {
     description String
     imageSrc    String @default("https://hvillzcyzejfbqcubhwi.supabase.co/storage/v1/object/public/images/no-image-src-album")
 
-    creator   User   @relation(fields: [authorId], references: [id])
+    creator   User   @relation(fields: [creatorId], references: [id])
     creatorId String
 
-    authorId String
-
-    sortBy PLAYLIST_SORT_BY @default(DATE_ADDED)
-    viewAs PLAYLIST_VIEW_AS @default(LIST)
-    Track  Track[]
+    Track Track[]
 }
 
 model Track {

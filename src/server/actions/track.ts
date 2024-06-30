@@ -11,7 +11,6 @@ export const getTracksByPlaylistId = unstable_cache(
       const tracks = await db.track.findMany({
         where: { playlists: { hasSome: [String(playlistId)] } },
       });
-      console.log("eya", tracks);
       const authors = await db.user.findMany({
         where: { id: { in: tracks?.map((track) => track.authorId) } },
       });

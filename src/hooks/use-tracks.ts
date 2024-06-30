@@ -11,7 +11,6 @@ export function useTracks({ albumId }: UseTracksProps) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       track.playlists?.includes(albumId),
     );
-    console.log("yeaing rn", data);
     return {
       ...state.tracks,
       data: { ...state.tracks.data, tracks: data },

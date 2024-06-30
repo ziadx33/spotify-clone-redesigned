@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { TableRow, TableCell } from "@/components/ui/table";
+import { type TrackFilters } from "@/types";
 import { getAgoTime } from "@/utils/get-ago-time";
 import { type User, type Track, type Playlist } from "@prisma/client";
 import Image from "next/image";
@@ -11,46 +12,65 @@ type TrackProps = {
   track: Track & { trackIndex: number };
   author: User;
   album: Playlist;
+  viewAs: TrackFilters["viewAs"];
 };
 
-export function Track({ track, author, album }: TrackProps) {
+export function Track({ track, author, album, viewAs }: TrackProps) {
   const [showPlayButton, setShowPlayButton] = useState(false);
   const dateAddedAgoValue = useMemo(
     () => getAgoTime(track.dateAdded),
     [track.dateAdded],
   );
-  console.log("test", track.duration);
+  const isList = viewAs === "LIST";
   return (
     <TableRow
       key={track.id}
       onMouseOver={() => setShowPlayButton(true)}
       onMouseLeave={() => setShowPlayButton(false)}
+      className="w-full"
     >
       <TableCell className="font-medium">
-        <Button size="icon" variant="ghost">
-          {!showPlayButton ? track.trackIndex + 1 : <FaPlay size={10} />}
-        </Button>
+        {isList ? (
+          <Button size="icon" variant="ghost">
+            {!showPlayButton ? track.trackIndex + 1 : <FaPlay size={10} />}
+          </Button>
+        ) : (
+          <button>
+            {!showPlayButton ? track.trackIndex + 1 : <FaPlay size={10} />}
+          </button>
+        )}
       </TableCell>
       <TableCell className="w-96 font-medium">
         <div className="flex w-full gap-2">
-          <Image
-            src={track.imgSrc}
-            width={40}
-            height={40}
-            alt={track.title}
-            className="rounded-sm"
-          />
+          {isList && (
+            <Image
+              src={track.imgSrc}
+              width={40}
+              height={40}
+              alt={track.title}
+              className="rounded-sm"
+            />
+          )}
           <div>
             <h3>{track.title}</h3>
-            <Link
-              href={`/artists/${author.id}`}
-              className="text-md text-muted-foreground hover:underline"
-            >
-              {author.name}
-            </Link>
+            {isList && (
+              <Link
+                href={`/artists/${author.id}`}
+                className="text-md text-muted-foreground hover:underline"
+              >
+                {author.name}
+              </Link>
+            )}
           </div>
         </div>
       </TableCell>
+      {!isList && (
+        <TableCell>
+          <Link href={`/artist/${author.id}`} className="hover:underline">
+            {author.name}
+          </Link>
+        </TableCell>
+      )}
       <TableCell>
         <Link href={`/playlist/${album.id}`} className="hover:underline">
           {album.title}

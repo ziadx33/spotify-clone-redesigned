@@ -9,6 +9,7 @@ import Image from "next/image";
 import { FaCircle } from "react-icons/fa";
 import { useQuery } from "react-query";
 import { MusicPlayer } from "./components/music-player";
+import { useTracks } from "@/hooks/use-tracks";
 
 export function Playlist({ id }: { id: string }) {
   const { data } = usePlaylist(id);
@@ -21,9 +22,9 @@ export function Playlist({ id }: { id: string }) {
       return res;
     },
   );
+  const { data: tracks } = useTracks({ albumId: id });
   if (creatorDataLoading) return <Loading />;
   const type = userData?.user?.id === data?.creatorId ? "Playlist" : "Album";
-  console.log(creatorData);
   return (
     <div className="flex h-full w-full flex-col">
       <div className="h-fit w-full border-b">
@@ -52,14 +53,14 @@ export function Playlist({ id }: { id: string }) {
               )}
               <span className="flex items-center gap-1.5">
                 {creatorData?.name}
-                <FaCircle size="5" /> 0 tracks
+                <FaCircle size="5" /> {tracks.tracks?.length} tracks
               </span>
             </div>
           </div>
         </div>
       </div>
       <div className="h-fit w-full px-8">
-        <MusicPlayer id={id} />
+        <MusicPlayer playlist={data} id={id} />
       </div>
     </div>
   );

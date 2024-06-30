@@ -10,6 +10,10 @@ export async function ServerAppDataProvider({
 }) {
   const userData = await getServerAuthSession();
   const user = userData?.user;
-  const playlists = await getPlaylists(user?.id ?? "");
+  const playlists = await getPlaylists({
+    creatorId: user?.id ?? "",
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    playlistIds: user?.playlists ?? [],
+  });
   return <AppProvider playlists={playlists}>{children}</AppProvider>;
 }

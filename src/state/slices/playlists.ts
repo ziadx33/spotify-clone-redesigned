@@ -22,9 +22,17 @@ const playlistsSlice = createSlice({
       state.error = payload.error;
       state.data = payload.data;
     },
+    removePlaylist(state, { payload }: { payload: string }) {
+      state.data =
+        state.data?.filter((playlist) => playlist.id !== payload) ?? state.data;
+    },
+    addPlaylist(state, { payload }: { payload: Playlist }) {
+      state.data = state.data ? [...state.data, payload] : state.data;
+    },
   },
 });
 
-export const { setPlaylists } = playlistsSlice.actions;
+export const { setPlaylists, addPlaylist, removePlaylist } =
+  playlistsSlice.actions;
 
 export default playlistsSlice.reducer;

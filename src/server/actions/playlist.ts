@@ -5,28 +5,48 @@ import { db } from "../db";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
-export const getPlaylists = unstable_cache(
-  cache(async (authorId: string): Promise<PlaylistsSliceType> => {
-    try {
-      const playlists = await db.playlist.findMany({
-        where: {
-          authorId,
-        },
-      });
+type GetPlaylistsParams = {
+  creatorId: string;
+  playlistIds: string[];
+};
 
-      return {
-        data: playlists,
-        status: "success",
-        error: null,
-      };
-    } catch (error) {
-      return {
-        status: "error",
-        error: (error as { message: string }).message,
-        data: null,
-      };
-    }
-  }),
+export const getPlaylists = unstable_cache(
+  cache(
+    async ({
+      creatorId,
+      playlistIds,
+    }: GetPlaylistsParams): Promise<PlaylistsSliceType> => {
+      try {
+        console.log("shoulder", playlistIds);
+        const playlists = await db.playlist.findMany({
+          where: {
+            OR: [
+              {
+                creatorId,
+              },
+              {
+                id: {
+                  in: playlistIds,
+                },
+              },
+            ],
+          },
+        });
+
+        return {
+          data: playlists,
+          status: "success",
+          error: null,
+        };
+      } catch (error) {
+        return {
+          status: "error",
+          error: (error as { message: string }).message,
+          data: null,
+        };
+      }
+    },
+  ),
   ["playlists"],
 );
 

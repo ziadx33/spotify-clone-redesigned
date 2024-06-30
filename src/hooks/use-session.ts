@@ -7,7 +7,7 @@ import {
 
 type UpdateSession = (data?: Partial<User>) => Promise<User | null>;
 
-type Session = { user?: User; expires: ISODateString };
+export type Session = { user?: User; expires: ISODateString };
 
 type UseSessionParams<T extends boolean = false> = T extends true
   ?
