@@ -21,10 +21,10 @@ export function FilterButton({
   className,
 }: FilterButtonProps) {
   return (
-    <TableHead className="w-">
+    <TableHead>
       <button
         onClick={() => handleFilterChange(propertyName)}
-        className={cn("flex w-36 items-center gap-1 capitalize", className)}
+        className={cn("flex items-center gap-1 capitalize", className)}
       >
         {title}
         {filters[propertyName] &&

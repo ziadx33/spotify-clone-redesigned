@@ -3,6 +3,7 @@ import { TbBooks } from "react-icons/tb";
 import { PlaylistFilters } from "./playlists-filters";
 import { SlMagnifier } from "react-icons/sl";
 import { FiPlus } from "react-icons/fi";
+import { CreatePlaylistButton } from "./create-playlist-button";
 
 export async function PlaylistSection() {
   return (
@@ -14,9 +15,7 @@ export async function PlaylistSection() {
         </div>
 
         <div>
-          <Button size="icon" variant="ghost">
-            <FiPlus className="font-bold" />
-          </Button>
+          <CreatePlaylistButton />
           <Button size="icon" variant="ghost">
             <SlMagnifier className="font-bold" />
           </Button>

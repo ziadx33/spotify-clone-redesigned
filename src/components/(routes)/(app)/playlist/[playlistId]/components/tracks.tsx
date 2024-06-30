@@ -51,7 +51,7 @@ export function Tracks({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px] pl-8">#</TableHead>
+          <TableHead className="w-0 pl-4 pr-0">#</TableHead>
           <DoubleFilter
             handleFilterChange={handleFilterChange}
             filters={filters}

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { type TrackFilters } from "@/types";
 import { getAgoTime } from "@/utils/get-ago-time";
@@ -27,20 +26,13 @@ export function Track({ track, author, album, viewAs }: TrackProps) {
       key={track.id}
       onMouseOver={() => setShowPlayButton(true)}
       onMouseLeave={() => setShowPlayButton(false)}
-      className="w-full"
     >
-      <TableCell className="font-medium">
-        {isList ? (
-          <Button size="icon" variant="ghost">
-            {!showPlayButton ? track.trackIndex + 1 : <FaPlay size={10} />}
-          </Button>
-        ) : (
-          <button>
-            {!showPlayButton ? track.trackIndex + 1 : <FaPlay size={10} />}
-          </button>
-        )}
+      <TableCell className="w-12 pl-4 pr-4">
+        <button>
+          {!showPlayButton ? track.trackIndex + 1 : <FaPlay size={10} />}
+        </button>
       </TableCell>
-      <TableCell className="w-96 font-medium">
+      <TableCell className="font-medium">
         <div className="flex w-full gap-2">
           {isList && (
             <Image

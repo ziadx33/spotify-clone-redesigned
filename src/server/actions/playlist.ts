@@ -4,6 +4,7 @@ import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { db } from "../db";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
+import { type Session } from "@/hooks/use-session";
 
 type GetPlaylistsParams = {
   creatorId: string;
@@ -62,4 +63,21 @@ export const getPlaylist = unstable_cache(
     }
   }),
   ["playlist", "id"],
+);
+
+export const createPlaylist = unstable_cache(
+  cache(async (user: Session | null) => {
+    try {
+      const createdPlaylist = db.playlist.create({
+        data: {
+          description: "",
+          title: "Untitled playlist",
+          creatorId: user!.user!.id,
+        },
+      });
+      return createdPlaylist;
+    } catch (error) {
+      throw { error };
+    }
+  }),
 );

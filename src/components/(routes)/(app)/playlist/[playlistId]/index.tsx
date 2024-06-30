@@ -40,7 +40,12 @@ export function Playlist({ id }: { id: string }) {
           </div>
           <div className="flex flex-col pt-[6.2rem]">
             <h3 className="mb-4">{type}</h3>
-            <h1 className="mb-5 text-8xl font-bold">{data?.title}</h1>
+            <h1
+              title={data?.title}
+              className="mb-5 line-clamp-1 text-8xl font-bold"
+            >
+              {data?.title}
+            </h1>
             <div>
               {creatorData?.image && (
                 <Image

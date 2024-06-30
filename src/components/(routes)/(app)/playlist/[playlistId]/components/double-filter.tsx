@@ -50,39 +50,35 @@ export function DoubleFilter({
       };
     });
   };
-  return (
-    <TableHead className="w-96">
+  return filters.viewAs === "LIST" ? (
+    <TableHead>
       {" "}
-      {filters.viewAs === "LIST" ? (
-        <button onClick={handleTitleChange} className="flex items-center gap-1">
-          {filters.sortBy === "artist" ? "Artist" : "Title"}
-          {(filters.title ?? filters.artist) &&
-            (filters.title === "ASC" || filters.artist === "ASC" ? (
-              <IoIosArrowUp className="text-primary" size={15} />
-            ) : (
-              <IoIosArrowDown className="text-primary" size={15} />
-            ))}
-        </button>
-      ) : (
-        <>
-          <FilterButton
-            filters={filters}
-            handleFilterChange={handleFilterChange}
-            setFilters={setFilters}
-            title="Title"
-            propertyName="title"
-            className="w-32"
-          />
-          <FilterButton
-            filters={filters}
-            handleFilterChange={handleFilterChange}
-            setFilters={setFilters}
-            title="Artist"
-            propertyName="artist"
-            className="w-32"
-          />
-        </>
-      )}
+      <button onClick={handleTitleChange} className="flex items-center gap-1">
+        {filters.sortBy === "artist" ? "Artist" : "Title"}
+        {(filters.title ?? filters.artist) &&
+          (filters.title === "ASC" || filters.artist === "ASC" ? (
+            <IoIosArrowUp className="text-primary" size={15} />
+          ) : (
+            <IoIosArrowDown className="text-primary" size={15} />
+          ))}
+      </button>
     </TableHead>
+  ) : (
+    <>
+      <FilterButton
+        filters={filters}
+        handleFilterChange={handleFilterChange}
+        setFilters={setFilters}
+        title="Title"
+        propertyName="title"
+      />
+      <FilterButton
+        filters={filters}
+        handleFilterChange={handleFilterChange}
+        setFilters={setFilters}
+        title="Artist"
+        propertyName="artist"
+      />
+    </>
   );
 }
