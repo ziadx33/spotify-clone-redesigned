@@ -17,7 +17,11 @@ export const sortTracks = ({
   trackQuery,
 }: FilterTracksParams) => {
   return tracks
-    ?.filter((track) => (trackQuery ? track.title.includes(trackQuery) : true))
+    ?.filter((track) =>
+      trackQuery
+        ? track.title.toLowerCase().includes(trackQuery.toLowerCase())
+        : true,
+    )
     .sort((a, b) => {
       if (filters.sortBy === "title") {
         console.log("sorter arrayer");
