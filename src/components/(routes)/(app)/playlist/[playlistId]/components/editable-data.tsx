@@ -19,10 +19,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Playlist, type User } from "@prisma/client";
+import { type Track, type Playlist, type User } from "@prisma/client";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { type ChangeEvent, memo, useRef, useState } from "react";
+import { type ChangeEvent, memo, useRef, useState, useMemo } from "react";
 import { FaPen } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa6";
 import { z } from "zod";
@@ -33,12 +33,15 @@ import { revalidate } from "@/server/actions/revalidate";
 import { toast } from "sonner";
 import { uploadPlaylistPic } from "@/server/actions/upload";
 import { SUPABASE_BUCKET_URL } from "@/constants";
+import { getAgoTime } from "@/utils/get-ago-time";
+import { format } from "date-fns";
+import { getTime } from "@/utils/get-time";
 
 type EditableDataProps = {
   data?: Playlist | null;
   type: string;
   creatorData?: User | null;
-  tracksLength?: number | null;
+  tracks?: Track[];
 };
 
 const editSchema = z.object({
@@ -50,7 +53,7 @@ function EditableDataComp({
   data,
   type,
   creatorData,
-  tracksLength,
+  tracks,
 }: EditableDataProps) {
   const form = useForm<z.infer<typeof editSchema>>({
     resolver: zodResolver(editSchema),
@@ -79,6 +82,14 @@ function EditableDataComp({
     setUploadedImage(file);
   };
 
+  const tracksTime = useMemo(() => {
+    const date = new Date();
+    const seconds = tracks
+      ?.map((track) => track.duration)
+      .reduce((a, b) => a + b, 0);
+    return getTime(seconds ?? 0);
+  }, [tracks]);
+
   const formHandler = async (formData: z.infer<typeof editSchema>) => {
     setDisabled(true);
     const uploadData: typeof formData & { imageSrc?: string } = formData;
@@ -94,6 +105,7 @@ function EditableDataComp({
     dispatch(editPlaylist({ id: data?.id ?? "", data: formData }));
     revalidate(`/playlist/${data?.id}`);
     closeDialog();
+    setUploadedImage(null);
     setDisabled(false);
   };
   return (
@@ -117,6 +129,9 @@ function EditableDataComp({
           >
             {data?.title}
           </DialogTrigger>
+          <p className="mb-0.5 text-sm text-muted-foreground">
+            {data?.description}
+          </p>
           <div>
             {creatorData?.image && (
               <Image
@@ -129,7 +144,12 @@ function EditableDataComp({
             )}
             <span className="flex items-center gap-1.5">
               {creatorData?.name}
-              <FaCircle size="5" /> {tracksLength} tracks
+              {(tracks?.length ?? 0) > 0 && (
+                <>
+                  <FaCircle size="5" /> {tracks?.length} tracks{" "}
+                  <FaCircle size="5" /> {tracksTime}
+                </>
+              )}
             </span>
           </div>
         </div>

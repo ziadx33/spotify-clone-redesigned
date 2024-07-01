@@ -31,7 +31,7 @@ export function Playlist({ id }: { id: string }) {
         <EditableData
           creatorData={creatorData}
           data={data}
-          tracksLength={tracks.tracks?.length}
+          tracks={tracks.tracks}
           type={type}
         />
       </div>
