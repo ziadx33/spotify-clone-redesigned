@@ -29,10 +29,24 @@ const playlistsSlice = createSlice({
     addPlaylist(state, { payload }: { payload: Playlist }) {
       state.data = state.data ? [...state.data, payload] : state.data;
     },
+    editPlaylist(
+      state,
+      { payload }: { payload: { id: string; data: Partial<Playlist> } },
+    ) {
+      state.data =
+        state.data?.map((playlist) => {
+          if (playlist.id === payload.id)
+            return {
+              ...playlist,
+              ...payload.data,
+            };
+          return playlist;
+        }) ?? state.data;
+    },
   },
 });
 
-export const { setPlaylists, addPlaylist, removePlaylist } =
+export const { setPlaylists, addPlaylist, removePlaylist, editPlaylist } =
   playlistsSlice.actions;
 
 export default playlistsSlice.reducer;

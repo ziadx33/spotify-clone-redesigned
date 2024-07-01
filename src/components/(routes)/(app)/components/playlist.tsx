@@ -29,7 +29,7 @@ export function Playlist({
       <Link href={`/playlist/${id}`}>
         <Image
           src={imageSrc}
-          className="rounded-md"
+          className="h-[55px] w-[70px] rounded-md object-cover"
           width={55}
           height={55}
           alt={title}

@@ -15,4 +15,7 @@ const DEFAULT_TRACK_FILTERS_DATA: TrackFilters = {
   customOrder: true,
 };
 
+export const SUPABASE_BUCKET_URL =
+  "https://hvillzcyzejfbqcubhwi.supabase.co/storage/v1/object/public";
+
 export { AUTH_ROUTES, CATEGORIES, DEFAULT_TRACK_FILTERS_DATA };

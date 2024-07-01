@@ -5,6 +5,7 @@ import { db } from "../db";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { type Session } from "@/hooks/use-session";
+import { type Playlist } from "@prisma/client";
 
 type GetPlaylistsParams = {
   creatorId: string;
@@ -76,6 +77,33 @@ export const createPlaylist = unstable_cache(
         },
       });
       return createdPlaylist;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+);
+
+export const deletePlaylist = unstable_cache(
+  cache(async (id: string) => {
+    try {
+      const deletedPlaylist = db.playlist.delete({
+        where: { id },
+      });
+      return deletedPlaylist;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+);
+
+export const updatePlaylist = unstable_cache(
+  cache(async ({ id, data }: { id: string; data: Partial<Playlist> }) => {
+    try {
+      const updatedPlaylist = db.playlist.update({
+        where: { id },
+        data,
+      });
+      return updatedPlaylist;
     } catch (error) {
       throw { error };
     }
