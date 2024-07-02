@@ -42,18 +42,28 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum USER_TYPE {
+    USER
+    ARTIST
+}
+
 model User {
     id            String     @id @default(cuid())
     name          String?
     email         String?    @unique
     emailVerified DateTime?
     image         String?
+    coverImage    String?
+    about         String?
+    aboutImage    String?
+    type          USER_TYPE  @default(USER)
     password      String?
     accounts      Account[]
     sessions      Session[]
     Album         Playlist[]
     playlists     String[]   @default([])
     Track         Track[]
+    followers     Int        @default(0)
 }
 
 model VerificationToken {
@@ -63,22 +73,6 @@ model VerificationToken {
     expires DateTime
 
     @@unique([email, token])
-}
-
-// Playlist & track models
-
-enum PLAYLIST_SORT_BY {
-    TITLE
-    ARTIST
-    ALBUM
-    DATE_ADDED
-    DURATION
-    CUSTOM_ORDER
-}
-
-enum PLAYLIST_VIEW_AS {
-    COMPACT
-    LIST
 }
 
 model Playlist {
@@ -105,4 +99,5 @@ model Track {
     playlists String[] @default([])
     dateAdded DateTime @default(now())
     duration  Int
+    plays     Int      @default(0)
 }

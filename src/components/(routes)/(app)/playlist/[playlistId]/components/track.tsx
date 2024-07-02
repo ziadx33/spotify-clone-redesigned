@@ -14,9 +14,17 @@ type TrackProps = {
   album: Playlist;
   viewAs: TrackFilters["viewAs"];
   playlist: Playlist;
+  isAlbum?: boolean;
 };
 
-export function Track({ track, author, album, viewAs, playlist }: TrackProps) {
+export function Track({
+  track,
+  author,
+  album,
+  viewAs,
+  playlist,
+  isAlbum = false,
+}: TrackProps) {
   const [showButtons, setShowButtons] = useState(false);
   const [showMoreButton, setShowMoreButton] = useState(false);
   const [isShowMoreButtonOpened, setIsShowMoreButtonOpened] = useState(false);
@@ -29,6 +37,11 @@ export function Track({ track, author, album, viewAs, playlist }: TrackProps) {
     setShowButtons(value);
     if (!isShowMoreButtonOpened) setShowMoreButton(value);
   };
+  const memoizedPlays = useMemo(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    () => new Intl.NumberFormat("en-US").format(track.plays ?? 0),
+    [track.plays],
+  );
   return (
     <TableRow
       key={track.id}
@@ -55,7 +68,7 @@ export function Track({ track, author, album, viewAs, playlist }: TrackProps) {
             <h3>{track.title}</h3>
             {isList && (
               <Link
-                href={`/artists/${author.id}`}
+                href={`/artist/${author.id}`}
                 className="text-md text-muted-foreground hover:underline"
               >
                 {author.name}
@@ -64,19 +77,28 @@ export function Track({ track, author, album, viewAs, playlist }: TrackProps) {
           </div>
         </div>
       </TableCell>
-      {!isList && (
+      {!isAlbum && (
+        <>
+          {!isList && (
+            <TableCell>
+              <Link href={`/artist/${author.id}`} className="hover:underline">
+                {author.name}
+              </Link>
+            </TableCell>
+          )}
+          <TableCell>
+            <Link href={`/playlist/${album.id}`} className="hover:underline">
+              {album.title}
+            </Link>
+          </TableCell>
+          <TableCell>{dateAddedAgoValue}</TableCell>
+        </>
+      )}
+      {isAlbum && (
         <TableCell>
-          <Link href={`/artist/${author.id}`} className="hover:underline">
-            {author.name}
-          </Link>
+          <div className="flex h-full w-24 gap-3">{memoizedPlays}</div>
         </TableCell>
       )}
-      <TableCell>
-        <Link href={`/playlist/${album.id}`} className="hover:underline">
-          {album.title}
-        </Link>
-      </TableCell>
-      <TableCell>{dateAddedAgoValue}</TableCell>
       <TableCell>
         <div className="flex h-full w-24 gap-3">
           {String(

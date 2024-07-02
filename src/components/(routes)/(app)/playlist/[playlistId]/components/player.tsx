@@ -76,6 +76,7 @@ export function Player({
         <SearchInput setTrackQuery={setTrackQuery} />
 
         <FiltersSelect
+          playlist={playlist}
           handleFilterChange={handleFilterChange}
           filters={filters}
           setFilters={setFilters}

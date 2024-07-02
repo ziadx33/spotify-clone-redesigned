@@ -17,6 +17,7 @@ import { useSession } from "@/hooks/use-session";
 import { EditForm } from "./edit-form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -86,7 +87,9 @@ function EditableDataComp({
               />
             )}
             <span className="flex items-center gap-1.5">
-              {creatorData?.name}
+              <Link href={`/artist/${creatorData?.id}`}>
+                {creatorData?.name}
+              </Link>
               {(tracks?.length ?? 0) > 0 && (
                 <>
                   <FaCircle size="5" /> {tracks?.length} tracks{" "}

@@ -1,8 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { TbBooks } from "react-icons/tb";
 import { PlaylistFilters } from "./playlists-filters";
-import { SlMagnifier } from "react-icons/sl";
-import { FiPlus } from "react-icons/fi";
 import { CreatePlaylistButton } from "./create-playlist-button";
 
 export async function PlaylistSection() {
@@ -14,12 +11,7 @@ export async function PlaylistSection() {
           <h3>Your library</h3>
         </div>
 
-        <div>
-          <CreatePlaylistButton />
-          <Button size="icon" variant="ghost">
-            <SlMagnifier className="font-bold" />
-          </Button>
-        </div>
+        <CreatePlaylistButton />
       </div>
       <PlaylistFilters />
     </div>

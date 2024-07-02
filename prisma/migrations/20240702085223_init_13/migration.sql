@@ -1,0 +1,14 @@
+-- CreateEnum
+CREATE TYPE "USER_TYPE" AS ENUM ('USER', 'ARTIST');
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "about" TEXT,
+ADD COLUMN     "aboutImage" TEXT,
+ADD COLUMN     "coverImage" TEXT,
+ADD COLUMN     "type" "USER_TYPE" NOT NULL DEFAULT 'USER';
+
+-- DropEnum
+DROP TYPE "PLAYLIST_SORT_BY";
+
+-- DropEnum
+DROP TYPE "PLAYLIST_VIEW_AS";

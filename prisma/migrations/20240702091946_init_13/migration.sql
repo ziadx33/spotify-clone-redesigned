@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Track" ADD COLUMN     "plays" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "followers" INTEGER NOT NULL DEFAULT 0;

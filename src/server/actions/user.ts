@@ -5,6 +5,8 @@ import { db } from "../db";
 import { type registerSchema } from "@/schemas";
 import { compare, hash } from "bcrypt";
 import { type User } from "@prisma/client";
+import { unstable_cache } from "next/cache";
+import { cache } from "react";
 
 export const getUserByEmail = async (email: string) => {
   try {
@@ -54,18 +56,21 @@ export const updateUserById = async ({
   }
 };
 
-export const getUserById = async (id: string) => {
-  try {
-    const user = await db.user.findUnique({
-      where: {
-        id,
-      },
-    });
-    return user;
-  } catch (error) {
-    throw error;
-  }
-};
+export const getUserById = unstable_cache(
+  cache(async (id: string) => {
+    try {
+      const user = await db.user.findUnique({
+        where: {
+          id,
+        },
+      });
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }),
+  ["user", "id"],
+);
 
 export const comparePassword = async (
   firstPass: string,
