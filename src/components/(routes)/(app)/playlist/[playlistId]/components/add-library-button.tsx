@@ -31,10 +31,10 @@ export function AddLibraryButton({
         user?.user?.playlists?.filter((playlist) => playlist !== playlist) ??
         [],
     };
-    revalidate("/");
     await updateUser({
       data,
     });
+    revalidate("/");
     dispatch(removePlaylist(playlist?.id ?? ""));
     setIsLoading(false);
   };

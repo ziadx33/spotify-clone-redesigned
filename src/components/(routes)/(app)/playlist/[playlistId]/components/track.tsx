@@ -6,30 +6,38 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { FaPlay } from "react-icons/fa";
+import { TrackMoreButton } from "./track-more-button";
 
 type TrackProps = {
   track: Track & { trackIndex: number };
   author: User;
   album: Playlist;
   viewAs: TrackFilters["viewAs"];
+  playlist: Playlist;
 };
 
-export function Track({ track, author, album, viewAs }: TrackProps) {
-  const [showPlayButton, setShowPlayButton] = useState(false);
+export function Track({ track, author, album, viewAs, playlist }: TrackProps) {
+  const [showButtons, setShowButtons] = useState(false);
+  const [showMoreButton, setShowMoreButton] = useState(false);
+  const [isShowMoreButtonOpened, setIsShowMoreButtonOpened] = useState(false);
   const dateAddedAgoValue = useMemo(
     () => getAgoTime(track.dateAdded),
     [track.dateAdded],
   );
   const isList = viewAs === "LIST";
+  const hoverTrackHandler = (value: boolean) => {
+    setShowButtons(value);
+    if (!isShowMoreButtonOpened) setShowMoreButton(value);
+  };
   return (
     <TableRow
       key={track.id}
-      onMouseOver={() => setShowPlayButton(true)}
-      onMouseLeave={() => setShowPlayButton(false)}
+      onMouseOver={() => hoverTrackHandler(true)}
+      onMouseLeave={() => hoverTrackHandler(false)}
     >
       <TableCell className="w-12 pl-4 pr-4">
         <button>
-          {!showPlayButton ? track.trackIndex + 1 : <FaPlay size={10} />}
+          {!showButtons ? track.trackIndex + 1 : <FaPlay size={10} />}
         </button>
       </TableCell>
       <TableCell className="font-medium">
@@ -70,12 +78,22 @@ export function Track({ track, author, album, viewAs }: TrackProps) {
       </TableCell>
       <TableCell>{dateAddedAgoValue}</TableCell>
       <TableCell>
-        {String(
-          (
-            Math.floor(track.duration / 60) +
-            (track.duration % 60) / 100
-          ).toFixed(2),
-        ).replace(".", ":")}
+        <div className="flex h-full w-24 gap-3">
+          {String(
+            (
+              Math.floor(track.duration / 60) +
+              (track.duration % 60) / 100
+            ).toFixed(2),
+          ).replace(".", ":")}
+          {(showMoreButton || showButtons) && (
+            <TrackMoreButton
+              setOpened={setIsShowMoreButtonOpened}
+              setShowMoreButton={setShowMoreButton}
+              playlist={playlist}
+              track={track}
+            />
+          )}
+        </div>
       </TableCell>
     </TableRow>
   );

@@ -30,9 +30,40 @@ const tracksSlice = createSlice({
       state.error = payload.error;
       state.data = payload.data;
     },
+    removeTrackFromPlaylist(
+      state,
+      { payload }: { payload: { trackId: string; playlistId: string } },
+    ) {
+      if (state.data?.tracks)
+        state.data.tracks = state.data?.tracks?.map((track) => {
+          if (track.id === payload.trackId)
+            return {
+              ...track,
+              playlists: track.playlists.filter(
+                (playlist) => playlist !== payload.playlistId,
+              ),
+            };
+          return track;
+        });
+    },
+    addTrackToPlaylist(
+      state,
+      { payload }: { payload: { trackId: string; playlistId: string } },
+    ) {
+      if (state.data?.tracks)
+        state.data.tracks = state.data?.tracks?.map((track) => {
+          if (track.id === payload.trackId)
+            return {
+              ...track,
+              playlists: [...track.playlists, payload.playlistId],
+            };
+          return track;
+        });
+    },
   },
 });
 
-export const { setTracks } = tracksSlice.actions;
+export const { setTracks, removeTrackFromPlaylist, addTrackToPlaylist } =
+  tracksSlice.actions;
 
 export default tracksSlice.reducer;

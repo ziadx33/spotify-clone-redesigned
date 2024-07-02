@@ -11,7 +11,7 @@ import { useTracks } from "@/hooks/use-tracks";
 import { EditableData } from "./components/editable-data";
 
 export function Playlist({ id }: { id: string }) {
-  const { data } = usePlaylist(id);
+  const { data, status } = usePlaylist(id);
   const { data: userData } = useSession();
   const { data: creatorData, isLoading: creatorDataLoading } = useQuery(
     `creatorId-${data?.creatorId}`,
@@ -23,7 +23,7 @@ export function Playlist({ id }: { id: string }) {
     },
   );
   const { data: tracks } = useTracks({ albumId: id });
-  if (creatorDataLoading) return <Loading />;
+  if (creatorDataLoading || status === "loading") return <Loading />;
   const type = userData?.user?.id === data?.creatorId ? "Playlist" : "Album";
   return (
     <div className="flex h-full w-full flex-col">

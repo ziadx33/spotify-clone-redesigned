@@ -13,6 +13,7 @@ import { FilterButton } from "./filter-button";
 import { BsClock } from "react-icons/bs";
 import { DoubleFilter } from "./double-filter";
 import { sortTracks } from "@/utils/(routes)/home/[playlistId]/sort-tracks";
+import { type Playlist } from "@prisma/client";
 
 type TracksProps = {
   id: string;
@@ -20,6 +21,7 @@ type TracksProps = {
   setFilters: Dispatch<SetStateAction<TrackFilters>>;
   handleFilterChange: (name: keyof TrackFilters) => void;
   trackQuery: string | null;
+  playlist: Playlist;
 };
 
 export function Tracks({
@@ -28,6 +30,7 @@ export function Tracks({
   setFilters,
   handleFilterChange,
   trackQuery,
+  playlist,
 }: TracksProps) {
   const { data } = useTracks({ albumId: id });
   const memoizedTracks = useMemo(() => {
@@ -39,6 +42,7 @@ export function Tracks({
       trackQuery,
     })?.map((track, trackIndex) => (
       <Track
+        playlist={playlist}
         viewAs={filters.viewAs}
         key={track.id}
         track={{ ...track, trackIndex }}
@@ -46,7 +50,7 @@ export function Tracks({
         album={data.albums!.find((album) => track.albumId === album.id)!}
       />
     ));
-  }, [data?.tracks, data.albums, data.authors, filters, trackQuery]);
+  }, [data?.tracks, data.albums, data.authors, filters, trackQuery, playlist]);
   return (
     <Table>
       <TableHeader>

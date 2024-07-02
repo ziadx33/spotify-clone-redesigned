@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { FaRegArrowAltCircleDown, FaPlay } from "react-icons/fa";
-import { FaMagnifyingGlass, FaShuffle } from "react-icons/fa6";
+import { FaShuffle } from "react-icons/fa6";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { BsThreeDots } from "react-icons/bs";
 import { type Playlist } from "@prisma/client";

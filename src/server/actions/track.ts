@@ -32,3 +32,55 @@ export const getTracksByPlaylistId = unstable_cache(
   }),
   ["track", "playlist-id", "id"],
 );
+
+type RemoveTrackFromPlaylistDBProps = {
+  playlistId: string;
+  trackId: string;
+  playlists: string[];
+};
+
+export const removeTrackFromPlaylistDB = async ({
+  playlistId,
+  trackId,
+  playlists,
+}: RemoveTrackFromPlaylistDBProps) => {
+  try {
+    const updatedTrack = await db.track.update({
+      where: {
+        id: trackId,
+      },
+      data: {
+        playlists: playlists.filter((playlist) => playlist !== playlistId),
+      },
+    });
+    return updatedTrack;
+  } catch (error) {
+    return { error };
+  }
+};
+
+type AddTrackToPlaylistProps = {
+  trackId: string;
+  playlistId: string;
+};
+
+export const addTrackToPlaylistToDB = async ({
+  trackId,
+  playlistId,
+}: AddTrackToPlaylistProps) => {
+  try {
+    const updatedTrack = await db.track.update({
+      where: {
+        id: trackId,
+      },
+      data: {
+        playlists: {
+          push: playlistId,
+        },
+      },
+    });
+    return updatedTrack;
+  } catch (error) {
+    throw { error };
+  }
+};

@@ -14,13 +14,13 @@ export function usePlaylist(id: string): UsePlaylistReturnType {
   const data = playlists.data?.find((playlist) => playlist.id === id);
   const {
     data: playlist,
-    isLoading,
     isError,
     refetch,
   } = useQuery({
     queryFn: async () => {
       if (data) return null;
-      return await getPlaylist(id);
+      const res = await getPlaylist(id);
+      return res;
     },
   });
   useEffect(() => {
@@ -30,6 +30,9 @@ export function usePlaylist(id: string): UsePlaylistReturnType {
   return {
     data: data ?? playlist ?? null,
     error: playlists.error ?? isError ? "something went wrong" : null,
-    status: playlists.status || isLoading ? "loading" : "success",
+    status:
+      playlists.status === "loading" || (!data && !playlist)
+        ? "loading"
+        : "success",
   };
 }
