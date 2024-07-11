@@ -31,6 +31,7 @@ export function SortTable({
   trackQuery,
   playlist,
 }: SortTableProps) {
+  console.log(data?.authors);
   const memoizedTracks = useMemo(() => {
     return sortTracks({
       tracks: data?.tracks ?? [],
@@ -44,8 +45,11 @@ export function SortTable({
         viewAs={filters.viewAs}
         key={track.id}
         track={{ ...track, trackIndex }}
-        author={data!.authors!.find((author) => track.authorId === author.id)!}
-        album={data!.albums!.find((album) => track.albumId === album.id)!}
+        authors={data!.authors!.filter(
+          (author) =>
+            track.authorId === author.id || track.authorIds.includes(author.id),
+        )}
+        album={data!.albums!.find((album) => track.albumId === album.id)}
       />
     ));
   }, [data, filters, trackQuery, playlist]);

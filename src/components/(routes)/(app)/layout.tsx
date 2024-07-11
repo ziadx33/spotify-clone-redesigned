@@ -7,7 +7,7 @@ export function Layout({ children }: { children: ReactNode }) {
     <main className="flex h-screen w-screen">
       <ServerAppDataProvider>
         <Sidebar />
-        <div className="h-full w-full">{children}</div>
+        <div className="h-full w-full pl-[20%]">{children}</div>
       </ServerAppDataProvider>
     </main>
   );

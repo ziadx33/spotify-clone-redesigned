@@ -6,7 +6,7 @@ import { PlaylistSection } from "./playlists-section";
 
 export function Sidebar() {
   return (
-    <aside className="h-full w-[20%] border-r p-2">
+    <aside className="fixed z-10 h-full w-[20%] border-r bg-background p-2">
       <div className="mb-4 flex flex-col gap-2">
         <Button
           variant="ghost"

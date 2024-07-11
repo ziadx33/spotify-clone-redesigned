@@ -9,10 +9,15 @@ export const getTracksByPlaylistId = unstable_cache(
   cache(async (playlistId: string): Promise<TracksSliceType> => {
     try {
       const tracks = await db.track.findMany({
-        where: { playlists: { hasSome: [String(playlistId)] } },
+        where: { playlists: { has: playlistId } },
       });
       const authors = await db.user.findMany({
-        where: { id: { in: tracks?.map((track) => track.authorId) } },
+        where: {
+          OR: [
+            { id: { in: tracks?.map((track) => track.authorId) } },
+            { id: { in: tracks.map((track) => track.authorIds).flat() } },
+          ],
+        },
       });
       const albums = await db.playlist.findMany({
         where: { id: { in: tracks?.map((track) => track.albumId) } },
@@ -84,3 +89,68 @@ export const addTrackToPlaylistToDB = async ({
     throw { error };
   }
 };
+
+type GetPopularTracks = {
+  artistId: string;
+  range: {
+    from: number;
+    to: number;
+  };
+};
+
+export const getPopularTracks = unstable_cache(
+  cache(async ({ artistId, range }: GetPopularTracks) => {
+    try {
+      const tracks = await db.track.findMany({
+        where: {
+          OR: [{ authorId: artistId }, { authorIds: { has: artistId } }],
+        },
+        skip: range.from,
+        take: range.to,
+      });
+      const authors = await db.user.findMany({
+        where: {
+          OR: [
+            { id: { in: tracks?.map((track) => track.authorId) } },
+            { id: { in: tracks.map((track) => track.authorIds).flat() } },
+          ],
+        },
+      });
+      return { tracks, authors };
+    } catch (error) {
+      throw { error };
+    }
+  }),
+);
+
+type GetSavedTracks = {
+  artistId: string;
+  playlists: string[];
+};
+
+export const getSavedTracks = unstable_cache(
+  cache(async ({ artistId, playlists }: GetSavedTracks) => {
+    try {
+      const tracks = await db.track.findMany({
+        where: {
+          OR: [
+            {
+              authorId: artistId,
+            },
+            {
+              authorIds: {
+                has: artistId,
+              },
+            },
+          ],
+          playlists: {
+            hasSome: playlists,
+          },
+        },
+      });
+      return tracks;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+);

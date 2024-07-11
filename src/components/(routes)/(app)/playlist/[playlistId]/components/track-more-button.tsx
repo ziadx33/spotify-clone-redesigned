@@ -18,7 +18,6 @@ import {
   addTrackToPlaylist,
   removeTrackFromPlaylist,
 } from "@/state/slices/tracks";
-import { revalidate } from "@/server/actions/revalidate";
 import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import {
   addTrackToPlaylistToDB,
@@ -46,7 +45,7 @@ import { RiArrowRightSLine } from "react-icons/ri";
 import { usePlaylists } from "@/hooks/use-playlists";
 
 type TrackMoreButtonProps = {
-  playlist: Playlist | null;
+  playlist?: Playlist | null;
   track: Track | null;
   setOpened: Dispatch<SetStateAction<boolean>>;
   setShowMoreButton: Dispatch<SetStateAction<boolean>>;
@@ -139,6 +138,8 @@ function RemoveFromPlaylistButton({
   playlists,
 }: RemoveFromPlaylistButtonProps) {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const { data: actualPlaylists } = usePlaylists();
   const removeFromPlaylistHandler = async () => {
     dispatch(removeTrackFromPlaylist({ playlistId, trackId }));
     await removeTrackFromPlaylistDB({
@@ -146,7 +147,10 @@ function RemoveFromPlaylistButton({
       trackId,
       playlists,
     });
-    revalidate(`/playlist/${playlistId}`);
+    router.prefetch(`/playlist/${playlistId}`);
+    router.prefetch(
+      `/artist/${actualPlaylists?.find((playlist) => playlist.creatorId === playlistId)?.creatorId}`,
+    );
     setShowMoreButton(false);
   };
   return (
@@ -167,6 +171,7 @@ type AddToPlaylistProps = {
 function AddToPlaylist({ track }: AddToPlaylistProps) {
   const [open, setOpen] = useState(false);
   const { data: user } = useSession();
+  const router = useRouter();
   const { data: playlists } = usePlaylists();
   const dispatch = useDispatch();
   const userPlaylists = useMemo(
@@ -178,7 +183,10 @@ function AddToPlaylist({ track }: AddToPlaylistProps) {
     const data = { playlistId: value, trackId: track?.id ?? "" };
     dispatch(addTrackToPlaylist(data));
     await addTrackToPlaylistToDB(data);
-    revalidate(`/playlist/${value}`);
+    router.prefetch(`/playlist/${value}`);
+    router.prefetch(
+      `/artist/${playlists?.find((playlist) => playlist.creatorId === value)?.creatorId}`,
+    );
   };
   return (
     <>

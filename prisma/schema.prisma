@@ -63,7 +63,7 @@ model User {
     Album         Playlist[]
     playlists     String[]   @default([])
     Track         Track[]
-    followers     Int        @default(0)
+    followers     String[]   @default([])
 }
 
 model VerificationToken {
@@ -75,6 +75,11 @@ model VerificationToken {
     @@unique([email, token])
 }
 
+enum PLAYLIST_TYPE {
+    SINGLE
+    ALBUM
+}
+
 model Playlist {
     id          String @id @default(cuid())
     title       String
@@ -84,6 +89,9 @@ model Playlist {
     creator   User   @relation(fields: [creatorId], references: [id])
     creatorId String
 
+    type      PLAYLIST_TYPE @default(ALBUM)
+    createdAt DateTime      @default(now())
+
     Track Track[]
 }
 
@@ -92,6 +100,7 @@ model Track {
     title     String
     author    User     @relation(fields: [authorId], references: [id])
     authorId  String
+    authorIds String[] @default([])
     imgSrc    String
     trackSrc  String
     album     Playlist @relation(fields: [albumId], references: [id])

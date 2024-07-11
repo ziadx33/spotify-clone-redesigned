@@ -1,3 +1,5 @@
+"use client";
+
 import { TableRow, TableCell } from "@/components/ui/table";
 import { type TrackFilters } from "@/types";
 import { getAgoTime } from "@/utils/get-ago-time";
@@ -10,16 +12,16 @@ import { TrackMoreButton } from "./track-more-button";
 
 type TrackProps = {
   track: Track & { trackIndex: number };
-  author: User;
-  album: Playlist;
+  authors?: User[];
+  album?: Playlist;
   viewAs: TrackFilters["viewAs"];
-  playlist: Playlist;
+  playlist?: Playlist;
   isAlbum?: boolean;
 };
 
 export function Track({
   track,
-  author,
+  authors,
   album,
   viewAs,
   playlist,
@@ -42,6 +44,7 @@ export function Track({
     () => new Intl.NumberFormat("en-US").format(track.plays ?? 0),
     [track.plays],
   );
+  console.log("motherauthors", authors);
   return (
     <TableRow
       key={track.id}
@@ -67,12 +70,19 @@ export function Track({
           <div>
             <h3>{track.title}</h3>
             {isList && (
-              <Link
-                href={`/artist/${author.id}`}
-                className="text-md text-muted-foreground hover:underline"
-              >
-                {author.name}
-              </Link>
+              <div className="flex gap-1">
+                {authors?.map((author, authorIndex) => (
+                  <div key={author.id} className="text-muted-foreground">
+                    <Link
+                      href={`/artist/${author.id}`}
+                      className="w-fit hover:underline"
+                    >
+                      {author.name}
+                    </Link>
+                    {authorIndex === authors.length - 1 ? "" : ","}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -80,17 +90,27 @@ export function Track({
       {!isAlbum && (
         <>
           {!isList && (
+            <TableCell className="flex gap-1">
+              {authors?.map((author, authorIndex) => (
+                <div key={author.id} className="text-muted-foreground">
+                  <Link
+                    href={`/artist/${author.id}`}
+                    className="w-fit text-muted-foreground hover:underline"
+                  >
+                    {author.name}
+                  </Link>
+                  {authorIndex === authors.length - 1 ? "" : ","}
+                </div>
+              ))}
+            </TableCell>
+          )}
+          {album && (
             <TableCell>
-              <Link href={`/artist/${author.id}`} className="hover:underline">
-                {author.name}
+              <Link href={`/playlist/${album.id}`} className="hover:underline">
+                {album.title}
               </Link>
             </TableCell>
           )}
-          <TableCell>
-            <Link href={`/playlist/${album.id}`} className="hover:underline">
-              {album.title}
-            </Link>
-          </TableCell>
           <TableCell>{dateAddedAgoValue}</TableCell>
         </>
       )}

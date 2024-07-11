@@ -109,3 +109,29 @@ export const updatePlaylist = unstable_cache(
     }
   }),
 );
+
+export const getAppearsPlaylists = unstable_cache(
+  cache(async ({ creatorId }: { creatorId: string }) => {
+    try {
+      const playlists = await db.playlist.findMany({
+        where: {
+          Track: {
+            some: {
+              authorId: {
+                not: creatorId,
+              },
+              authorIds: {
+                has: creatorId,
+              },
+            },
+          },
+        },
+      });
+
+      return playlists ?? [];
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["appears-on-playlists"],
+);

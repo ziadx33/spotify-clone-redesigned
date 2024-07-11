@@ -76,14 +76,15 @@ function EditableDataComp({
           <p className="mb-0.5 text-sm text-muted-foreground">
             {data?.description}
           </p>
-          <div>
+          <div className="flex gap-1.5">
             {creatorData?.image && (
               <Image
-                width={20}
-                height={20}
+                width={25}
+                height={25}
                 draggable="false"
                 alt={creatorData?.name ?? ""}
                 src={creatorData?.image ?? ""}
+                className="size-[25px] rounded-full"
               />
             )}
             <span className="flex items-center gap-1.5">

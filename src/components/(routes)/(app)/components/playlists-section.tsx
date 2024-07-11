@@ -10,7 +10,6 @@ export async function PlaylistSection() {
           <TbBooks size={30} />
           <h3>Your library</h3>
         </div>
-
         <CreatePlaylistButton />
       </div>
       <PlaylistFilters />
