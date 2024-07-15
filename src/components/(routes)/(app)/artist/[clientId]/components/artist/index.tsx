@@ -27,6 +27,7 @@ export async function Artist({ artist }: { artist: User }) {
     getSavedTracks({
       artistId: artist.id,
       playlists: user?.user.playlists ?? [],
+      userId: user?.user.id ?? "",
     }),
     getPlaylists({
       creatorId: artist.id,
@@ -70,7 +71,7 @@ export async function Artist({ artist }: { artist: User }) {
         </div>
         <DiscographySection artist={artist} data={data[2]} />
         <FeaturingSection artist={artist} data={data[3]} />
-        <AppearsOnSection artist={artist} />
+        <AppearsOnSection artist={artist} data={data[4]} />
         <AboutSection artist={artist} />
       </div>
     </div>

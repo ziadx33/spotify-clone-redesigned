@@ -2,7 +2,7 @@ import { type User } from "@prisma/client";
 import { useSession } from "./use-session";
 import { useState } from "react";
 import { updateUserById } from "@/server/actions/user";
-import { useRouter } from "next/navigation";
+import { revalidate } from "@/server/actions/revalidate";
 
 type UseFollowParams = {
   artist: User;
@@ -15,7 +15,6 @@ export function useFollow({ artist }: UseFollowParams) {
   );
   console.log("followed?", isFollowed);
   const [isFollowing, setIsFollowing] = useState(false);
-  const router = useRouter();
 
   console.log(artist.followers);
 
@@ -28,7 +27,7 @@ export function useFollow({ artist }: UseFollowParams) {
         followers: [...artist.followers, user?.user?.id ?? ""],
       },
     });
-    router.prefetch(`/artist/${artist.id}`);
+    revalidate(`/artist/${artist.id}`);
     setIsFollowed((v) => !v);
     setIsFollowing(false);
   };
@@ -45,7 +44,7 @@ export function useFollow({ artist }: UseFollowParams) {
         ),
       },
     });
-    router.prefetch(`/artist/${artist.id}`);
+    revalidate(`/artist/${artist.id}`);
     setIsFollowed((v) => !v);
     setIsFollowing(false);
   };

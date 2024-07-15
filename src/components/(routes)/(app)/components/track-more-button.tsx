@@ -43,6 +43,7 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { RiArrowRightSLine } from "react-icons/ri";
 import { usePlaylists } from "@/hooks/use-playlists";
+import { revalidate } from "@/server/actions/revalidate";
 
 type TrackMoreButtonProps = {
   playlist?: Playlist | null;
@@ -138,7 +139,6 @@ function RemoveFromPlaylistButton({
   playlists,
 }: RemoveFromPlaylistButtonProps) {
   const dispatch = useDispatch();
-  const router = useRouter();
   const { data: actualPlaylists } = usePlaylists();
   const removeFromPlaylistHandler = async () => {
     dispatch(removeTrackFromPlaylist({ playlistId, trackId }));
@@ -147,8 +147,8 @@ function RemoveFromPlaylistButton({
       trackId,
       playlists,
     });
-    router.prefetch(`/playlist/${playlistId}`);
-    router.prefetch(
+    revalidate(`/playlist/${playlistId}`);
+    revalidate(
       `/artist/${actualPlaylists?.find((playlist) => playlist.creatorId === playlistId)?.creatorId}`,
     );
     setShowMoreButton(false);
@@ -171,7 +171,6 @@ type AddToPlaylistProps = {
 function AddToPlaylist({ track }: AddToPlaylistProps) {
   const [open, setOpen] = useState(false);
   const { data: user } = useSession();
-  const router = useRouter();
   const { data: playlists } = usePlaylists();
   const dispatch = useDispatch();
   const userPlaylists = useMemo(
@@ -183,8 +182,8 @@ function AddToPlaylist({ track }: AddToPlaylistProps) {
     const data = { playlistId: value, trackId: track?.id ?? "" };
     dispatch(addTrackToPlaylist(data));
     await addTrackToPlaylistToDB(data);
-    router.prefetch(`/playlist/${value}`);
-    router.prefetch(
+    revalidate(`/playlist/${value}`);
+    revalidate(
       `/artist/${playlists?.find((playlist) => playlist.creatorId === value)?.creatorId}`,
     );
   };

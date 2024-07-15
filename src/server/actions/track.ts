@@ -148,27 +148,32 @@ export const getPopularTracks = unstable_cache(
 type GetSavedTracks = {
   artistId: string;
   playlists: string[];
+  userId: string;
 };
 
 export const getSavedTracks = unstable_cache(
-  cache(async ({ artistId, playlists }: GetSavedTracks) => {
+  cache(async ({ artistId, userId }: GetSavedTracks) => {
     try {
-      const tracks = await db.track.findMany({
+      const playlists = await db.playlist.findMany({
         where: {
-          OR: [
-            {
-              authorId: artistId,
+          creatorId: userId,
+          Track: {
+            some: {
+              OR: [
+                { authorId: artistId },
+                {
+                  authorIds: {
+                    has: artistId,
+                  },
+                },
+              ],
             },
-            {
-              authorIds: {
-                has: artistId,
-              },
-            },
-          ],
-          playlists: {
-            hasSome: playlists,
           },
         },
+      });
+      const tracks = await getTracksByPlaylistIds({
+        playlistIds: playlists.map((playlist) => playlist.id),
+        authorId: artistId,
       });
       return tracks;
     } catch (error) {

@@ -31,19 +31,21 @@ export async function PopularTracks({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tracks?.map((track, trackIndex) => (
-            <Track
-              isAlbum
-              viewAs={"LIST"}
-              key={track.id}
-              track={{ ...track, trackIndex }}
-              authors={authors.filter(
-                (author) =>
-                  track.authorIds.includes(author.id) ||
-                  track.authorId === author.id,
-              )}
-            />
-          ))}
+          {tracks
+            .sort((a, b) => b.plays - a.plays)
+            ?.map((track, trackIndex) => (
+              <Track
+                isAlbum
+                viewAs={"LIST"}
+                key={track.id}
+                track={{ ...track, trackIndex }}
+                authors={authors.filter(
+                  (author) =>
+                    track.authorIds.includes(author.id) ||
+                    track.authorId === author.id,
+                )}
+              />
+            ))}
         </TableBody>
       </Table>
     </div>
