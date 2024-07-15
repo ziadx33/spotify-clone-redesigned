@@ -10,7 +10,7 @@ export async function DiscographySection({ artist }: { artist: User }) {
   return (
     <div className="w-full flex-col">
       <h1 className="mb-4 text-3xl font-semibold">Discography</h1>
-      <DiscographyItems albums={data ?? []} />
+      <DiscographyItems artist={artist} albums={data ?? []} />
     </div>
   );
 }

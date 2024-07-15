@@ -1,4 +1,4 @@
-import { Track } from "@/components/(routes)/(app)/playlist/[playlistId]/components/track";
+import { Track } from "@/components/(routes)/(app)/components/track";
 import {
   Table,
   TableBody,

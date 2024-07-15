@@ -4,8 +4,8 @@ import { type TrackFilters } from "@/types";
 import { type Dispatch, type SetStateAction } from "react";
 import { type Playlist } from "@prisma/client";
 import { useSession } from "@/hooks/use-session";
-import { SortTable } from "./sort-table";
-import { NonSortTable } from "./non-sort-table";
+import { SortTable } from "../../../components/sort-table";
+import { NonSortTable } from "../../../components/non-sort-table";
 
 type TracksProps = {
   id: string;
@@ -26,10 +26,11 @@ export function Tracks({
 }: TracksProps) {
   const { data: user } = useSession();
   const { data } = useTracks({ albumId: id });
+  const isCreatedByUser = playlist.creatorId === user?.user?.id;
 
   return (
     <Table>
-      {playlist.creatorId === user?.user?.id ? (
+      {isCreatedByUser ? (
         <SortTable
           data={data}
           filters={filters}
@@ -39,7 +40,12 @@ export function Tracks({
           trackQuery={trackQuery}
         />
       ) : (
-        <NonSortTable viewAs={filters.viewAs} data={data} playlist={playlist} />
+        <NonSortTable
+          showTrackImage={false}
+          viewAs={filters.viewAs}
+          data={data}
+          playlist={playlist}
+        />
       )}
     </Table>
   );

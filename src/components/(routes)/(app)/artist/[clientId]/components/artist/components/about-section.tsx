@@ -6,7 +6,7 @@ export function AboutSection({ artist }: { artist: User }) {
   return (
     <div className="w-full flex-col">
       <h1 className="mb-4 text-3xl font-semibold">About</h1>
-      <Dialog defaultOpen>
+      <Dialog>
         <DialogTrigger
           style={{
             background: `url(${artist.aboutImage}) no-repeat`,

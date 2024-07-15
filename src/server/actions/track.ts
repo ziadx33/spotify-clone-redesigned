@@ -38,6 +38,28 @@ export const getTracksByPlaylistId = unstable_cache(
   ["track", "playlist-id", "id"],
 );
 
+export const getTracksByPlaylistIds = unstable_cache(
+  cache(
+    async ({
+      authorId,
+      playlistIds,
+    }: {
+      playlistIds: string[];
+      authorId: string;
+    }) => {
+      try {
+        const tracks = await db.track.findMany({
+          where: { playlists: { hasSome: playlistIds }, authorId },
+        });
+        return tracks;
+      } catch (error) {
+        throw { error };
+      }
+    },
+  ),
+  ["tracks", "playlist-ids", "id"],
+);
+
 type RemoveTrackFromPlaylistDBProps = {
   playlistId: string;
   trackId: string;

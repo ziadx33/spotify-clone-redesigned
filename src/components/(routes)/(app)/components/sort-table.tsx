@@ -5,8 +5,8 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { BsClock } from "react-icons/bs";
-import { DoubleFilter } from "./double-filter";
-import { FilterButton } from "./filter-button";
+import { DoubleFilter } from "../playlist/[playlistId]/components/double-filter";
+import { FilterButton } from "../playlist/[playlistId]/components/filter-button";
 import { type TrackFilters } from "@/types";
 import { useMemo, type Dispatch, type SetStateAction } from "react";
 import { type TracksSliceType } from "@/state/slices/tracks";

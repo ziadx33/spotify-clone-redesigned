@@ -17,6 +17,7 @@ type TrackProps = {
   viewAs: TrackFilters["viewAs"];
   playlist?: Playlist;
   isAlbum?: boolean;
+  showImage?: boolean;
 };
 
 export function Track({
@@ -26,6 +27,7 @@ export function Track({
   viewAs,
   playlist,
   isAlbum = false,
+  showImage = true,
 }: TrackProps) {
   const [showButtons, setShowButtons] = useState(false);
   const [showMoreButton, setShowMoreButton] = useState(false);
@@ -58,7 +60,7 @@ export function Track({
       </TableCell>
       <TableCell className="font-medium">
         <div className="flex w-full gap-2">
-          {isList && (
+          {isList && showImage && (
             <Image
               src={track.imgSrc}
               width={40}

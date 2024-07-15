@@ -11,7 +11,7 @@ import { type TrackFilters } from "@/types";
 import { FiltersSelect } from "./filters-select";
 import { type Dispatch, type SetStateAction } from "react";
 import { useSession } from "@/hooks/use-session";
-import { AddLibraryButton } from "./add-library-button";
+import { AddLibraryButton } from "../../../components/add-library-button";
 import { SearchInput } from "./search-input";
 
 type PlayerProps = {
@@ -62,7 +62,7 @@ export function Player({
             <IoPersonAddOutline size={32} />
           </Button>
         ) : (
-          <AddLibraryButton user={user} playlist={playlist} />
+          <AddLibraryButton size={64} playlist={playlist} />
         )}
         <Button
           size={"icon"}
@@ -73,7 +73,7 @@ export function Player({
         </Button>
       </div>
       <div className="flex w-full items-center justify-end gap-2">
-        <SearchInput setTrackQuery={setTrackQuery} />
+        {isCreatedByUser && <SearchInput setTrackQuery={setTrackQuery} />}
 
         <FiltersSelect
           playlist={playlist}

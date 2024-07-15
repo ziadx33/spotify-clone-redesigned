@@ -55,7 +55,10 @@ function EditableDataComp({
   return (
     <Dialog>
       <div className="flex h-fit w-full gap-8 p-8 pb-6">
-        <DialogTrigger className="group relative h-[288px] w-[288px]">
+        <DialogTrigger
+          disabled={!isEditable}
+          className="group relative h-[288px] w-[288px]"
+        >
           <Image
             src={data?.imageSrc ?? ""}
             fill

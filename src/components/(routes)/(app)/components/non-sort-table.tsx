@@ -14,9 +14,15 @@ type NonSortTable = {
   data: Partial<TracksSliceType["data"]>;
   playlist: Playlist;
   viewAs: TrackFilters["viewAs"];
+  showTrackImage?: boolean;
 };
 
-export function NonSortTable({ data, playlist, viewAs }: NonSortTable) {
+export function NonSortTable({
+  data,
+  playlist,
+  viewAs,
+  showTrackImage = true,
+}: NonSortTable) {
   return (
     <>
       <TableHeader>
@@ -32,6 +38,7 @@ export function NonSortTable({ data, playlist, viewAs }: NonSortTable) {
       <TableBody>
         {data?.tracks?.map((track, trackIndex) => (
           <Track
+            showImage={showTrackImage}
             isAlbum
             playlist={playlist}
             viewAs={viewAs}
