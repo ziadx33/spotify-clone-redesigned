@@ -46,7 +46,6 @@ export function Track({
     () => new Intl.NumberFormat("en-US").format(track.plays ?? 0),
     [track.plays],
   );
-  console.log("motherauthors", authors);
   return (
     <TableRow
       key={track.id}

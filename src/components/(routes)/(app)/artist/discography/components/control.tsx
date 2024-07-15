@@ -21,12 +21,12 @@ export function Control({ filters, setFilters }: ControlProps) {
     <div className="flex items-center gap-2">
       <Select
         value={filters.filterBy}
-        onValueChange={(e) =>
+        onValueChange={(e) => {
           setFilters((v) => ({
             ...v,
             filterBy: e as FiltersStateType["filterBy"],
-          }))
-        }
+          }));
+        }}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="select a filter" />
@@ -42,10 +42,12 @@ export function Control({ filters, setFilters }: ControlProps) {
       <ToggleGroup
         value={filters.viewAs}
         onValueChange={(e) =>
-          setFilters((v) => ({
-            ...v,
-            viewAs: e as FiltersStateType["viewAs"],
-          }))
+          e
+            ? setFilters((v) => ({
+                ...v,
+                viewAs: e as FiltersStateType["viewAs"],
+              }))
+            : filters.filterBy
         }
         defaultValue="list"
         type="single"
