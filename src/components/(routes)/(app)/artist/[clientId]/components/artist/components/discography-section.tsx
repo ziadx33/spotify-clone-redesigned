@@ -1,15 +1,18 @@
-import { getPlaylists } from "@/server/actions/playlist";
+import { type getPlaylists } from "@/server/actions/playlist";
 import { DiscographyItems } from "./discography-items";
 import { type User } from "@prisma/client";
 
-export async function DiscographySection({ artist }: { artist: User }) {
-  const { data } = await getPlaylists({
-    creatorId: artist.id,
-    playlistIds: [],
-  });
+type DiscographySectionProps = {
+  artist: User;
+  data: Awaited<ReturnType<typeof getPlaylists>>;
+};
+
+export async function DiscographySection({
+  artist,
+  data: { data },
+}: DiscographySectionProps) {
   return (
     <div className="w-full flex-col">
-      <h1 className="mb-4 text-3xl font-semibold">Discography</h1>
       <DiscographyItems artist={artist} albums={data ?? []} />
     </div>
   );

@@ -52,6 +52,33 @@ export const getPlaylists = unstable_cache(
   ["playlists"],
 );
 
+type GetFeaturingAlbumsProps = {
+  artistId: string;
+};
+
+export const getFeaturingAlbums = unstable_cache(
+  cache(async ({ artistId }: GetFeaturingAlbumsProps) => {
+    try {
+      const albums = await db.playlist.findMany({
+        where: {
+          creatorId: {
+            not: artistId,
+          },
+          Track: {
+            every: {
+              authorId: artistId,
+            },
+          },
+        },
+      });
+      return { albums };
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["featuring-artist-albums"],
+);
+
 export const getPlaylist = unstable_cache(
   cache(async (playlistId: string) => {
     try {

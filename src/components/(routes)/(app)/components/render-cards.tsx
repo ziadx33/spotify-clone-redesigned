@@ -1,14 +1,22 @@
 "use client";
 
 import { useWindow } from "@/hooks/use-window";
-import { useState, useEffect, type ReactElement } from "react";
+import {
+  useState,
+  useEffect,
+  type ReactElement,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 type RenderCardsProps<T extends ReactElement = ReactElement> = {
   cards: T[];
+  setShowMoreButton?: Dispatch<SetStateAction<boolean>>;
 };
 
 export function RenderCards<T extends ReactElement = ReactElement>({
   cards,
+  setShowMoreButton,
 }: RenderCardsProps<T>) {
   const cardWidth = 240;
   const cardsWidth = cardWidth * cards.length;
@@ -20,8 +28,8 @@ export function RenderCards<T extends ReactElement = ReactElement>({
 
     if (cardsWidth > containerWidth) {
       setShowedCards(cards.slice(0, Math.floor(containerWidth / cardWidth)));
-      console.log("whatt");
-    }
+      setShowMoreButton?.(true);
+    } else setShowMoreButton?.(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowWidth]);
   return showedCards ?? cards;

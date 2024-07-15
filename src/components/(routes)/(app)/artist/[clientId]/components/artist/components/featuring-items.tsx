@@ -1,20 +1,20 @@
 "use client";
 
-import { type User, type Playlist } from "@prisma/client";
-import { SectionItem } from "../../../../../components/section-item";
-import { format } from "date-fns";
 import { RenderCards } from "@/components/(routes)/(app)/components/render-cards";
-import { useState } from "react";
+import { SectionItem } from "@/components/(routes)/(app)/components/section-item";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { type User, type Playlist } from "@prisma/client";
+import { format } from "date-fns";
+import Link from "next/link";
+import { useState } from "react";
 
-type AppearsOnItemsProps = {
+type FeaturingItemsProps = {
   albums: Playlist[];
   artist: User;
 };
 
-export function AppearsOnItems({ albums, artist }: AppearsOnItemsProps) {
+export function FeaturingItems({ albums, artist }: FeaturingItemsProps) {
   const [showMoreButton, setShowMoreButton] = useState(false);
   return (
     <>
@@ -30,14 +30,16 @@ export function AppearsOnItems({ albums, artist }: AppearsOnItemsProps) {
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${artist.id}/appears-on`}>Appears On</Link>
+            <Link href={`/artist/${artist.id}/featuring`}>
+              Featuring {artist.name}
+            </Link>
           ) : (
-            "Appears On"
+            `Featuring ${artist.name}`
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${artist.id}/appears-on`}>show more</Link>
+            <Link href={`/artist/${artist.id}/featuring`}>show more</Link>
           </Button>
         )}
       </div>

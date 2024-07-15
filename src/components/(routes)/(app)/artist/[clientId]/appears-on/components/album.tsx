@@ -1,6 +1,6 @@
+import { SectionItem } from "@/components/(routes)/(app)/components/section-item";
 import { type User, type Playlist } from "@prisma/client";
 import { format } from "date-fns";
-import { SectionItem } from "../../../components/section-item";
 
 type AlbumProps = {
   album: Playlist;

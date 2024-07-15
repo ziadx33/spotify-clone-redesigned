@@ -6,15 +6,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getPopularTracks } from "@/server/actions/track";
-import { type User } from "@prisma/client";
+import { type getPopularTracks } from "@/server/actions/track";
 import { BsClock } from "react-icons/bs";
 
-export async function PopularTracks({ artist }: { artist: User }) {
-  const { tracks, authors } = await getPopularTracks({
-    artistId: artist.id,
-    range: { from: 0, to: 10 },
-  });
+type PopularTracksProps = {
+  data: Awaited<ReturnType<typeof getPopularTracks>>;
+};
+
+export async function PopularTracks({
+  data: { authors, tracks },
+}: PopularTracksProps) {
   return (
     <div className="w-full flex-col">
       <h1 className="mb-4 text-3xl font-semibold">Popular Tracks</h1>

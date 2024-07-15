@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaCircle } from "react-icons/fa";
 import { AlbumControl } from "./album-control";
-import { NonSortTable } from "../../../components/non-sort-table";
+import { NonSortTable } from "../../../../components/non-sort-table";
 import { Table } from "@/components/ui/table";
 import { type FiltersStateType } from "..";
-import { SectionItem } from "../../../components/section-item";
+import { SectionItem } from "../../../../components/section-item";
 
 type AlbumProps = {
   tracks: Track[];

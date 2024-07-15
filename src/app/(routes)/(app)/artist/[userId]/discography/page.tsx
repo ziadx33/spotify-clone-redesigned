@@ -1,4 +1,4 @@
-import { Discography } from "@/components/(routes)/(app)/artist/discography";
+import { Discography } from "@/components/(routes)/(app)/artist/[clientId]/discography";
 import { getPlaylists } from "@/server/actions/playlist";
 import { getTracksByPlaylistIds } from "@/server/actions/track";
 import { getUserById } from "@/server/actions/user";

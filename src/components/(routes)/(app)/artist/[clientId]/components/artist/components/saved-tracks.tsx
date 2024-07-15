@@ -1,17 +1,19 @@
-import { getSavedTracks } from "@/server/actions/track";
-import { getServerAuthSession } from "@/server/auth";
+import { type getSavedTracks } from "@/server/actions/track";
 import { type User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaHeart } from "react-icons/fa";
 
-export async function SavedTracks({ artist }: { artist: User }) {
-  const user = await getServerAuthSession();
-  const savedTracks = await getSavedTracks({
-    artistId: artist.id,
-    playlists: user?.user.playlists ?? [],
-  });
+type SavedTracksProps = {
+  artist: User;
+  data: Awaited<ReturnType<typeof getSavedTracks>>;
+};
+
+export async function SavedTracks({
+  artist,
+  data: savedTracks,
+}: SavedTracksProps) {
   return (
     <div className="w-[80%] flex-col">
       <h1 className="mb-4 text-3xl font-semibold">Saved Tracks</h1>
