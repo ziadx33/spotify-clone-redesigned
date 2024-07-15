@@ -25,7 +25,7 @@ export function Discography({ albums, artist, tracks }: DiscographyProps) {
   });
   return (
     <div className="flex flex-col gap-12 p-6 pt-8">
-      <section className="flex justify-between">
+      <section className="flex justify-between pt-8">
         <Link
           href={`/artist/${artist.id}`}
           className="text-3xl font-bold hover:underline"
