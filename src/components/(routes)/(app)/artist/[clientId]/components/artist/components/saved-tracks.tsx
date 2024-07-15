@@ -34,7 +34,7 @@ export async function SavedTracks({
             href={`/artist/${artist.id}/liked-tracks`}
             className="text-xl font-semibold hover:underline"
           >
-            You&apos;ve Saved {savedTracks.length} tracks
+            You&apos;ve Saved {savedTracks.data?.tracks?.length} tracks
           </Link>
           <p className="text-sm text-muted-foreground">by {artist.name}</p>
         </div>

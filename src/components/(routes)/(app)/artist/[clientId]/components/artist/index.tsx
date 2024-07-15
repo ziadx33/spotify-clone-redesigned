@@ -14,11 +14,9 @@ import {
   getPlaylists,
 } from "@/server/actions/playlist";
 import { getPopularTracks, getSavedTracks } from "@/server/actions/track";
-import { getServerAuthSession } from "@/server/auth";
 import { handleRequests } from "@/utils/handle-requests";
 
 export async function Artist({ artist }: { artist: User }) {
-  const user = await getServerAuthSession();
   const requests = [
     getPopularTracks({
       artistId: artist.id,
@@ -26,8 +24,6 @@ export async function Artist({ artist }: { artist: User }) {
     }),
     getSavedTracks({
       artistId: artist.id,
-      playlists: user?.user.playlists ?? [],
-      userId: user?.user.id ?? "",
     }),
     getPlaylists({
       creatorId: artist.id,

@@ -12,7 +12,7 @@ import { type TrackFilters } from "@/types";
 
 type NonSortTable = {
   data: Partial<TracksSliceType["data"]>;
-  playlist: Playlist;
+  playlist?: Playlist;
   viewAs: TrackFilters["viewAs"];
   showTrackImage?: boolean;
 };
