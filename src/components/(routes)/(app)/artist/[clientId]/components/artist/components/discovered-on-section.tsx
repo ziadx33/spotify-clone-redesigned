@@ -1,23 +1,28 @@
 "use client";
 
-import { type User, type Playlist } from "@prisma/client";
-import { SectionItem } from "../../../../../components/section-item";
-import { format } from "date-fns";
+import { type getPlaylists } from "@/server/actions/playlist";
+import { type Playlist, type User } from "@prisma/client";
 import { RenderCards } from "@/components/(routes)/(app)/components/render-cards";
-import { useState } from "react";
+import { SectionItem } from "@/components/(routes)/(app)/components/section-item";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Link } from "lucide-react";
+import { format } from "date-fns";
+import { useState } from "react";
 
-type AppearsOnItemsProps = {
-  albums: Playlist[];
+type DiscoveredOnSectionProps = {
   artist: User;
+  data: NonNullable<Awaited<ReturnType<typeof getPlaylists>>["data"]>;
 };
 
-export function AppearsOnItems({ albums, artist }: AppearsOnItemsProps) {
+export async function DiscoveredOnSection({
+  artist,
+  data,
+}: DiscoveredOnSectionProps) {
   const [showMoreButton, setShowMoreButton] = useState(false);
-  return (
-    <>
+
+  return data.length > 0 ? (
+    <div className="w-full flex-col">
       <div className="flex items-center justify-between">
         <Button
           variant="link"
@@ -30,21 +35,23 @@ export function AppearsOnItems({ albums, artist }: AppearsOnItemsProps) {
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${artist.id}/appears-on`}>Appears On</Link>
+            <Link href={`/artist/${artist.id}/discovered-on`}>
+              Discovered on
+            </Link>
           ) : (
-            "Appears On"
+            "Discovered on"
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${artist.id}/appears-on`}>show more</Link>
+            <Link href={`/artist/${artist.id}/discovered-on`}>show more</Link>
           </Button>
         )}
       </div>
       <div className="flex gap-2 overflow-x-hidden">
         <RenderCards
           setShowMoreButton={setShowMoreButton}
-          cards={albums.map((album: Playlist) => {
+          cards={data.map((album: Playlist) => {
             return (
               <SectionItem
                 key={album.id}
@@ -59,6 +66,6 @@ export function AppearsOnItems({ albums, artist }: AppearsOnItemsProps) {
           })}
         />
       </div>
-    </>
-  );
+    </div>
+  ) : null;
 }

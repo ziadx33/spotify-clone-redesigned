@@ -8,7 +8,7 @@ import { type Session } from "@/hooks/use-session";
 import { type Playlist } from "@prisma/client";
 
 type GetPlaylistsParams = {
-  creatorId: string;
+  creatorId?: string;
   playlistIds: string[];
 };
 

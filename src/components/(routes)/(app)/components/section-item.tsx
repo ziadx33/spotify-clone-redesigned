@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
@@ -7,19 +8,21 @@ import { FaPlay } from "react-icons/fa";
 type SectionItem = {
   image?: string;
   alt?: string;
-  showPlayButton: boolean;
+  showPlayButton?: boolean;
   title: string;
   description: string;
   link: string;
+  imageClasses?: string;
 };
 
 export function SectionItem({
   image,
   alt,
-  showPlayButton,
+  showPlayButton = false,
   title,
   description,
   link,
+  imageClasses,
 }: SectionItem) {
   return (
     <Card className="group border-none bg-transparent p-0 transition-colors hover:bg-muted">
@@ -33,7 +36,7 @@ export function SectionItem({
               src={image ?? ""}
               fill
               alt={alt ?? ""}
-              className="rounded-sm"
+              className={cn("rounded-sm", imageClasses)}
             />
             {showPlayButton && (
               <Button

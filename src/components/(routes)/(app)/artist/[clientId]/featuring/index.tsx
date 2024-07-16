@@ -1,5 +1,5 @@
 import { type User, type Playlist } from "@prisma/client";
-import { Albums } from "./components/albums";
+import { Albums } from "../components/albums";
 
 type FeaturingProps = {
   albums: Playlist[];

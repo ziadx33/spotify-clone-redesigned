@@ -15,6 +15,9 @@ import {
 } from "@/server/actions/playlist";
 import { getPopularTracks, getSavedTracks } from "@/server/actions/track";
 import { handleRequests } from "@/utils/handle-requests";
+import { FansLikeSection } from "./components/fans-like-section";
+import { getArtistFansFollowing } from "@/server/actions/user";
+import { DiscoveredOnSection } from "./components/discovered-on-section";
 
 export async function Artist({ artist }: { artist: User }) {
   const requests = [
@@ -32,7 +35,12 @@ export async function Artist({ artist }: { artist: User }) {
     getFeaturingAlbums({
       artistId: artist.id,
     }),
+    getArtistFansFollowing({
+      followers: artist.followers,
+      artistId: artist.id,
+    }),
     getAppearsPlaylists({ creatorId: artist.id }),
+    getPlaylists({ playlistIds: artist.discoveredOn }),
   ] as const;
   const data = await handleRequests(requests);
   return (
@@ -67,7 +75,9 @@ export async function Artist({ artist }: { artist: User }) {
         </div>
         <DiscographySection artist={artist} data={data[2]} />
         <FeaturingSection artist={artist} data={data[3]} />
-        <AppearsOnSection artist={artist} data={data[4]} />
+        <FansLikeSection artist={artist} data={data[4]} />
+        <AppearsOnSection artist={artist} data={data[5]} />
+        <DiscoveredOnSection artist={artist} data={data[6].data ?? []} />
         <AboutSection artist={artist} />
       </div>
     </div>

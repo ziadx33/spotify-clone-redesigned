@@ -79,3 +79,28 @@ export const comparePassword = async (
   const comparison = await compare(firstPass, secondPass);
   return comparison;
 };
+
+type GetArtistFansFollowingParams = {
+  followers: string[];
+  artistId: string;
+};
+
+export const getArtistFansFollowing = unstable_cache(
+  cache(async ({ followers, artistId }: GetArtistFansFollowingParams) => {
+    try {
+      const users = await db.user.findMany({
+        where: {
+          id: {
+            not: artistId,
+          },
+          followers: {
+            hasSome: followers,
+          },
+        },
+      });
+      return users;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+);
