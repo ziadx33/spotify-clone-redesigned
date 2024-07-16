@@ -1,8 +1,9 @@
 import { type User } from "@prisma/client";
 import { useSession } from "./use-session";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { updateUserById } from "@/server/actions/user";
 import { revalidate } from "@/server/actions/revalidate";
+import { notFound, useSearchParams } from "next/navigation";
 
 type UseFollowParams = {
   artist: User;
@@ -10,13 +11,26 @@ type UseFollowParams = {
 
 export function useFollow({ artist }: UseFollowParams) {
   const { data: user } = useSession();
-  const [isFollowed, setIsFollowed] = useState(
-    !artist.followers.includes(user?.user?.id ?? ""),
-  );
-  console.log("followed?", isFollowed);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const playlist = useSearchParams().get("playlist");
+  if (!playlist) notFound();
+  const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
+  const followedSetDone = useRef(false);
+  const [isFollowing, setIsFollowing] = useState(true);
 
-  console.log(artist.followers);
+  useEffect(() => {
+    if (followedSetDone.current) return;
+    if (!user?.user?.id) return;
+    setIsFollowed(artist.followers.includes(user?.user?.id));
+    followedSetDone.current = true;
+    setIsFollowing(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.user?.id]);
+
+  const reset = () => {
+    revalidate(`/artist/${artist.id}`);
+    setIsFollowed((v) => !v);
+    setIsFollowing(false);
+  };
 
   const follow = async () => {
     console.log("follow");
@@ -25,11 +39,11 @@ export function useFollow({ artist }: UseFollowParams) {
       id: artist.id,
       data: {
         followers: [...artist.followers, user?.user?.id ?? ""],
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        discoveredOn: [...(artist.discoveredOn ?? []), playlist],
       },
     });
-    revalidate(`/artist/${artist.id}`);
-    setIsFollowed((v) => !v);
-    setIsFollowing(false);
+    reset();
   };
 
   const unfollow = async () => {
@@ -42,11 +56,15 @@ export function useFollow({ artist }: UseFollowParams) {
         followers: artist.followers.filter(
           (follower) => follower !== user?.user?.id,
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        discoveredOn:
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          artist.discoveredOn?.filter(
+            (playlistId) => playlistId !== playlist,
+          ) ?? [],
       },
     });
-    revalidate(`/artist/${artist.id}`);
-    setIsFollowed((v) => !v);
-    setIsFollowing(false);
+    reset();
   };
 
   const toggle = !isFollowed ? follow : unfollow;

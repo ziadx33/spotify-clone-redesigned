@@ -9,6 +9,7 @@ import { FaShuffle } from "react-icons/fa6";
 
 export function Controls({ artist }: { artist: User }) {
   const { isFollowed, toggle, isFollowing } = useFollow({ artist });
+  console.log(isFollowed);
   return (
     <div className="flex h-fit w-full items-center">
       <Button size={"icon"} className="mr-4 h-16 w-16 rounded-full">

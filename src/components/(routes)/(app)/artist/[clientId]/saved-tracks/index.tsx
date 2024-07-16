@@ -5,12 +5,12 @@ import { NonSortTable } from "../../../components/non-sort-table";
 import { type getSavedTracks } from "@/server/actions/track";
 import { Table } from "@/components/ui/table";
 
-type LikedTracksProps = {
+type SavedTracksProps = {
   data: Awaited<ReturnType<Awaited<typeof getSavedTracks>>>;
   artist: User;
 };
 
-export function LikedTracks({ data, artist }: LikedTracksProps) {
+export function SavedTracks({ data, artist }: SavedTracksProps) {
   return (
     <div className="flex flex-col p-4">
       <div className="mb-4 flex items-center">

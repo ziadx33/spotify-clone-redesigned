@@ -31,7 +31,7 @@ export async function SavedTracks({
         </div>
         <div className="flex flex-col">
           <Link
-            href={`/artist/${artist.id}/liked-tracks`}
+            href={`/artist/${artist.id}/saved-tracks`}
             className="text-xl font-semibold hover:underline"
           >
             You&apos;ve Saved {savedTracks.data?.tracks?.length} tracks

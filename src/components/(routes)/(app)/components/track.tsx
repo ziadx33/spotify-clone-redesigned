@@ -75,7 +75,7 @@ export function Track({
                 {authors?.map((author, authorIndex) => (
                   <div key={author.id} className="text-muted-foreground">
                     <Link
-                      href={`/artist/${author.id}`}
+                      href={`/artist/${author.id}?playlist=${playlist?.id ?? ""}`}
                       className="w-fit hover:underline"
                     >
                       {author.name}
@@ -95,7 +95,7 @@ export function Track({
               {authors?.map((author, authorIndex) => (
                 <div key={author.id} className="text-muted-foreground">
                   <Link
-                    href={`/artist/${author.id}`}
+                    href={`/artist/${author.id}?playlist=${playlist?.id ?? ""}`}
                     className="w-fit text-muted-foreground hover:underline"
                   >
                     {author.name}

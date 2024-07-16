@@ -64,6 +64,7 @@ model User {
     playlists     String[]   @default([])
     Track         Track[]
     followers     String[]   @default([])
+    discoveredOn  String[]   @default([])
 }
 
 model VerificationToken {
