@@ -1,11 +1,11 @@
 import { type User } from "@prisma/client";
 import { SectionItem } from "../components/section-item";
 
-type FansLikeProps = {
+type TopArtistsProps = {
   artists: User[];
 };
 
-export function TopArtists({ artists }: FansLikeProps) {
+export function TopArtists({ artists }: TopArtistsProps) {
   return (
     <div className="flex flex-col gap-6 p-6  pt-14">
       <h1 className="pt-8 text-3xl font-bold hover:underline">
