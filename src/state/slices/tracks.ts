@@ -35,16 +35,12 @@ const tracksSlice = createSlice({
       { payload }: { payload: { trackId: string; playlistId: string } },
     ) {
       if (state.data?.tracks)
-        state.data.tracks = state.data?.tracks?.map((track) => {
-          if (track.id === payload.trackId)
-            return {
-              ...track,
-              playlists: track.playlists.filter(
-                (playlist) => playlist !== payload.playlistId,
-              ),
-            };
-          return track;
-        });
+        state.data = {
+          ...state.data,
+          tracks: state.data?.tracks?.filter(
+            (track) => track.id !== payload.trackId,
+          ),
+        };
     },
     addTrackToPlaylist(
       state,
@@ -60,10 +56,39 @@ const tracksSlice = createSlice({
           return track;
         });
     },
+
+    addTrack(
+      state,
+      {
+        payload: { trackData, playlists, artists },
+      }: {
+        payload: { trackData: Track; artists: User[]; playlists: Playlist[] };
+      },
+    ) {
+      if (state.data?.tracks)
+        state.data = {
+          ...state.data,
+          tracks: [...state.data.tracks, trackData],
+          albums: [...(state.data.albums ?? []), ...playlists],
+          authors: [
+            ...(state.data.authors ?? []),
+            ...artists.filter(
+              (artist) =>
+                !state.data.authors
+                  ?.map((author) => author.id)
+                  .includes(artist.id),
+            ),
+          ],
+        };
+    },
   },
 });
 
-export const { setTracks, removeTrackFromPlaylist, addTrackToPlaylist } =
-  tracksSlice.actions;
+export const {
+  setTracks,
+  removeTrackFromPlaylist,
+  addTrackToPlaylist,
+  addTrack,
+} = tracksSlice.actions;
 
 export default tracksSlice.reducer;

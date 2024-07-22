@@ -17,7 +17,6 @@ type TracksProps = {
 };
 
 export function Tracks({
-  id,
   filters,
   setFilters,
   handleFilterChange,
@@ -25,7 +24,7 @@ export function Tracks({
   playlist,
 }: TracksProps) {
   const { data: user } = useSession();
-  const { data } = useTracks({ albumId: id });
+  const { data } = useTracks();
   const isCreatedByUser = playlist.creatorId === user?.user?.id;
 
   return (

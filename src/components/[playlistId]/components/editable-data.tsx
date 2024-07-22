@@ -79,7 +79,7 @@ function EditableDataComp({
             >
               {data?.title}
             </DialogTrigger>
-            <p className="mb-0.5 text-sm text-muted-foreground">
+            <p className="mb-1 text-sm text-muted-foreground">
               {data?.description}
             </p>
             <div className="flex gap-1.5">

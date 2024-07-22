@@ -10,6 +10,7 @@ import { MusicPlayer } from "./components/music-player";
 import { useTracks } from "@/hooks/use-tracks";
 import { EditableData } from "./components/editable-data";
 import { MoreAlbums } from "./components/more-albums";
+import { Recommended } from "./components/recommended";
 
 export function Playlist({ id }: { id: string }) {
   const { data, status } = usePlaylist(id);
@@ -23,7 +24,7 @@ export function Playlist({ id }: { id: string }) {
       return res;
     },
   );
-  const { data: tracks } = useTracks({ albumId: id });
+  const { data: tracks } = useTracks();
   if (creatorDataLoading || status === "loading") return <Loading />;
   const type = userData?.user?.id === data?.creatorId ? "Playlist" : "Album";
   return (
@@ -31,13 +32,19 @@ export function Playlist({ id }: { id: string }) {
       <EditableData
         creatorData={creatorData}
         data={data}
-        tracks={tracks.tracks}
+        tracks={tracks?.tracks ?? []}
         type={type}
       />
       <div className="flex h-fit w-full flex-col gap-4 px-8 pb-4">
         <MusicPlayer playlist={data} id={id} />
-        {type === "Album" && (
+        {type === "Album" ? (
           <MoreAlbums playlist={data} artist={creatorData} />
+        ) : (
+          <Recommended
+            tracks={tracks?.tracks ?? []}
+            playlist={data}
+            artists={tracks?.authors ?? []}
+          />
         )}
       </div>
     </div>

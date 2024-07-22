@@ -9,6 +9,8 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import { TrackMoreButton } from "./track-more-button";
+import { type ReplaceDurationWithButton } from "./non-sort-table";
+import { Button } from "../ui/button";
 
 type TrackProps = {
   track: Track & { trackIndex: number };
@@ -19,6 +21,8 @@ type TrackProps = {
   isAlbum?: boolean;
   showImage?: boolean;
   replacePlaysWithPlaylist?: boolean;
+  showIndex?: boolean;
+  replaceDurationWithButton?: ReplaceDurationWithButton;
 };
 
 export function Track({
@@ -30,6 +34,8 @@ export function Track({
   isAlbum = false,
   showImage = true,
   replacePlaysWithPlaylist = false,
+  showIndex = true,
+  replaceDurationWithButton,
 }: TrackProps) {
   const [showButtons, setShowButtons] = useState(false);
   const [showMoreButton, setShowMoreButton] = useState(false);
@@ -60,21 +66,31 @@ export function Track({
       onMouseOver={() => hoverTrackHandler(true)}
       onMouseLeave={() => hoverTrackHandler(false)}
     >
-      <TableCell className="w-12 pl-4 pr-4">
-        <button>
-          {!showButtons ? track.trackIndex + 1 : <FaPlay size={10} />}
-        </button>
-      </TableCell>
+      {showIndex && (
+        <TableCell className="w-12 pl-4 pr-4">
+          <button>
+            {!showButtons ? track.trackIndex + 1 : <FaPlay size={10} />}
+          </button>
+        </TableCell>
+      )}
       <TableCell className="font-medium">
         <div className="flex w-full gap-2">
           {isList && showImage && (
-            <Image
-              src={track.imgSrc}
-              width={40}
-              height={40}
-              alt={track.title}
-              className="rounded-sm"
-            />
+            <div className="relative size-[40px]">
+              <Image
+                src={track.imgSrc}
+                fill
+                alt={track.title}
+                className="rounded-sm"
+              />
+              {!showIndex && showButtons && (
+                <div className="absolute grid size-full place-items-center bg-black bg-opacity-80">
+                  <button>
+                    <FaPlay size={10} />
+                  </button>
+                </div>
+              )}
+            </div>
           )}
           <div>
             <h3>{track.title}</h3>
@@ -133,22 +149,31 @@ export function Track({
         </TableCell>
       )}
       <TableCell>
-        <div className="flex h-full w-24 gap-3">
-          {String(
-            (
-              Math.floor(track.duration / 60) +
-              (track.duration % 60) / 100
-            ).toFixed(2),
-          ).replace(".", ":")}
-          {(showMoreButton || showButtons) && (
-            <TrackMoreButton
-              setOpened={setIsShowMoreButtonOpened}
-              setShowMoreButton={setShowMoreButton}
-              playlist={playlist}
-              track={track}
-            />
-          )}
-        </div>
+        {!replaceDurationWithButton ? (
+          <div className="flex h-full w-24 gap-3">
+            {String(
+              (
+                Math.floor(track.duration / 60) +
+                (track.duration % 60) / 100
+              ).toFixed(2),
+            ).replace(".", ":")}
+            {(showMoreButton || showButtons) && (
+              <TrackMoreButton
+                setOpened={setIsShowMoreButtonOpened}
+                setShowMoreButton={setShowMoreButton}
+                playlist={playlist}
+                track={track}
+              />
+            )}
+          </div>
+        ) : (
+          <Button
+            variant="outline"
+            onClick={() => replaceDurationWithButton.fn(track)}
+          >
+            {replaceDurationWithButton.name}
+          </Button>
+        )}
       </TableCell>
     </TableRow>
   );

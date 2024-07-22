@@ -5,12 +5,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { type TracksSliceType } from "@/state/slices/tracks";
-import { type Playlist } from "@prisma/client";
+import { type Track as TrackType, type Playlist } from "@prisma/client";
 import { BsClock } from "react-icons/bs";
 import { Track } from "./track";
 import { type TrackFilters } from "@/types";
 
-type NonSortTable = {
+export type ReplaceDurationWithButton = {
+  name: string;
+  fn: (track: TrackType) => void | Promise<void>;
+};
+
+export type NonSortTableProps = {
   data: Partial<TracksSliceType["data"]>;
   playlist?: Playlist;
   viewAs: TrackFilters["viewAs"];
@@ -18,6 +23,8 @@ type NonSortTable = {
   showHead?: boolean;
   replacePlaysWithPlaylist?: boolean;
   limit?: number;
+  showIndex?: boolean;
+  replaceDurationWithButton?: ReplaceDurationWithButton;
 };
 
 export function NonSortTable({
@@ -28,13 +35,15 @@ export function NonSortTable({
   showHead = true,
   replacePlaysWithPlaylist = false,
   limit,
-}: NonSortTable) {
+  showIndex = true,
+  replaceDurationWithButton,
+}: NonSortTableProps) {
   return (
     <>
       {showHead && (
         <TableHeader>
           <TableRow>
-            <TableHead className="w-0 pl-4 pr-0">#</TableHead>
+            {showIndex && <TableHead className="w-0 pl-4 pr-0">#</TableHead>}
             <TableHead>Title</TableHead>
             <TableHead>
               {!replacePlaysWithPlaylist ? "Plays" : "Album"}
@@ -53,9 +62,11 @@ export function NonSortTable({
               replacePlaysWithPlaylist={replacePlaysWithPlaylist}
               showImage={showTrackImage}
               isAlbum
+              replaceDurationWithButton={replaceDurationWithButton}
               playlist={playlist}
               viewAs={viewAs}
               key={track.id}
+              showIndex={showIndex}
               track={{ ...track, trackIndex }}
               authors={data.authors!.filter(
                 (author) =>

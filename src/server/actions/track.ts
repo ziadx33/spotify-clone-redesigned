@@ -47,6 +47,80 @@ export const getTracksByPlaylistId = unstable_cache(
   ["track", "playlist-id", "id"],
 );
 
+type GetRecommendedTracksParams = {
+  artistIds: string[];
+  trackIds: string[];
+};
+
+export const getRecommendedTracks = unstable_cache(
+  cache(async ({ artistIds, trackIds }: GetRecommendedTracksParams) => {
+    try {
+      const tracks = await db.track.findMany({
+        where: {
+          id: {
+            notIn: trackIds,
+          },
+          OR: [
+            {
+              authorId: {
+                in: artistIds,
+              },
+            },
+            { authorIds: { hasSome: artistIds } },
+          ],
+        },
+      });
+      const requests = [
+        db.user.findMany({
+          where: {
+            OR: [
+              { id: { in: tracks?.map((track) => track.authorId) } },
+              { id: { in: tracks.map((track) => track.authorIds).flat() } },
+            ],
+          },
+        }),
+        getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
+      ] as const;
+      const [authors, { data }] = await handleRequests(requests);
+      return { tracks: tracks ?? [], authors, albums: data ?? [] };
+    } catch (error) {
+      return { error };
+    }
+  }),
+  ["recommended-tracks"],
+);
+
+export const getTracksBySearchQuery = unstable_cache(
+  cache(async ({ query }: { query: string }) => {
+    try {
+      const tracks = await db.track.findMany({
+        where: {
+          title: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+      });
+      const requests = [
+        db.user.findMany({
+          where: {
+            OR: [
+              { id: { in: tracks?.map((track) => track.authorId) } },
+              { id: { in: tracks.map((track) => track.authorIds).flat() } },
+            ],
+          },
+        }),
+        getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
+      ] as const;
+      const [authors, { data }] = await handleRequests(requests);
+      return { tracks: tracks ?? [], authors, albums: data ?? [] };
+    } catch (error) {
+      return { error };
+    }
+  }),
+  ["recommended-tracks"],
+);
+
 export const getTracksByPlaylistIds = unstable_cache(
   cache(
     async ({
