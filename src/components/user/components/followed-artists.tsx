@@ -3,7 +3,7 @@ import { SectionItem } from "@/components/components/section-item";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type User } from "@prisma/client";
-import { Link } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 type TopArtistsProps = {

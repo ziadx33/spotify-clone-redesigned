@@ -6,7 +6,7 @@ import { RenderCards } from "@/components/components/render-cards";
 import { SectionItem } from "@/components/components/section-item";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link } from "lucide-react";
+import Link from "next/link";
 import { format } from "date-fns";
 import { useState } from "react";
 

@@ -7,7 +7,7 @@ import { SectionItem } from "@/components/components/section-item";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Link } from "lucide-react";
+import Link from "next/link";
 import { format } from "date-fns";
 import { type ReactElement, useState } from "react";
 

@@ -9,6 +9,7 @@ import { useQuery } from "react-query";
 import { MusicPlayer } from "./components/music-player";
 import { useTracks } from "@/hooks/use-tracks";
 import { EditableData } from "./components/editable-data";
+import { MoreAlbums } from "./components/more-albums";
 
 export function Playlist({ id }: { id: string }) {
   const { data, status } = usePlaylist(id);
@@ -33,8 +34,11 @@ export function Playlist({ id }: { id: string }) {
         tracks={tracks.tracks}
         type={type}
       />
-      <div className="h-fit w-full px-8">
+      <div className="flex h-fit w-full flex-col gap-4 px-8 pb-4">
         <MusicPlayer playlist={data} id={id} />
+        {type === "Album" && (
+          <MoreAlbums playlist={data} artist={creatorData} />
+        )}
       </div>
     </div>
   );

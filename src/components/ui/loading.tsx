@@ -1,8 +1,9 @@
+import { cn } from "@/lib/utils";
 import { RotatingLines } from "react-loader-spinner";
 
-export default function Loading() {
+export default function Loading({ className }: { className?: string }) {
   return (
-    <div className="grid h-screen w-full place-items-center">
+    <div className={cn("grid h-screen w-full place-items-center", className)}>
       <RotatingLines
         strokeColor="grey"
         strokeWidth="5"
