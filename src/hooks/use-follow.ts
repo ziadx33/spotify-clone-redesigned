@@ -3,16 +3,14 @@ import { useSession } from "./use-session";
 import { useEffect, useRef, useState } from "react";
 import { updateUserById } from "@/server/actions/user";
 import { revalidate } from "@/server/actions/revalidate";
-import { notFound, useSearchParams } from "next/navigation";
 
 type UseFollowParams = {
   artist: User;
+  playlistId: string;
 };
 
-export function useFollow({ artist }: UseFollowParams) {
+export function useFollow({ artist, playlistId }: UseFollowParams) {
   const { data: user } = useSession();
-  const playlist = useSearchParams().get("playlist");
-  if (!playlist) notFound();
   const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
   const followedSetDone = useRef(false);
   const [isFollowing, setIsFollowing] = useState(true);
@@ -33,21 +31,19 @@ export function useFollow({ artist }: UseFollowParams) {
   };
 
   const follow = async () => {
-    console.log("follow");
     setIsFollowing(true);
     await updateUserById({
       id: artist.id,
       data: {
         followers: [...artist.followers, user?.user?.id ?? ""],
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        discoveredOn: [...(artist.discoveredOn ?? []), playlist],
+        discoveredOn: [...(artist.discoveredOn ?? []), playlistId],
       },
     });
     reset();
   };
 
   const unfollow = async () => {
-    console.log("unfollow");
     setIsFollowing(true);
     await updateUserById({
       id: artist.id,
@@ -60,7 +56,7 @@ export function useFollow({ artist }: UseFollowParams) {
         discoveredOn:
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           artist.discoveredOn?.filter(
-            (playlistId) => playlistId !== playlist,
+            (playlistId) => playlistId !== playlistId,
           ) ?? [],
       },
     });

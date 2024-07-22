@@ -65,6 +65,9 @@ model User {
     Track         Track[]
     followers     String[]   @default([])
     discoveredOn  String[]   @default([])
+
+    tracksHistoryLastReset DateTime @default(now())
+    tracksHistory          String[] @default([])
 }
 
 model VerificationToken {
@@ -81,6 +84,11 @@ enum PLAYLIST_TYPE {
     ALBUM
 }
 
+enum PLAYLIST_VISIBILITY {
+    PRIVATE
+    PUBLIC
+}
+
 model Playlist {
     id          String @id @default(cuid())
     title       String
@@ -90,8 +98,9 @@ model Playlist {
     creator   User   @relation(fields: [creatorId], references: [id])
     creatorId String
 
-    type      PLAYLIST_TYPE @default(ALBUM)
-    createdAt DateTime      @default(now())
+    type       PLAYLIST_TYPE       @default(ALBUM)
+    createdAt  DateTime            @default(now())
+    visibility PLAYLIST_VISIBILITY @default(PUBLIC)
 
     Track Track[]
 }

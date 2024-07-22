@@ -1,6 +1,6 @@
 "use client";
 
-import { Playlist } from "@/components/(routes)/(app)/playlist/[playlistId]";
+import { Playlist } from "@/components/[playlistId]";
 import { notFound, useParams } from "next/navigation";
 
 export default function PlaylistPage() {

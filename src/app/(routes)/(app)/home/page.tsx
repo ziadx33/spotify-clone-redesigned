@@ -1,5 +1,3 @@
-import { Home } from "@/components/(routes)/(app)/home";
-
 export default function HomePage() {
-  return <Home />;
+  return <h1>iH</h1>;
 }

@@ -19,7 +19,6 @@ export const getPlaylists = unstable_cache(
       playlistIds,
     }: GetPlaylistsParams): Promise<PlaylistsSliceType> => {
       try {
-        console.log("shoulder", playlistIds);
         const playlists = await db.playlist.findMany({
           where: {
             OR: [
@@ -59,15 +58,20 @@ type GetFeaturingAlbumsProps = {
 export const getFeaturingAlbums = unstable_cache(
   cache(async ({ artistId }: GetFeaturingAlbumsProps) => {
     try {
+      const tracks = await db.track.findMany({
+        where: {
+          authorIds: {
+            has: artistId,
+          },
+        },
+      });
       const albums = await db.playlist.findMany({
         where: {
           creatorId: {
             not: artistId,
           },
-          Track: {
-            every: {
-              authorId: artistId,
-            },
+          id: {
+            in: tracks.map((track) => track.playlists).flat(),
           },
         },
       });

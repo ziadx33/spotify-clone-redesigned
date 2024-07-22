@@ -103,4 +103,24 @@ export const getArtistFansFollowing = unstable_cache(
       throw { error };
     }
   }),
+  ["artist-fans-users"],
+);
+
+export const getFollowedArtists = unstable_cache(
+  cache(async ({ userId }: { userId: string }) => {
+    try {
+      const users = await db.user.findMany({
+        where: {
+          followers: {
+            has: userId,
+          },
+          type: "ARTIST",
+        },
+      });
+      return users;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["followed-artists"],
 );

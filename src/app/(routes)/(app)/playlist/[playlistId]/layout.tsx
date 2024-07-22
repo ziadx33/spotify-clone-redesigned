@@ -1,4 +1,4 @@
-import { PlaylistIdLayout } from "@/components/(routes)/(app)/playlist/[playlistId]/layout";
+import { PlaylistIdLayout } from "@/components/[playlistId]/layout";
 import { getTracksByPlaylistId } from "@/server/actions/track";
 import { type ReactNode } from "react";
 

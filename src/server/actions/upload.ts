@@ -12,9 +12,8 @@ export const uploadPlaylistPic = async ({
   currentImageURL,
 }: UploadBucketFileProps) => {
   try {
-    const state = currentImageURL.endsWith("no-image-src-album")
-      ? "upload"
-      : "update";
+    const state = currentImageURL.endsWith("no-image") ? "upload" : "update";
+    console.log(state, "stater", id, file);
     const uploadedImage = await supabase.storage
       .from("images")
       [state](id, file);

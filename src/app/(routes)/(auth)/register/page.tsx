@@ -1,4 +1,4 @@
-import { Register } from "@/components/(routes)/(auth)/register";
+import { Register } from "@/components/register";
 
 export default function LoginPage() {
   return <Register />;
