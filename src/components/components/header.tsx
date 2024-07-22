@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSession } from "@/hooks/use-session";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -27,6 +28,11 @@ export function Header() {
     [user?.user?.name],
   );
   const router = useRouter();
+
+  const logoutHandler = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   return (
     <header className="fixed z-10 flex w-[80%] justify-between px-8 pt-4">
@@ -67,8 +73,8 @@ export function Header() {
               <Link href={`/artist/${user?.user?.id}/settings`}>Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href={`/auth/logout`}>Logout</Link>
+            <DropdownMenuItem>
+              <button onClick={logoutHandler}>Logout</button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
