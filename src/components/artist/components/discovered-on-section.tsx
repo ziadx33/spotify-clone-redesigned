@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { format } from "date-fns";
 import { useState } from "react";
+import { Navigate } from "@/components/navigate";
 
 type DiscoveredOnSectionProps = {
   artist: User;
@@ -35,16 +36,32 @@ export async function DiscoveredOnSection({
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${artist.id}/discovered-on`}>
+            <Navigate
+              data={{
+                href: `/artist/${artist.id}/discovered-on`,
+                title: `Discovered on - ${artist.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${artist.id}/discovered-on`}
+            >
               Discovered on
-            </Link>
+            </Navigate>
           ) : (
             "Discovered on"
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${artist.id}/discovered-on`}>show more</Link>
+            <Navigate
+              data={{
+                href: `/artist/${artist.id}/discovered-on`,
+                title: `Discovered on - ${artist.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${artist.id}/discovered-on`}
+            >
+              show more
+            </Navigate>
           </Button>
         )}
       </div>

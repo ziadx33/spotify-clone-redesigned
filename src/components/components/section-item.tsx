@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
+import { type TAB_TYPE } from "@prisma/client";
+import { Navigate } from "../navigate";
 
 type SectionItem = {
   image?: string;
@@ -13,6 +14,7 @@ type SectionItem = {
   description: string;
   link: string;
   imageClasses?: string;
+  type?: TAB_TYPE;
 };
 
 export function SectionItem({
@@ -23,12 +25,18 @@ export function SectionItem({
   description,
   link,
   imageClasses,
+  type = "PLAYLIST",
 }: SectionItem) {
   return (
     <Card className="group border-none bg-transparent p-0 transition-colors hover:bg-muted">
       <CardContent className="p-0">
-        <Link
-          className="flex h-[295.078px] w-[236.062px] flex-col p-[12px]"
+        <Navigate
+          data={{
+            href: link,
+            title: title ?? "unknown",
+            type: type,
+          }}
+          className="flex h-[295.078px] w-[236.062px] flex-col p-[12px] text-start"
           href={link}
         >
           <div className="relative mb-1 size-[212.062px] overflow-hidden">
@@ -36,7 +44,7 @@ export function SectionItem({
               src={image ?? ""}
               fill
               alt={alt ?? ""}
-              className={cn("rounded-sm", imageClasses)}
+              className={cn("rounded-sm object-cover", imageClasses)}
             />
             {showPlayButton && (
               <Button
@@ -51,7 +59,7 @@ export function SectionItem({
             <h3 className="text-lg font-semibold">{title}</h3>
             <p className="text-muted-foreground">{description}</p>
           </div>
-        </Link>
+        </Navigate>
       </CardContent>
     </Card>
   );

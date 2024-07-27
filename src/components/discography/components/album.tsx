@@ -2,12 +2,13 @@ import { type User, type Playlist, type Track } from "@prisma/client";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { FaCircle } from "react-icons/fa";
 import { AlbumControl } from "./album-control";
 import { Table } from "@/components/ui/table";
 import { type FiltersStateType } from "..";
 import { NonSortTable } from "@/components/components/non-sort-table";
 import { SectionItem } from "@/components/components/section-item";
+import { CircleItems } from "@/components/ui/circle-items";
+import { Navigate } from "@/components/navigate";
 
 type AlbumProps = {
   tracks: Track[];
@@ -38,21 +39,30 @@ function ListView({ tracks, album, artist }: Omit<AlbumProps, "viewAs">) {
         />
         <div className="flex flex-col justify-between">
           <div className="flex flex-col">
-            <Link
+            <Navigate
+              data={{
+                href: `/playlist/${album.id}`,
+                title: album.title ?? "unknown",
+                type: "PLAYLIST",
+              }}
               href={`/playlist/${album.id}`}
               className="text-3xl font-bold hover:underline"
             >
               {album.title}
-            </Link>
-            <p className="flex items-center gap-1.5 text-muted-foreground">
-              <span className="lowercase">{album.type}</span>
-              <FaCircle size={5} />
-              <span>{format(new Date(album.createdAt), "yyy")}</span>
-              <FaCircle size={5} />
-              <span>
-                {tracks.length} {tracks.length > 1 ? "tracks" : "track"}
-              </span>
-            </p>
+            </Navigate>
+            <CircleItems
+              items={[
+                <span className="lowercase" key={album.type}>
+                  {album.type}
+                </span>,
+                <span key={album.createdAt.toString()}>
+                  {format(new Date(album.createdAt), "yyy")}
+                </span>,
+                <span key={tracks.length}>
+                  {tracks.length} {tracks.length > 1 ? "tracks" : "track"}
+                </span>,
+              ]}
+            />
           </div>
           <AlbumControl playlist={album} />
         </div>

@@ -6,6 +6,7 @@ import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { type Session } from "@/hooks/use-session";
 import { type Playlist } from "@prisma/client";
+import { getArtistsByIds } from "./track";
 
 type GetPlaylistsParams = {
   creatorId?: string;
@@ -40,7 +41,7 @@ export const getPlaylists = unstable_cache(
           error: null,
         };
       } catch (error) {
-        return {
+        throw {
           status: "error",
           error: (error as { message: string }).message,
           data: null,
@@ -165,4 +166,26 @@ export const getAppearsPlaylists = unstable_cache(
     }
   }),
   ["appears-on-playlists"],
+);
+
+export const getPlaylistsBySearchQuery = unstable_cache(
+  cache(async ({ query }: { query: string }) => {
+    try {
+      let playlists = await db.playlist.findMany({
+        where: {
+          title: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+      });
+      if (playlists.length === 0) playlists = await db.playlist.findMany();
+      const authors = await getArtistsByIds(
+        playlists.map((playlist) => playlist.creatorId),
+      );
+      return { playlists, authors };
+    } catch (error) {
+      throw { error };
+    }
+  }),
 );

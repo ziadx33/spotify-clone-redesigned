@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useState } from "react";
 import { type getArtistFansFollowing } from "@/server/actions/user";
+import { Navigate } from "@/components/navigate";
 
 type AppearsOnSectionProps = {
   artist: User;
@@ -31,14 +32,32 @@ export function FansLikeSection({ artist, data }: AppearsOnSectionProps) {
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${artist.id}/fans-like`}>Fans Also Like</Link>
+            <Navigate
+              data={{
+                href: `/artist/${artist.id}/fans-like`,
+                title: `Fans like - ${artist.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${artist.id}/fans-like`}
+            >
+              Fans Also Like
+            </Navigate>
           ) : (
             "Fans Also Like"
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${artist.id}/fans-like`}>show more</Link>
+            <Navigate
+              data={{
+                href: `/artist/${artist.id}/fans-like`,
+                title: `Fans like - ${artist.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${artist.id}/fans-like`}
+            >
+              show more
+            </Navigate>
           </Button>
         )}
       </div>
@@ -48,6 +67,7 @@ export function FansLikeSection({ artist, data }: AppearsOnSectionProps) {
           cards={data.map((user: User) => {
             return (
               <SectionItem
+                type="ARTIST"
                 imageClasses="rounded-full"
                 key={user.id}
                 alt={user.name ?? ""}

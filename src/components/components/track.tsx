@@ -5,12 +5,12 @@ import { type TrackFilters } from "@/types";
 import { getAgoTime } from "@/utils/get-ago-time";
 import { type User, type Track, type Playlist } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import { TrackMoreButton } from "./track-more-button";
 import { type ReplaceDurationWithButton } from "./non-sort-table";
 import { Button } from "../ui/button";
+import { Navigate } from "../navigate";
 
 type TrackProps = {
   track: Track & { trackIndex: number };
@@ -23,6 +23,7 @@ type TrackProps = {
   replacePlaysWithPlaylist?: boolean;
   showIndex?: boolean;
   replaceDurationWithButton?: ReplaceDurationWithButton;
+  hidePlayButton?: boolean;
 };
 
 export function Track({
@@ -36,6 +37,7 @@ export function Track({
   replacePlaysWithPlaylist = false,
   showIndex = true,
   replaceDurationWithButton,
+  hidePlayButton = false,
 }: TrackProps) {
   const [showButtons, setShowButtons] = useState(false);
   const [showMoreButton, setShowMoreButton] = useState(false);
@@ -56,16 +58,21 @@ export function Track({
   );
 
   const albumLink = (
-    <Link href={`/playlist/${album?.id}`} className="hover:underline">
-      {album?.title}
-    </Link>
-  );
-  return (
-    <TableRow
-      key={track.id}
-      onMouseOver={() => hoverTrackHandler(true)}
-      onMouseLeave={() => hoverTrackHandler(false)}
+    <Navigate
+      data={{
+        href: `/playlist/${album?.id}`,
+        title: album?.title ?? "unknown",
+        type: "PLAYLIST",
+      }}
+      href={`/playlist/${album?.id}`}
+      className="hover:underline"
     >
+      {album?.title}
+    </Navigate>
+  );
+
+  const indexAndImage = (
+    <>
       {showIndex && (
         <TableCell className="w-12 pl-4 pr-4">
           <button>
@@ -98,12 +105,17 @@ export function Track({
               <div className="flex gap-1">
                 {authors?.map((author, authorIndex) => (
                   <div key={author.id} className="text-muted-foreground">
-                    <Link
+                    <Navigate
+                      data={{
+                        href: `/artist/${author.id}?playlist=${playlist?.id ?? "liked-tracks"}`,
+                        title: author.name ?? "unknown",
+                        type: "ARTIST",
+                      }}
                       href={`/artist/${author.id}?playlist=${playlist?.id ?? "liked-tracks"}`}
                       className="w-fit hover:underline"
                     >
                       {author.name}
-                    </Link>
+                    </Navigate>
                     {authorIndex === authors.length - 1 ? "" : ","}
                   </div>
                 ))}
@@ -112,18 +124,34 @@ export function Track({
           </div>
         </div>
       </TableCell>
+    </>
+  );
+
+  return (
+    <TableRow
+      key={track.id}
+      onMouseOver={() => hoverTrackHandler(true)}
+      onMouseLeave={() => hoverTrackHandler(false)}
+      className={hidePlayButton ? "flex items-center justify-between" : ""}
+    >
+      {hidePlayButton ? <div>{indexAndImage}</div> : indexAndImage}
       {!isAlbum && (
         <>
           {!isList && (
             <TableCell className="flex gap-1">
               {authors?.map((author, authorIndex) => (
                 <div key={author.id} className="text-muted-foreground">
-                  <Link
+                  <Navigate
+                    data={{
+                      href: `/artist/${author.id}?playlist=${playlist?.id ?? "liked-tracks"}`,
+                      title: author.name ?? "unknown",
+                      type: "ARTIST",
+                    }}
                     href={`/artist/${author.id}?playlist=${playlist?.id ?? "liked-tracks"}`}
                     className="w-fit text-muted-foreground hover:underline"
                   >
                     {author.name}
-                  </Link>
+                  </Navigate>
                   {authorIndex === authors.length - 1 ? "" : ","}
                 </div>
               ))}
@@ -131,15 +159,23 @@ export function Track({
           )}
           {album && (
             <TableCell>
-              <Link href={`/playlist/${album.id}`} className="hover:underline">
+              <Navigate
+                data={{
+                  href: `/playlist/${album.id}`,
+                  title: album.title ?? "unknown",
+                  type: "PLAYLIST",
+                }}
+                href={`/playlist/${album.id}`}
+                className="hover:underline"
+              >
                 {album.title}
-              </Link>
+              </Navigate>
             </TableCell>
           )}
           <TableCell>{dateAddedAgoValue}</TableCell>
         </>
       )}
-      {isAlbum && (
+      {isAlbum && !hidePlayButton && (
         <TableCell>
           {!replacePlaysWithPlaylist ? (
             <div className="flex h-full w-24 gap-3">{memoizedPlays}</div>

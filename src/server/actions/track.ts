@@ -91,34 +91,45 @@ export const getRecommendedTracks = unstable_cache(
 );
 
 export const getTracksBySearchQuery = unstable_cache(
-  cache(async ({ query }: { query: string }) => {
-    try {
-      const tracks = await db.track.findMany({
-        where: {
-          title: {
-            contains: query,
-            mode: "insensitive",
-          },
-        },
-      });
-      const requests = [
-        db.user.findMany({
+  cache(
+    async ({
+      query,
+      disablePlaylists = false,
+    }: {
+      query: string;
+      disablePlaylists?: boolean;
+    }) => {
+      try {
+        const tracks = await db.track.findMany({
           where: {
-            OR: [
-              { id: { in: tracks?.map((track) => track.authorId) } },
-              { id: { in: tracks.map((track) => track.authorIds).flat() } },
-            ],
+            title: {
+              contains: query,
+              mode: "insensitive",
+            },
           },
-        }),
-        getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
-      ] as const;
-      const [authors, { data }] = await handleRequests(requests);
-      return { tracks: tracks ?? [], authors, albums: data ?? [] };
-    } catch (error) {
-      return { error };
-    }
-  }),
-  ["recommended-tracks"],
+        });
+        const requests = [
+          db.user.findMany({
+            where: {
+              OR: [
+                { id: { in: tracks?.map((track) => track.authorId) } },
+                { id: { in: tracks.map((track) => track.authorIds).flat() } },
+              ],
+            },
+          }),
+          !disablePlaylists
+            ? getPlaylists({
+                playlistIds: tracks?.map((track) => track.albumId),
+              })
+            : undefined,
+        ] as const;
+        const [authors, data] = await handleRequests(requests);
+        return { tracks: tracks ?? [], authors, albums: data?.data ?? [] };
+      } catch (error) {
+        throw { error };
+      }
+    },
+  ),
 );
 
 export const getTracksByPlaylistIds = unstable_cache(
@@ -206,13 +217,14 @@ type GetPopularTracks = {
 export const getPopularTracks = unstable_cache(
   cache(async ({ artistId, range }: GetPopularTracks) => {
     try {
-      const tracks = await db.track.findMany({
+      let tracks = await db.track.findMany({
         where: {
           OR: [{ authorId: artistId }, { authorIds: { has: artistId } }],
         },
         skip: range.from,
         take: range.to,
       });
+      if (tracks.length === 0) tracks = await db.track.findMany();
       const authors = await db.user.findMany({
         where: {
           OR: [

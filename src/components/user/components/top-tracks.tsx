@@ -1,10 +1,10 @@
 import { NonSortTable } from "@/components/components/non-sort-table";
+import { Navigate } from "@/components/navigate";
 import { Button } from "@/components/ui/button";
 import { Table } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { type TracksSliceType } from "@/state/slices/tracks";
 import { type User } from "@prisma/client";
-import Link from "next/link";
 
 type TopTracksProps = {
   data: TracksSliceType["data"];
@@ -28,16 +28,32 @@ export function TopTracks({ data, user }: TopTracksProps) {
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${user?.id}/top-tracks`}>
+            <Navigate
+              data={{
+                href: `/artist/${user?.id}/top-tracks`,
+                title: "Top tracks" ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${user?.id}/top-tracks`}
+            >
               Top tracks this month
-            </Link>
+            </Navigate>
           ) : (
             "Top tracks this month"
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${user?.id}/top-tracks`}>show more</Link>
+            <Navigate
+              data={{
+                href: `/artist/${user?.id}/top-tracks`,
+                title: "Top tracks" ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${user?.id}/top-tracks`}
+            >
+              show more
+            </Navigate>
           </Button>
         )}
       </div>

@@ -124,3 +124,24 @@ export const getFollowedArtists = unstable_cache(
   }),
   ["followed-artists"],
 );
+
+export const getUsersBySearchQuery = unstable_cache(
+  cache(async ({ query }: { query: string }) => {
+    try {
+      const users = await db.user.findMany({
+        where: {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (users.length === 0) return await db.user.findMany();
+
+      return users;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+);

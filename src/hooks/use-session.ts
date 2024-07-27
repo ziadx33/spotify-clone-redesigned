@@ -1,3 +1,5 @@
+"use client";
+
 import { type User } from "@prisma/client";
 import { type ISODateString } from "next-auth";
 import {

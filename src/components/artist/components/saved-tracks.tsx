@@ -1,7 +1,7 @@
+import { Navigate } from "@/components/navigate";
 import { type getSavedTracks } from "@/server/actions/track";
 import { type User } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import { FaHeart } from "react-icons/fa";
 
@@ -30,12 +30,17 @@ export async function SavedTracks({
           </div>
         </div>
         <div className="flex flex-col">
-          <Link
+          <Navigate
+            data={{
+              href: `/artist/${artist.id}/saved-tracks`,
+              title: `Saved Tracks - ${artist.name}` ?? "unknown",
+              type: "ARTIST",
+            }}
             href={`/artist/${artist.id}/saved-tracks`}
             className="text-xl font-semibold hover:underline"
           >
             You&apos;ve Saved {savedTracks.data?.tracks?.length} tracks
-          </Link>
+          </Navigate>
           <p className="text-sm text-muted-foreground">by {artist.name}</p>
         </div>
       </div>

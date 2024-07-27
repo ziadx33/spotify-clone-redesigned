@@ -12,7 +12,7 @@ type SavedTracksProps = {
 
 export function SavedTracks({ data, artist }: SavedTracksProps) {
   return (
-    <div className="flex flex-col p-4 pt-20">
+    <div className="flex flex-col p-4">
       <div className="mb-4 flex items-center">
         <Button size={"icon"} className="mr-2.5 h-14 w-14 rounded-full">
           <FaPlay size={18} />

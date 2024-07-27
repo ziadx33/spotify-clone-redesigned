@@ -7,9 +7,9 @@ import { SectionItem } from "@/components/components/section-item";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import Link from "next/link";
 import { format } from "date-fns";
 import { type ReactElement, useState } from "react";
+import { Navigate } from "@/components/navigate";
 
 type DiscographySectionProps = {
   artist: User;
@@ -52,9 +52,16 @@ export async function DiscographySection({
         asChild={showMoreButton}
       >
         {showMoreButton ? (
-          <Link href={`/artist/${artist.id}/discography?${playlistId}`}>
+          <Navigate
+            data={{
+              href: `/artist/${artist.id}/discography?playlist=${playlistId}`,
+              title: `Discography - ${artist.name}` ?? "unknown",
+              type: "ARTIST",
+            }}
+            href={`/artist/${artist.id}/discography?playlist=${playlistId}`}
+          >
             Discography
-          </Link>
+          </Navigate>
         ) : (
           "Discography"
         )}
@@ -68,11 +75,16 @@ export async function DiscographySection({
           </TabsList>
           {showMoreButton && (
             <Button variant="link" asChild>
-              <Link
+              <Navigate
+                data={{
+                  href: `/artist/${artist.id}/discography?playlist=${playlistId}`,
+                  title: `Discography - ${artist.name}` ?? "unknown",
+                  type: "ARTIST",
+                }}
                 href={`/artist/${artist.id}/discography?playlist=${playlistId}`}
               >
                 show more
-              </Link>
+              </Navigate>
             </Button>
           )}
         </div>

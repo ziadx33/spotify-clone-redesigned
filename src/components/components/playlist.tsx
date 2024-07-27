@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type User, type Playlist } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Navigate } from "../navigate";
 
 type PlaylistProps = {
   userData?: User;
@@ -21,12 +21,19 @@ export function Playlist({
     <Button
       variant="ghost"
       className={cn(
-        "flex h-[4.3rem] justify-start gap-3 px-2",
+        "flex h-[4.3rem] justify-start gap-3 px-2 ",
         pathname.startsWith(`/playlist/${id}`) ? "bg-muted" : "",
       )}
       asChild
     >
-      <Link href={`/playlist/${id}`}>
+      <Navigate
+        data={{
+          href: `/playlist/${id}`,
+          title: title ?? "unknown",
+          type: "PLAYLIST",
+        }}
+        href={`/playlist/${id}`}
+      >
         <Image
           src={imageSrc}
           className="h-[55px] w-[70px] rounded-md object-cover"
@@ -40,7 +47,7 @@ export function Playlist({
             {creatorId === userData?.id ? "Playlist" : "Album"}
           </span>
         </h4>
-      </Link>
+      </Navigate>
     </Button>
   );
 }

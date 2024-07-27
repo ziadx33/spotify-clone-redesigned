@@ -1,9 +1,9 @@
 import { RenderCards } from "@/components/components/render-cards";
 import { SectionItem } from "@/components/components/section-item";
+import { Navigate } from "@/components/navigate";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type User } from "@prisma/client";
-import Link from "next/link";
 import { useState } from "react";
 
 type TopArtistsProps = {
@@ -28,16 +28,32 @@ export function TopArtists({ artists, user }: TopArtistsProps) {
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${user?.id}/top-artists`}>
+            <Navigate
+              data={{
+                href: `/artist/${user?.id}/top-artists`,
+                title: "Top artists" ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${user?.id}/top-artists`}
+            >
               Top artists this month
-            </Link>
+            </Navigate>
           ) : (
             "Top artists this month"
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${user?.id}/appears-on`}>show more</Link>
+            <Navigate
+              data={{
+                href: `/artist/${user?.id}/top-artists`,
+                title: "Top artists" ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${user?.id}/top-artists`}
+            >
+              show more
+            </Navigate>
           </Button>
         )}
       </div>

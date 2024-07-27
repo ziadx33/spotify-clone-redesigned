@@ -28,7 +28,7 @@ export function Playlist({ id }: { id: string }) {
   if (creatorDataLoading || status === "loading") return <Loading />;
   const type = userData?.user?.id === data?.creatorId ? "Playlist" : "Album";
   return (
-    <div className="flex h-full w-full flex-col pt-12">
+    <div className="flex h-fit min-h-full w-full flex-col">
       <EditableData
         creatorData={creatorData}
         data={data}

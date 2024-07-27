@@ -7,6 +7,7 @@ import { Albums } from "./components/albums";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import { Navigate } from "../navigate";
 
 type DiscographyProps = {
   albums: Playlist[];
@@ -28,12 +29,17 @@ export function Discography({ albums, artist, tracks }: DiscographyProps) {
   return (
     <div className="flex flex-col gap-12 p-6 pt-14">
       <section className="flex justify-between pt-8">
-        <Link
+        <Navigate
+          data={{
+            href: `/artist/${artist.id}?playlist=${playlistId}`,
+            title: artist.name ?? "unknown",
+            type: "ARTIST",
+          }}
           href={`/artist/${artist.id}?playlist=${playlistId}`}
           className="text-3xl font-bold hover:underline"
         >
           {artist.name}
-        </Link>
+        </Navigate>
         <Control setFilters={setFilters} filters={filters} />
       </section>
       <div

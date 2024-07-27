@@ -65,9 +65,24 @@ model User {
     Track         Track[]
     followers     String[]   @default([])
     discoveredOn  String[]   @default([])
+    tabs          Tab[]
 
     tracksHistoryLastReset DateTime @default(now())
     tracksHistory          String[] @default([])
+}
+
+enum TAB_TYPE {
+    ARTIST
+    PLAYLIST
+}
+
+model Tab {
+    id     String   @id @default(cuid())
+    title  String   @default("")
+    type   TAB_TYPE @default(PLAYLIST)
+    href   String   @default("")
+    User   User?    @relation(fields: [userId], references: [id])
+    userId String?
 }
 
 model VerificationToken {

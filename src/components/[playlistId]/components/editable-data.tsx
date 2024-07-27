@@ -18,6 +18,7 @@ import { EditForm } from "./edit-form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { Navigate } from "@/components/navigate";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -94,9 +95,16 @@ function EditableDataComp({
                 />
               )}
               <span className="flex items-center gap-1.5">
-                <Link href={`/artist/${creatorData?.id}?playlist=${data?.id}`}>
+                <Navigate
+                  data={{
+                    href: `/artist/${creatorData?.id}?playlist=${data?.id}`,
+                    title: creatorData?.name ?? "unknown",
+                    type: "ARTIST",
+                  }}
+                  href={`/artist/${creatorData?.id}?playlist=${data?.id}`}
+                >
                   {creatorData?.name}
-                </Link>
+                </Navigate>
                 {(tracks?.length ?? 0) > 0 && (
                   <>
                     <FaCircle size="5" /> {tracks?.length} tracks{" "}

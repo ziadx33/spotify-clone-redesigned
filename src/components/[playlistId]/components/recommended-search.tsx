@@ -4,7 +4,7 @@ import { type Track } from "@prisma/client";
 import { type TablePropsType } from "./recommended";
 import { useDebounceState } from "@/hooks/use-debounce-state";
 import { Table } from "@/components/ui/table";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import { getTracksBySearchQuery } from "@/server/actions/track";
 import Loading from "@/components/ui/loading";
@@ -22,9 +22,7 @@ export function SearchTrack({
 }: SearchTrackProps) {
   const { data: tracks } = useTracks();
   const [search, setSearch, debounce] = useDebounceState("");
-  const [key, setKey] = useState(0);
   const { isLoading, data, refetch } = useQuery({
-    queryKey: `search-${key}`,
     queryFn: async () => {
       const data = await getTracksBySearchQuery({ query: debounce });
       return data;
@@ -32,9 +30,7 @@ export function SearchTrack({
   });
 
   useEffect(() => {
-    setKey((v) => v + 1);
     void refetch();
-    return () => setKey(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounce]);
 

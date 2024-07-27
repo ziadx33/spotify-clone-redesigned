@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { format } from "date-fns";
 import { useState } from "react";
+import { Navigate } from "@/components/navigate";
 
 type FeaturingSectionProps = {
   artist: User;
@@ -34,16 +35,32 @@ export async function FeaturingSection({
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${artist.id}/featuring`}>
+            <Navigate
+              data={{
+                href: `/artist/${artist.id}/featuring`,
+                title: `Featuring - ${artist.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${artist.id}/featuring`}
+            >
               Featuring {artist.name}
-            </Link>
+            </Navigate>
           ) : (
             `Featuring ${artist.name}`
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${artist.id}/featuring`}>show more</Link>
+            <Navigate
+              data={{
+                href: `/artist/${artist.id}/featuring`,
+                title: `Featuring - ${artist.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${artist.id}/featuring`}
+            >
+              show more
+            </Navigate>
           </Button>
         )}
       </div>

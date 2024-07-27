@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import Loading from "@/components/ui/loading";
+import { Navigate } from "@/components/navigate";
 
 type MoreAlbumsProps = {
   artist?: User | null;
@@ -44,22 +45,32 @@ export async function MoreAlbums({ artist, playlist }: MoreAlbumsProps) {
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link
+            <Navigate
+              data={{
+                href: `/artist/${artist?.id}/discography?playlist=${playlist?.id}`,
+                title: `Discography - ${artist?.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
               href={`/artist/${artist?.id}/discography?playlist=${playlist?.id}`}
             >
               More by {artist?.name}
-            </Link>
+            </Navigate>
           ) : (
             `More by ${artist?.name}`
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link
+            <Navigate
+              data={{
+                href: `/artist/${artist?.id}/discography?playlist=${playlist?.id}`,
+                title: `Discography - ${artist?.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
               href={`/artist/${artist?.id}/discography?playlist=${playlist?.id}`}
             >
               show more
-            </Link>
+            </Navigate>
           </Button>
         )}
       </div>

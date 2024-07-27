@@ -1,5 +1,6 @@
 import { RenderCards } from "@/components/components/render-cards";
 import { SectionItem } from "@/components/components/section-item";
+import { Navigate } from "@/components/navigate";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type User } from "@prisma/client";
@@ -28,14 +29,32 @@ export function FollowedArtists({ artists, user }: TopArtistsProps) {
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${user?.id}/following`}>Following</Link>
+            <Navigate
+              data={{
+                href: `/artist/${user?.id}/following`,
+                title: "Following" ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${user?.id}/following`}
+            >
+              Following
+            </Navigate>
           ) : (
             "Following"
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${user?.id}/following`}>show more</Link>
+            <Navigate
+              data={{
+                href: `/artist/${user?.id}/following`,
+                title: "Following" ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${user?.id}/following`}
+            >
+              show more
+            </Navigate>
           </Button>
         )}
       </div>

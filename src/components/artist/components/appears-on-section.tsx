@@ -6,9 +6,9 @@ import { RenderCards } from "@/components/components/render-cards";
 import { SectionItem } from "@/components/components/section-item";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { format } from "date-fns";
 import { useState } from "react";
+import { Navigate } from "@/components/navigate";
 
 type AppearsOnSectionProps = {
   artist: User;
@@ -35,14 +35,32 @@ export async function AppearsOnSection({
           asChild={showMoreButton}
         >
           {showMoreButton ? (
-            <Link href={`/artist/${artist.id}/appears-on`}>Appears On</Link>
+            <Navigate
+              data={{
+                href: `/artist/${artist.id}/appears-on`,
+                title: `Appears on - ${artist.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${artist.id}/appears-on`}
+            >
+              Appears On
+            </Navigate>
           ) : (
             "Appears On"
           )}
         </Button>
         {showMoreButton && (
           <Button asChild variant="link">
-            <Link href={`/artist/${artist.id}/appears-on`}>show more</Link>
+            <Navigate
+              data={{
+                href: `/artist/${artist.id}/appears-on`,
+                title: `Appears on - ${artist.name}` ?? "unknown",
+                type: "ARTIST",
+              }}
+              href={`/artist/${artist.id}/appears-on`}
+            >
+              show more
+            </Navigate>
           </Button>
         )}
       </div>

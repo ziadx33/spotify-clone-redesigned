@@ -28,7 +28,6 @@ export function Recommended({ playlist, artists, tracks }: RecommendProps) {
   const [showSearch, setShowSearch] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { data, isLoading } = useQuery({
-    queryKey: `recommend-tracks-in`,
     queryFn: async () => {
       const data = getRecommendedTracks({
         artistIds: artists?.map((artist) => artist.id) ?? [],
