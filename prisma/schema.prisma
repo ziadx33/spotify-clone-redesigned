@@ -77,12 +77,13 @@ enum TAB_TYPE {
 }
 
 model Tab {
-    id     String   @id @default(cuid())
-    title  String   @default("")
-    type   TAB_TYPE @default(PLAYLIST)
-    href   String   @default("")
-    User   User?    @relation(fields: [userId], references: [id])
-    userId String?
+    id      String   @id @default(cuid())
+    title   String   @default("")
+    type    TAB_TYPE @default(PLAYLIST)
+    href    String   @default("")
+    User    User?    @relation(fields: [userId], references: [id])
+    userId  String?
+    current Boolean  @default(false)
 }
 
 model VerificationToken {

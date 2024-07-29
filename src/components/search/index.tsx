@@ -1,7 +1,6 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Input } from "../ui/input";
 import { useQuery } from "react-query";
 import Loading from "../ui/loading";
 import { getSearchQueryData } from "@/server/actions/search";
@@ -14,34 +13,22 @@ export function Search() {
   const queryRef = useRef(searchParams.get("query") ?? null);
   const { data, isLoading, refetch } = useQuery({
     queryFn: async () => {
-      console.log("stop fucking", queryRef);
+      console.log("it's shitting rn so go away");
       const data = await getSearchQueryData({
         query: queryRef.current ?? "",
       });
       return data;
     },
   });
-  const {
-    values: { query },
-    setQuery,
-  } = useSearch({
-    debounce: true,
-    data: {
-      query: "",
-    },
+  useSearch({
     onChange: refetch,
     controllers: {
       query: queryRef,
     },
   });
+  console.log("idk", !!(!isLoading && data));
   return (
-    <div className="flex flex-col">
-      <Input
-        className="z-20 mb-4 w-fit min-w-96"
-        placeholder="What do you want to play?"
-        value={query}
-        onChange={(e) => setQuery({ name: "query", value: e.target.value })}
-      />
+    <div className="flex flex-col p-4">
       {!isLoading && data ? (
         <SearchContent {...data} />
       ) : (

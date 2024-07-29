@@ -13,6 +13,7 @@ export function TabsProvider({
   children: ReactNode;
 }) {
   const dispatch = useDispatch<AppDispatch>();
+
   useEffect(() => {
     dispatch(setTabs(tabs));
     // eslint-disable-next-line react-hooks/exhaustive-deps

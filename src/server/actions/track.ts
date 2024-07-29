@@ -100,7 +100,7 @@ export const getTracksBySearchQuery = unstable_cache(
       disablePlaylists?: boolean;
     }) => {
       try {
-        const tracks = await db.track.findMany({
+        let tracks = await db.track.findMany({
           where: {
             title: {
               contains: query,
@@ -108,6 +108,7 @@ export const getTracksBySearchQuery = unstable_cache(
             },
           },
         });
+        if (tracks.length === 0) tracks = await db.track.findMany();
         const requests = [
           db.user.findMany({
             where: {

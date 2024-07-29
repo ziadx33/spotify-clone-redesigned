@@ -1,3 +1,4 @@
+import { type ChangeCurrentTabPrams } from "@/server/actions/tab";
 import { type Tab } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -55,9 +56,25 @@ const tracksSlice = createSlice({
       if (state.data)
         state.data = state.data.filter((tab) => tab.id !== payload);
     },
+    changeCurrentTab(state, { payload }: { payload: ChangeCurrentTabPrams }) {
+      if (state.data) {
+        state.data = state.data.map((tab) => {
+          if (tab.id === payload.id)
+            return {
+              ...tab,
+              current: payload.currentBoolean ?? true,
+            };
+          return {
+            ...tab,
+            current: false,
+          };
+        });
+      }
+    },
   },
 });
 
-export const { addTab, setTabs, updateTab, removeTab } = tracksSlice.actions;
+export const { addTab, setTabs, updateTab, removeTab, changeCurrentTab } =
+  tracksSlice.actions;
 
 export default tracksSlice.reducer;

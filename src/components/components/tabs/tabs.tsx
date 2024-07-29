@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export async function Tabs() {
   const user = await getServerAuthSession();
   const tabs = await getTabs({ userId: user?.user.id ?? "" });
+
   return (
     <TabsProvider tabs={tabs}>
       <TabsContent />

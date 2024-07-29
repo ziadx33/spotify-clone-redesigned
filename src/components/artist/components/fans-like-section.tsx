@@ -5,7 +5,6 @@ import { RenderCards } from "@/components/components/render-cards";
 import { SectionItem } from "@/components/components/section-item";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useState } from "react";
 import { type getArtistFansFollowing } from "@/server/actions/user";
 import { Navigate } from "@/components/navigate";

@@ -9,26 +9,25 @@ export function SearchContent(props: SearchQueryReturn) {
     data: { tab: "all" },
   });
 
+  console.log("valuing", values, props.tracks, props.tracks.tracks?.length);
+
   return (
-    values?.query &&
-    values?.query !== "" && (
-      <Tabs
-        defaultValue={values.tab}
-        className="w-full"
-        onValueChange={(e) => setQuery({ name: "tab", value: e })}
-      >
-        <TabsList className="mb-4">
-          {tabs.map((tab) => (
-            <TabsTrigger value={tab} key={tab} className="capitalize">
-              {tab}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <TabsContent value="all">
-          {props.tracks.tracks?.length > 0 && <AllContent {...props} />}
-        </TabsContent>
-        <TabsContent value="password"></TabsContent>
-      </Tabs>
-    )
+    <Tabs
+      defaultValue={values.tab ?? "all"}
+      className="w-full"
+      onValueChange={(e) => setQuery({ name: "tab", value: e })}
+    >
+      <TabsList className="mb-4">
+        {tabs.map((tab) => (
+          <TabsTrigger value={tab} key={tab} className="capitalize">
+            {tab}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      <TabsContent value="all">
+        {props.tracks.tracks?.length > 0 && <AllContent {...props} />}
+      </TabsContent>
+      <TabsContent value="password"></TabsContent>
+    </Tabs>
   );
 }

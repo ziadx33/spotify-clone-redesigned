@@ -1,10 +1,9 @@
 "use server";
 
 import { type TabsSliceType } from "@/state/slices/tabs";
-import { unstable_cache } from "next/cache";
-import { cache } from "react";
 import { db } from "../db";
 import { type Tab } from "@prisma/client";
+import { handleRequests } from "@/utils/handle-requests";
 
 export const getTabs = async ({
   userId,
@@ -75,6 +74,52 @@ export const updateTabFromUserTabs = async ({
       data: updateData,
     });
     return updatedTab;
+  } catch (error) {
+    throw { error };
+  }
+};
+
+export type ChangeCurrentTabPrams = {
+  id: string;
+  userId: string;
+  tabIds: string[];
+  currentBoolean?: boolean;
+};
+
+export const changeCurrentUserTab = async ({
+  id,
+  userId,
+  tabIds,
+  currentBoolean = true,
+}: ChangeCurrentTabPrams) => {
+  try {
+    const promises = [
+      db.tab.update({
+        where: {
+          id,
+        },
+        data: {
+          current: currentBoolean,
+        },
+      }),
+      db.tab.updateMany({
+        where: {
+          NOT: {
+            id,
+          },
+          id: {
+            in: tabIds,
+          },
+          userId,
+        },
+        data: {
+          current: false,
+        },
+      }),
+    ] as const;
+    const [updatedCurrentTab, updatedCurrentTabs] =
+      await handleRequests(promises);
+    return { updatedCurrentTab, updatedCurrentTabs };
   } catch (error) {
     throw { error };
   }

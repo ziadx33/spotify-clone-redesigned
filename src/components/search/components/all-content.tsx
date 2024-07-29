@@ -18,7 +18,9 @@ export function AllContent({ tracks }: SearchQueryReturn) {
     );
     return { topTrackCreatorData, topTrack };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tracks]);
+
+  console.log("stop changing without me", tracks);
 
   return (
     <div className="flex size-full flex-col">
