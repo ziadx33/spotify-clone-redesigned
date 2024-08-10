@@ -5,10 +5,9 @@ import { type TablePropsType } from "./recommended";
 import { useDebounceState } from "@/hooks/use-debounce-state";
 import { Table } from "@/components/ui/table";
 import { useEffect, useMemo } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getTracksBySearchQuery } from "@/server/actions/track";
 import Loading from "@/components/ui/loading";
-import { notFound } from "next/navigation";
 import { useTracks } from "@/hooks/use-tracks";
 
 type SearchTrackProps = {
@@ -23,6 +22,7 @@ export function SearchTrack({
   const { data: tracks } = useTracks();
   const [search, setSearch, debounce] = useDebounceState("");
   const { isLoading, data, refetch } = useQuery({
+    queryKey: [],
     queryFn: async () => {
       const data = await getTracksBySearchQuery({ query: debounce });
       return data;
@@ -43,7 +43,6 @@ export function SearchTrack({
     [tracks?.tracks, data?.tracks],
   );
 
-  if (!data && !isLoading) notFound();
   return (
     <div className="flex h-[40rem] flex-col">
       <b className="mb-4 text-3xl">

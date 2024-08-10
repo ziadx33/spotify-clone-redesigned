@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSession } from "@/hooks/use-session";
 import { signOut } from "next-auth/react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useMemo } from "react";
 import { BsArrowLeft, BsArrowRight, BsBell } from "react-icons/bs";

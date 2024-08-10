@@ -17,8 +17,8 @@ import { useSession } from "@/hooks/use-session";
 import { EditForm } from "./edit-form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { Navigate } from "@/components/navigate";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -35,6 +35,7 @@ function EditableDataComp({
 }: EditableDataProps) {
   const { data: user } = useSession();
   const isEditable = user?.user?.id === data?.creatorId;
+  const isLoading = !data;
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -59,59 +60,84 @@ function EditableDataComp({
       <Dialog>
         <div className="flex h-fit w-full gap-8 p-8 pb-6">
           <DialogTrigger
-            disabled={!isEditable}
+            disabled={!isEditable || isLoading}
             className="group relative h-[288px] w-[288px]"
           >
-            <Image
-              src={data?.imageSrc ?? ""}
-              fill
-              draggable="false"
-              alt={data?.title ?? ""}
-              className="rounded-md object-cover"
-            />
+            {!isLoading ? (
+              <Image
+                src={data?.imageSrc ?? ""}
+                fill
+                draggable="false"
+                alt={data?.title ?? ""}
+                className="rounded-md object-cover"
+              />
+            ) : (
+              <Skeleton className="size-full" />
+            )}
             {isEditable && editImageOverlay}
           </DialogTrigger>
           <div className="flex flex-col pt-[6.2rem]">
-            <h3 className="mb-4">{type}</h3>
+            {!isLoading ? (
+              <h3 className="mb-4">{type}</h3>
+            ) : (
+              <Skeleton className="mb-4 h-2.5 w-16" />
+            )}
+
             <DialogTrigger
-              disabled={!isEditable}
+              disabled={!isEditable || isLoading}
               title={data?.title}
-              className="mb-5 line-clamp-1 w-[59rem] text-start text-8xl font-bold"
+              className="mb-5 line-clamp-1 w-[59rem] overflow-visible text-start text-8xl font-bold"
             >
-              {data?.title}
-            </DialogTrigger>
-            <p className="mb-1 text-sm text-muted-foreground">
-              {data?.description}
-            </p>
-            <div className="flex gap-1.5">
-              {creatorData?.image && (
-                <Image
-                  width={25}
-                  height={25}
-                  draggable="false"
-                  alt={creatorData?.name ?? ""}
-                  src={creatorData?.image ?? ""}
-                  className="size-[25px] rounded-full"
-                />
+              {!isLoading ? (
+                data?.title
+              ) : (
+                <Skeleton className="mb-4 h-24 w-96" />
               )}
-              <span className="flex items-center gap-1.5">
-                <Navigate
-                  data={{
-                    href: `/artist/${creatorData?.id}?playlist=${data?.id}`,
-                    title: creatorData?.name ?? "unknown",
-                    type: "ARTIST",
-                  }}
-                  href={`/artist/${creatorData?.id}?playlist=${data?.id}`}
-                >
-                  {creatorData?.name}
-                </Navigate>
-                {(tracks?.length ?? 0) > 0 && (
-                  <>
-                    <FaCircle size="5" /> {tracks?.length} tracks{" "}
-                    <FaCircle size="5" /> {tracksTime}
-                  </>
-                )}
-              </span>
+            </DialogTrigger>
+            {data?.description &&
+              (!isLoading ? (
+                <p className="mb-1 text-sm text-muted-foreground">
+                  {data?.description}
+                </p>
+              ) : (
+                <Skeleton className="mb-4 h-2.5 w-24" />
+              ))}
+            <div className="mt-auto flex gap-1.5">
+              {creatorData?.image &&
+                (!isLoading ? (
+                  <Image
+                    width={25}
+                    height={25}
+                    draggable="false"
+                    alt={creatorData?.name ?? ""}
+                    src={creatorData?.image ?? ""}
+                    className="size-[25px] rounded-full"
+                  />
+                ) : (
+                  <Skeleton className="size-[25px] rounded-full" />
+                ))}
+              {!isLoading ? (
+                <span className="flex items-center gap-1.5">
+                  <Navigate
+                    data={{
+                      href: `/artist/${creatorData?.id}?playlist=${data?.id}`,
+                      title: creatorData?.name ?? "unknown",
+                      type: "ARTIST",
+                    }}
+                    href={`/artist/${creatorData?.id}?playlist=${data?.id}`}
+                  >
+                    {creatorData?.name}
+                  </Navigate>
+                  {(tracks?.length ?? 0) > 0 && (
+                    <>
+                      <FaCircle size="5" /> {tracks?.length} tracks{" "}
+                      <FaCircle size="5" /> {tracksTime}
+                    </>
+                  )}
+                </span>
+              ) : (
+                <Skeleton className="my-auto h-2.5 w-36" />
+              )}
             </div>
           </div>
         </div>

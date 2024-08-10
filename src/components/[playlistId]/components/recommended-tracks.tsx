@@ -1,5 +1,4 @@
 import { NonSortTable } from "@/components/components/non-sort-table";
-import Loading from "@/components/ui/loading";
 import { type getRecommendedTracks } from "@/server/actions/track";
 import { type Playlist, type Track } from "@prisma/client";
 import { Table } from "@/components/ui/table";
@@ -7,9 +6,10 @@ import { type User } from "next-auth";
 import { notFound } from "next/navigation";
 import { useMemo } from "react";
 import { type TablePropsType } from "./recommended";
+import { TracksListSkeleton } from "@/components/artist/components/skeleton";
 
 type RecommendedTracksProps = {
-  playlist?: Playlist;
+  playlist?: Playlist | null;
   tableProps: TablePropsType;
   artists?: User[] | null;
   tracks?: Track[] | null;
@@ -36,8 +36,6 @@ export function RecommendedTracks({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, tracks]);
 
-  if (isLoading) return <Loading className="h-96" />;
-
   return (
     <>
       <div className="mb-4 flex flex-col">
@@ -47,14 +45,18 @@ export function RecommendedTracks({
         </p>
       </div>
       <Table>
-        <NonSortTable
-          {...tableProps}
-          data={tableData}
-          replaceDurationWithButton={{
-            name: "add",
-            fn: addTrackToPlaylistFn,
-          }}
-        />
+        {!isLoading ? (
+          <NonSortTable
+            {...tableProps}
+            data={tableData}
+            replaceDurationWithButton={{
+              name: "add",
+              fn: addTrackToPlaylistFn,
+            }}
+          />
+        ) : (
+          <TracksListSkeleton amount={5} />
+        )}
       </Table>
     </>
   );

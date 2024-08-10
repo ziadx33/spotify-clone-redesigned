@@ -1,36 +1,41 @@
 "use client";
 
-import Loading from "@/components/ui/loading";
 import { usePlaylist } from "@/hooks/use-playlist";
 import { useSession } from "@/hooks/use-session";
-import { getUserById } from "@/server/actions/user";
-import { type Playlist } from "@prisma/client";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { MusicPlayer } from "./components/music-player";
 import { useTracks } from "@/hooks/use-tracks";
 import { EditableData } from "./components/editable-data";
 import { MoreAlbums } from "./components/more-albums";
+import { getUserById } from "@/server/actions/verification-token";
+import { getPlaylists } from "@/server/actions/playlist";
 import { Recommended } from "./components/recommended";
 
 export function Playlist({ id }: { id: string }) {
-  const { data, status } = usePlaylist(id);
-  const { data: userData } = useSession();
-  const { data: creatorData, isLoading: creatorDataLoading } = useQuery(
-    `creatorId-${data?.creatorId}`,
-    async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      if (data?.creatorId === userData?.user?.id) return userData?.user;
-      const res = await getUserById(data?.creatorId ?? "");
-      return res;
+  const { data } = usePlaylist(id);
+  const { data: userData, status } = useSession();
+  const { data: creatorData } = useQuery({
+    queryKey: [`creator-data-${data?.creatorId}-${id}`],
+    queryFn: async () => {
+      if (!data?.creatorId) return null;
+      if (data?.creatorId === userData?.user?.id)
+        return { creatorData: userData?.user, playlists: [] };
+      const res = await getUserById({ id: data.creatorId });
+      const { data: playlists } = await getPlaylists({
+        creatorId: res?.id ?? "",
+        playlistIds: [],
+      });
+      return { creatorData: res, playlists: playlists! };
     },
-  );
+    enabled: !!data?.creatorId && status === "authenticated",
+  });
+
   const { data: tracks } = useTracks();
-  if (creatorDataLoading || status === "loading") return <Loading />;
   const type = userData?.user?.id === data?.creatorId ? "Playlist" : "Album";
   return (
     <div className="flex h-fit min-h-full w-full flex-col">
       <EditableData
-        creatorData={creatorData}
+        creatorData={creatorData?.creatorData}
         data={data}
         tracks={tracks?.tracks ?? []}
         type={type}
@@ -38,12 +43,17 @@ export function Playlist({ id }: { id: string }) {
       <div className="flex h-fit w-full flex-col gap-4 px-8 pb-4">
         <MusicPlayer playlist={data} id={id} />
         {type === "Album" ? (
-          <MoreAlbums playlist={data} artist={creatorData} />
+          <MoreAlbums
+            artist={creatorData?.creatorData}
+            playlist={data}
+            data={creatorData?.playlists}
+          />
         ) : (
           <Recommended
-            tracks={tracks?.tracks ?? []}
+            playlistId={id}
+            tracks={tracks?.tracks}
             playlist={data}
-            artists={tracks?.authors ?? []}
+            artists={tracks?.authors}
           />
         )}
       </div>

@@ -26,6 +26,7 @@ export type NonSortTableProps = {
   showIndex?: boolean;
   replaceDurationWithButton?: ReplaceDurationWithButton;
   hidePlayButton?: boolean;
+  skeleton?: boolean;
 };
 
 export function NonSortTable({
@@ -39,6 +40,7 @@ export function NonSortTable({
   showIndex = true,
   replaceDurationWithButton,
   hidePlayButton = false,
+  skeleton = false,
 }: NonSortTableProps) {
   return (
     <>
@@ -63,6 +65,7 @@ export function NonSortTable({
           ?.slice(0, !limit ? data.tracks.length : limit)
           .map((track, trackIndex) => (
             <Track
+              skeleton={skeleton}
               hidePlayButton={hidePlayButton}
               replacePlaysWithPlaylist={replacePlaysWithPlaylist}
               showImage={showTrackImage}

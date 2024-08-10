@@ -8,7 +8,7 @@ import { useDebounceState } from "./use-debounce-state";
 type UseSearchParams<T extends Record<string, string>> = {
   data?: T;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onChange?: () => any | Promise<any>;
+  onChange?: (val: T) => any | Promise<any>;
   debounce?: boolean;
   controllers?: Record<keyof T | string, MutableRefObject<null | string>>;
 };
@@ -27,6 +27,8 @@ export const useSearch = <T extends Record<string, string>>({
   const [normalValue, setDebounceValue, debouncedValue] =
     useDebounceState(queryParams);
   const initialized = useRef(false);
+  const getResultValue = (debounce: boolean) =>
+    debounce ? normalValue : queryParams;
 
   type SetQueryProps = { name: keyof T; value: string };
 
@@ -36,7 +38,10 @@ export const useSearch = <T extends Record<string, string>>({
   ) => {
     const newParams = new URLSearchParams(existing.toString());
     updates.forEach(({ name, value }) => {
-      newParams.set(String(name), value);
+      // Only set the value if it is different from the existing value
+      if (newParams.get(String(name)) !== value) {
+        newParams.set(String(name), value);
+      }
     });
     return newParams.toString();
   };
@@ -63,14 +68,7 @@ export const useSearch = <T extends Record<string, string>>({
       const initialValues = getQueryValues({ ...queryParams, ...data });
       const mergedQueryString = mergeQueryParams(searchParams, initialValues);
 
-      // Check if current URL matches the merged query string
       const currentQueryString = searchParams.toString();
-      console.log(
-        "stop mergin",
-        mergedQueryString,
-        currentQueryString,
-        initialized.current,
-      );
       if (currentQueryString !== mergedQueryString) {
         router.replace(`${pathname}?${mergedQueryString}`);
       }
@@ -104,7 +102,7 @@ export const useSearch = <T extends Record<string, string>>({
     if (!debounce) {
       router.push(`${pathname}?${mergedQueryString}`);
       setControllers(queryParams);
-      void onChange?.();
+      void onChange?.(normalValue);
     }
 
     const newData = getQueryValuesNameKey(queries);
@@ -118,27 +116,10 @@ export const useSearch = <T extends Record<string, string>>({
 
       router.replace(`${pathname}?${mergedQueryString}`);
       setControllers(debouncedValue);
-      void onChange?.();
+      void onChange?.(normalValue);
     }
-    if (controllers) {
-      let tempControllerData: Partial<Record<keyof T, string>> = {};
-      Object.keys(controllers).forEach((key) => {
-        const valuesKey = Object.keys(normalValue);
-        const searchParam = Object.keys(queryParams ?? {}).find(
-          (param) => param === key,
-        );
-        if (valuesKey.includes(key) && searchParam) {
-          tempControllerData = {
-            ...tempControllerData,
-            [key]: queryParams[searchParam],
-          };
-        }
-      });
-
-      if (Object.keys(tempControllerData).length > 0) {
-        setControllers(tempControllerData as T);
-        onChange?.();
-      }
+    if (controllers && !data) {
+      void onChange?.(getResultValue(debounce));
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -146,6 +127,6 @@ export const useSearch = <T extends Record<string, string>>({
 
   return {
     setQuery,
-    values: debounce ? normalValue : queryParams,
+    values: getResultValue(debounce),
   };
 };

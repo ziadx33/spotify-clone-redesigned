@@ -9,8 +9,6 @@ export function SearchContent(props: SearchQueryReturn) {
     data: { tab: "all" },
   });
 
-  console.log("valuing", values, props.tracks, props.tracks.tracks?.length);
-
   return (
     <Tabs
       defaultValue={values.tab ?? "all"}
@@ -25,7 +23,7 @@ export function SearchContent(props: SearchQueryReturn) {
         ))}
       </TabsList>
       <TabsContent value="all">
-        {props.tracks.tracks?.length > 0 && <AllContent {...props} />}
+        {props.tracks?.tracks?.length > 0 && <AllContent {...props} />}
       </TabsContent>
       <TabsContent value="password"></TabsContent>
     </Tabs>

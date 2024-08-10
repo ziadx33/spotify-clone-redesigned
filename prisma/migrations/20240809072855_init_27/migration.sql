@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "GENRES" AS ENUM ('TRAP', 'OLD_SCHOOL');
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "genres" "GENRES"[] DEFAULT ARRAY[]::"GENRES"[];

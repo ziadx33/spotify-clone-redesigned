@@ -56,7 +56,7 @@ export const updateUserById = async ({
   }
 };
 
-export const getUserById = unstable_cache(
+export const getArtistById = unstable_cache(
   cache(async (id: string) => {
     try {
       const user = await db.user.findUnique({
@@ -64,7 +64,26 @@ export const getUserById = unstable_cache(
           id,
         },
       });
+      console.log("shutup lil user", user);
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }),
+  ["user-unique", "id"],
+);
+
+export const getUserByIds = unstable_cache(
+  cache(async (ids: string[]) => {
+    try {
+      const users = await db.user.findMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+      return users;
     } catch (error) {
       throw error;
     }

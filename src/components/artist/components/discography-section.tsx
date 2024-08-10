@@ -17,7 +17,7 @@ type DiscographySectionProps = {
   data: Awaited<ReturnType<typeof getPlaylists>>;
 };
 
-export async function DiscographySection({
+export function DiscographySection({
   artist,
   data: { data },
   playlistId,

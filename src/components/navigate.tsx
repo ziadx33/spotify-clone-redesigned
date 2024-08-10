@@ -18,6 +18,7 @@ export function Navigate({
   children: ReactNode;
 } & ComponentPropsWithoutRef<"button">) {
   const navigate = useNavigate({ data, href });
+  console.log("stop navigationg", href);
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>

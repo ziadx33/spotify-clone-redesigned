@@ -36,10 +36,15 @@ export function Player({
   return (
     <div className="flex items-center justify-between">
       <div className="flex h-fit w-full py-6">
-        <Button size={"icon"} className="mr-4 h-16 w-16 rounded-full">
+        <Button
+          disabled={!playlist}
+          size={"icon"}
+          className="mr-4 h-16 w-16 rounded-full"
+        >
           <FaPlay size={20} />
         </Button>
         <Button
+          disabled={!playlist}
           size={"icon"}
           variant="ghost"
           className="h-16 w-16 rounded-full"
@@ -47,6 +52,7 @@ export function Player({
           <FaShuffle size={30} />
         </Button>
         <Button
+          disabled={!playlist}
           size={"icon"}
           variant="ghost"
           className="h-16 w-16 rounded-full"
@@ -55,6 +61,7 @@ export function Player({
         </Button>
         {isCreatedByUser ? (
           <Button
+            disabled={!playlist}
             size={"icon"}
             variant="ghost"
             className="h-16 w-16 rounded-full"
@@ -62,9 +69,14 @@ export function Player({
             <IoPersonAddOutline size={32} />
           </Button>
         ) : (
-          <AddLibraryButton size={64} playlist={playlist} />
+          <AddLibraryButton
+            disabled={!playlist}
+            size={64}
+            playlist={playlist}
+          />
         )}
         <Button
+          disabled={!playlist}
           size={"icon"}
           variant="ghost"
           className="h-16 w-16 rounded-full"

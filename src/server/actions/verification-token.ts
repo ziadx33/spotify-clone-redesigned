@@ -111,6 +111,7 @@ export const getVerificationTokenById = async (token: string) => {
 
 export const getUserById = async ({ id }: { id: string }) => {
   try {
+    console.log("usering rn or hate", id);
     const user = await db.user.findUnique({
       where: { id },
     });

@@ -10,20 +10,20 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className={mainFont.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          forcedTheme="dark"
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            <ReduxProvider>
+        <AuthProvider>
+          <ReduxProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              forcedTheme="dark"
+              disableTransitionOnChange
+            >
               <QueryProvider>{children}</QueryProvider>
-            </ReduxProvider>
-            <Toaster />
-          </AuthProvider>
-        </ThemeProvider>
+              <Toaster />
+            </ThemeProvider>
+          </ReduxProvider>
+        </AuthProvider>
       </body>
     </html>
   );

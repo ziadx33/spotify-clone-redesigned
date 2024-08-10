@@ -15,10 +15,7 @@ type AppearsOnSectionProps = {
   data: Awaited<ReturnType<typeof getAppearsPlaylists>>;
 };
 
-export async function AppearsOnSection({
-  artist,
-  data,
-}: AppearsOnSectionProps) {
+export function AppearsOnSection({ artist, data }: AppearsOnSectionProps) {
   const [showMoreButton, setShowMoreButton] = useState(false);
 
   return (

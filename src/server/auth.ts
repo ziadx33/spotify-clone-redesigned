@@ -8,7 +8,8 @@ import { type Adapter } from "next-auth/adapters";
 import { type User } from "@prisma/client";
 
 import { db } from "@/server/db";
-import { getUserByEmail, getUserById } from "./actions/user";
+import { getUserByEmail } from "./actions/user";
+import { getUserById } from "./actions/verification-token";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -40,7 +41,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider !== "credentials") return true;
-      const existingUser = await getUserById(user.id);
+      const existingUser = await getUserById({ id: user.id });
       if (!existingUser?.emailVerified) return false;
       return true;
     },

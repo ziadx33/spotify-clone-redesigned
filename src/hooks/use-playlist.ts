@@ -1,6 +1,6 @@
 import { getPlaylist } from "@/server/actions/playlist";
 import { usePlaylists } from "./use-playlists";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { type Playlist } from "@prisma/client";
 import { useEffect } from "react";
@@ -17,6 +17,7 @@ export function usePlaylist(id: string): UsePlaylistReturnType {
     isError,
     refetch,
   } = useQuery({
+    queryKey: [],
     queryFn: async () => {
       if (data) return null;
       const res = await getPlaylist(id);

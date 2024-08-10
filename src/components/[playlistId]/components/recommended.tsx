@@ -9,9 +9,9 @@ import { addTrack } from "@/state/slices/tracks";
 import { type AppDispatch } from "@/state/store";
 import { type Track, type User, type Playlist } from "@prisma/client";
 import { notFound } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsX } from "react-icons/bs";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { RecommendedTracks } from "./recommended-tracks";
 import { SearchTrack } from "./recommended-search";
@@ -20,14 +20,21 @@ type RecommendProps = {
   playlist?: Playlist | null;
   artists?: User[] | null;
   tracks?: Track[] | null;
+  playlistId: string;
 };
 
 export type TablePropsType = Omit<NonSortTableProps, "data">;
 
-export function Recommended({ playlist, artists, tracks }: RecommendProps) {
+export function Recommended({
+  playlist,
+  artists,
+  tracks,
+  playlistId,
+}: RecommendProps) {
   const [showSearch, setShowSearch] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { data, isLoading } = useQuery({
+    queryKey: [`recommended-album-${playlistId}`],
     queryFn: async () => {
       const data = getRecommendedTracks({
         artistIds: artists?.map((artist) => artist.id) ?? [],
@@ -35,17 +42,20 @@ export function Recommended({ playlist, artists, tracks }: RecommendProps) {
       });
       return data;
     },
+    enabled: !!tracks && !!artists,
   });
 
-  if (!playlist) notFound();
   const tableProps: TablePropsType = {
     limit: 10,
     viewAs: "LIST",
     replacePlaysWithPlaylist: true,
     showHead: false,
-    playlist,
     showIndex: false,
   } as const;
+  useEffect(() => {
+    if (playlist) tableProps.playlist = playlist;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playlist]);
 
   const addTrackToPlaylistFn = async (track: Track) => {
     const addData = { playlistId: playlist?.id ?? "", trackId: track.id };
@@ -73,6 +83,7 @@ export function Recommended({ playlist, artists, tracks }: RecommendProps) {
     <div className="mt-4 flex flex-col">
       <div className="flex justify-end">
         <Button
+          disabled={!playlist || isLoading}
           size={showSearch ? "icon" : undefined}
           variant="ghost"
           onClick={() => setShowSearch((v) => !v)}

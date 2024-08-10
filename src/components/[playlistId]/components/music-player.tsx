@@ -35,7 +35,7 @@ export function MusicPlayer({ id, playlist }: MusicPlayerProps) {
         filters={filters}
       />
       <Tracks
-        playlist={playlist!}
+        playlist={playlist}
         trackQuery={trackQuery}
         handleFilterChange={handleFilterChange}
         setFilters={setFilters}

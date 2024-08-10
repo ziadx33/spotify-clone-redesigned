@@ -10,7 +10,8 @@ import { getArtistsByIds } from "./track";
 
 type GetPlaylistsParams = {
   creatorId?: string;
-  playlistIds: string[];
+  playlistIds?: string[];
+  type?: Playlist["type"];
 };
 
 export const getPlaylists = unstable_cache(
@@ -18,6 +19,7 @@ export const getPlaylists = unstable_cache(
     async ({
       creatorId,
       playlistIds,
+      type,
     }: GetPlaylistsParams): Promise<PlaylistsSliceType> => {
       try {
         const playlists = await db.playlist.findMany({
@@ -32,6 +34,7 @@ export const getPlaylists = unstable_cache(
                 },
               },
             ],
+            type,
           },
         });
 

@@ -275,25 +275,38 @@ export const getSavedTracks = unstable_cache(
   }),
 );
 
+type GetTracksByIdsParams = { ids?: string[]; artistId?: string };
+
 export const getTracksByIds = unstable_cache(
-  cache(async (ids: string[]) => {
+  cache(async (data: GetTracksByIdsParams) => {
     try {
       const tracks = await db.track.findMany({
         where: {
+          OR: [
+            {
+              authorIds: {
+                has: data.artistId,
+              },
+            },
+            { authorId: data.artistId },
+          ],
           id: {
-            in: ids,
+            in: data.ids,
           },
         },
       });
+      console.log("tracks ger out", tracks);
       return tracks;
     } catch (error) {
       throw { error };
     }
   }),
+  ["tracks-by-ids"],
 );
 
 type GetUserTopTracksProps = {
   user?: User;
+  artistId?: string;
 };
 
 type NonNullableProperties<T> = {
@@ -304,6 +317,7 @@ export const getUserTopTracks = unstable_cache(
   cache(
     async ({
       user,
+      artistId,
     }: GetUserTopTracksProps): Promise<{
       data: NonNullableProperties<NonNullable<TracksSliceType["data"]>>;
       trackIds: ReturnType<typeof getTopRepeatedNumbers>;
@@ -311,9 +325,10 @@ export const getUserTopTracks = unstable_cache(
       try {
         const trackHistory = user?.tracksHistory ?? [];
         const trackIds = getTopRepeatedNumbers(trackHistory);
-        const tracks = await getTracksByIds(
-          trackIds.map((trackIds) => trackIds.id),
-        );
+        const tracks = await getTracksByIds({
+          ids: trackIds.map((trackIds) => trackIds.id),
+          artistId,
+        });
         const requests = [
           db.user.findMany({
             where: {
@@ -341,6 +356,10 @@ export const getUserTopTracks = unstable_cache(
   ),
 );
 
+export type GetUserTopTracksReturnType = Awaited<
+  ReturnType<typeof getUserTopTracks>
+>;
+
 export const getArtistsByIds = unstable_cache(
   cache(async (artistIds: string[]) => {
     try {
@@ -357,3 +376,16 @@ export const getArtistsByIds = unstable_cache(
     }
   }),
 );
+
+export const getTrackById = async (trackId: string) => {
+  try {
+    const track = await db.track.findUnique({
+      where: {
+        id: trackId,
+      },
+    });
+    return track;
+  } catch (error) {
+    throw { error };
+  }
+};

@@ -31,7 +31,15 @@ export function Tab({
 }: TabProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const getIsCurrentTab = (href: string) => pathname === href;
+  const getIsCurrentTab = (href: string) =>
+    pathname === (href.includes("?") ? href.split("?")[0] : href);
+  console.log(
+    "stop",
+    href.includes("?") ? href.split("?")[0] : href,
+    "stop again",
+    pathname,
+    getIsCurrentTab(href),
+  );
   const [isCurrentTab, setIsCurrentTab] = useState(getIsCurrentTab(href));
   const currentTabRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {

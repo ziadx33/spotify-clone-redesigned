@@ -3,6 +3,9 @@ import { useSession } from "./use-session";
 import { useEffect, useRef, useState } from "react";
 import { updateUserById } from "@/server/actions/user";
 import { revalidate } from "@/server/actions/revalidate";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "@/state/store";
+import { followUser, unFollowUser } from "@/state/slices/following";
 
 type UseFollowParams = {
   artist: User;
@@ -14,6 +17,7 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
   const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
   const followedSetDone = useRef(false);
   const [isFollowing, setIsFollowing] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (followedSetDone.current) return;
@@ -32,6 +36,7 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
 
   const follow = async () => {
     setIsFollowing(true);
+    dispatch(followUser(artist));
     await updateUserById({
       id: artist.id,
       data: {
@@ -45,6 +50,7 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
 
   const unfollow = async () => {
     setIsFollowing(true);
+    dispatch(unFollowUser(artist.id));
     await updateUserById({
       id: artist.id,
       data: {

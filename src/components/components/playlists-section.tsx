@@ -2,7 +2,7 @@ import { TbBooks } from "react-icons/tb";
 import { PlaylistFilters } from "./playlists-filters";
 import { CreatePlaylistButton } from "./create-playlist-button";
 
-export async function PlaylistSection() {
+export function PlaylistSection() {
   return (
     <div className="px-4">
       <div className="mb-4 flex items-center justify-between">

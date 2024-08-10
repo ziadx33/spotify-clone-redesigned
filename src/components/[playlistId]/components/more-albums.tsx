@@ -1,36 +1,24 @@
 "use client";
 
-import { getPlaylists } from "@/server/actions/playlist";
 import { type Playlist, type User } from "@prisma/client";
 import { RenderCards } from "@/components/components/render-cards";
 import { SectionItem } from "@/components/components/section-item";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { format } from "date-fns";
 import { useState } from "react";
-import { useQuery } from "react-query";
-import Loading from "@/components/ui/loading";
 import { Navigate } from "@/components/navigate";
+import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type MoreAlbumsProps = {
-  artist?: User | null;
   playlist?: Playlist | null;
+  data?: Playlist[] | null;
+  artist?: User | null;
 };
 
-export async function MoreAlbums({ artist, playlist }: MoreAlbumsProps) {
+export function MoreAlbums({ data, playlist, artist }: MoreAlbumsProps) {
   const [showMoreButton, setShowMoreButton] = useState(false);
-  const { data: albums, isLoading } = useQuery({
-    queryKey: `artist-discography-${artist?.id}`,
-    queryFn: async () => {
-      const { data } = await getPlaylists({
-        creatorId: artist?.id,
-        playlistIds: [],
-      });
-      return data;
-    },
-  });
-  if (isLoading) return <Loading className="h-96" />;
   return (
     <div className="w-full flex-col">
       <div className="flex items-center justify-between">
@@ -44,19 +32,23 @@ export async function MoreAlbums({ artist, playlist }: MoreAlbumsProps) {
           )}
           asChild={showMoreButton}
         >
-          {showMoreButton ? (
-            <Navigate
-              data={{
-                href: `/artist/${artist?.id}/discography?playlist=${playlist?.id}`,
-                title: `Discography - ${artist?.name}` ?? "unknown",
-                type: "ARTIST",
-              }}
-              href={`/artist/${artist?.id}/discography?playlist=${playlist?.id}`}
-            >
-              More by {artist?.name}
-            </Navigate>
+          {data ? (
+            showMoreButton ? (
+              <Navigate
+                data={{
+                  href: `/artist/${artist?.id}/discography?playlist=${playlist?.id}`,
+                  title: `Discography - ${artist?.name}` ?? "unknown",
+                  type: "ARTIST",
+                }}
+                href={`/artist/${artist?.id}/discography?playlist=${playlist?.id}`}
+              >
+                More by {artist?.name}
+              </Navigate>
+            ) : (
+              `More by ${artist?.name}`
+            )
           ) : (
-            `More by ${artist?.name}`
+            <Skeleton className="h-8 w-64" />
           )}
         </Button>
         {showMoreButton && (
@@ -75,24 +67,28 @@ export async function MoreAlbums({ artist, playlist }: MoreAlbumsProps) {
         )}
       </div>
       <div className="flex gap-2 overflow-x-hidden">
-        <RenderCards
-          setShowMoreButton={setShowMoreButton}
-          cards={
-            albums?.map((album: Playlist) => {
-              return (
-                <SectionItem
-                  key={album.id}
-                  alt={album.title}
-                  showPlayButton
-                  title={album.title}
-                  image={album.imageSrc}
-                  description={`${format(new Date(album.createdAt), "yyy")} - ${album.type.toLowerCase()}`}
-                  link={`/playlist/${album.id}`}
-                />
-              );
-            }) ?? []
-          }
-        />
+        {data ? (
+          <RenderCards
+            setShowMoreButton={setShowMoreButton}
+            cards={
+              data?.map((album) => {
+                return (
+                  <SectionItem
+                    key={album.id}
+                    alt={album.title}
+                    showPlayButton
+                    title={album.title}
+                    image={album.imageSrc}
+                    description={`${format(new Date(album.createdAt), "yyy")} - ${album.type.toLowerCase()}`}
+                    link={`/playlist/${album.id}`}
+                  />
+                );
+              }) ?? []
+            }
+          />
+        ) : (
+          <SectionItemSkeleton amount={5} />
+        )}
       </div>
     </div>
   );

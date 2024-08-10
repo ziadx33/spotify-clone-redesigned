@@ -10,12 +10,14 @@ type AddPlaylistButtonProps = {
   playlist: Playlist | null;
   size?: number;
   divideBy?: number;
+  disabled?: boolean;
 };
 
 export function AddLibraryButton({
   playlist,
   size = 35,
   divideBy = 30,
+  disabled,
 }: AddPlaylistButtonProps) {
   const { isLoading, toggle, isAddedToLibrary } = useAddToPlaylist({
     playlist: playlist,
@@ -24,7 +26,7 @@ export function AddLibraryButton({
     <Button
       size={"icon"}
       variant="ghost"
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       className="rounded-full"
       style={{
         width: `${size}px`,

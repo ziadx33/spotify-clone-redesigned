@@ -1,7 +1,5 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
-import { cache } from "react";
 import { getTracksBySearchQuery } from "./track";
 import { handleRequests } from "@/utils/handle-requests";
 import { getPlaylistsBySearchQuery } from "./playlist";

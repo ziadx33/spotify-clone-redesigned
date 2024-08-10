@@ -21,6 +21,7 @@ type SortTableProps = {
   data: Partial<TracksSliceType["data"]>;
   trackQuery: string | null;
   playlist: Playlist;
+  skeleton?: boolean;
 };
 
 export function SortTable({
@@ -30,6 +31,7 @@ export function SortTable({
   data,
   trackQuery,
   playlist,
+  skeleton = false,
 }: SortTableProps) {
   const memoizedTracks = useMemo(() => {
     return sortTracks({
@@ -40,6 +42,7 @@ export function SortTable({
       trackQuery,
     })?.map((track, trackIndex) => (
       <Track
+        skeleton={skeleton}
         playlist={playlist}
         viewAs={filters.viewAs}
         key={track.id}
@@ -51,6 +54,7 @@ export function SortTable({
         album={data!.albums!.find((album) => track.albumId === album.id)}
       />
     ));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, filters, trackQuery, playlist]);
   return (
     <>

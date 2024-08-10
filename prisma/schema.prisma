@@ -47,10 +47,15 @@ enum USER_TYPE {
     ARTIST
 }
 
+enum GENRES {
+    TRAP
+    OLD_SCHOOL
+}
+
 model User {
     id            String     @id @default(cuid())
-    name          String?
-    email         String?    @unique
+    name          String
+    email         String     @unique
     emailVerified DateTime?
     image         String?
     coverImage    String?
@@ -66,6 +71,8 @@ model User {
     followers     String[]   @default([])
     discoveredOn  String[]   @default([])
     tabs          Tab[]
+    artistPick    String?
+    genres        GENRES[]   @default([])
 
     tracksHistoryLastReset DateTime @default(now())
     tracksHistory          String[] @default([])
