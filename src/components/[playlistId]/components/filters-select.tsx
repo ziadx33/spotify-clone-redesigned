@@ -13,9 +13,9 @@ import { type Playlist } from "@prisma/client";
 import { useState, type Dispatch, type SetStateAction } from "react";
 
 type FiltersSelectProps = {
-  setFilters: Dispatch<SetStateAction<TrackFilters>>;
+  setFilters?: Dispatch<SetStateAction<TrackFilters>>;
   filters: TrackFilters;
-  handleFilterChange: (name: keyof TrackFilters) => void;
+  handleFilterChange?: (name: keyof TrackFilters) => void;
   playlist: Playlist | null;
 };
 
@@ -41,7 +41,7 @@ export function FiltersSelect({
         onValueChange={(e) => {
           if (["LIST", "COMPACT"].includes(e)) {
             setShowViewAs(true);
-            setFilters((data) => ({
+            setFilters?.((data) => ({
               ...data,
               viewAs: e as TrackFilters["viewAs"],
             }));
@@ -49,8 +49,8 @@ export function FiltersSelect({
           }
           if (e.includes("-")) {
             const valueValues = e.split("-");
-            handleFilterChange(valueValues[0] as keyof TrackFilters);
-          } else handleFilterChange(e as keyof TrackFilters);
+            handleFilterChange?.(valueValues[0] as keyof TrackFilters);
+          } else handleFilterChange?.(e as keyof TrackFilters);
         }}
       >
         <SelectTrigger className="w-[280px]">

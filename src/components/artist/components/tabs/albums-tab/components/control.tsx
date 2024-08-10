@@ -15,7 +15,8 @@ export function Control({ filters, setFilters }: ControlProps) {
         value={filters.viewAs}
         onValueChange={(e) =>
           e
-            ? setFilters(() => ({
+            ? setFilters((v) => ({
+                ...v,
                 viewAs: e as FiltersStateType["viewAs"],
               }))
             : filters.viewAs

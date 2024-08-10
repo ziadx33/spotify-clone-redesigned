@@ -1,6 +1,6 @@
 import { TopArtists } from "@/components/top-artists";
 import { getArtistsByIds, getUserTopTracks } from "@/server/actions/track";
-import { getUserById } from "@/server/actions/user";
+import { getUserById } from "@/server/actions/verification-token";
 import { getServerAuthSession } from "@/server/auth";
 import { getTopArtists } from "@/utils/get-top-artists";
 import { handleRequests } from "@/utils/handle-requests";

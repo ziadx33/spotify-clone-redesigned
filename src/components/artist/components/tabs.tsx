@@ -9,9 +9,8 @@ import { SinglesTab } from "./tabs/singles-tab/singles-tab";
 import { AboutTab } from "./tabs/about-tab/about-tab";
 import { Control } from "./tabs/albums-tab/components/control";
 import { FeaturingTab } from "./tabs/featuring-tab/featuring-tab";
-import { useSearch } from "@/hooks/use-search";
-import { Navigate } from "@/components/navigate";
-import { useNavigate } from "@/hooks/use-navigate";
+import { SearchInput } from "@/components/components/search-input";
+import { useDebounceState } from "@/hooks/use-debounce-state";
 export const tabs = [
   "home",
   "albums",
@@ -26,55 +25,56 @@ type TabsSectionProps = {
 };
 
 export function TabsSection({ artist, playlistId }: TabsSectionProps) {
-  const {
-    unDebouncedValues: { tab: currentTab },
-    setQuery,
-  } = useSearch<{ tab: (typeof tabs)[number] }>({
-    data: {
-      tab: tabs[0],
-    },
-  });
-  const navigate = useNavigate({});
+  const [currentTab, setCurrentTab] = useState<(typeof tabs)[number]>("home");
   const [filters, setFilters] = useState<FiltersStateType>({
     viewAs: "grid",
   });
+  const [query, setQuery, debouncedQuery] = useDebounceState<string | null>(
+    null,
+    300,
+  );
   return (
     <Tabs
       value={currentTab ?? "home"}
       onValueChange={(e) => {
-        setQuery({ name: "tab", value: e });
+        setCurrentTab(e as (typeof tabs)[number]);
       }}
     >
       <div className="flex justify-between">
-        <TabsList defaultValue={currentTab ?? "home"} className="flex w-fit">
-          {tabs.map((tab) => (
-            <TabsTrigger key={tab} value={tab} className="w-fit min-w-36">
-              {tab}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {currentTab === "albums" && (
-          <Control setFilters={setFilters} filters={filters} />
-        )}
+        <div className="flex items-center gap-2">
+          <TabsList defaultValue={currentTab ?? "home"} className="flex w-fit">
+            {tabs.map((tab) => (
+              <TabsTrigger key={tab} value={tab} className="w-fit min-w-36">
+                {tab}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {(currentTab ?? "home") !== "home" &&
+            (currentTab ?? "home") !== "about" && (
+              <SearchInput reverse value={query} setTrackQuery={setQuery} />
+            )}
+        </div>
+        <div>
+          {currentTab === "albums" && (
+            <Control setFilters={setFilters} filters={filters} />
+          )}
+        </div>
       </div>
 
       <TabsContent value="home" className="size-full">
-        <HomeTab
-          setCurrentTab={(value) => setQuery({ name: "tab", value })}
-          artist={artist}
-        />
+        <HomeTab setCurrentTab={setCurrentTab} artist={artist} />
       </TabsContent>
       <TabsContent value="albums" className="size-full">
-        <AlbumsTab filters={filters} artist={artist} />
+        <AlbumsTab filters={filters} query={debouncedQuery} artist={artist} />
       </TabsContent>
       <TabsContent value="singles" className="size-full">
-        <SinglesTab artist={artist} />
+        <SinglesTab query={debouncedQuery} artist={artist} />
       </TabsContent>
       <TabsContent value="about" className="size-full">
         <AboutTab artist={artist} />
       </TabsContent>
       <TabsContent value="featuring" className="size-full">
-        <FeaturingTab artist={artist} />
+        <FeaturingTab query={debouncedQuery} artist={artist} />
       </TabsContent>
     </Tabs>
   );

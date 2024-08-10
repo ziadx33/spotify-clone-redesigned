@@ -9,13 +9,14 @@ import { SectionItemSkeleton } from "../../skeleton";
 type AlbumsTabProps = {
   artist: User;
   filters: FiltersStateType;
+  query: string | null;
 };
 
 export type FiltersStateType = {
   viewAs: "list" | "grid";
 };
 
-export function AlbumsTab({ artist, filters }: AlbumsTabProps) {
+export function AlbumsTab({ artist, filters, query }: AlbumsTabProps) {
   const { data, isLoading } = useQuery({
     queryKey: [`albums-tab-${artist.id}`],
     queryFn: async () => {
@@ -43,9 +44,10 @@ export function AlbumsTab({ artist, filters }: AlbumsTabProps) {
       >
         {!isLoading ? (
           <Albums
+            query={query}
             filters={filters}
             artist={artist}
-            albums={data?.data ?? []}
+            data={data?.data ?? []}
             tracks={data?.tracks ?? []}
           />
         ) : (

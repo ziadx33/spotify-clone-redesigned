@@ -11,15 +11,15 @@ import { type TrackFilters } from "@/types";
 import { FiltersSelect } from "./filters-select";
 import { type Dispatch, type SetStateAction } from "react";
 import { useSession } from "@/hooks/use-session";
-import { SearchInput } from "./search-input";
+import { SearchInput } from "../../components/search-input";
 import { AddLibraryButton } from "@/components/components/add-library-button";
 
 type PlayerProps = {
   id: Playlist["id"];
   filters: TrackFilters;
-  setFilters: Dispatch<SetStateAction<TrackFilters>>;
-  handleFilterChange: (name: keyof TrackFilters) => void;
-  setTrackQuery: Dispatch<SetStateAction<string | null>>;
+  setFilters?: Dispatch<SetStateAction<TrackFilters>>;
+  handleFilterChange?: (name: keyof TrackFilters) => void;
+  setTrackQuery?: Dispatch<SetStateAction<string | null>>;
   playlist: Playlist | null;
 };
 

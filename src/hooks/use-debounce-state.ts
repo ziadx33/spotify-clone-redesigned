@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-export const useDebounceState = <T>(init: T) => {
+export const useDebounceState = <T>(init: T, timeout = 500) => {
   const [state, setState] = useState(init);
   const [debounceState, setDebounceState] = useState(init);
 
@@ -13,7 +13,7 @@ export const useDebounceState = <T>(init: T) => {
 
     timeoutRef.current = setTimeout(() => {
       setDebounceState(state);
-    }, 500);
+    }, timeout);
 
     return () => {
       if (timeoutRef.current) {

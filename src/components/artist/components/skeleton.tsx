@@ -28,7 +28,7 @@ export function SectionItemSkeleton({ amount }: { amount: number }) {
   return Array.from({ length: amount })?.map((_, index) => (
     <Card
       key={index}
-      className="group border-none p-0 transition-colors hover:bg-card"
+      className="group mx-2 border-none p-0 transition-colors hover:bg-card"
     >
       <CardContent className="p-0">
         <div className="flex h-[295.078px] w-[236.062px] flex-col p-[12px] text-start">
