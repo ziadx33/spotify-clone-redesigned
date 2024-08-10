@@ -40,7 +40,7 @@ export async function Artist({ artist, playlistId }: ArtistProps) {
         </div>
       </div>
       <div className="size-full px-8 py-5">
-        <TabsSection artist={artist} />
+        <TabsSection playlistId={playlistId} artist={artist} />
       </div>
     </div>
   );

@@ -8,7 +8,6 @@ import {
 import { addTrack } from "@/state/slices/tracks";
 import { type AppDispatch } from "@/state/store";
 import { type Track, type User, type Playlist } from "@prisma/client";
-import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsX } from "react-icons/bs";
 import { useQuery } from "@tanstack/react-query";

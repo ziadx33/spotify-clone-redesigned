@@ -11,22 +11,21 @@ import {
 import { useSession } from "@/hooks/use-session";
 import { RenderTracks } from "../../render-tracks";
 import { AboutSection } from "./components/about-section";
-import { type Dispatch, type SetStateAction } from "react";
 import { type tabs } from "../../tabs";
 
 type HomeTabProps = {
   artist: User;
-  setCurrentTab: Dispatch<SetStateAction<(typeof tabs)[number]>>;
+  setCurrentTab?: (value: (typeof tabs)[number]) => void;
 };
 
 export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
-  const user = useSession();
+  const { data: user, status } = useSession();
   const { data, isLoading } = useQuery({
     queryKey: [`home-tab-${artist.id}`],
     queryFn: async () => {
       const [userTopTracks, topTracks, artistPick] = [
         await getUserTopTracks({
-          user: user.data?.user,
+          user: user?.user,
           artistId: artist.id,
         }),
         await getPopularTracks({
@@ -37,6 +36,7 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
       ] as const;
       return { userTopTracks, topTracks, artistPick };
     },
+    enabled: status === "authenticated",
   });
   return (
     <div className="flex min-h-full gap-4 pt-8">
@@ -48,12 +48,12 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
             }}
             title="Your most played"
             data={data?.userTopTracks.data}
-            loading={isLoading}
+            loading={isLoading || status !== "authenticated"}
           />
           <RenderTracks
             title="Popular"
             data={data?.topTracks}
-            loading={isLoading}
+            loading={isLoading || status !== "authenticated"}
           />
         </div>
       </div>
@@ -61,7 +61,7 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
         {artist.artistPick && (
           <ArtistPickSection
             name={artist.name}
-            loading={isLoading}
+            loading={isLoading || status !== "authenticated"}
             data={data?.artistPick}
           />
         )}

@@ -13,12 +13,13 @@ export function Navigate({
   children,
   data,
   href,
+  asChild,
   ...restProps
 }: NavigateProps & {
   children: ReactNode;
+  asChild?: boolean;
 } & ComponentPropsWithoutRef<"button">) {
   const navigate = useNavigate({ data, href });
-  console.log("stop navigationg", href);
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
@@ -27,7 +28,7 @@ export function Navigate({
         </button>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={() => navigate(false)}>
+        <ContextMenuItem onClick={() => navigate(undefined, undefined, false)}>
           Open in new tab
         </ContextMenuItem>
       </ContextMenuContent>

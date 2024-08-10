@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getSearchQueryData } from "@/server/actions/search";
 import { SearchContent } from "./components/search-content";
 import { useSearch } from "@/hooks/use-search";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import Loading from "../ui/loading";
 
 export function Search() {

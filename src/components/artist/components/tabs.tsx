@@ -9,6 +9,9 @@ import { SinglesTab } from "./tabs/singles-tab/singles-tab";
 import { AboutTab } from "./tabs/about-tab/about-tab";
 import { Control } from "./tabs/albums-tab/components/control";
 import { FeaturingTab } from "./tabs/featuring-tab/featuring-tab";
+import { useSearch } from "@/hooks/use-search";
+import { Navigate } from "@/components/navigate";
+import { useNavigate } from "@/hooks/use-navigate";
 export const tabs = [
   "home",
   "albums",
@@ -17,20 +20,35 @@ export const tabs = [
   "featuring",
 ] as const;
 
-export function TabsSection({ artist }: { artist: User }) {
-  const [currentTab, setCurrentTab] = useState<(typeof tabs)[number]>(tabs[1]);
+type TabsSectionProps = {
+  artist: User;
+  playlistId: string;
+};
+
+export function TabsSection({ artist, playlistId }: TabsSectionProps) {
+  const {
+    unDebouncedValues: { tab: currentTab },
+    setQuery,
+  } = useSearch<{ tab: (typeof tabs)[number] }>({
+    data: {
+      tab: tabs[0],
+    },
+  });
+  const navigate = useNavigate({});
   const [filters, setFilters] = useState<FiltersStateType>({
     viewAs: "grid",
   });
   return (
     <Tabs
-      value={currentTab}
-      onValueChange={(e) => setCurrentTab(e as (typeof tabs)[number])}
+      value={currentTab ?? "home"}
+      onValueChange={(e) => {
+        setQuery({ name: "tab", value: e });
+      }}
     >
       <div className="flex justify-between">
-        <TabsList className="flex w-fit">
+        <TabsList defaultValue={currentTab ?? "home"} className="flex w-fit">
           {tabs.map((tab) => (
-            <TabsTrigger className="w-fit min-w-36" key={tab} value={tab}>
+            <TabsTrigger key={tab} value={tab} className="w-fit min-w-36">
               {tab}
             </TabsTrigger>
           ))}
@@ -41,7 +59,10 @@ export function TabsSection({ artist }: { artist: User }) {
       </div>
 
       <TabsContent value="home" className="size-full">
-        <HomeTab setCurrentTab={setCurrentTab} artist={artist} />
+        <HomeTab
+          setCurrentTab={(value) => setQuery({ name: "tab", value })}
+          artist={artist}
+        />
       </TabsContent>
       <TabsContent value="albums" className="size-full">
         <AlbumsTab filters={filters} artist={artist} />

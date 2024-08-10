@@ -38,7 +38,6 @@ export const useSearch = <T extends Record<string, string>>({
   ) => {
     const newParams = new URLSearchParams(existing.toString());
     updates.forEach(({ name, value }) => {
-      // Only set the value if it is different from the existing value
       if (newParams.get(String(name)) !== value) {
         newParams.set(String(name), value);
       }
@@ -128,5 +127,6 @@ export const useSearch = <T extends Record<string, string>>({
   return {
     setQuery,
     values: getResultValue(debounce),
+    unDebouncedValues: normalValue,
   };
 };
