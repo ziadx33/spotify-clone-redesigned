@@ -7,7 +7,7 @@ import { type Playlist } from "@prisma/client";
 import { revalidate } from "@/server/actions/revalidate";
 
 type UseAddPlaylistProps = {
-  playlist: Playlist | null;
+  playlist?: Playlist | null;
 };
 
 export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {

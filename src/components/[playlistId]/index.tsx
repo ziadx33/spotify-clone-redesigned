@@ -3,15 +3,25 @@
 import { usePlaylist } from "@/hooks/use-playlist";
 import { useSession } from "@/hooks/use-session";
 import { useQuery } from "@tanstack/react-query";
-import { MusicPlayer } from "./components/music-player";
 import { useTracks } from "@/hooks/use-tracks";
-import { EditableData } from "./components/editable-data";
-import { MoreAlbums } from "./components/more-albums";
 import { getUserById } from "@/server/actions/verification-token";
 import { getPlaylists } from "@/server/actions/playlist";
-import { Recommended } from "./components/recommended";
+import { type Playlist as PlaylistType, type User } from "@prisma/client";
+import { Album } from "./album";
+import { Playlist } from "./playlist";
 
-export function Playlist({ id }: { id: string }) {
+export type PlaylistPageProps = {
+  creatorData?: {
+    creatorData: User | null;
+    playlists: PlaylistType[];
+  } | null;
+  type: string;
+  tracks?: ReturnType<typeof useTracks>["data"];
+  data: PlaylistType | null;
+  id: string;
+};
+
+export function PlaylistPage({ id }: { id: string }) {
   const { data } = usePlaylist(id);
   const { data: userData, status } = useSession();
   const { data: creatorData } = useQuery({
@@ -31,32 +41,15 @@ export function Playlist({ id }: { id: string }) {
   });
 
   const { data: tracks } = useTracks();
-  const type = userData?.user?.id === data?.creatorId ? "Playlist" : "Album";
-  return (
-    <div className="flex h-fit min-h-full w-full flex-col">
-      <EditableData
-        creatorData={creatorData?.creatorData}
-        data={data}
-        tracks={tracks?.tracks ?? []}
-        type={type}
-      />
-      <div className="flex h-fit w-full flex-col gap-4 px-8 pb-4">
-        <MusicPlayer playlist={data} id={id} />
-        {type === "Album" ? (
-          <MoreAlbums
-            artist={creatorData?.creatorData}
-            playlist={data}
-            data={creatorData?.playlists}
-          />
-        ) : (
-          <Recommended
-            playlistId={id}
-            tracks={tracks?.tracks}
-            playlist={data}
-            artists={tracks?.authors}
-          />
-        )}
-      </div>
-    </div>
-  );
+  const type =
+    (userData?.user?.id === data?.creatorId ? "Playlist" : "Album") ??
+    "Playlist";
+  const props: PlaylistPageProps = {
+    id,
+    type,
+    creatorData,
+    data,
+    tracks,
+  };
+  return type === "Playlist" ? <Playlist {...props} /> : <Album {...props} />;
 }

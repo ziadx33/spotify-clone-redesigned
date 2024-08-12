@@ -2,6 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { type getTrackById } from "@/server/actions/track";
 import Image from "next/image";
 import Link from "next/link";
+import { SkeletonList } from "../../../skeleton";
 
 type ArtistPickSectionProps = {
   loading: boolean;
@@ -39,8 +40,7 @@ export function ArtistPickSection({
           <>
             <Skeleton className="size-[80px]" />
             <div className="flex flex-col gap-1">
-              <Skeleton className="h-2.5 w-24" />
-              <Skeleton className="h-2.5 w-12" />
+              <SkeletonList amount={2} className="h-2.5 w-24" />
             </div>
           </>
         )}

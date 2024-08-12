@@ -7,6 +7,7 @@ import { SearchContent } from "./components/search-content";
 import { useSearch } from "@/hooks/use-search";
 import { useRef } from "react";
 import Loading from "../ui/loading";
+import { BrowsePage } from "./components/browse-page";
 
 export function Search() {
   const searchParams = useSearchParams();
@@ -20,6 +21,7 @@ export function Search() {
       });
       return data;
     },
+    enabled: !queryRef.current || queryRef.current !== "",
   });
   useSearch({
     onChange: async ({ query }) => {
@@ -32,8 +34,12 @@ export function Search() {
   });
   return (
     <div className="flex flex-col p-4">
-      {!isLoading && data ? (
-        <SearchContent {...data} />
+      {!isLoading ? (
+        queryRef.current ? (
+          data && <SearchContent {...data} />
+        ) : (
+          <BrowsePage />
+        )
       ) : (
         <Loading className="h-[50rem]" />
       )}

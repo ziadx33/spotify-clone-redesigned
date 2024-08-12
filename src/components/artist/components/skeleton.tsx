@@ -2,6 +2,7 @@ import { Track } from "@/components/components/track";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TableBody, Table } from "@/components/ui/table";
+import { ComponentPropsWithoutRef } from "react";
 
 type Skeleton<T extends object> = {
   amount: number;
@@ -66,4 +67,24 @@ export function TabSkeleton({ amount }: { amount: number }) {
       </div>
     </div>
   ));
+}
+
+export function SkeletonList({
+  amount,
+  ...restProps
+}: { amount: number } & Partial<ComponentPropsWithoutRef<"div">>) {
+  return Array.from({ length: amount })?.map((_, index) => (
+    <Skeleton key={index} {...restProps} />
+  ));
+}
+
+export function SkeletonAuthorList({ amount }: { amount: number }) {
+  return Array.from({ length: amount }).map((_, i) => {
+    return (
+      <div key={i} className="flex h-fit w-full items-center gap-5 font-medium">
+        <Skeleton className="size-[50px] rounded-full" />
+        <Skeleton className="h-3 w-36" />
+      </div>
+    );
+  });
 }

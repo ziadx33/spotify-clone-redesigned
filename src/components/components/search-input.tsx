@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Dispatch, SetStateAction, useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
 type SearchInputProps = {
@@ -9,7 +9,7 @@ type SearchInputProps = {
     query: string | null,
   ) => void | Dispatch<SetStateAction<string | null>>;
   reverse?: boolean;
-  value: string | null;
+  value?: string | null;
 };
 
 export function SearchInput({
@@ -28,7 +28,7 @@ export function SearchInput({
     >
       {isSearching && (
         <Input
-          value={value ?? ""}
+          defaultValue={value ?? ""}
           autoFocus
           onChange={(e) =>
             setTrackQuery?.(e.target.value === "" ? null : e.target.value)

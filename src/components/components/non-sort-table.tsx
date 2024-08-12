@@ -9,6 +9,7 @@ import { type Track as TrackType, type Playlist } from "@prisma/client";
 import { BsClock } from "react-icons/bs";
 import { Track } from "./track";
 import { type TrackFilters } from "@/types";
+import { type Dispatch, type SetStateAction } from "react";
 
 export type ReplaceDurationWithButton = {
   name: string;
@@ -27,6 +28,8 @@ export type NonSortTableProps = {
   replaceDurationWithButton?: ReplaceDurationWithButton;
   hidePlayButton?: boolean;
   skeleton?: boolean;
+  selectedTracks?: string[];
+  setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
 };
 
 export function NonSortTable({
@@ -41,7 +44,10 @@ export function NonSortTable({
   replaceDurationWithButton,
   hidePlayButton = false,
   skeleton = false,
+  selectedTracks,
+  setSelectedTracks,
 }: NonSortTableProps) {
+  console.log("abyusif", selectedTracks);
   return (
     <>
       {showHead && (
@@ -57,6 +63,7 @@ export function NonSortTable({
             <TableHead>
               <BsClock size={15} />
             </TableHead>
+            {setSelectedTracks && <TableHead />}
           </TableRow>
         </TableHeader>
       )}
@@ -65,6 +72,8 @@ export function NonSortTable({
           ?.slice(0, !limit ? data.tracks.length : limit)
           .map((track, trackIndex) => (
             <Track
+              setSelectedTracks={setSelectedTracks}
+              selected={!!selectedTracks?.find((id) => id === track.id)}
               skeleton={skeleton}
               hidePlayButton={hidePlayButton}
               replacePlaysWithPlaylist={replacePlaysWithPlaylist}

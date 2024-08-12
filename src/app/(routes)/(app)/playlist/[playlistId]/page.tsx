@@ -1,11 +1,11 @@
 "use client";
 
-import { Playlist } from "@/components/[playlistId]";
+import { PlaylistPage } from "@/components/[playlistId]";
 import { notFound, useParams } from "next/navigation";
 
-export default function PlaylistPage() {
+export default function Playlist() {
   const params = useParams();
   const playlistId = params.playlistId as string | null;
   if (!playlistId) notFound();
-  return <Playlist id={playlistId} />;
+  return <PlaylistPage id={playlistId} />;
 }

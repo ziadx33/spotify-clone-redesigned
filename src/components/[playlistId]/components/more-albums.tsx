@@ -36,11 +36,11 @@ export function MoreAlbums({ data, playlist, artist }: MoreAlbumsProps) {
             showMoreButton ? (
               <Navigate
                 data={{
-                  href: `/artist/${artist?.id}/discography?playlist=${playlist?.id}`,
+                  href: `/artist/${artist?.id}?playlist=${playlist?.id}`,
                   title: `Discography - ${artist?.name}` ?? "unknown",
                   type: "ARTIST",
                 }}
-                href={`/artist/${artist?.id}/discography?playlist=${playlist?.id}`}
+                href={`/artist/${artist?.id}?playlist=${playlist?.id}`}
               >
                 More by {artist?.name}
               </Navigate>
@@ -55,11 +55,11 @@ export function MoreAlbums({ data, playlist, artist }: MoreAlbumsProps) {
           <Button asChild variant="link">
             <Navigate
               data={{
-                href: `/artist/${artist?.id}/discography?playlist=${playlist?.id}`,
+                href: `/artist/${artist?.id}?playlist=${playlist?.id}`,
                 title: `Discography - ${artist?.name}` ?? "unknown",
                 type: "ARTIST",
               }}
-              href={`/artist/${artist?.id}/discography?playlist=${playlist?.id}`}
+              href={`/artist/${artist?.id}?playlist=${playlist?.id}`}
             >
               show more
             </Navigate>

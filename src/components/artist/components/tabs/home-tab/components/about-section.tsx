@@ -3,6 +3,7 @@ import { type User } from "@prisma/client";
 import Image from "next/image";
 import { type tabs } from "../../../tabs";
 import { Badge } from "@/components/ui/badge";
+import { enumParser } from "@/utils/enum-parser";
 
 type ArtistPickSectionProps = {
   data: User;
@@ -28,7 +29,7 @@ export function AboutSection({ data, setCurrentTab }: ArtistPickSectionProps) {
         <p className="line-clamp-5">{data.about}</p>
         <div className="flex gap-2">
           {(data.genres as string[]).map((genre) => (
-            <Badge key={genre}>{genre.replace("_", " ").toLowerCase()}</Badge>
+            <Badge key={genre}>{enumParser(genre)}</Badge>
           ))}
         </div>
       </div>

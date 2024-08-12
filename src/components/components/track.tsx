@@ -5,7 +5,7 @@ import { type TrackFilters } from "@/types";
 import { getAgoTime } from "@/utils/get-ago-time";
 import { type User, type Track, type Playlist } from "@prisma/client";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import { TrackMoreButton } from "./track-more-button";
 import { type ReplaceDurationWithButton } from "./non-sort-table";
@@ -13,6 +13,8 @@ import { Button } from "../ui/button";
 import { Navigate } from "../navigate";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonList } from "../artist/components/skeleton";
+import { Checkbox } from "../ui/checkbox";
 
 type Props = {
   track: Track & { trackIndex: number };
@@ -28,6 +30,8 @@ type Props = {
   hidePlayButton?: boolean;
   hideViews?: boolean;
   className?: string;
+  selected?: boolean;
+  setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
 };
 
 export type TrackProps =
@@ -49,6 +53,8 @@ export function Track(props: TrackProps) {
     className,
     skeleton,
     viewAs,
+    selected,
+    setSelectedTracks,
   } = props;
   const [showButtons, setShowButtons] = useState(false);
   const [showMoreButton, setShowMoreButton] = useState(false);
@@ -156,14 +162,14 @@ export function Track(props: TrackProps) {
             ) : (
               <Skeleton className="h-2.5 w-28" />
             )}
-            {isList && !skeleton ? (
-              <div className="flex gap-1">{authorsElement}</div>
-            ) : (
-              <div className="flex gap-1">
-                <Skeleton className="mt-2 h-2.5 w-10" />
-                <Skeleton className="mt-2 h-2.5 w-16" />
-              </div>
-            )}
+            {isList &&
+              (!skeleton ? (
+                <div className="flex w-fit gap-1">{authorsElement}</div>
+              ) : (
+                <div className="flex gap-1">
+                  <SkeletonList amount={2} className="mt-2 h-2.5 w-10" />
+                </div>
+              ))}
           </div>
         </div>
       </TableCell>
@@ -175,17 +181,24 @@ export function Track(props: TrackProps) {
       key={!skeleton ? props.track.id : crypto.randomUUID()}
       onMouseOver={() => hoverTrackHandler(true)}
       onMouseLeave={() => hoverTrackHandler(false)}
-      className={hidePlayButton ? "flex w-full justify-between " : ""}
+      className={cn(
+        "overflow-hidden",
+        hidePlayButton ? "flex w-full justify-between " : "",
+        selected ? "bg-muted" : "",
+      )}
     >
-      {hidePlayButton ? <div>{indexAndImage}</div> : indexAndImage}
+      {hidePlayButton ? (
+        <div className="w-96">{indexAndImage}</div>
+      ) : (
+        indexAndImage
+      )}
       {!isAlbum && (
         <>
           {!isList ? (
             <TableCell className="flex gap-1">{authorsElement}</TableCell>
           ) : skeleton ? (
             <div className="flex gap-1">
-              <Skeleton className="mt-2 h-2.5 w-10" />
-              <Skeleton className="mt-2 h-2.5 w-16" />
+              <SkeletonList amount={2} className="mt-2 h-2.5 w-10" />
             </div>
           ) : null}
         </>
@@ -234,7 +247,7 @@ export function Track(props: TrackProps) {
       <TableCell>
         {!replaceDurationWithButton ? (
           !skeleton ? (
-            <div className="flex h-full w-24 gap-3">
+            <div className="flex h-full w-24 items-center gap-3">
               {String(
                 (
                   Math.floor(props.track.duration / 60) +
@@ -262,6 +275,21 @@ export function Track(props: TrackProps) {
           </Button>
         ) : (
           <Skeleton className="h-2.5 w-12" />
+        )}
+      </TableCell>
+      <TableCell>
+        {setSelectedTracks && !skeleton && (showButtons || selected) && (
+          <Checkbox
+            onCheckedChange={(e) =>
+              setSelectedTracks((v) =>
+                e
+                  ? [...v, props.track.id]
+                  : v.filter((track) => track !== props.track.id) ?? [],
+              )
+            }
+            defaultChecked={selected}
+            className="rounded-full"
+          />
         )}
       </TableCell>
     </TableRow>

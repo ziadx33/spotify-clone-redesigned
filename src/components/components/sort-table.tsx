@@ -22,6 +22,8 @@ type SortTableProps = {
   trackQuery: string | null;
   playlist: Playlist;
   skeleton?: boolean;
+  selectedTracks?: string[];
+  setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
 };
 
 export function SortTable({
@@ -32,6 +34,7 @@ export function SortTable({
   trackQuery,
   playlist,
   skeleton = false,
+  selectedTracks,
 }: SortTableProps) {
   const memoizedTracks = useMemo(() => {
     return sortTracks({
@@ -42,6 +45,7 @@ export function SortTable({
       trackQuery,
     })?.map((track, trackIndex) => (
       <Track
+        selected={!!selectedTracks?.find((id) => id === track.id)}
         skeleton={skeleton}
         playlist={playlist}
         viewAs={filters.viewAs}

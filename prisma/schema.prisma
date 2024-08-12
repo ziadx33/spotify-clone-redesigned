@@ -124,6 +124,7 @@ model Playlist {
     type       PLAYLIST_TYPE       @default(ALBUM)
     createdAt  DateTime            @default(now())
     visibility PLAYLIST_VISIBILITY @default(PUBLIC)
+    genres     GENRES[]            @default([])
 
     Track Track[]
 }

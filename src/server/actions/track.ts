@@ -1,6 +1,6 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { db } from "../db";
 import { type TracksSliceType } from "@/state/slices/tracks";
@@ -17,7 +17,14 @@ export const getTracksByPlaylistId = unstable_cache(
           ? { has: playlistId }
           : { hasSome: playlistId };
       const tracks = await db.track.findMany({
-        where: { playlists: isArray },
+        where: {
+          OR: [
+            { playlists: isArray },
+            {
+              albumId: typeof playlistId === "string" ? playlistId : undefined,
+            },
+          ],
+        },
       });
       const requests = [
         db.user.findMany({
@@ -385,6 +392,35 @@ export const getTrackById = async (trackId: string) => {
       },
     });
     return track;
+  } catch (error) {
+    throw { error };
+  }
+};
+
+type AddPlaylistToTracksParams = {
+  playlistId: string;
+  trackIds: string[];
+};
+
+export const addPlaylistToTracks = async ({
+  playlistId,
+  trackIds,
+}: AddPlaylistToTracksParams) => {
+  try {
+    const tracks = await db.track.updateMany({
+      where: {
+        id: {
+          in: trackIds,
+        },
+      },
+      data: {
+        playlists: {
+          push: playlistId,
+        },
+      },
+    });
+    revalidatePath(`/playlist/${playlistId}`);
+    return tracks;
   } catch (error) {
     throw { error };
   }

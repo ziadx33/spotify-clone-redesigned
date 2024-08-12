@@ -14,7 +14,9 @@ type TracksProps = {
   setFilters: Dispatch<SetStateAction<TrackFilters>>;
   handleFilterChange: (name: keyof TrackFilters) => void;
   trackQuery: string | null;
-  playlist: Playlist | null;
+  playlist?: Playlist | null;
+  selectedTracks?: string[];
+  setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
 };
 
 export function Tracks({
@@ -23,6 +25,8 @@ export function Tracks({
   handleFilterChange,
   trackQuery,
   playlist,
+  setSelectedTracks,
+  selectedTracks,
 }: TracksProps) {
   const { data: user } = useSession();
   const { data } = useTracks();
@@ -32,6 +36,8 @@ export function Tracks({
     <Table>
       {isCreatedByUser ? (
         <SortTable
+          setSelectedTracks={setSelectedTracks}
+          selectedTracks={selectedTracks}
           data={data}
           filters={filters}
           handleFilterChange={handleFilterChange}
@@ -41,6 +47,8 @@ export function Tracks({
         />
       ) : (
         <NonSortTable
+          setSelectedTracks={setSelectedTracks}
+          selectedTracks={selectedTracks}
           showTrackImage={false}
           viewAs={filters.viewAs}
           data={data}

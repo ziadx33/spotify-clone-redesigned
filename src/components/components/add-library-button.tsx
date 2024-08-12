@@ -7,7 +7,7 @@ import { PlusCircle } from "lucide-react";
 import { FaCircleCheck } from "react-icons/fa6";
 
 type AddPlaylistButtonProps = {
-  playlist: Playlist | null;
+  playlist?: Playlist | null;
   size?: number;
   divideBy?: number;
   disabled?: boolean;
@@ -26,7 +26,7 @@ export function AddLibraryButton({
     <Button
       size={"icon"}
       variant="ghost"
-      disabled={isLoading || disabled}
+      disabled={isLoading ?? disabled ?? !playlist}
       className="rounded-full"
       style={{
         width: `${size}px`,
