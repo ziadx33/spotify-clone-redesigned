@@ -43,12 +43,7 @@ export function AboutSection({ data, setCurrentTab }: ArtistPickSectionProps) {
         </div>
       )}
       <div className="flex max-w-[80%] flex-col gap-2 p-4">
-        <p className="line-clamp-5 ">
-          {data.about} Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Aliquid consectetur illo, libero unde aperiam aut expedita
-          necessitatibus recusandae, dolor voluptatibus excepturi facere atque
-          maxime reprehenderit tempora quis odio? Excepturi, alias.
-        </p>
+        <p className="line-clamp-5 ">{data.about}</p>
         <div className="flex gap-2">
           {(data.genres as string[]).map((genre) => (
             <Badge key={genre}>{enumParser(genre)}</Badge>
