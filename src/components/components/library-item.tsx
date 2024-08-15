@@ -22,7 +22,7 @@ export function LibraryItem({
     <Button
       variant="ghost"
       className={cn(
-        "flex h-[4.3rem] justify-start gap-3 px-2 ",
+        "h-[4.3rem] gap-3 px-2 ",
         pathname.startsWith(
           isArtist ? `/artist/${data.id}` : `/playlist/${data.id}`,
         )
@@ -45,16 +45,14 @@ export function LibraryItem({
             : `/playlist/${data.id}`
         }
       >
-        <Image
-          src={(isArtist ? data.image : data.imageSrc) ?? ""}
-          className={cn(
-            "h-[55px] w-[70px] rounded-md object-cover",
-            imageClassNames,
-          )}
-          width={55}
-          height={55}
-          alt={isArtist ? data.name : data.title}
-        />
+        <div className="relative h-full w-[65px] overflow-hidden">
+          <Image
+            src={(isArtist ? data.image : data.imageSrc) ?? ""}
+            className={cn("rounded-md object-cover", imageClassNames)}
+            fill
+            alt={isArtist ? data.name : data.title}
+          />
+        </div>
         <h4 className="flex w-full flex-col items-start gap-1">
           <span>{isArtist ? data.name : data.title}</span>
           <span className="flex items-center gap-1.5 text-muted-foreground">

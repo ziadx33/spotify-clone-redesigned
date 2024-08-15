@@ -21,7 +21,7 @@ type HomeTabProps = {
 export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
   const { data: user, status } = useSession();
   const { data, isLoading } = useQuery({
-    queryKey: [`home-tab-${artist.id}`],
+    queryKey: [`home-tab-artist-${artist.id}`],
     queryFn: async () => {
       const [userTopTracks, topTracks, artistPick] = [
         await getUserTopTracks({
@@ -42,14 +42,16 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
     <div className="flex min-h-full gap-4 pt-8">
       <div className="flex-1">
         <div className="flex flex-col gap-2">
-          <RenderTracks
-            tracksProps={{
-              hideViews: true,
-            }}
-            title="Your most played"
-            data={data?.userTopTracks.data}
-            loading={isLoading || status !== "authenticated"}
-          />
+          {(data?.userTopTracks.data.tracks?.length ?? 0) > 1 && (
+            <RenderTracks
+              tracksProps={{
+                hideViews: true,
+              }}
+              title="Your most played"
+              data={data?.userTopTracks.data}
+              loading={isLoading || status !== "authenticated"}
+            />
+          )}
           <RenderTracks
             title="Popular"
             data={data?.topTracks}

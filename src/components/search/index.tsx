@@ -15,7 +15,6 @@ export function Search() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: [],
     queryFn: async () => {
-      console.log("it's shitting rn so go away");
       const data = await getSearchQueryData({
         query: queryRef.current ?? "",
       });
