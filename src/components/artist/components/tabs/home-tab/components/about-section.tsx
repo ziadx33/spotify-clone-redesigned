@@ -42,8 +42,13 @@ export function AboutSection({ data, setCurrentTab }: ArtistPickSectionProps) {
           </div>
         </div>
       )}
-      <div className="flex max-w-[80%] flex-col gap-2 p-4">
-        <p className="line-clamp-5 ">{data.about}</p>
+      <div
+        className={cn(
+          "flex flex-col gap-2 p-4",
+          data.aboutImage ? "w-full" : "max-w-[80%]",
+        )}
+      >
+        <p className="line-clamp-5">{data.about}</p>
         <div className="flex gap-2">
           {(data.genres as string[]).map((genre) => (
             <Badge key={genre}>{enumParser(genre)}</Badge>

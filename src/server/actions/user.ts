@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { db } from "../db";
 import { type registerSchema } from "@/schemas";
 import { compare, hash } from "bcrypt";
-import { type User } from "@prisma/client";
+import { type $Enums, type User } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
@@ -163,4 +163,27 @@ export const getUsersBySearchQuery = unstable_cache(
       throw { error };
     }
   }),
+);
+
+export const getPopularUsers = unstable_cache(
+  cache(async ({ type }: { type: $Enums.GENRES }) => {
+    try {
+      const users = await db.user.findMany({
+        where: {
+          genres: {
+            has: type,
+          },
+        },
+        orderBy: {
+          followers: "desc",
+        },
+        take: 30,
+      });
+
+      return users;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["popular-users", "type"],
 );

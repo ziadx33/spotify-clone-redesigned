@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -47,12 +49,17 @@ export function SectionItem({
               className={cn("rounded-sm object-cover", imageClasses)}
             />
             {showPlayButton && (
-              <Button
-                size={"icon"}
-                className="absolute -bottom-20 right-2 h-16 w-16 rounded-full opacity-0 transition-all duration-200 hover:bg-primary group-hover:bottom-2 group-hover:opacity-100"
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute -bottom-20 right-2 h-16 w-16 transition-all duration-200 group-hover:bottom-2 group-hover:opacity-100"
               >
-                <FaPlay size={20} />
-              </Button>
+                <Button
+                  size={"icon"}
+                  className="h-full w-full rounded-full opacity-0 transition-opacity hover:bg-primary group-hover:opacity-100"
+                >
+                  <FaPlay size={20} />
+                </Button>
+              </div>
             )}
           </div>
           <div className="flex flex-col">

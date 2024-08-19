@@ -15,8 +15,8 @@ export const useNavigate = ({ href, data }: NavigateProps) => {
     navigateData?: NavigateProps["data"],
     create = true,
   ) => {
-    const dataUsed = (data === undefined ? navigateData : data)!;
-    const hrefUsed = (href === undefined ? navigateHref : href)!;
+    const dataUsed = (data ?? navigateData)!;
+    const hrefUsed = (href ?? navigateHref)!;
     console.log("stop shitting", href, navigateHref);
     const navigateTab = getTabByHref(dataUsed.href ?? "");
     if (!navigateTab && !create) {

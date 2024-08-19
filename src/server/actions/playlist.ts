@@ -5,7 +5,7 @@ import { db } from "../db";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { type Session } from "@/hooks/use-session";
-import { type Playlist } from "@prisma/client";
+import { type $Enums, type Playlist } from "@prisma/client";
 import { getArtistsByIds } from "./track";
 
 type GetPlaylistsParams = {
@@ -191,4 +191,71 @@ export const getPlaylistsBySearchQuery = unstable_cache(
       throw { error };
     }
   }),
+);
+
+export const getNewPlaylists = unstable_cache(
+  cache(async ({ type }: { type: $Enums.GENRES }) => {
+    try {
+      let playlists = await db.playlist.findMany({
+        where: {
+          genres: {
+            has: type,
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+        take: 31,
+      });
+      if (playlists.length === 0) playlists = await db.playlist.findMany();
+      const authors = await getArtistsByIds(
+        playlists.map((playlist) => playlist.creatorId),
+      );
+      return { playlists, authors };
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["get-new-releases", "type"],
+);
+
+export const getPopularPlaylists = unstable_cache(
+  cache(async ({ type }: { type: $Enums.GENRES }) => {
+    try {
+      const defaultOptions = {
+        where: {
+          genres: {
+            has: type,
+          },
+        },
+        take: 20,
+      };
+      const artists = await db.user.findMany({
+        orderBy: {
+          followers: "asc",
+        },
+        take: 20,
+      });
+
+      let playlists = await db.playlist.findMany({
+        ...defaultOptions,
+        where: {
+          ...defaultOptions.where,
+          creatorId: {
+            in: artists.map((artist) => artist.id),
+          },
+        },
+        take: 20,
+      });
+
+      if (playlists.length === 0) {
+        playlists = await db.playlist.findMany(defaultOptions);
+      }
+
+      return { playlists, authors: artists };
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["get-popular-releases", "type"],
 );

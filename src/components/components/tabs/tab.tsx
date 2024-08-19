@@ -3,14 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { useTabs } from "@/hooks/use-tabs";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { BsX } from "react-icons/bs";
 import { type IconType } from "react-icons/lib";
 
 type TabProps = {
   title: string;
-  Icon: IconType;
+  Icon?: IconType;
   iconSize?: number;
   gap?: number;
   href: string;
@@ -30,16 +30,25 @@ export function Tab({
   currentContent,
 }: TabProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const getIsCurrentTab = (href: string) =>
-    pathname === (href.includes("?") ? href.split("?")[0] : href);
-  console.log(
-    "stop",
-    href.includes("?") ? href.split("?")[0] : href,
-    "stop again",
-    pathname,
-    getIsCurrentTab(href),
-  );
+  const getHRefSearchParams = (href: string) => {
+    return new URLSearchParams(
+      href.includes("?") ? href.split("?")[1] : href,
+    ).toString();
+  };
+
+  const nonSearchParamsRoutes = ["/search"];
+  const getIsCurrentTab = (href: string) => {
+    const isNonSearchParamRoute = nonSearchParamsRoutes.some(
+      (route) => href === route && pathname === route,
+    );
+    if (isNonSearchParamRoute) return true;
+    return (
+      pathname === (href.includes("?") ? href.split("?")[0] : href) &&
+      searchParams.toString() === getHRefSearchParams(href)
+    );
+  };
   const [isCurrentTab, setIsCurrentTab] = useState(getIsCurrentTab(href));
   const currentTabRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -85,12 +94,14 @@ export function Tab({
           onClick={!isCurrentTab ? changePageHandler : undefined}
           className="mr-auto flex h-full w-[85%] items-center justify-start pl-3"
         >
-          <Icon
-            size={iconSize}
-            style={{
-              marginRight: `${gap}px`,
-            }}
-          />
+          {Icon && (
+            <Icon
+              size={iconSize}
+              style={{
+                marginRight: `${gap}px`,
+              }}
+            />
+          )}
           {currentContent && isCurrentTab ? currentContent : titleSpan}
         </button>
         {deleteData && (

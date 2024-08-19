@@ -225,14 +225,21 @@ type GetPopularTracks = {
 export const getPopularTracks = unstable_cache(
   cache(async ({ artistId, range }: GetPopularTracks) => {
     try {
-      let tracks = await db.track.findMany({
+      const defaultOptions = {
         where: {
           OR: [{ authorId: artistId }, { authorIds: { has: artistId } }],
         },
+      };
+      let tracks = await db.track.findMany({
+        ...defaultOptions,
+        orderBy: {
+          plays: "desc",
+        },
+
         skip: range.from,
         take: range.to,
       });
-      if (tracks.length === 0) tracks = await db.track.findMany();
+      if (tracks.length === 0) tracks = await db.track.findMany(defaultOptions);
       const authors = await db.user.findMany({
         where: {
           OR: [
