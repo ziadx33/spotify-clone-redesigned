@@ -1,12 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import { FaPlay } from "react-icons/fa";
 import { type TAB_TYPE } from "@prisma/client";
 import { Navigate } from "../navigate";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getAvatarFallback } from "@/utils/get-avatar-fallback";
+import { useMemo } from "react";
+import { useIntersectionObserver } from "usehooks-ts";
 
 type SectionItem = {
   image?: string;
@@ -17,6 +20,7 @@ type SectionItem = {
   link: string;
   imageClasses?: string;
   type?: TAB_TYPE;
+  ref?: ReturnType<typeof useIntersectionObserver>["ref"] | null;
 };
 
 export function SectionItem({
@@ -28,9 +32,14 @@ export function SectionItem({
   link,
   imageClasses,
   type = "PLAYLIST",
+  ref,
 }: SectionItem) {
+  const imageFallback = useMemo(() => getAvatarFallback(title), [title]);
   return (
-    <Card className="group border-none bg-transparent p-0 transition-colors hover:bg-muted">
+    <Card
+      ref={ref}
+      className="group border-none bg-transparent p-0 transition-colors hover:bg-muted"
+    >
       <CardContent className="p-0">
         <Navigate
           data={{
@@ -42,23 +51,23 @@ export function SectionItem({
           href={link}
         >
           <div className="relative mb-1 size-[212.062px] overflow-hidden">
-            <Image
-              src={image ?? ""}
-              fill
-              alt={alt ?? ""}
-              className={cn("rounded-sm object-cover", imageClasses)}
-            />
+            <Avatar
+              className={cn("size-full rounded-sm object-cover", imageClasses)}
+            >
+              <AvatarImage src={image} alt={alt} className="object-cover" />
+              <AvatarFallback className="text-6xl">
+                {imageFallback}
+              </AvatarFallback>
+            </Avatar>
             {showPlayButton && (
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="absolute -bottom-20 right-2 h-16 w-16 transition-all duration-200 group-hover:bottom-2 group-hover:opacity-100"
+                className={cn(
+                  buttonVariants({ variant: "default", size: "icon" }),
+                  "absolute -bottom-20 right-2 h-16 w-16 rounded-full opacity-0 transition-all duration-200 hover:bg-primary group-hover:bottom-2 group-hover:opacity-100",
+                )}
               >
-                <Button
-                  size={"icon"}
-                  className="h-full w-full rounded-full opacity-0 transition-opacity hover:bg-primary group-hover:opacity-100"
-                >
-                  <FaPlay size={20} />
-                </Button>
+                <FaPlay size={20} />
               </div>
             )}
           </div>

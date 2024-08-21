@@ -15,16 +15,12 @@ import { useRouter } from "next/navigation";
 import { type ReactNode, useMemo } from "react";
 import { BsArrowLeft, BsArrowRight, BsBell } from "react-icons/bs";
 import { Navigate } from "../navigate";
+import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 
 export function Header({ children }: { children: ReactNode }) {
   const { data: user } = useSession();
   const imageFallback = useMemo(
-    () =>
-      user?.user?.name
-        ?.split(" ")
-        .slice(0, 2)
-        .map((element) => element[0])
-        .join(""),
+    () => getAvatarFallback(user?.user?.name),
     [user?.user?.name],
   );
   const router = useRouter();

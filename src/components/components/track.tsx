@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SkeletonList } from "../artist/components/skeleton";
 import { Checkbox } from "../ui/checkbox";
+import { type useIntersectionObserver } from "usehooks-ts";
 
 type Props = {
   track: Track & { trackIndex: number };
@@ -32,6 +33,7 @@ type Props = {
   className?: string;
   selected?: boolean;
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
+  intersectLastElementRef?: ReturnType<typeof useIntersectionObserver>["ref"];
 };
 
 export type TrackProps =
@@ -55,6 +57,7 @@ export function Track(props: TrackProps) {
     viewAs,
     selected,
     setSelectedTracks,
+    intersectLastElementRef,
   } = props;
   const [showButtons, setShowButtons] = useState(false);
   const [showMoreButton, setShowMoreButton] = useState(false);
@@ -178,6 +181,7 @@ export function Track(props: TrackProps) {
 
   return (
     <TableRow
+      ref={intersectLastElementRef}
       key={!skeleton ? props.track.id : crypto.randomUUID()}
       onMouseOver={() => hoverTrackHandler(true)}
       onMouseLeave={() => hoverTrackHandler(false)}

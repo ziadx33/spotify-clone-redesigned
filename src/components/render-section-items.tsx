@@ -6,13 +6,13 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useState, type ReactElement } from "react";
 
 type SectionItemsProps = {
-  cards: ReactElement[] | undefined;
+  cards: (ReactElement | undefined)[] | undefined;
   title: string;
 };
 
-export function SectionItems({ cards, title }: SectionItemsProps) {
+export function RenderSectionItems({ cards, title }: SectionItemsProps) {
   const [showMoreButton, setShowButton] = useState(false);
-  return (
+  return cards?.length !== 0 ? (
     <Dialog>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
@@ -31,5 +31,5 @@ export function SectionItems({ cards, title }: SectionItemsProps) {
         {cards}
       </DialogContent>
     </Dialog>
-  );
+  ) : null;
 }

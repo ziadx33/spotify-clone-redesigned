@@ -2,7 +2,7 @@
 
 import { v4 as uuid } from "uuid";
 import { db } from "../db";
-import { type VerificationToken } from "@prisma/client";
+import { type User, type VerificationToken } from "@prisma/client";
 import { getUserByEmail, updateUserById } from "./user";
 
 export const generateVerificationToken = async (email: string) => {
@@ -109,11 +109,16 @@ export const getVerificationTokenById = async (token: string) => {
   }
 };
 
-export const getUserById = async ({ id }: { id: string }) => {
+export const getUserById = async ({
+  id,
+  type,
+}: {
+  id?: string;
+  type?: User["type"];
+}) => {
   try {
-    console.log("usering rn or hate", id);
     const user = await db.user.findUnique({
-      where: { id },
+      where: { id, type },
     });
     return user;
   } catch (error) {

@@ -10,6 +10,7 @@ import { BsClock } from "react-icons/bs";
 import { Track } from "./track";
 import { type TrackFilters } from "@/types";
 import { type Dispatch, type SetStateAction } from "react";
+import { type useIntersectionObserver } from "usehooks-ts";
 
 export type ReplaceDurationWithButton = {
   name: string;
@@ -30,6 +31,7 @@ export type NonSortTableProps = {
   skeleton?: boolean;
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
+  intersectLastElementRef?: ReturnType<typeof useIntersectionObserver>["ref"];
 };
 
 export function NonSortTable({
@@ -46,6 +48,7 @@ export function NonSortTable({
   skeleton = false,
   selectedTracks,
   setSelectedTracks,
+  intersectLastElementRef,
 }: NonSortTableProps) {
   console.log("abyusif", selectedTracks);
   return (
@@ -69,7 +72,7 @@ export function NonSortTable({
       )}
       <TableBody>
         {data?.tracks
-          ?.slice(0, !limit ? data.tracks.length : limit)
+          ?.slice(0, !limit ? data?.tracks?.length : limit)
           .map((track, trackIndex) => (
             <Track
               setSelectedTracks={setSelectedTracks}
@@ -83,6 +86,7 @@ export function NonSortTable({
               playlist={playlist}
               viewAs={viewAs}
               key={track.id}
+              intersectLastElementRef={intersectLastElementRef}
               showIndex={showIndex}
               track={{ ...track, trackIndex }}
               authors={data.authors!.filter(

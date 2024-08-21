@@ -17,9 +17,9 @@ export async function User({ user, isUser }: ProfileProps) {
   const requests = [
     getPlaylists({ creatorId: user?.id ?? "", playlistIds: [] }),
     getFollowedArtists({ userId: user?.id ?? "" }),
-    getArtistsByIds(
-      TopTracks.data.tracks.map((track) => track.authorIds).flat(),
-    ),
+    getArtistsByIds({
+      ids: TopTracks.data.tracks.map((track) => track.authorIds).flat(),
+    }),
   ] as const;
 
   const [{ data: publicPlaylists }, followedArtists, artists] =

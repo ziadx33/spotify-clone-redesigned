@@ -144,26 +144,45 @@ export const getFollowedArtists = unstable_cache(
   ["followed-artists"],
 );
 
-export const getUsersBySearchQuery = unstable_cache(
-  cache(async ({ query }: { query: string }) => {
-    try {
-      const users = await db.user.findMany({
-        where: {
-          name: {
-            contains: query,
-            mode: "insensitive",
-          },
+export const getUsersBySearchQuery = async ({
+  query,
+  amount,
+  type,
+  restartLength,
+}: {
+  query: string;
+  amount?: number;
+  type?: $Enums.USER_TYPE;
+  restartLength?: number;
+}) => {
+  try {
+    let users = await db.user.findMany({
+      where: {
+        name: {
+          contains: query,
+          mode: "insensitive",
         },
-      });
+        type,
+      },
+      take: amount,
+    });
 
-      if (users.length === 0) return await db.user.findMany();
-
-      return users;
-    } catch (error) {
-      throw { error };
+    if (users.length === 0 || (restartLength ?? 0) >= users.length) {
+      const firstUser = users.length > 0 ? (users as [User])[0] : false;
+      users = [
+        firstUser,
+        ...(await db.user.findMany({ take: amount })).filter(
+          (user) => user.id !== (firstUser ? firstUser.id : null),
+        ),
+      ].filter((v) => v) as User[];
+      console.log("5alas", users, amount);
     }
-  }),
-);
+
+    return users;
+  } catch (error) {
+    throw { error };
+  }
+};
 
 export const getPopularUsers = unstable_cache(
   cache(async ({ type }: { type: $Enums.GENRES }) => {

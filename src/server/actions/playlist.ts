@@ -171,28 +171,48 @@ export const getAppearsPlaylists = unstable_cache(
   ["appears-on-playlists"],
 );
 
-export const getPlaylistsBySearchQuery = unstable_cache(
-  cache(async ({ query }: { query: string }) => {
-    try {
-      let playlists = await db.playlist.findMany({
-        where: {
-          title: {
-            contains: query,
-            mode: "insensitive",
-          },
+export const getPlaylistsBySearchQuery = async ({
+  query,
+  amount,
+  type,
+  restartLength,
+}: {
+  query: string;
+  amount?: number;
+  type?: $Enums.USER_TYPE;
+  restartLength?: number;
+}) => {
+  try {
+    let playlists = await db.playlist.findMany({
+      where: {
+        title: {
+          contains: query,
+          mode: "insensitive",
         },
-      });
-      if (playlists.length === 0) playlists = await db.playlist.findMany();
-      const authors = await getArtistsByIds(
-        playlists.map((playlist) => playlist.creatorId),
-      );
-      return { playlists, authors };
-    } catch (error) {
-      throw { error };
-    }
-  }),
-);
+      },
+      take: amount,
+    });
 
+    if (playlists.length === 0 || playlists.length < (restartLength ?? 0)) {
+      const firstUser =
+        playlists.length > 0 ? (playlists as [Playlist])[0] : false;
+      playlists = [
+        firstUser,
+        ...(await db.playlist.findMany({ take: amount })).filter(
+          (user) => user.id !== (firstUser ? firstUser.id : null),
+        ),
+      ].filter((v) => v) as Playlist[];
+    }
+
+    const authors = await getArtistsByIds({
+      ids: playlists.map((playlist) => playlist.creatorId),
+      type: type,
+    });
+    return { playlists, authors };
+  } catch (error) {
+    throw { error };
+  }
+};
 export const getNewPlaylists = unstable_cache(
   cache(async ({ type }: { type: $Enums.GENRES }) => {
     try {
@@ -208,9 +228,9 @@ export const getNewPlaylists = unstable_cache(
         take: 31,
       });
       if (playlists.length === 0) playlists = await db.playlist.findMany();
-      const authors = await getArtistsByIds(
-        playlists.map((playlist) => playlist.creatorId),
-      );
+      const authors = await getArtistsByIds({
+        ids: playlists.map((playlist) => playlist.creatorId),
+      });
       return { playlists, authors };
     } catch (error) {
       throw { error };

@@ -5,7 +5,7 @@ import { cache } from "react";
 import { db } from "../db";
 import { type TracksSliceType } from "@/state/slices/tracks";
 import { handleRequests } from "@/utils/handle-requests";
-import { type User } from "@prisma/client";
+import { Track, type $Enums, type User } from "@prisma/client";
 import { getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { getPlaylists } from "./playlist";
 
@@ -97,48 +97,56 @@ export const getRecommendedTracks = unstable_cache(
   ["recommended-tracks"],
 );
 
-export const getTracksBySearchQuery = unstable_cache(
-  cache(
-    async ({
-      query,
-      disablePlaylists = false,
-    }: {
-      query: string;
-      disablePlaylists?: boolean;
-    }) => {
-      try {
-        let tracks = await db.track.findMany({
-          where: {
-            title: {
-              contains: query,
-              mode: "insensitive",
-            },
-          },
-        });
-        if (tracks.length === 0) tracks = await db.track.findMany();
-        const requests = [
-          db.user.findMany({
-            where: {
-              OR: [
-                { id: { in: tracks?.map((track) => track.authorId) } },
-                { id: { in: tracks.map((track) => track.authorIds).flat() } },
-              ],
-            },
-          }),
-          !disablePlaylists
-            ? getPlaylists({
-                playlistIds: tracks?.map((track) => track.albumId),
-              })
-            : undefined,
-        ] as const;
-        const [authors, data] = await handleRequests(requests);
-        return { tracks: tracks ?? [], authors, albums: data?.data ?? [] };
-      } catch (error) {
-        throw { error };
-      }
-    },
-  ),
-);
+export const getTracksBySearchQuery = async ({
+  query,
+  disablePlaylists = false,
+  amount,
+  type,
+  restartLength,
+}: {
+  query: string;
+  disablePlaylists?: boolean;
+  amount?: number;
+  type?: $Enums.USER_TYPE;
+  restartLength?: number;
+}) => {
+  try {
+    let tracks = await db.track.findMany({
+      where: {
+        title: {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+      take: amount,
+    });
+    if ([0, restartLength].includes(tracks.length))
+      tracks = [
+        tracks.length > 0 ? (tracks as [Track])[0] : false,
+        ...(await db.track.findMany({ take: amount })),
+      ].filter((v) => v) as Track[];
+    const requests = [
+      db.user.findMany({
+        where: {
+          type,
+          OR: [
+            { id: { in: tracks?.map((track) => track.authorId) } },
+            { id: { in: tracks.map((track) => track.authorIds).flat() } },
+          ],
+        },
+      }),
+      !disablePlaylists
+        ? getPlaylists({
+            playlistIds: tracks?.map((track) => track.albumId),
+          })
+        : undefined,
+    ] as const;
+    const [authors, data] = await handleRequests(requests);
+    return { tracks: tracks ?? [], authors, albums: data?.data ?? [] };
+  } catch (error) {
+    throw { error };
+  }
+};
 
 export const getTracksByPlaylistIds = unstable_cache(
   cache(
@@ -375,12 +383,13 @@ export type GetUserTopTracksReturnType = Awaited<
 >;
 
 export const getArtistsByIds = unstable_cache(
-  cache(async (artistIds: string[]) => {
+  cache(async ({ ids, type }: { ids: string[]; type?: $Enums.USER_TYPE }) => {
     try {
       const artists = await db.user.findMany({
         where: {
+          type,
           id: {
-            in: artistIds,
+            in: ids,
           },
         },
       });

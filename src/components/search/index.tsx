@@ -35,7 +35,7 @@ export function Search() {
     <div className="flex flex-col p-4">
       {!isLoading ? (
         queryRef.current ? (
-          data && <SearchContent {...data} />
+          data && <SearchContent query={queryRef.current ?? ""} data={data} />
         ) : (
           <BrowsePage />
         )

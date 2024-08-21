@@ -4,23 +4,68 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CircleItems } from "@/components/ui/circle-items";
 import { Table } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { type SearchQueryReturn } from "@/server/actions/search";
+import { enumParser } from "@/utils/enum-parser";
 import { type Track } from "@prisma/client";
 import Image from "next/image";
 import { useMemo } from "react";
 import { FaPlay } from "react-icons/fa";
+import { ArtistsSection } from "./artists-section";
+import { AlbumsSection } from "./albums-section";
+import { PlaylistsSection } from "./playlists-section";
+import { ProfilesSection } from "./profiles-section";
+import Link from "next/link";
 
-export function AllContent({ tracks }: SearchQueryReturn) {
-  const { topTrackCreatorData, topTrack } = useMemo(() => {
+export function AllContent({
+  tracks,
+  topSearch,
+  topSearchCreator,
+  playlists,
+  authors,
+}: SearchQueryReturn) {
+  console.log("khenza2or", tracks.authors, topSearch);
+  const { topTrack, topData } = useMemo(() => {
     const topTrack = (tracks.tracks as [Track])[0];
-    const topTrackCreatorData = tracks.authors?.find(
-      (artist) => topTrack.authorId === artist.id,
-    );
-    return { topTrackCreatorData, topTrack };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracks]);
 
-  console.log("stop changing without me", tracks);
+    const topData = {
+      albumId:
+        (topSearch?.type === "author"
+          ? topSearch.data.id
+          : topSearch?.type === "playlist"
+            ? topSearch.data.id
+            : topSearch?.data.albumId) ?? topTrack.albumId,
+      trackId:
+        topSearch?.type !== "author" &&
+        topSearch?.type !== "playlist" &&
+        topSearch?.data.id,
+      authorId:
+        (topSearch?.type === "author"
+          ? topSearch.data.id
+          : topSearch?.type === "playlist"
+            ? topSearch.data.creatorId
+            : topSearch?.data.authorId) ?? topTrack.authorId,
+      href:
+        (topSearch?.type === "author"
+          ? `/artist/${topSearch?.data.id}?playlist=search`
+          : topSearch?.type === "playlist"
+            ? `/playlist/${topSearch?.data.id}`
+            : `/playlist/${topSearch?.data.albumId}`) ??
+        `/playlist/${topTrack.albumId}`,
+      image:
+        (topSearch?.type === "author"
+          ? topSearch.data.image
+          : topSearch?.type === "playlist"
+            ? topSearch.data.imageSrc
+            : topSearch?.data.imgSrc) ?? topTrack.imgSrc,
+
+      title:
+        (topSearch?.type === "author"
+          ? topSearch.data.name
+          : topSearch?.data.title) ?? topTrack.title,
+    };
+    return { topTrack, topData };
+  }, [tracks, topSearch]);
 
   return (
     <div className="flex size-full flex-col">
@@ -31,32 +76,42 @@ export function AllContent({ tracks }: SearchQueryReturn) {
             <CardContent className="size-full p-0">
               <Navigate
                 data={{
-                  href: `/playlist/${topTrack.albumId}`,
+                  href: topData.href,
                   title: topTrack.title ?? "unknown",
                   type: "ARTIST",
                 }}
-                href={`/playlist/${topTrack.albumId}`}
+                href={topData.href}
                 className="group relative flex size-full flex-col overflow-hidden p-5"
               >
                 <Image
-                  src={topTrack.imgSrc}
+                  src={topData.image}
                   width={92}
                   height={92}
-                  alt={topTrack.title}
-                  className="rounded-lg shadow-2xl"
+                  alt={topData.title}
+                  className={cn(
+                    "size-[92px] rounded-lg object-cover shadow-2xl",
+                    topSearch?.type === "author" && "rounded-full",
+                  )}
                 />
-                <b className="mt-6 text-3xl">{topTrack?.title}</b>
-                <CircleItems
-                  items={[
-                    "Track",
-                    <span
-                      key={topTrackCreatorData?.name}
-                      className="text-white"
-                    >
-                      {topTrackCreatorData?.name}
-                    </span>,
-                  ]}
-                />
+                <b className="mt-6 text-3xl">{topData.title}</b>
+                {topSearch?.type === "author" ? (
+                  <span className="text-white">Artist</span>
+                ) : (
+                  <CircleItems
+                    items={[
+                      topSearch?.type === "playlist"
+                        ? enumParser(topSearch.data.type)
+                        : "Track",
+                      <Link
+                        href={`/artist/${topSearchCreator?.id}?playlist=${topData.albumId}`}
+                        key={topSearchCreator?.name}
+                        className="text-white"
+                      >
+                        {topSearchCreator?.name}
+                      </Link>,
+                    ]}
+                  />
+                )}
                 <Button
                   size={"icon"}
                   className="absolute -bottom-20 right-4 h-16 w-16 rounded-full opacity-0 transition-all duration-300 hover:bg-primary group-hover:bottom-4 group-hover:opacity-100"
@@ -80,6 +135,10 @@ export function AllContent({ tracks }: SearchQueryReturn) {
           </Table>
         </div>
       </div>
+      <ArtistsSection data={tracks.authors} />
+      <AlbumsSection data={playlists} />
+      <PlaylistsSection data={playlists} />
+      <ProfilesSection data={authors} />
     </div>
   );
 }

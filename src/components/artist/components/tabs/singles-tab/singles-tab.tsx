@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { SectionItemSkeleton } from "../../skeleton";
 import { getTracksByIds } from "@/server/actions/track";
-import { FiltersStateType } from "../albums-tab/albums-tab";
 import { useMemo } from "react";
 
 type SinglesTab = {
@@ -34,7 +33,7 @@ export function SinglesTab({ artist, query }: SinglesTab) {
         )
       : [];
     return filteredTracks?.length === 0 ? sortedTracks : filteredTracks;
-  }, [query, isLoading]);
+  }, [isLoading, data, query]);
 
   return (
     <div className="mt-8 flex flex-col">

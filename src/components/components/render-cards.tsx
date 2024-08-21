@@ -9,15 +9,16 @@ import {
   type SetStateAction,
 } from "react";
 
-type RenderCardsProps<T extends ReactElement = ReactElement> = {
+type RenderCardsProps<
+  T extends ReactElement | undefined = ReactElement | undefined,
+> = {
   cards: T[];
   setShowMoreButton?: Dispatch<SetStateAction<boolean>>;
 };
 
-export function RenderCards<T extends ReactElement = ReactElement>({
-  cards,
-  setShowMoreButton,
-}: RenderCardsProps<T>) {
+export function RenderCards<
+  T extends ReactElement | undefined = ReactElement | undefined,
+>({ cards, setShowMoreButton }: RenderCardsProps<T>) {
   const cardWidth = 240;
   const cardsWidth = cardWidth * cards.length;
   const { width: windowWidth } = useWindow();

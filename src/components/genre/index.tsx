@@ -5,8 +5,8 @@ import {
 import { enumParser } from "@/utils/enum-parser";
 import { type $Enums } from "@prisma/client";
 import { SectionItem } from "../components/section-item";
-import { SectionItems } from "./components/section-items";
 import { getPopularUsers } from "@/server/actions/user";
+import { RenderSectionItems } from "../render-section-items";
 
 export async function Genre({ genre }: { genre: $Enums.GENRES }) {
   const genreTitle = enumParser(genre);
@@ -20,7 +20,7 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
         <h1 className="text-8xl font-black">{genreTitle}</h1>
       </div>
       <div className="flex flex-col pb-3 pl-6">
-        <SectionItems
+        <RenderSectionItems
           cards={newReleases?.playlists.map((playlist) => (
             <SectionItem
               key={playlist.id}
@@ -38,7 +38,7 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
           ))}
           title="New Releases"
         />
-        <SectionItems
+        <RenderSectionItems
           cards={popularPlaylists?.playlists.map((playlist) => (
             <SectionItem
               key={playlist.id}
@@ -56,7 +56,7 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
           ))}
           title={`Popular ${genreTitle} playlists`}
         />
-        <SectionItems
+        <RenderSectionItems
           cards={
             Array.isArray(popularUsers)
               ? popularUsers?.map((user) => (

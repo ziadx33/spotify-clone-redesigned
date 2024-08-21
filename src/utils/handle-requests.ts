@@ -1,5 +1,3 @@
-"use server";
-
 type HandleRequestsReturnType<T> = {
   [K in keyof T]: Awaited<T[K]>;
 };
