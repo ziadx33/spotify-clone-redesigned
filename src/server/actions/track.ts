@@ -5,7 +5,7 @@ import { cache } from "react";
 import { db } from "../db";
 import { type TracksSliceType } from "@/state/slices/tracks";
 import { handleRequests } from "@/utils/handle-requests";
-import { Track, type $Enums, type User } from "@prisma/client";
+import { type Track, type $Enums, type User } from "@prisma/client";
 import { getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { getPlaylists } from "./playlist";
 
@@ -31,7 +31,11 @@ export const getTracksByPlaylistId = unstable_cache(
           where: {
             OR: [
               { id: { in: tracks?.map((track) => track.authorId) } },
-              { id: { in: tracks.map((track) => track.authorIds).flat() } },
+              {
+                id: {
+                  in: tracks.map((track) => track?.authorIds ?? []).flat(),
+                },
+              },
             ],
           },
         }),
@@ -82,7 +86,11 @@ export const getRecommendedTracks = unstable_cache(
           where: {
             OR: [
               { id: { in: tracks?.map((track) => track.authorId) } },
-              { id: { in: tracks.map((track) => track.authorIds).flat() } },
+              {
+                id: {
+                  in: tracks.map((track) => track?.authorIds ?? []).flat(),
+                },
+              },
             ],
           },
         }),
@@ -103,12 +111,14 @@ export const getTracksBySearchQuery = async ({
   amount,
   type,
   restartLength,
+  skip,
 }: {
   query: string;
   disablePlaylists?: boolean;
   amount?: number;
   type?: $Enums.USER_TYPE;
   restartLength?: number;
+  skip?: number;
 }) => {
   try {
     let tracks = await db.track.findMany({
@@ -119,11 +129,14 @@ export const getTracksBySearchQuery = async ({
         },
       },
       take: amount,
+      skip,
     });
     if ([0, restartLength].includes(tracks.length))
       tracks = [
         tracks.length > 0 ? (tracks as [Track])[0] : false,
-        ...(await db.track.findMany({ take: amount })),
+        ...(await db.track.findMany({ take: amount, skip })).filter(
+          (track) => track.id !== tracks[0]?.id,
+        ),
       ].filter((v) => v) as Track[];
     const requests = [
       db.user.findMany({
@@ -131,7 +144,9 @@ export const getTracksBySearchQuery = async ({
           type,
           OR: [
             { id: { in: tracks?.map((track) => track.authorId) } },
-            { id: { in: tracks.map((track) => track.authorIds).flat() } },
+            {
+              id: { in: tracks.map((track) => track?.authorIds ?? []).flat() },
+            },
           ],
         },
       }),
@@ -252,7 +267,9 @@ export const getPopularTracks = unstable_cache(
         where: {
           OR: [
             { id: { in: tracks?.map((track) => track.authorId) } },
-            { id: { in: tracks.map((track) => track.authorIds).flat() } },
+            {
+              id: { in: tracks.map((track) => track?.authorIds ?? []).flat() },
+            },
           ],
         },
       });
@@ -304,14 +321,16 @@ export const getTracksByIds = unstable_cache(
     try {
       const tracks = await db.track.findMany({
         where: {
-          OR: [
-            {
-              authorIds: {
-                has: data.artistId,
-              },
-            },
-            { authorId: data.artistId },
-          ],
+          OR: data.artistId
+            ? [
+                {
+                  authorIds: {
+                    has: data.artistId,
+                  },
+                },
+                { authorId: data.artistId },
+              ]
+            : undefined,
           id: {
             in: data.ids,
           },
@@ -339,7 +358,6 @@ export const getUserTopTracks = unstable_cache(
   cache(
     async ({
       user,
-      artistId,
     }: GetUserTopTracksProps): Promise<{
       data: NonNullableProperties<NonNullable<TracksSliceType["data"]>>;
       trackIds: ReturnType<typeof getTopRepeatedNumbers>;
@@ -349,14 +367,19 @@ export const getUserTopTracks = unstable_cache(
         const trackIds = getTopRepeatedNumbers(trackHistory);
         const tracks = await getTracksByIds({
           ids: trackIds.map((trackIds) => trackIds.id),
-          artistId,
         });
         const requests = [
           db.user.findMany({
             where: {
               OR: [
-                { id: { in: tracks?.map((track) => track.authorId) } },
-                { id: { in: tracks.map((track) => track.authorIds).flat() } },
+                { id: { in: tracks?.map((track) => track?.authorId ?? "") } },
+                {
+                  id: {
+                    in:
+                      tracks?.map((track) => track?.authorIds ?? []).flat() ??
+                      [],
+                  },
+                },
               ],
             },
           }),

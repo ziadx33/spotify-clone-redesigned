@@ -1,11 +1,10 @@
+import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
 import {
-  SectionItemSkeleton,
-  TracksListSkeleton,
-} from "@/components/artist/components/skeleton";
-import { SectionItem } from "@/components/components/section-item";
-import { useSession } from "@/hooks/use-session";
+  type NavigateClickParams,
+  SectionItem,
+} from "@/components/components/section-item";
 import { getPlaylistsBySearchQuery } from "@/server/actions/playlist";
-import { Playlist, User } from "@prisma/client";
+import { type Playlist, type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useEffect, useMemo, useRef } from "react";
@@ -14,9 +13,14 @@ import { useIntersectionObserver } from "usehooks-ts";
 type PlaylistsContentProps = {
   playlists: { playlists: Playlist[]; authors: User[] };
   query: string;
+  SearchClickFn: NavigateClickParams;
 };
 
-export function PlaylistsContent({ playlists, query }: PlaylistsContentProps) {
+export function PlaylistsContent({
+  playlists,
+  query,
+  SearchClickFn,
+}: PlaylistsContentProps) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.2,
   });
@@ -36,6 +40,7 @@ export function PlaylistsContent({ playlists, query }: PlaylistsContentProps) {
     if (!isIntersecting) return;
     currentTracksLength.current += 10;
     void refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isIntersecting]);
   const cards = useMemo(() => {
     const datum = data ?? playlists;
@@ -48,6 +53,7 @@ export function PlaylistsContent({ playlists, query }: PlaylistsContentProps) {
           if (author?.type === "ARTIST") return;
           return (
             <SectionItem
+              onClick={SearchClickFn}
               key={playlist.id}
               description={`${format(playlist.createdAt, "YYY")} - ${author?.name}`}
               title={playlist.title}
@@ -61,6 +67,7 @@ export function PlaylistsContent({ playlists, query }: PlaylistsContentProps) {
         })
         ?.filter((v) => v) ?? []
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, playlists]);
   return (
     <div className="flex flex-col">

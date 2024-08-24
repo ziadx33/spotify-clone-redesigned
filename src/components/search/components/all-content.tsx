@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { type SearchQueryReturn } from "@/server/actions/search";
 import { enumParser } from "@/utils/enum-parser";
 import { type Track } from "@prisma/client";
-import Image from "next/image";
 import { useMemo } from "react";
 import { FaPlay } from "react-icons/fa";
 import { ArtistsSection } from "./artists-section";
@@ -16,6 +15,13 @@ import { AlbumsSection } from "./albums-section";
 import { PlaylistsSection } from "./playlists-section";
 import { ProfilesSection } from "./profiles-section";
 import Link from "next/link";
+import { type NavigateClickParams } from "@/components/components/section-item";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarFallback } from "@/utils/get-avatar-fallback";
+
+type AllContentProps = SearchQueryReturn & {
+  searchClickFn: NavigateClickParams;
+};
 
 export function AllContent({
   tracks,
@@ -23,8 +29,8 @@ export function AllContent({
   topSearchCreator,
   playlists,
   authors,
-}: SearchQueryReturn) {
-  console.log("khenza2or", tracks.authors, topSearch);
+  searchClickFn,
+}: AllContentProps) {
   const { topTrack, topData } = useMemo(() => {
     const topTrack = (tracks.tracks as [Track])[0];
 
@@ -57,7 +63,7 @@ export function AllContent({
           ? topSearch.data.image
           : topSearch?.type === "playlist"
             ? topSearch.data.imageSrc
-            : topSearch?.data.imgSrc) ?? topTrack.imgSrc,
+            : topSearch?.data.imgSrc) ?? null,
 
       title:
         (topSearch?.type === "author"
@@ -83,16 +89,23 @@ export function AllContent({
                 href={topData.href}
                 className="group relative flex size-full flex-col overflow-hidden p-5"
               >
-                <Image
-                  src={topData.image}
-                  width={92}
-                  height={92}
-                  alt={topData.title}
+                <Avatar
                   className={cn(
                     "size-[92px] rounded-lg object-cover shadow-2xl",
                     topSearch?.type === "author" && "rounded-full",
                   )}
-                />
+                >
+                  <AvatarImage
+                    width={92}
+                    height={92}
+                    src={topData.image ?? ""}
+                    alt={topData.title}
+                    className="object-cover"
+                  />
+                  <AvatarFallback>
+                    {getAvatarFallback(topData.title)}
+                  </AvatarFallback>
+                </Avatar>
                 <b className="mt-6 text-3xl">{topData.title}</b>
                 {topSearch?.type === "author" ? (
                   <span className="text-white">Artist</span>
@@ -135,10 +148,10 @@ export function AllContent({
           </Table>
         </div>
       </div>
-      <ArtistsSection data={tracks.authors} />
-      <AlbumsSection data={playlists} />
-      <PlaylistsSection data={playlists} />
-      <ProfilesSection data={authors} />
+      <ArtistsSection data={tracks.authors} searchClickFn={searchClickFn} />
+      <AlbumsSection data={playlists} searchClickFn={searchClickFn} />
+      <PlaylistsSection data={playlists} searchClickFn={searchClickFn} />
+      <ProfilesSection data={authors} searchClickFn={searchClickFn} />
     </div>
   );
 }

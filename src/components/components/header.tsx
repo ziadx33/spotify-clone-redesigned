@@ -73,6 +73,7 @@ export function Header({ children }: { children: ReactNode }) {
                   title: "Profile" ?? "unknown",
                   type: "ARTIST",
                 }}
+                className="w-full"
                 href={`/artist/${user?.user?.id}`}
               >
                 Profile
@@ -85,6 +86,7 @@ export function Header({ children }: { children: ReactNode }) {
                   title: "Settings" ?? "unknown",
                   type: "ARTIST",
                 }}
+                className="w-full"
                 href={`/artist/${user?.user?.id}/settings`}
               >
                 Settings

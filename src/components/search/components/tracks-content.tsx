@@ -25,12 +25,14 @@ export function TracksContent({ tracks, query }: TracksContentProps) {
         amount: currentTracksLength.current ?? 0 + 10,
         restartLength: 1,
       });
+      console.log("fethced shit or hatign for ever", fetchedTracks);
       return fetchedTracks;
     },
   });
   useEffect(() => {
     if (!isIntersecting) return;
     void refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isIntersecting]);
   return (
     <div className="flex flex-col">

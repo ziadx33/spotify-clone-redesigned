@@ -9,7 +9,12 @@ import { Navigate } from "../navigate";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { useMemo } from "react";
-import { useIntersectionObserver } from "usehooks-ts";
+import { type useIntersectionObserver } from "usehooks-ts";
+import { type useNavigate } from "@/hooks/use-navigate";
+
+export type NavigateClickParams<T extends string = ""> = (
+  data: Omit<Parameters<typeof useNavigate>[0] & { image: string }, T>,
+) => Promise<void> | void;
 
 type SectionItem = {
   image?: string;
@@ -21,6 +26,7 @@ type SectionItem = {
   imageClasses?: string;
   type?: TAB_TYPE;
   ref?: ReturnType<typeof useIntersectionObserver>["ref"] | null;
+  onClick?: NavigateClickParams;
 };
 
 export function SectionItem({
@@ -33,6 +39,7 @@ export function SectionItem({
   imageClasses,
   type = "PLAYLIST",
   ref,
+  onClick,
 }: SectionItem) {
   const imageFallback = useMemo(() => getAvatarFallback(title), [title]);
   return (
@@ -42,6 +49,8 @@ export function SectionItem({
     >
       <CardContent className="p-0">
         <Navigate
+          onClick={onClick}
+          image={image}
           data={{
             href: link,
             title: title ?? "unknown",

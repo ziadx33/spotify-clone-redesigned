@@ -1,13 +1,17 @@
-import { SectionItem } from "@/components/components/section-item";
+import {
+  type NavigateClickParams,
+  SectionItem,
+} from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { type User } from "@prisma/client";
 import { useMemo } from "react";
 
 type ArtistsSectionProps = {
   data?: User[];
+  searchClickFn: NavigateClickParams;
 };
 
-export function ProfilesSection({ data }: ArtistsSectionProps) {
+export function ProfilesSection({ data, searchClickFn }: ArtistsSectionProps) {
   const cards = useMemo(() => {
     return (
       <RenderSectionItems
@@ -16,6 +20,7 @@ export function ProfilesSection({ data }: ArtistsSectionProps) {
           .map((user) => {
             return (
               <SectionItem
+                onClick={searchClickFn}
                 key={user.id}
                 description="Profile"
                 title={user.name}
@@ -28,6 +33,7 @@ export function ProfilesSection({ data }: ArtistsSectionProps) {
         title="Profiles"
       />
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
   return cards;
 }

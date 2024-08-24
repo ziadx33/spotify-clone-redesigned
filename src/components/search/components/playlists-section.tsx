@@ -1,4 +1,7 @@
-import { SectionItem } from "@/components/components/section-item";
+import {
+  type NavigateClickParams,
+  SectionItem,
+} from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { type User, type Playlist } from "@prisma/client";
 import { format } from "date-fns";
@@ -7,9 +10,10 @@ import { useMemo } from "react";
 
 type ArtistsSectionProps = {
   data?: { playlists: Playlist[]; authors: User[] };
+  searchClickFn: NavigateClickParams;
 };
 
-export function PlaylistsSection({ data }: ArtistsSectionProps) {
+export function PlaylistsSection({ data, searchClickFn }: ArtistsSectionProps) {
   const { data: user } = useSession();
   const cards = useMemo(() => {
     if (!user?.user.id) return;
@@ -25,6 +29,7 @@ export function PlaylistsSection({ data }: ArtistsSectionProps) {
               if (author?.type === "ARTIST") return;
               return (
                 <SectionItem
+                  onClick={searchClickFn}
                   key={playlist.id}
                   description={`${format(playlist.createdAt, "YYY")} - ${author?.name}`}
                   title={playlist.title}
@@ -40,6 +45,7 @@ export function PlaylistsSection({ data }: ArtistsSectionProps) {
         title="Playlists"
       />
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.user.id, data]);
   return cards;
 }

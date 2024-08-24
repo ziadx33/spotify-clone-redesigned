@@ -3,6 +3,7 @@ import { enumParser } from "@/utils/enum-parser";
 import { getGenreColor } from "@/utils/get-genre-color";
 import { $Enums } from "@prisma/client";
 import { useMemo } from "react";
+import { SearchHistorySection } from "./search-history-section";
 
 export function BrowsePage() {
   const genres = useMemo(() => {
@@ -29,6 +30,7 @@ export function BrowsePage() {
   }, []);
   return (
     <div className="flex flex-col">
+      <SearchHistorySection />
       <h1 className="mb-6 text-2xl font-bold">Browse All</h1>
       <div className="flex flex-wrap gap-2">{genres}</div>
     </div>

@@ -12,13 +12,16 @@ type ProfileProps = {
 };
 
 export async function User({ user, isUser }: ProfileProps) {
-  const TopTracks = await getUserTopTracks({ user });
+  const TopTracks = await getUserTopTracks({ user, artistId: user?.id });
 
   const requests = [
     getPlaylists({ creatorId: user?.id ?? "", playlistIds: [] }),
     getFollowedArtists({ userId: user?.id ?? "" }),
     getArtistsByIds({
-      ids: TopTracks.data.tracks.map((track) => track.authorIds).flat(),
+      ids:
+        TopTracks?.data?.tracks
+          ?.map((track) => track?.authorIds ?? [])
+          .flat() ?? [],
     }),
   ] as const;
 
@@ -30,7 +33,7 @@ export async function User({ user, isUser }: ProfileProps) {
     trackIds: TopTracks.trackIds,
     tracks: TopTracks.data.tracks,
   });
-
+  console.log("3omry", user, TopTracks);
   return (
     <UserContent
       isUser={isUser}

@@ -1,10 +1,10 @@
+import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
 import {
-  SectionItemSkeleton,
-  TracksListSkeleton,
-} from "@/components/artist/components/skeleton";
-import { SectionItem } from "@/components/components/section-item";
+  type NavigateClickParams,
+  SectionItem,
+} from "@/components/components/section-item";
 import { getUsersBySearchQuery } from "@/server/actions/user";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
@@ -12,9 +12,14 @@ import { useIntersectionObserver } from "usehooks-ts";
 type ArtistsContentProps = {
   users: User[];
   query: string;
+  SearchClickFn: NavigateClickParams;
 };
 
-export function ArtistsContent({ users, query }: ArtistsContentProps) {
+export function ArtistsContent({
+  users,
+  query,
+  SearchClickFn,
+}: ArtistsContentProps) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.2,
   });
@@ -34,6 +39,7 @@ export function ArtistsContent({ users, query }: ArtistsContentProps) {
     if (!isIntersecting) return;
     currentArtistsLength.current += 10;
     void refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isIntersecting]);
   const cards = useMemo(() => {
     const datum = data ?? users;
@@ -43,6 +49,7 @@ export function ArtistsContent({ users, query }: ArtistsContentProps) {
         ?.map((user, i) => (
           <SectionItem
             key={user.id}
+            onClick={SearchClickFn}
             description="Artist"
             title={user.name}
             link={`/artist/${user.id}?playlist=search`}
@@ -54,6 +61,7 @@ export function ArtistsContent({ users, query }: ArtistsContentProps) {
           />
         )) ?? []
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, users]);
   return (
     <div className="flex flex-col">

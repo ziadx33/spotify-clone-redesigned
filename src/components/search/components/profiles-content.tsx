@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
 import {
-  SectionItemSkeleton,
-  TracksListSkeleton,
-} from "@/components/artist/components/skeleton";
-import { SectionItem } from "@/components/components/section-item";
+  type NavigateClickParams,
+  SectionItem,
+} from "@/components/components/section-item";
 import { getUsersBySearchQuery } from "@/server/actions/user";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
@@ -12,9 +13,14 @@ import { useIntersectionObserver } from "usehooks-ts";
 type ProfilesContentProps = {
   users: User[];
   query: string;
+  SearchClickFn: NavigateClickParams;
 };
 
-export function ProfilesContent({ users, query }: ProfilesContentProps) {
+export function ProfilesContent({
+  users,
+  query,
+  SearchClickFn,
+}: ProfilesContentProps) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.2,
   });
@@ -40,15 +46,17 @@ export function ProfilesContent({ users, query }: ProfilesContentProps) {
     return (
       datum
         ?.filter((user) => user.type === "USER")
-        .map((user) => {
+        .map((user, ix) => {
           return (
             <SectionItem
+              onClick={SearchClickFn}
               key={user.id}
               description="Profile"
               title={user.name}
               link={`/artist/${user.id}?playlist=search`}
               image={user.image ?? ""}
               type="ARTIST"
+              ref={ix === datum.length ? ref : null}
             />
           );
         }) ?? []
