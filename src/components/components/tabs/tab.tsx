@@ -1,10 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useIsCurrentTab } from "@/hooks/use-get-is-current-tab";
 import { useTabs } from "@/hooks/use-tabs";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { type ReactNode } from "react";
 import { BsX } from "react-icons/bs";
 import { type IconType } from "react-icons/lib";
 
@@ -29,37 +30,23 @@ export function Tab({
   iconSize = 30,
   currentContent,
 }: TabProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const getHRefSearchParams = (href: string) => {
-    return new URLSearchParams(
-      href.includes("?") ? href.split("?")[1] : href,
-    ).toString();
-  };
-
-  const nonSearchParamsRoutes = ["/search"];
-  const getIsCurrentTab = (href: string) => {
-    const isNonSearchParamRoute = nonSearchParamsRoutes.some(
-      (route) => href === route && pathname === route,
-    );
-    if (isNonSearchParamRoute) return true;
-    return (
-      pathname === (href.includes("?") ? href.split("?")[0] : href) &&
-      searchParams.toString() === getHRefSearchParams(href)
-    );
-  };
-  const [isCurrentTab, setIsCurrentTab] = useState(getIsCurrentTab(href));
-  const currentTabRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    setIsCurrentTab(getIsCurrentTab(href));
-    currentTabRef.current?.scrollIntoView();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  const { isCurrentTab, currentTabRef } = useIsCurrentTab(href);
   const { removeTab, changeCurrentTab, getTabByHref, data: tabs } = useTabs();
+  const router = useRouter();
+
   const removeHandler = async (id: string) => {
     await removeTab(id);
   };
+  const changePageHandler = async () => {
+    const tab = getTabByHref(href);
+    router.push(href);
+    if (!tab) return;
+    await changeCurrentTab({
+      id: tab?.id ?? "",
+      tabIds: tabs?.map((tab) => tab.id) ?? [],
+    });
+  };
+
   const titleSpan = (
     <span
       className={cn(
@@ -70,15 +57,7 @@ export function Tab({
       {title}
     </span>
   );
-  const changePageHandler = async () => {
-    const tab = getTabByHref(href);
-    router.push(href);
-    if (!tab) return;
-    await changeCurrentTab({
-      id: tab?.id ?? "",
-      tabIds: tabs?.map((tab) => tab.id) ?? [],
-    });
-  };
+
   return (
     <Button
       ref={currentTabRef}

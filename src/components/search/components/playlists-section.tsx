@@ -17,7 +17,6 @@ export function PlaylistsSection({ data, searchClickFn }: ArtistsSectionProps) {
   const { data: user } = useSession();
   const cards = useMemo(() => {
     if (!user?.user.id) return;
-    console.log("idk", user.user.id);
     return (
       <RenderSectionItems
         cards={
