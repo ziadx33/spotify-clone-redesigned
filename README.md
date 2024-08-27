@@ -69,18 +69,6 @@ To set up the project locally, follow these steps:
    - Start the production server:
      ```bash
      npm start
-     ```
-
-7. **Testing and Linting (Optional):**
-   - Run tests:
-     ```bash
-     npm test
-     ```
-   - Lint and format the code:
-     ```bash
-     npm run lint
-     npm run format
-     ```
 
 ## Contributing
 
