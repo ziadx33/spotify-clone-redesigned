@@ -7,11 +7,10 @@ import { Tracks } from "../../components/tracks";
 import { handleTrackFilterChange } from "@/utils/track";
 
 type MusicPlayerProps = {
-  id: Playlist["id"];
   playlist?: Playlist | null;
 };
 
-export function MusicPlayer({ id, playlist }: MusicPlayerProps) {
+export function MusicPlayer({ playlist }: MusicPlayerProps) {
   const [filters, setFilters] = useState<TrackFilters>(
     DEFAULT_TRACK_FILTERS_DATA,
   );
@@ -27,7 +26,6 @@ export function MusicPlayer({ id, playlist }: MusicPlayerProps) {
         playlist={playlist}
         setTrackQuery={setTrackQuery}
         setFilters={setFilters}
-        id={id}
         filters={filters}
       />
       <Tracks
@@ -38,7 +36,6 @@ export function MusicPlayer({ id, playlist }: MusicPlayerProps) {
         trackQuery={trackQuery}
         setFilters={setFilters}
         filters={filters}
-        id={id}
       />
     </>
   );

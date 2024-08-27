@@ -20,6 +20,7 @@ export const useDebounceState = <T>(init: T, timeout = 500) => {
         clearTimeout(timeoutRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   return [state, setState, debounceState] as const;

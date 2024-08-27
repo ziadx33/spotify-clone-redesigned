@@ -4,7 +4,6 @@ import { Navigate } from "@/components/navigate";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type User } from "@prisma/client";
-import Link from "next/link";
 import { useState } from "react";
 
 type TopArtistsProps = {

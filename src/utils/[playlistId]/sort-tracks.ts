@@ -31,9 +31,9 @@ export const sortTracks = ({
         const aAuthor = authors?.find((author) => author.id === a.authorId);
         const bAuthor = authors?.find((author) => author.id === b.authorId);
         if (filters.artist === "ASC")
-          return aAuthor?.name?.localeCompare(bAuthor!.name!) ?? 1;
+          return aAuthor?.name?.localeCompare(bAuthor!.name) ?? 1;
         if (filters.artist === "DSC")
-          return bAuthor?.name?.localeCompare(aAuthor!.name!) ?? 1;
+          return bAuthor?.name?.localeCompare(aAuthor!.name) ?? 1;
       }
       if (filters.sortBy === "album") {
         const aAlbum = albums?.find((album) => album.id === a.albumId);

@@ -33,6 +33,7 @@ export function FeaturingTab({ artist, query }: FeaturingTabProps) {
         )
       : [];
     return filteredAlbums?.length === 0 ? sortedAlbums : filteredAlbums;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, isLoading]);
 
   return (

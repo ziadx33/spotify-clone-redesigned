@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type Playlist, type User } from "@prisma/client";
 import { format } from "date-fns";
-import Link from "next/link";
 import { useState } from "react";
 
 type TopArtistsProps = {

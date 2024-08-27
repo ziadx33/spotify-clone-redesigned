@@ -23,6 +23,7 @@ export function Albums({ data, tracks, artist, filters, query }: AlbumsProps) {
         )
       : [];
     return filteredAlbums?.length === 0 ? sortedAlbums : filteredAlbums;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
   return albums.map((album) => (
     <Album

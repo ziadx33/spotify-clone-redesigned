@@ -20,7 +20,7 @@ export function Playlist({
         type={type}
       />
       <div className="flex h-fit w-full flex-col gap-4 px-8 pb-4">
-        <MusicPlayer playlist={data} id={id} />
+        <MusicPlayer playlist={data} />
         {type === "Album" ? (
           <MoreAlbums
             artist={creatorData?.creatorData}
