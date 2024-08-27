@@ -69,6 +69,7 @@ To set up the project locally, follow these steps:
    - Start the production server:
      ```bash
      npm start
+     ```
 
 ## Contributing
 
