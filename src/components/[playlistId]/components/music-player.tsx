@@ -7,11 +7,11 @@ import { DEFAULT_TRACK_FILTERS_DATA } from "@/constants";
 import { handleTrackFilterChange } from "@/utils/track";
 
 type MusicPlayerProps = {
-  id: Playlist["id"];
   playlist?: Playlist | null;
+  showTrackImage?: boolean;
 };
 
-export function MusicPlayer({ id, playlist }: MusicPlayerProps) {
+export function MusicPlayer({ playlist, showTrackImage }: MusicPlayerProps) {
   const [filters, setFilters] = useState<TrackFilters>(
     DEFAULT_TRACK_FILTERS_DATA,
   );
@@ -24,16 +24,15 @@ export function MusicPlayer({ id, playlist }: MusicPlayerProps) {
         setTrackQuery={setTrackQuery}
         setFilters={setFilters}
         handleFilterChange={handleFilterChange}
-        id={id}
         filters={filters}
       />
       <Tracks
+        showTrackImage={showTrackImage}
         handleFilterChange={handleFilterChange}
         playlist={playlist}
         trackQuery={trackQuery}
         setFilters={setFilters}
         filters={filters}
-        id={id}
       />
     </>
   );

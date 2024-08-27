@@ -30,8 +30,10 @@ export function RenderCards<
     if (cardsWidth > containerWidth) {
       setShowedCards(cards.slice(0, Math.floor(containerWidth / cardWidth)));
       setShowMoreButton?.(true);
-    } else setShowMoreButton?.(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [windowWidth]);
+    } else {
+      setShowedCards(cards);
+      setShowMoreButton?.(false);
+    }
+  }, [windowWidth, cards, cardsWidth, cardWidth, setShowMoreButton]);
   return showedCards ?? cards;
 }

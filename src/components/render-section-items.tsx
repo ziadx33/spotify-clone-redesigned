@@ -3,7 +3,7 @@
 import { RenderCards } from "@/components/components/render-cards";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useState, type ReactElement } from "react";
+import { type ReactNode, useState, type ReactElement } from "react";
 import { SectionItemSkeleton } from "./artist/components/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ type SectionItemsProps = {
   titleClasses?: string;
   containerClasses?: string;
   cardsContainerClasses?: string;
+  fallbackComponent?: ReactNode;
 };
 
 export function RenderSectionItems({
@@ -23,6 +24,7 @@ export function RenderSectionItems({
   titleClasses,
   cardsContainerClasses,
   containerClasses,
+  fallbackComponent,
 }: SectionItemsProps) {
   const [showMoreButton, setShowButton] = useState(false);
   return cards?.length !== 0 ? (
@@ -51,9 +53,11 @@ export function RenderSectionItems({
           )}
         </div>
       </div>
-      <DialogContent className="flex h-[70%] w-full max-w-[70rem] flex-wrap overflow-y-scroll">
+      <DialogContent className="flex h-[70%] w-full max-w-[70rem] flex-wrap items-start overflow-y-scroll">
         {cards}
       </DialogContent>
     </Dialog>
-  ) : null;
+  ) : (
+    fallbackComponent
+  );
 }

@@ -16,8 +16,7 @@ import { PlaylistsSection } from "./playlists-section";
 import { ProfilesSection } from "./profiles-section";
 import Link from "next/link";
 import { type NavigateClickParams } from "@/components/components/section-item";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarFallback } from "@/utils/get-avatar-fallback";
+import { AvatarData } from "@/components/avatar-data";
 
 type AllContentProps = SearchQueryReturn & {
   searchClickFn: NavigateClickParams;
@@ -89,23 +88,16 @@ export function AllContent({
                 href={topData.href}
                 className="group relative flex size-full flex-col overflow-hidden p-5"
               >
-                <Avatar
-                  className={cn(
-                    "size-[92px] rounded-lg object-cover shadow-2xl",
+                <AvatarData
+                  containerClasses={cn(
+                    "size-[92px] rounded-lg shadow-2xl",
                     topSearch?.type === "author" && "rounded-full",
                   )}
-                >
-                  <AvatarImage
-                    width={92}
-                    height={92}
-                    src={topData.image ?? ""}
-                    alt={topData.title}
-                    className="object-cover"
-                  />
-                  <AvatarFallback>
-                    {getAvatarFallback(topData.title)}
-                  </AvatarFallback>
-                </Avatar>
+                  src={topData.image ?? ""}
+                  alt={topData.title}
+                  title={topData.title}
+                />
+
                 <b className="mt-6 text-3xl">{topData.title}</b>
                 {topSearch?.type === "author" ? (
                   <span className="text-white">Artist</span>

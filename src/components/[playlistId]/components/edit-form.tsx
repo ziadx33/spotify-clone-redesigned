@@ -93,7 +93,7 @@ export function EditForm({
               draggable="false"
               fill
               alt={data?.title ?? ""}
-              className="h-[20rem] w-full rounded-md object-cover"
+              className="h-[20rem] w-full rounded-md"
             />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
@@ -101,7 +101,7 @@ export function EditForm({
               src={URL.createObjectURL(uploadedImage)}
               draggable="false"
               alt={data?.title ?? ""}
-              className="h-[20rem] w-full rounded-md object-cover"
+              className="h-[20rem] w-full rounded-md"
             />
           )}
 

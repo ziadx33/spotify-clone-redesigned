@@ -84,14 +84,14 @@ export function EditProfile({ user }: { user: Session["user"] }) {
                   src={user?.image ?? ""}
                   fill
                   alt={user?.name ?? ""}
-                  className="size-full rounded-md object-cover"
+                  className="size-full rounded-md"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={URL.createObjectURL(uploadedImage)}
                   alt={user?.name ?? ""}
-                  className="size-full rounded-md object-cover"
+                  className="size-full rounded-md"
                 />
               )}
               <div className="absolute left-0 top-0 hidden size-full flex-col items-center justify-center gap-4 bg-black bg-opacity-30 group-hover:flex">

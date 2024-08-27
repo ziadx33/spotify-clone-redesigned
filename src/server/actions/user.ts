@@ -184,19 +184,32 @@ export const getUsersBySearchQuery = async ({
   }
 };
 
+type GetPopularUsersParams = {
+  type?: $Enums.GENRES;
+  range?: {
+    from?: number;
+    to?: number;
+  };
+  userType?: $Enums.USER_TYPE;
+};
+
 export const getPopularUsers = unstable_cache(
-  cache(async ({ type }: { type: $Enums.GENRES }) => {
+  cache(async ({ type, range, userType }: GetPopularUsersParams) => {
     try {
       const users = await db.user.findMany({
         where: {
-          genres: {
-            has: type,
-          },
+          genres: type
+            ? {
+                has: type,
+              }
+            : undefined,
+          type: userType,
         },
         orderBy: {
           followers: "desc",
         },
-        take: 30,
+        skip: range?.from,
+        take: range?.to,
       });
 
       return users;
@@ -205,4 +218,22 @@ export const getPopularUsers = unstable_cache(
     }
   }),
   ["popular-users", "type"],
+);
+
+export const getArtistsByIds = unstable_cache(
+  cache(async ({ ids, type }: { ids: string[]; type?: $Enums.USER_TYPE }) => {
+    try {
+      const artists = await db.user.findMany({
+        where: {
+          type,
+          id: {
+            in: ids,
+          },
+        },
+      });
+      return artists;
+    } catch (error) {
+      throw { error };
+    }
+  }),
 );

@@ -6,7 +6,7 @@ import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { type Session } from "@/hooks/use-session";
 import { type $Enums, type Playlist } from "@prisma/client";
-import { getArtistsByIds } from "./track";
+import { getArtistsByIds } from "./user";
 
 type GetPlaylistsParams = {
   creatorId?: string;

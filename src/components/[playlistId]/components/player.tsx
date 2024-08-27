@@ -40,7 +40,6 @@ import { addPlaylistToTracks } from "@/server/actions/track";
 import { toast } from "sonner";
 
 type PlayerProps = {
-  id: Playlist["id"];
   filters: TrackFilters;
   setFilters?: Dispatch<SetStateAction<TrackFilters>>;
   handleFilterChange?: (name: keyof TrackFilters) => void;
@@ -79,17 +78,12 @@ export function Comp({
                 setSelectedTracks={setSelectedTracks}
               />
             ) : (
-              <Button
-                disabled={!playlist}
-                size={"icon"}
-                className="mr-4 size-12 rounded-full"
-              >
+              <Button size={"icon"} className="mr-4 size-12 rounded-full">
                 <FaPlay size={18} />
               </Button>
             )}
             {(selectedTracks?.length ?? 0) < 1 && (
               <Button
-                disabled={!playlist}
                 size={"icon"}
                 variant="ghost"
                 className="size-12 rounded-full"
@@ -99,7 +93,6 @@ export function Comp({
             )}
             {isCreatedByUser ? (
               <Button
-                disabled={!playlist}
                 size={"icon"}
                 variant="ghost"
                 className="size-12 rounded-full"
@@ -114,7 +107,6 @@ export function Comp({
               />
             )}
             <Button
-              disabled={!playlist}
               size={"icon"}
               variant="ghost"
               className="size-12 rounded-full"
@@ -125,7 +117,6 @@ export function Comp({
           <div className="flex w-full items-center justify-end gap-2">
             {selectedTracks?.length ?? 0 > 0 ? (
               <Button
-                disabled={!playlist}
                 size={"icon"}
                 variant="ghost"
                 onClick={() => setSelectedTracks?.([])}

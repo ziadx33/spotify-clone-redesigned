@@ -4,6 +4,7 @@ import { type User, type Playlist } from "@prisma/client";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Navigate } from "../navigate";
+import { enumParser } from "@/utils/enum-parser";
 
 type PlaylistProps = { userData?: User; imageClassNames?: string } & (
   | { type: "ARTIST"; data: User }
@@ -48,19 +49,19 @@ export function LibraryItem({
         <div className="relative h-full w-[65px] overflow-hidden">
           <Image
             src={(isArtist ? data.image : data.imageSrc) ?? ""}
-            className={cn("rounded-md object-cover", imageClassNames)}
+            className={cn("rounded-md", imageClassNames)}
             fill
             alt={isArtist ? data.name : data.title}
           />
         </div>
         <h4 className="flex w-full flex-col items-start gap-1">
           <span>{isArtist ? data.name : data.title}</span>
-          <span className="flex items-center gap-1.5 text-muted-foreground">
+          <span className="flex items-center gap-1.5 capitalize text-muted-foreground">
             {isArtist
-              ? "Artist"
+              ? "artist"
               : data.creatorId === userData?.id
-                ? "Playlist"
-                : "Album"}
+                ? "playlist"
+                : enumParser(data.type)}
           </span>
         </h4>
       </Navigate>

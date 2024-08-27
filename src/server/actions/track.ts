@@ -9,6 +9,46 @@ import { type Track, type $Enums, type User } from "@prisma/client";
 import { getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { getPlaylists } from "./playlist";
 
+// type GetTracksDataParams = {
+//   tracks: Track[];
+//   artistType: $Enums.USER_TYPE;
+//   disable?: {
+//     playlists?: boolean;
+//     artists?: boolean;
+//   };
+// };
+
+// export const getTracksData = async ({
+//   tracks,
+//   artistType,
+//   disable,
+// }: GetTracksDataParams) => {
+//   const requests = [
+//     !disable?.artists
+//       ? db.user.findMany({
+//           where: {
+//             type: artistType,
+//             OR: [
+//               { id: { in: tracks?.map((track) => track.authorId) } },
+//               {
+//                 id: {
+//                   in: tracks.map((track) => track?.authorIds ?? []).flat(),
+//                 },
+//               },
+//             ],
+//           },
+//         })
+//       : undefined,
+//     !disable?.playlists
+//       ? getPlaylists({
+//           playlistIds: tracks?.map((track) => track.albumId),
+//         })
+//       : undefined,
+//   ] as const;
+//   const [authors, playlists] = await handleRequests(requests);
+//   return { authors, playlists };
+// };
+
 export const getTracksByPlaylistId = unstable_cache(
   cache(async (playlistId: string | string[]): Promise<TracksSliceType> => {
     try {
@@ -238,19 +278,31 @@ export const addTrackToPlaylistToDB = async ({
 };
 
 type GetPopularTracks = {
-  artistId: string;
+  artistId: string | string[];
   range: {
     from: number;
     to: number;
   };
+  addAlbums?: boolean;
 };
 
 export const getPopularTracks = unstable_cache(
-  cache(async ({ artistId, range }: GetPopularTracks) => {
+  cache(async ({ artistId, range, addAlbums }: GetPopularTracks) => {
     try {
       const defaultOptions = {
         where: {
-          OR: [{ authorId: artistId }, { authorIds: { has: artistId } }],
+          OR: [
+            {
+              authorId:
+                typeof artistId === "string" ? artistId : { in: artistId },
+            },
+            {
+              authorIds:
+                typeof artistId === "string"
+                  ? { has: artistId }
+                  : { hasSome: artistId },
+            },
+          ],
         },
       };
       let tracks = await db.track.findMany({
@@ -260,20 +312,33 @@ export const getPopularTracks = unstable_cache(
         },
 
         skip: range.from,
-        take: range.to,
+        take: Array.isArray(artistId) ? range.to * artistId.length : range.to,
       });
       if (tracks.length === 0) tracks = await db.track.findMany(defaultOptions);
-      const authors = await db.user.findMany({
-        where: {
-          OR: [
-            { id: { in: tracks?.map((track) => track.authorId) } },
-            {
-              id: { in: tracks.map((track) => track?.authorIds ?? []).flat() },
-            },
-          ],
-        },
-      });
-      return { tracks, authors };
+      const [authors, albums] = [
+        await db.user.findMany({
+          where: {
+            OR: [
+              { id: { in: tracks?.map((track) => track.authorId) } },
+              {
+                id: {
+                  in: tracks.map((track) => track?.authorIds ?? []).flat(),
+                },
+              },
+            ],
+          },
+        }),
+        addAlbums
+          ? await getPlaylists({
+              playlistIds: tracks?.map((track) => track.albumId),
+            })
+          : undefined,
+      ];
+      return {
+        tracks,
+        authors: authors,
+        albums: albums?.data,
+      };
     } catch (error) {
       throw { error };
     }
@@ -358,6 +423,7 @@ export const getUserTopTracks = unstable_cache(
   cache(
     async ({
       user,
+      artistId,
     }: GetUserTopTracksProps): Promise<{
       data: NonNullableProperties<NonNullable<TracksSliceType["data"]>>;
       trackIds: ReturnType<typeof getTopRepeatedNumbers>;
@@ -367,6 +433,7 @@ export const getUserTopTracks = unstable_cache(
         const trackIds = getTopRepeatedNumbers(trackHistory);
         const tracks = await getTracksByIds({
           ids: trackIds.map((trackIds) => trackIds.id),
+          artistId,
         });
         const requests = [
           db.user.findMany({
@@ -404,24 +471,6 @@ export const getUserTopTracks = unstable_cache(
 export type GetUserTopTracksReturnType = Awaited<
   ReturnType<typeof getUserTopTracks>
 >;
-
-export const getArtistsByIds = unstable_cache(
-  cache(async ({ ids, type }: { ids: string[]; type?: $Enums.USER_TYPE }) => {
-    try {
-      const artists = await db.user.findMany({
-        where: {
-          type,
-          id: {
-            in: ids,
-          },
-        },
-      });
-      return artists;
-    } catch (error) {
-      throw { error };
-    }
-  }),
-);
 
 export const getTrackById = async (trackId: string) => {
   try {
@@ -464,3 +513,113 @@ export const addPlaylistToTracks = async ({
     throw { error };
   }
 };
+
+export const getHomeMadeForYouSection = unstable_cache(
+  cache(async (historyTracksIds: string[]) => {
+    try {
+      const historyTracks = await db.track.findMany({
+        where: {
+          id: {
+            in: historyTracksIds.slice(0, 50),
+          },
+        },
+      });
+      const historyTracksGenres = [
+        ...new Set(
+          historyTracks
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            .map((track) => track?.genres)
+            .flat()
+            .slice(0, 6),
+        ),
+      ];
+      const allTracksByGenres = await db.track.findMany({
+        where: {
+          genres: {
+            hasSome: historyTracksGenres,
+          },
+        },
+        take: historyTracksGenres.length * 50,
+      });
+
+      const requests = [
+        db.user.findMany({
+          where: {
+            OR: [
+              { id: { in: allTracksByGenres?.map((track) => track.authorId) } },
+              {
+                id: {
+                  in: allTracksByGenres
+                    .map((track) => track?.authorIds ?? [])
+                    .flat(),
+                },
+              },
+            ],
+          },
+        }),
+        getPlaylists({
+          playlistIds: allTracksByGenres?.map((track) => track.albumId),
+        }),
+      ] as const;
+
+      const [authors, albums] = await handleRequests(requests);
+
+      const data = historyTracksGenres.map((genre) => {
+        const tracks = allTracksByGenres.filter((track) =>
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          track?.genres?.includes(genre),
+        );
+        return {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          genre,
+          tracks,
+          authors: authors.filter((user) =>
+            tracks
+              .map((track) => [track.authorId, ...track.authorIds])
+              .flat()
+              .includes(user.id),
+          ),
+          albums:
+            albums.data?.filter((playlist) =>
+              tracks.map((track) => track.albumId).includes(playlist.id),
+            ) ?? [],
+        };
+      });
+
+      return data;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["home-made-for-you-section"],
+  {
+    revalidate: 86400,
+  },
+);
+
+export const getBestOfArtists = unstable_cache(
+  cache(async (id: string) => {
+    try {
+      const followed = await db.user.findMany({
+        where: {
+          followers: {
+            has: id,
+          },
+        },
+      });
+      const tracks = await getPopularTracks({
+        artistId: followed.map((follower) => follower.id),
+        range: { from: 0, to: 50 },
+        addAlbums: true,
+      });
+
+      return tracks;
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["best-of-artists-section"],
+  {
+    revalidate: 86400,
+  },
+);

@@ -21,10 +21,9 @@ export const tabs = [
 
 type TabsSectionProps = {
   artist: User;
-  playlistId: string;
 };
 
-export function TabsSection({ artist, playlistId }: TabsSectionProps) {
+export function TabsSection({ artist }: TabsSectionProps) {
   const [currentTab, setCurrentTab] = useState<(typeof tabs)[number]>("home");
   const [filters, setFilters] = useState<FiltersStateType>({
     viewAs: "grid",

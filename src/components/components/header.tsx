@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,17 +11,13 @@ import {
 import { useSession } from "@/hooks/use-session";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode } from "react";
 import { BsArrowLeft, BsArrowRight, BsBell } from "react-icons/bs";
 import { Navigate } from "../navigate";
-import { getAvatarFallback } from "@/utils/get-avatar-fallback";
+import { AvatarData } from "../avatar-data";
 
 export function Header({ children }: { children: ReactNode }) {
   const { data: user } = useSession();
-  const imageFallback = useMemo(
-    () => getAvatarFallback(user?.user?.name),
-    [user?.user?.name],
-  );
   const router = useRouter();
 
   const logoutHandler = async () => {
@@ -60,10 +55,10 @@ export function Header({ children }: { children: ReactNode }) {
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Avatar>
-              <AvatarImage src={user?.user?.image ?? ""} />
-              <AvatarFallback>{imageFallback}</AvatarFallback>
-            </Avatar>
+            <AvatarData
+              src={user?.user?.image ?? ""}
+              title={user?.user?.name}
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem asChild>

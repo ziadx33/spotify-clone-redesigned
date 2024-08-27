@@ -19,7 +19,7 @@ export function Author({ author, playlist }: AuthorProps) {
         width={50}
         height={50}
         draggable="false"
-        className="size-[50px] rounded-full object-cover"
+        className="size-[50px] rounded-full"
       />
       <h3>{author.name}</h3>
     </Link>

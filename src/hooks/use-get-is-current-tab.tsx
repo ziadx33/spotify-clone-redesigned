@@ -13,11 +13,16 @@ export function useIsCurrentTab(url: string) {
   const isMatchingTab = useCallback(
     (href: string): boolean => {
       const [hrefPathname, hrefSearchParams] = href.split("?");
-      const extractedSearchParams = hrefSearchParams
-        ? extractSearchParams(href)
-        : "";
+      const shouldIgnoreSearchParams = hrefPathname === "/search";
+
+      const extractedSearchParams =
+        !shouldIgnoreSearchParams && hrefSearchParams
+          ? extractSearchParams(href)
+          : "";
+
       return (
-        pathname === hrefPathname && searchParams === extractedSearchParams
+        pathname === hrefPathname &&
+        (shouldIgnoreSearchParams || searchParams === extractedSearchParams)
       );
     },
     [pathname, searchParams, extractSearchParams],

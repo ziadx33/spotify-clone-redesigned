@@ -146,7 +146,7 @@ export function Track(props: TrackProps) {
                   src={props.track.imgSrc}
                   fill
                   alt={props.track.title}
-                  className="rounded-sm object-cover"
+                  className="rounded-sm"
                 />{" "}
                 {!showIndex && showButtons && (
                   <div className="absolute left-0 top-0 grid size-full place-items-center bg-black bg-opacity-80">

@@ -50,6 +50,24 @@ enum USER_TYPE {
 enum GENRES {
     TRAP
     OLD_SCHOOL
+    ROCK
+    POP
+    JAZZ
+    HIP_HOP
+    ELECTRONIC
+    CLASSICAL
+    REGGAE
+    COUNTRY
+    BLUES
+    RNB
+    METAL
+    FOLK
+    TECHNO
+    AMBIENT
+    GRIME
+    HOUSE
+    INDIE
+    LATIN
 }
 
 model User {
@@ -144,6 +162,7 @@ model Track {
     dateAdded DateTime @default(now())
     duration  Int
     plays     Int      @default(0)
+    genres    GENRES[] @default([])
 }
 
 model SearchHistory {

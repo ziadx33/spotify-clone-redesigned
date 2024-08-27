@@ -60,7 +60,7 @@ export function UserContent({
                 width={200}
                 height={200}
                 alt={user?.name ?? ""}
-                className="size-[200px] rounded-full object-cover"
+                className="size-[200px] rounded-full"
               />
             )}
             <div className="flex flex-col">

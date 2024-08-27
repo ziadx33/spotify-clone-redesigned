@@ -31,7 +31,7 @@ export async function Artist({ artist, playlistId }: ArtistProps) {
                 width={200}
                 height={200}
                 alt={artist.name ?? ""}
-                className="size-[200px] rounded-full object-cover"
+                className="size-[200px] rounded-full"
               />
             )}
             <b className="text-8xl">{artist.name}</b>
@@ -40,7 +40,7 @@ export async function Artist({ artist, playlistId }: ArtistProps) {
         </div>
       </div>
       <div className="size-full px-8 py-5">
-        <TabsSection playlistId={playlistId} artist={artist} />
+        <TabsSection artist={artist} />
       </div>
     </div>
   );

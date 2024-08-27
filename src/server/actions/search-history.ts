@@ -31,3 +31,14 @@ export const getSearchHistory = unstable_cache(
   }),
   ["search-history"],
 );
+
+export async function removeSearchHistoryById(id: string) {
+  try {
+    const removed = await db.searchHistory.delete({
+      where: { id },
+    });
+    return removed;
+  } catch (error) {
+    throw { error };
+  }
+}

@@ -2,8 +2,8 @@ import { type User } from "@prisma/client";
 import { UserContent } from "./components/user-content";
 import { handleRequests } from "@/utils/handle-requests";
 import { getPlaylists } from "@/server/actions/playlist";
-import { getFollowedArtists } from "@/server/actions/user";
-import { getArtistsByIds, getUserTopTracks } from "@/server/actions/track";
+import { getArtistsByIds, getFollowedArtists } from "@/server/actions/user";
+import { getUserTopTracks } from "@/server/actions/track";
 import { getTopArtists } from "@/utils/get-top-artists";
 
 type ProfileProps = {
@@ -20,7 +20,11 @@ export async function User({ user, isUser }: ProfileProps) {
     getArtistsByIds({
       ids:
         TopTracks?.data?.tracks
-          ?.map((track) => track?.authorIds ?? [])
+          ?.map((track) =>
+            track?.authorIds.length === 0
+              ? track.authorId
+              : track?.authorIds ?? [],
+          )
           .flat() ?? [],
     }),
   ] as const;
@@ -33,7 +37,6 @@ export async function User({ user, isUser }: ProfileProps) {
     trackIds: TopTracks.trackIds,
     tracks: TopTracks.data.tracks,
   });
-  console.log("3omry", user, TopTracks);
   return (
     <UserContent
       isUser={isUser}

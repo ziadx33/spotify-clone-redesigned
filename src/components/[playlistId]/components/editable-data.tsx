@@ -69,7 +69,7 @@ function EditableDataComp({
                 fill
                 draggable="false"
                 alt={data?.title ?? ""}
-                className="rounded-md object-cover"
+                className="rounded-md"
               />
             ) : (
               <Skeleton className="size-full" />

@@ -13,7 +13,7 @@ type TopTracksProps = {
 
 export function TopTracks({ data, user }: TopTracksProps) {
   const tracks = data?.tracks ?? [];
-  const showMoreButton = tracks.length >= 4;
+  const showMoreButton = tracks.length > 4;
   return (
     <div className="w-full flex-col">
       <div className="flex items-center justify-between">

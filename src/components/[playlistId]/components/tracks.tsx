@@ -9,7 +9,6 @@ import { SortTable } from "@/components/components/sort-table";
 import { TracksListSkeleton } from "@/components/artist/components/skeleton";
 
 type TracksProps = {
-  id: string;
   filters: TrackFilters;
   setFilters: Dispatch<SetStateAction<TrackFilters>>;
   handleFilterChange: (name: keyof TrackFilters) => void;
@@ -17,6 +16,7 @@ type TracksProps = {
   playlist?: Playlist | null;
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
+  showTrackImage?: boolean;
 };
 
 export function Tracks({
@@ -27,14 +27,15 @@ export function Tracks({
   playlist,
   setSelectedTracks,
   selectedTracks,
+  showTrackImage = false,
 }: TracksProps) {
   const { data: user } = useSession();
-  const { data } = useTracks();
+  const { data, status } = useTracks();
   const isCreatedByUser = playlist?.creatorId === user?.user?.id;
 
-  return playlist ? (
+  return !!playlist || status !== "loading" ? (
     <Table>
-      {isCreatedByUser ? (
+      {isCreatedByUser && playlist ? (
         <SortTable
           setSelectedTracks={setSelectedTracks}
           selectedTracks={selectedTracks}
@@ -49,10 +50,10 @@ export function Tracks({
         <NonSortTable
           setSelectedTracks={setSelectedTracks}
           selectedTracks={selectedTracks}
-          showTrackImage={false}
+          showTrackImage={showTrackImage}
           viewAs={filters.viewAs}
           data={data}
-          playlist={playlist}
+          playlist={playlist ?? undefined}
         />
       )}
     </Table>

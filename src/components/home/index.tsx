@@ -1,7 +1,15 @@
-import { getServerAuthSession } from "@/server/auth";
+import { BestOfArtistsSection } from "./components/best-of-artists-section";
+import { MadeForYouSection } from "./components/made-for-you-section";
+import { PlaylistsSection } from "./components/playlists-section";
+import { YourFavArtists } from "./components/your-fav-artists";
 
 export async function Home() {
-  const userData = await getServerAuthSession();
-  const user = userData?.user;
-  return <h1>Hello {user?.name}!</h1>;
+  return (
+    <div className="flex flex-col px-4 py-8">
+      <PlaylistsSection />
+      <MadeForYouSection />
+      <YourFavArtists />
+      <BestOfArtistsSection />
+    </div>
+  );
 }

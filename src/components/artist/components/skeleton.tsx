@@ -1,8 +1,10 @@
 import { Track } from "@/components/components/track";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TableBody, Table } from "@/components/ui/table";
-import { ComponentPropsWithoutRef } from "react";
+import { type ComponentPropsWithoutRef } from "react";
+import { FaPlay } from "react-icons/fa";
 
 type Skeleton<T extends object> = {
   amount: number;
@@ -87,4 +89,31 @@ export function SkeletonAuthorList({ amount }: { amount: number }) {
       </div>
     );
   });
+}
+
+export function SkeletonPlaylists({
+  amount,
+  ...restProps
+}: { amount: number } & Partial<ComponentPropsWithoutRef<"div">>) {
+  return Array.from({ length: amount })?.map((_, index) => (
+    <div
+      key={index}
+      className="group relative flex h-12 w-full min-w-[300px] max-w-[600px] gap-2 overflow-hidden rounded-sm bg-secondary/70 transition-colors hover:bg-secondary/80"
+      {...restProps}
+    >
+      <div className="relative h-full w-14">
+        <Skeleton className="size-full" />
+      </div>
+      <div className="flex h-full w-full items-center justify-between pr-2">
+        <Skeleton className="h-2.5 w-14" />
+        <Button
+          disabled
+          size="icon"
+          className="size-8 rounded-full opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+        >
+          <FaPlay size={12} />
+        </Button>
+      </div>
+    </div>
+  ));
 }
