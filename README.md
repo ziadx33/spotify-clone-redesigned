@@ -73,10 +73,3 @@ To set up the project locally, follow these steps:
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes. Make sure to follow the project's coding standards and include relevant tests.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-```
-
-Replace `YOUR_INTRODUCTION_VIDEO_LINK_HERE` with the actual link to the introduction video. This way, users can view both the redesign process and an introductory overview of the project.
