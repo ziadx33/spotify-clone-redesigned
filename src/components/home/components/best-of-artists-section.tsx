@@ -45,7 +45,7 @@ export function BestOfArtistsSection() {
   const cardsColors = useMemo(() => {
     return data?.authors?.map(() => getRandomMixColor());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getRandomMixColor]);
+  }, [getRandomMixColor, data?.authors]);
 
   const cards = useMemo(() => {
     return (

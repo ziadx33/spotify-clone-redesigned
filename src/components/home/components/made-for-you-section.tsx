@@ -44,7 +44,7 @@ export function MadeForYouSection() {
     const colors = data?.map(() => getRandomMixColor());
     return colors;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, getRandomMixColor]);
   const cards = useMemo(() => {
     return (
       data?.map((datum, index) => {
