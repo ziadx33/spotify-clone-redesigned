@@ -7,8 +7,13 @@ import { getUserTopTracks } from "@/server/actions/track";
 import { getArtistsByIds } from "@/server/actions/user";
 import { useQuery } from "@tanstack/react-query";
 import { PopularArtistsSection } from "./popular-artists-section";
+import { EditSectionButton } from "./edit-section-button";
 
-export function YourFavArtists() {
+type YourFavArtistsProps = {
+  userId: string;
+};
+
+export function YourFavArtists({ userId }: YourFavArtistsProps) {
   const { data: user } = useSession();
   const { data, isLoading } = useQuery({
     queryKey: ["fav-artists-home"],
@@ -33,6 +38,13 @@ export function YourFavArtists() {
   });
   return (
     <RenderSectionItems
+      buttons={[
+        <EditSectionButton
+          key="edit-button"
+          sectionId="your favorite artists"
+          userId={userId}
+        />,
+      ]}
       cards={data?.map((artist) => {
         return (
           <SectionItem
@@ -46,7 +58,7 @@ export function YourFavArtists() {
           />
         );
       })}
-      isLoading={isLoading}
+      isLoading={isLoading || !data}
       title="Your favorite artists"
       fallbackComponent={<PopularArtistsSection />}
     />

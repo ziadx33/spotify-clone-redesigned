@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { z } from "zod";
 import Image from "next/image";
+import { type AppDispatch } from "@/state/store";
 
 type EditFormProps = {
   editImageOverlay: ReactNode;
@@ -52,7 +53,7 @@ export function EditForm({
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const [disabled, setDisabled] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const formHandler = async (formData: z.infer<typeof editSchema>) => {
     setDisabled(true);
     const uploadData: typeof formData & { imageSrc?: string } = formData;

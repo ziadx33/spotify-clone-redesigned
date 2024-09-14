@@ -13,7 +13,7 @@ const initialState: UsersSliceType = {
 };
 
 const followingSlice = createSlice({
-  name: "playlists",
+  name: "following",
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   initialState: initialState as UsersSliceType,
   reducers: {

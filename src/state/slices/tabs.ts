@@ -18,7 +18,7 @@ const initialState: TabsSliceType = {
 };
 
 const tracksSlice = createSlice({
-  name: "tracks",
+  name: "tabs",
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   initialState: initialState as TabsSliceType,
   reducers: {

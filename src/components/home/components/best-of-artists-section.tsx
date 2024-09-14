@@ -10,10 +10,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState, useMemo, useRef } from "react";
 import { PlaylistDialog } from "./playlist-dialog";
 import { useSession } from "@/hooks/use-session";
+import { EditSectionButton } from "./edit-section-button";
 
-export function BestOfArtistsSection() {
+type BestOfArtistsSectionProps = {
+  userId: string;
+};
+
+export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
   const { data: user } = useSession();
-  const { data } = useQuery({
+
+  const { data, isLoading } = useQuery({
     queryKey: [`best-of-artists-section`],
     queryFn: async () => {
       const tracksData = await getBestOfArtists(user?.user?.id ?? "");
@@ -33,93 +39,98 @@ export function BestOfArtistsSection() {
 
   const usedColors = useRef<string[]>([]);
   const getRandomMixColor = useCallback(() => {
-    const randomColor = getRandomValue(
-      colors.current.filter((color) => !usedColors.current.includes(color)),
+    const availableColors = colors.current.filter(
+      (color) => !usedColors.current.includes(color),
     );
+    const randomColor = getRandomValue(availableColors);
     usedColors.current.push(randomColor);
     return randomColor;
-  }, [colors, usedColors]);
+  }, []);
 
   const [activeDialog, setActiveDialog] = useState<number | null>(null);
 
   const cardsColors = useMemo(() => {
     return data?.authors?.map(() => getRandomMixColor());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getRandomMixColor, data?.authors]);
+  }, [data?.authors, getRandomMixColor]);
 
   const cards = useMemo(() => {
-    return (
-      data?.authors?.map((datum, index) => {
-        const color = cardsColors?.[index];
+    return data?.authors?.map((datum, index) => {
+      const color = cardsColors?.[index];
 
-        const relatedTracks = data.tracks?.filter(
-          (track) =>
-            track.authorId === datum.id || track.authorIds.includes(datum.id),
-        );
+      const relatedTracks = data.tracks?.filter(
+        (track) =>
+          track.authorId === datum.id || track.authorIds.includes(datum.id),
+      );
 
-        const relatedAlbums = data.albums?.filter(
-          (album) => album.creatorId === datum.id,
-        );
+      const relatedAlbums = data.albums?.filter(
+        (album) => album.creatorId === datum.id,
+      );
 
-        const relatedAuthorsIds = relatedTracks
-          .map((track) => [track.authorId, ...track.authorIds])
-          .flat();
+      const relatedAuthorsIds = relatedTracks
+        ?.map((track) => [track.authorId, ...track.authorIds])
+        .flat();
 
-        const relatedAuthors = data.authors.filter((author) =>
-          relatedAuthorsIds.includes(author.id),
-        );
+      const relatedAuthors = data.authors?.filter((author) =>
+        relatedAuthorsIds.includes(author.id),
+      );
 
-        const dialogData = {
-          tracks: relatedTracks ?? [],
-          albums: relatedAlbums ?? [],
-          authors: relatedAuthors ?? [],
-        };
+      const dialogData = {
+        tracks: relatedTracks ?? [],
+        albums: relatedAlbums ?? [],
+        authors: relatedAuthors ?? [],
+      };
 
-        return (
-          <Dialog
-            key={index}
-            onOpenChange={(open) => setActiveDialog(open ? index : null)}
-          >
-            <DialogTrigger>
-              <SectionItem
-                type="PLAYLIST"
-                title={datum.name}
-                showPlayButton
-                customImage={
-                  <div className="size-full overflow-hidden rounded-sm">
-                    <AvatarData
-                      src={datum?.image ?? ""}
-                      containerClasses="size-full rounded-sm"
-                    />
-                    <div className="absolute bottom-5 flex items-center gap-2">
-                      <div
-                        style={{ backgroundColor: color }}
-                        className="h-5 w-1.5"
-                      />
-                      <h5 className="font-bold">This is {datum.name}</h5>
-                    </div>
+      return (
+        <Dialog
+          key={index}
+          onOpenChange={(open) => setActiveDialog(open ? index : null)}
+        >
+          <DialogTrigger>
+            <SectionItem
+              type="PLAYLIST"
+              title={datum.name}
+              showPlayButton
+              customImage={
+                <div className="size-full overflow-hidden rounded-sm">
+                  <AvatarData
+                    src={datum?.image ?? ""}
+                    containerClasses="size-full rounded-sm"
+                  />
+                  <div className="absolute bottom-5 flex items-center gap-2">
                     <div
                       style={{ backgroundColor: color }}
-                      className="absolute bottom-0 z-10 h-2.5 w-full rounded-b-sm"
+                      className="h-5 w-1.5"
                     />
+                    <h5 className="font-bold">This is {datum.name}</h5>
                   </div>
-                }
-                description={`This is ${datum.name}`}
-              />
-            </DialogTrigger>
-            <PlaylistDialog isActive={activeDialog === index} {...dialogData} />
-          </Dialog>
-        );
-      }) ?? []
-    );
+                  <div
+                    style={{ backgroundColor: color }}
+                    className="absolute bottom-0 z-10 h-2.5 w-full rounded-b-sm"
+                  />
+                </div>
+              }
+              description={`This is ${datum.name}`}
+            />
+          </DialogTrigger>
+          <PlaylistDialog isActive={activeDialog === index} {...dialogData} />
+        </Dialog>
+      );
+    });
   }, [activeDialog, data, cardsColors]);
 
   return (
     <RenderSectionItems
+      buttons={[
+        <EditSectionButton
+          key="edit-button"
+          userId={userId}
+          sectionId="best of artists"
+        />,
+      ]}
       cards={cards}
       title="Best of artists"
       cardsContainerClasses="gap-2"
-      isLoading={!data}
+      isLoading={isLoading || !cards}
     />
   );
 }

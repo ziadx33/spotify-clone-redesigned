@@ -3,6 +3,7 @@ import playlists from "./slices/playlists";
 import tracks from "./slices/tracks";
 import tabs from "./slices/tabs";
 import following from "./slices/following";
+import prefrence from "./slices/prefrence";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     tracks,
     tabs,
     following,
+    prefrence,
   },
 });
 

@@ -1,15 +1,16 @@
-import { BestOfArtistsSection } from "./components/best-of-artists-section";
-import { MadeForYouSection } from "./components/made-for-you-section";
-import { PlaylistsSection } from "./components/playlists-section";
-import { YourFavArtists } from "./components/your-fav-artists";
+import { getServerAuthSession } from "@/server/auth";
+import { PrefrencesProvider } from "./components/prefrences-provider";
+import { getPrefrence } from "@/server/actions/prefrence";
+import { notFound } from "next/navigation";
 
 export async function Home() {
+  const user = await getServerAuthSession();
+  if (!user?.user.id) notFound();
+  const userPrefrence = await getPrefrence(user?.user.id);
+
   return (
     <div className="flex flex-col px-4 py-8">
-      <PlaylistsSection />
-      <MadeForYouSection />
-      <YourFavArtists />
-      <BestOfArtistsSection />
+      <PrefrencesProvider userId={user.user.id} data={userPrefrence} />
     </div>
   );
 }

@@ -210,7 +210,7 @@ export const getTracksByPlaylistIds = unstable_cache(
       playlistIds,
     }: {
       playlistIds: string[];
-      authorId: string;
+      authorId?: string;
     }) => {
       try {
         const tracks = await db.track.findMany({

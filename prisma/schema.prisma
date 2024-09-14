@@ -95,6 +95,7 @@ model User {
     tracksHistoryLastReset DateTime        @default(now())
     tracksHistory          String[]        @default([])
     SearchHistory          SearchHistory[]
+    Preference             Preference[]
 }
 
 enum TAB_TYPE {
@@ -174,4 +175,16 @@ model SearchHistory {
     User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String?
     createdAt DateTime @default(now())
+}
+
+model Preference {
+    id                 String   @id @default(cuid())
+    user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId             String
+    pinnedHomeSections String[] @default([])
+    hiddenHomeSections String[] @default([])
+    homeSectionsSort   String[] @default(["made for you", "your favorite artists", "best of artists"])
+    homeLibSection     String[] @default([])
+
+    @@unique([userId])
 }

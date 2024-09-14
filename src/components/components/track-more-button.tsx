@@ -44,6 +44,7 @@ import { Check } from "lucide-react";
 import { RiArrowRightSLine } from "react-icons/ri";
 import { usePlaylists } from "@/hooks/use-playlists";
 import { revalidate } from "@/server/actions/revalidate";
+import { type AppDispatch } from "@/state/store";
 
 type TrackMoreButtonProps = {
   playlist?: Playlist | null;
@@ -138,7 +139,7 @@ function RemoveFromPlaylistButton({
   setShowMoreButton,
   playlists,
 }: RemoveFromPlaylistButtonProps) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { data: actualPlaylists } = usePlaylists();
   const removeFromPlaylistHandler = async () => {
     dispatch(removeTrackFromPlaylist({ playlistId, trackId }));
@@ -172,7 +173,7 @@ function AddToPlaylist({ track }: AddToPlaylistProps) {
   const [open, setOpen] = useState(false);
   const { data: user } = useSession();
   const { data: playlists } = usePlaylists();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const userPlaylists = useMemo(
     () =>
       playlists?.filter((playlist) => playlist.creatorId === user?.user?.id),

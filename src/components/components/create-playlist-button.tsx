@@ -5,6 +5,7 @@ import { useSession } from "@/hooks/use-session";
 import { useUpdateUser } from "@/hooks/use-update-user";
 import { createPlaylist } from "@/server/actions/playlist";
 import { addPlaylist } from "@/state/slices/playlists";
+import { type AppDispatch } from "@/state/store";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
@@ -15,7 +16,7 @@ export function CreatePlaylistButton() {
   const { data: user } = useSession();
   const { update: updateUser } = useUpdateUser();
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const handleCreatePlaylist = async () => {
     setIsLoading(true);

@@ -9,10 +9,15 @@ import { getHomeMadeForYouSection } from "@/server/actions/track";
 import { enumParser } from "@/utils/enum-parser";
 import { getRandomValue } from "@/utils/get-random-value";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 import { PlaylistDialog } from "./playlist-dialog";
+import { EditSectionButton } from "./edit-section-button";
 
-export function MadeForYouSection() {
+type MadeForYouSectionProps = {
+  userId: string;
+};
+
+export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
   const { data: user } = useSession();
   const { data } = useQuery({
     queryKey: [`home-made-for-you-section`],
@@ -22,29 +27,31 @@ export function MadeForYouSection() {
     },
     enabled: !!user?.user?.tracksHistory,
   });
-  const colors = [
+
+  const colors = useRef([
     "#8BD7CB",
     "#E4BABE",
     "#B0D8B4",
     "#DD6990",
     "#F3C168",
     "#007bff",
-  ];
-  const usedColors: string[] = [];
+  ]);
+  const usedColors = useRef<string[]>([]);
   const getRandomMixColor = useCallback(() => {
-    const randomColor = getRandomValue(
-      colors.filter((color) => !usedColors?.includes(color)),
+    const availableColors = colors.current.filter(
+      (color) => !usedColors.current.includes(color),
     );
-    usedColors.push(randomColor);
+    const randomColor = getRandomValue(availableColors);
+    usedColors.current.push(randomColor);
     return randomColor;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colors, usedColors, getRandomValue]);
+  }, []);
+
   const [activeDialog, setActiveDialog] = useState(0);
+
   const cardsColors = useMemo(() => {
-    const colors = data?.map(() => getRandomMixColor());
-    return colors;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return data?.map(() => getRandomMixColor());
   }, [data, getRandomMixColor]);
+
   const cards = useMemo(() => {
     return (
       data?.map((datum, index) => {
@@ -58,7 +65,7 @@ export function MadeForYouSection() {
                 title={title}
                 showPlayButton
                 customImage={
-                  <div className="size-full overflow-hidden  rounded-sm">
+                  <div className="size-full overflow-hidden rounded-sm">
                     <AvatarData
                       src={datum.authors[0]?.image ?? ""}
                       containerClasses="size-full rounded-sm"
@@ -78,7 +85,6 @@ export function MadeForYouSection() {
                     />
                   </div>
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 description={`${enumParser(datum.genre)} mix`}
               />
             </DialogTrigger>
@@ -87,10 +93,17 @@ export function MadeForYouSection() {
         );
       }) ?? []
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeDialog, data, getRandomMixColor]);
+  }, [activeDialog, data, cardsColors]);
+
   return (
     <RenderSectionItems
+      buttons={[
+        <EditSectionButton
+          sectionId="made for you"
+          key="edit-button"
+          userId={userId}
+        />,
+      ]}
       cards={cards}
       title="Made for you"
       cardsContainerClasses="gap-2"

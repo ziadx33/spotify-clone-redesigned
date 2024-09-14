@@ -15,6 +15,7 @@ type SectionItemsProps = {
   containerClasses?: string;
   cardsContainerClasses?: string;
   fallbackComponent?: ReactNode;
+  buttons?: ReactNode[];
 };
 
 export function RenderSectionItems({
@@ -25,25 +26,30 @@ export function RenderSectionItems({
   cardsContainerClasses,
   containerClasses,
   fallbackComponent,
+  buttons,
 }: SectionItemsProps) {
   const [showMoreButton, setShowButton] = useState(false);
-  return cards?.length !== 0 ? (
+  if (!isLoading && cards?.length === 0) return fallbackComponent;
+  return (
     <Dialog>
       <div className={cn("flex flex-col gap-3", containerClasses)}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-end justify-between">
           <h1 className={cn("pt-8 text-3xl font-bold", titleClasses)}>
             {title}
           </h1>
-          {showMoreButton && (
-            <DialogTrigger disabled={isLoading} asChild>
-              <Button variant="outline">show more</Button>
-            </DialogTrigger>
-          )}
+          <div className="mr-2 flex h-fit items-center">
+            {showMoreButton && (
+              <DialogTrigger disabled={isLoading} asChild>
+                <Button variant="outline">show more</Button>
+              </DialogTrigger>
+            )}
+            {buttons}
+          </div>
         </div>
         <div
           className={cn("flex flex-row overflow-hidden", cardsContainerClasses)}
         >
-          {!isLoading ? (
+          {!isLoading && cards?.length !== 0 ? (
             <RenderCards
               cards={cards ?? []}
               setShowMoreButton={setShowButton}
@@ -57,7 +63,5 @@ export function RenderSectionItems({
         {cards}
       </DialogContent>
     </Dialog>
-  ) : (
-    fallbackComponent
   );
 }

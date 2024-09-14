@@ -5,6 +5,7 @@ import {
   type PlaylistsSliceType,
   setPlaylists,
 } from "@/state/slices/playlists";
+import { type AppDispatch } from "@/state/store";
 import { type User } from "@prisma/client";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useDispatch } from "react-redux";
@@ -16,7 +17,7 @@ type AppProvider = {
 };
 
 export function AppProvider({ children, playlists, following }: AppProvider) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const done = useRef(false);
   useEffect(() => {
     if (done.current) return;

@@ -1,6 +1,7 @@
 import { MusicPlayer } from "@/components/[playlistId]/components/music-player";
 import { DialogContent } from "@/components/ui/dialog";
 import { type TracksSliceType, setTracks } from "@/state/slices/tracks";
+import { type AppDispatch } from "@/state/store";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -9,7 +10,7 @@ type PlaylistDialogProps = {
 } & NonNullable<TracksSliceType["data"]>;
 
 export function PlaylistDialog({ isActive, ...data }: PlaylistDialogProps) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (!isActive) return;
     dispatch(

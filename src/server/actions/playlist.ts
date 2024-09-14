@@ -13,7 +13,6 @@ type GetPlaylistsParams = {
   playlistIds?: string[];
   type?: Playlist["type"];
 };
-
 export const getPlaylists = unstable_cache(
   cache(
     async ({
@@ -22,6 +21,7 @@ export const getPlaylists = unstable_cache(
       type,
     }: GetPlaylistsParams): Promise<PlaylistsSliceType> => {
       try {
+        console.log("ana gadeet", playlistIds);
         const playlists = await db.playlist.findMany({
           where: {
             OR: [
@@ -38,13 +38,15 @@ export const getPlaylists = unstable_cache(
           },
         });
 
+        console.log("lesa 3ayz at5abes", playlists, playlistIds);
+
         return {
           data: playlists,
           status: "success",
           error: null,
         };
       } catch (error) {
-        throw {
+        return {
           status: "error",
           error: (error as { message: string }).message,
           data: null,
@@ -52,7 +54,7 @@ export const getPlaylists = unstable_cache(
       }
     },
   ),
-  ["playlists"],
+  ["playlists-by-ids"],
 );
 
 type GetFeaturingAlbumsProps = {

@@ -5,6 +5,7 @@ import { useUpdateUser } from "./use-update-user";
 import { useSession } from "./use-session";
 import { type Playlist } from "@prisma/client";
 import { revalidate } from "@/server/actions/revalidate";
+import { type AppDispatch } from "@/state/store";
 
 type UseAddPlaylistProps = {
   playlist?: Playlist | null;
@@ -14,7 +15,7 @@ export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {
   const { data: user } = useSession();
   const isAddedToLibrary = user?.user?.playlists?.includes(playlist?.id ?? "");
   const { update: updateUser } = useUpdateUser();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRemovePlaylist = async () => {
