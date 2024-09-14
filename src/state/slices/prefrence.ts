@@ -31,6 +31,7 @@ const prefrenceSlice = createSlice({
             id: "",
             pinnedHomeSections: [],
             userId: "",
+            homeLibSection: [],
             ...payload,
           };
       state.status = "success";
