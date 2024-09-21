@@ -5,6 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Navigate } from "../navigate";
 import { enumParser } from "@/utils/enum-parser";
+import { PiQueueBold } from "react-icons/pi";
+import { useQueue } from "@/hooks/use-queue";
 
 type PlaylistProps = { userData?: User; imageClassNames?: string } & (
   | { type: "ARTIST"; data: User }
@@ -19,6 +21,28 @@ export function LibraryItem({
 }: PlaylistProps) {
   const pathname = usePathname();
   const isArtist = type === "ARTIST";
+  const {
+    addPlaylistToQueue,
+    data: { data: queueData },
+  } = useQueue();
+  const addToQueueObj = {
+    icon: <PiQueueBold />,
+    title: "Add to queue",
+    onClick: () =>
+      void addPlaylistToQueue(
+        isArtist
+          ? {
+              data,
+              type,
+              queueList: queueData?.queueList,
+            }
+          : {
+              data,
+              type,
+              queueList: queueData?.queueList,
+            },
+      ),
+  };
   return (
     <Button
       variant="ghost"
@@ -45,6 +69,7 @@ export function LibraryItem({
             ? `/artist/${data.id}?playlist=library`
             : `/playlist/${data.id}`
         }
+        contextItems={[addToQueueObj]}
       >
         <div className="relative h-full w-[65px] overflow-hidden">
           <Image

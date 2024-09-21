@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { FaPlay } from "react-icons/fa";
-import { FaCircleMinus, FaShuffle } from "react-icons/fa6";
+import { FaCircleMinus } from "react-icons/fa6";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { BsThreeDots } from "react-icons/bs";
 import { type Playlist } from "@prisma/client";
@@ -38,6 +38,11 @@ import {
 import { usePlaylists } from "@/hooks/use-playlists";
 import { addPlaylistToTracks } from "@/server/actions/track";
 import { toast } from "sonner";
+import {
+  QueuePlayButton,
+  type QueuePlayButtonProps,
+} from "@/components/queue-play-button";
+import { ShuffleButton } from "./shuffle-button";
 
 type PlayerProps = {
   filters: TrackFilters;
@@ -47,6 +52,7 @@ type PlayerProps = {
   playlist?: Playlist | null;
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
+  playData?: QueuePlayButtonProps["data"];
 };
 
 export function Comp({
@@ -57,6 +63,7 @@ export function Comp({
   setTrackQuery,
   selectedTracks,
   setSelectedTracks,
+  playData,
 }: PlayerProps) {
   const { data: user } = useSession();
   const isCreatedByUser = user?.user?.id === playlist?.creatorId;
@@ -78,18 +85,16 @@ export function Comp({
                 setSelectedTracks={setSelectedTracks}
               />
             ) : (
-              <Button size={"icon"} className="mr-4 size-12 rounded-full">
+              <QueuePlayButton
+                size={"icon"}
+                className="mr-4 size-12 rounded-full"
+                data={playData}
+              >
                 <FaPlay size={18} />
-              </Button>
+              </QueuePlayButton>
             )}
             {(selectedTracks?.length ?? 0) < 1 && (
-              <Button
-                size={"icon"}
-                variant="ghost"
-                className="size-12 rounded-full"
-              >
-                <FaShuffle size={22} />
-              </Button>
+              <ShuffleButton queueData={playData} />
             )}
             {isCreatedByUser ? (
               <Button

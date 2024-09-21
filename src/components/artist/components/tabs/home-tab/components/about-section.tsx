@@ -22,12 +22,17 @@ export function AboutSection({ data, setCurrentTab }: ArtistPickSectionProps) {
       )}
     >
       {data.aboutImage ? (
-        <div className="relative h-48 w-full">
-          <Image src={data.aboutImage ?? ""} fill alt={data.name ?? ""} />
+        <div className="relative w-full">
+          <Image
+            src={data.aboutImage ?? ""}
+            fill
+            alt={data.name ?? ""}
+            className=""
+          />
         </div>
       ) : (
         <div className="p-2 pr-0">
-          <div className="relative h-full max-h-[90px] w-[80px]">
+          <div className="relative size-[80px]">
             <Image
               src={data.image ?? ""}
               fill

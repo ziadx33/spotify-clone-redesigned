@@ -1,10 +1,8 @@
 import { type Playlist } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
+import { SliceType } from "../types";
 
-export type PlaylistsSliceType =
-  | { status: "loading"; data: null; error: null }
-  | { status: "success"; data: Playlist[]; error: null }
-  | { status: "error"; data: null; error: string };
+export type PlaylistsSliceType = SliceType<Playlist[]>;
 
 const initialState: PlaylistsSliceType = {
   status: "loading",

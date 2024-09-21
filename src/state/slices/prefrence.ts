@@ -1,10 +1,8 @@
 import { type Preference } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
+import { SliceType } from "../types";
 
-export type PrefrenceSliceType =
-  | { status: "loading"; data: null; error: null }
-  | { status: "success"; data: Preference; error: null }
-  | { status: "error"; data: null; error: string };
+export type PrefrenceSliceType = SliceType<Preference>;
 
 const initialState: PrefrenceSliceType = {
   status: "loading",

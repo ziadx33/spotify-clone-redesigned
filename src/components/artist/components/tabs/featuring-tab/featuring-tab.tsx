@@ -56,6 +56,7 @@ export function FeaturingTab({ artist, query }: FeaturingTabProps) {
         ) : (
           <SectionItemSkeleton amount={5} />
         )}
+        {albums?.length === 0 ? <h1>There is no features</h1> : null}
       </div>
     </div>
   );

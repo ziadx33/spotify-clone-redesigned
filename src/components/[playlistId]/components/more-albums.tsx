@@ -20,7 +20,7 @@ type MoreAlbumsProps = {
 export function MoreAlbums({ data, playlist, artist }: MoreAlbumsProps) {
   const [showMoreButton, setShowMoreButton] = useState(false);
   return (
-    <div className="w-full flex-col">
+    <div className="h-fit w-full flex-col">
       <div className="flex items-center justify-between">
         <Button
           variant="link"

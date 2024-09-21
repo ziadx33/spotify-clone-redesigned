@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SkeletonList } from "../artist/components/skeleton";
 import { Checkbox } from "../ui/checkbox";
 import { type useIntersectionObserver } from "usehooks-ts";
+import { parseDurationTime } from "@/utils/parse-duration-time";
 
 type Props = {
   track: Track & { trackIndex: number };
@@ -252,12 +253,7 @@ export function Track(props: TrackProps) {
         {!replaceDurationWithButton ? (
           !skeleton ? (
             <div className="flex h-full w-24 items-center gap-3">
-              {String(
-                (
-                  Math.floor(props.track.duration / 60) +
-                  (props.track.duration % 60) / 100
-                ).toFixed(2),
-              ).replace(".", ":")}
+              {parseDurationTime(props.track.duration)}
               {(showMoreButton || showButtons) && (
                 <TrackMoreButton
                   setOpened={setIsShowMoreButtonOpened}

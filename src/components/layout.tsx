@@ -5,6 +5,7 @@ import { Toaster } from "./ui/sonner";
 import { ReduxProvider } from "@/providers/redux-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { mainFont } from "@/fonts";
+import { QueueProvider } from "@/providers/queue-provider";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -19,7 +20,9 @@ export function Layout({ children }: { children: ReactNode }) {
               forcedTheme="dark"
               disableTransitionOnChange
             >
-              <QueryProvider>{children}</QueryProvider>
+              <QueryProvider>
+                <QueueProvider>{children}</QueueProvider>
+              </QueryProvider>
               <Toaster />
             </ThemeProvider>
           </ReduxProvider>

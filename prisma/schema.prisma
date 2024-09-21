@@ -96,6 +96,7 @@ model User {
     tracksHistory          String[]        @default([])
     SearchHistory          SearchHistory[]
     Preference             Preference[]
+    QueueList              QueueList[]
 }
 
 enum TAB_TYPE {
@@ -151,6 +152,7 @@ model Playlist {
 
 model Track {
     id        String   @id @default(cuid())
+    order     Int      @default(autoincrement())
     title     String
     author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId  String
@@ -187,4 +189,38 @@ model Preference {
     homeLibSection     String[] @default([])
 
     @@unique([userId])
+}
+
+enum QUEUE_TYPE {
+    PLAYLIST
+    ARTIST
+}
+
+enum REPEAT_QUEUE_TYPE {
+    TRACK
+    PLAYLIST
+}
+
+model QueueList {
+    id             String             @id @default(cuid())
+    user           User               @relation(fields: [userId], references: [id])
+    userId         String
+    queues         Queue[]
+    volumeLevel    Int                @default(50)
+    repeatQueue    REPEAT_QUEUE_TYPE? @default(PLAYLIST)
+    randomize      Boolean            @default(false)
+    currentQueueId String
+
+    @@unique([userId])
+}
+
+model Queue {
+    id                     String     @id @default(cuid())
+    type                   QUEUE_TYPE @default(PLAYLIST)
+    typeId                 String
+    currentPlaying         String
+    currentPlayingProgress Int        @default(0)
+    trackList              String[]   @default([])
+
+    QueueList QueueList[]
 }

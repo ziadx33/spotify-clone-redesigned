@@ -8,7 +8,7 @@ import { type AppDispatch } from "@/state/store";
 import { followUser, unFollowUser } from "@/state/slices/following";
 
 type UseFollowParams = {
-  artist: User;
+  artist?: User;
   playlistId: string;
 };
 
@@ -22,27 +22,27 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
   useEffect(() => {
     if (followedSetDone.current) return;
     if (!user?.user?.id) return;
-    setIsFollowed(artist.followers.includes(user?.user?.id));
+    setIsFollowed(artist?.followers?.includes(user?.user?.id) ?? false);
     followedSetDone.current = true;
     setIsFollowing(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.user?.id]);
 
   const reset = () => {
-    revalidate(`/artist/${artist.id}`);
+    revalidate(`/artist/${artist?.id}`);
     setIsFollowed((v) => !v);
     setIsFollowing(false);
   };
 
   const follow = async () => {
     setIsFollowing(true);
-    dispatch(followUser(artist));
+    if (artist) dispatch(followUser(artist));
     await updateUserById({
-      id: artist.id,
+      id: artist?.id ?? "",
       data: {
-        followers: [...artist.followers, user?.user?.id ?? ""],
+        followers: [...(artist?.followers ?? []), user?.user?.id ?? ""],
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        discoveredOn: [...(artist.discoveredOn ?? []), playlistId],
+        discoveredOn: [...(artist?.discoveredOn ?? []), playlistId],
       },
     });
     reset();
@@ -50,18 +50,18 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
 
   const unfollow = async () => {
     setIsFollowing(true);
-    dispatch(unFollowUser(artist.id));
+    dispatch(unFollowUser(artist?.id ?? ""));
     await updateUserById({
-      id: artist.id,
+      id: artist?.id ?? "",
       data: {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-        followers: artist.followers.filter(
+        followers: artist?.followers.filter(
           (follower) => follower !== user?.user?.id,
         ),
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         discoveredOn:
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-          artist.discoveredOn?.filter(
+          artist?.discoveredOn?.filter(
             (playlistId) => playlistId !== playlistId,
           ) ?? [],
       },

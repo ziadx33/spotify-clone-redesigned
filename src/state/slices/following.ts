@@ -1,10 +1,8 @@
 import { type User } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
+import { SliceType } from "../types";
 
-export type UsersSliceType =
-  | { status: "loading"; data: null; error: null }
-  | { status: "success"; data: User[]; error: null }
-  | { status: "error"; data: null; error: string };
+export type UsersSliceType = SliceType<User[]>;
 
 const initialState: UsersSliceType = {
   status: "loading",

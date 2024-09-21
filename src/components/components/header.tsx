@@ -26,7 +26,7 @@ export function Header({ children }: { children: ReactNode }) {
   };
 
   return (
-    <header className="z-10 flex w-full justify-between py-3 pr-8">
+    <header className="z-10 flex h-[7%] w-full justify-between py-3 pr-8">
       <div className="flex w-full max-w-[93.5%] items-center gap-3">
         {children}
         <div className="flex items-center gap-2 pr-2">

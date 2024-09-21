@@ -63,7 +63,7 @@ export function Tab({
       ref={currentTabRef}
       variant="ghost"
       className={cn(
-        "relative  flex w-64 p-0",
+        "relative  flex w-64 shrink-0 p-0",
         isCurrentTab ? "bg-muted font-semibold" : "font-normal",
       )}
       asChild

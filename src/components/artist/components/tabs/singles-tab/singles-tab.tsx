@@ -17,6 +17,7 @@ export function SinglesTab({ artist, query }: SinglesTab) {
     queryFn: async () => {
       const res = await getTracksByIds({
         artistId: artist.id,
+        type: "SINGLE",
       });
       return res;
     },
@@ -55,6 +56,7 @@ export function SinglesTab({ artist, query }: SinglesTab) {
         ) : (
           <SectionItemSkeleton amount={5} />
         )}
+        {tracks?.length === 0 ? <h1>There is no singles</h1> : null}
       </div>
     </div>
   );

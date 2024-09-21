@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  QueuePlayButton,
+  type QueuePlayButtonProps,
+} from "@/components/queue-play-button";
 import { Button } from "@/components/ui/button";
 import { useFollow } from "@/hooks/use-follow";
 import { type User } from "@prisma/client";
@@ -10,15 +14,20 @@ import { MdFormatListBulletedAdd, MdOutlineLibraryAdd } from "react-icons/md";
 type ControlsProps = {
   artist: User;
   playlistId: string;
+  data?: QueuePlayButtonProps["data"];
 };
 
-export function Controls({ artist, playlistId }: ControlsProps) {
+export function Controls({ artist, playlistId, data }: ControlsProps) {
   const { isFollowed, toggle, isFollowing } = useFollow({ artist, playlistId });
   return (
     <div className="flex h-fit w-fit items-center">
-      <Button size={"icon"} className="h-12 w-12 rounded-full">
+      <QueuePlayButton
+        data={data}
+        size={"icon"}
+        className="h-12 w-12 rounded-full"
+      >
         <FaPlay size={15} />
-      </Button>
+      </QueuePlayButton>
       <Button
         disabled={isFollowing}
         onClick={toggle}

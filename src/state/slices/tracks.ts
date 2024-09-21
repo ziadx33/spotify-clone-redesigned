@@ -1,18 +1,19 @@
 import { type User, type Track, type Playlist } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
+import { type SliceType } from "../types";
 
-export type TracksSliceType =
-  | { status: "loading"; data: null; error: null }
-  | {
-      status: "success";
-      data: {
-        tracks: Track[] | null;
-        authors: User[] | null;
-        albums: Playlist[] | null;
-      };
-      error: null;
-    }
-  | { status: "error"; data: null; error: string };
+export type TrackSliceType = {
+  track?: Track | null;
+  author?: User | null;
+  album?: Playlist | null;
+  authors?: User[] | null;
+};
+
+export type TracksSliceType = SliceType<{
+  tracks: Track[] | null;
+  authors: User[] | null;
+  albums: Playlist[] | null;
+}>;
 
 const initialState: TracksSliceType = {
   status: "loading",

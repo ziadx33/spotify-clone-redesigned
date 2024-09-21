@@ -9,7 +9,7 @@ export async function Home() {
   const userPrefrence = await getPrefrence(user?.user.id);
 
   return (
-    <div className="flex flex-col px-4 py-8">
+    <div className="flex flex-col px-4 py-8 pb-4">
       <PrefrencesProvider userId={user.user.id} data={userPrefrence} />
     </div>
   );

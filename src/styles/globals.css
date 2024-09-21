@@ -59,4 +59,7 @@
   img {
     @apply object-cover;
   }
+  a {
+    @apply hover:underline;
+  }
 }

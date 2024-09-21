@@ -1,15 +1,9 @@
 import { type ChangeCurrentTabPrams } from "@/server/actions/tab";
 import { type Tab } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
+import { SliceType } from "../types";
 
-export type TabsSliceType =
-  | { status: "loading"; data: null; error: null }
-  | {
-      status: "success";
-      data: Tab[];
-      error: null;
-    }
-  | { status: "error"; data: null; error: string };
+export type TabsSliceType = SliceType<Tab[]>;
 
 const initialState: TabsSliceType = {
   status: "loading",

@@ -74,7 +74,22 @@ function ListView({ tracks, album, artist }: Omit<AlbumProps, "viewAs">) {
               {!expanded ? <FaArrowDown size={12} /> : <FaArrowUp size={12} />}
             </Button>
           </div>
-          <AlbumControl playlist={album} />
+          <AlbumControl
+            data={{
+              data: {
+                currentPlaying: tracks[0]?.id ?? "",
+                trackList: tracks.map((track) => track.id),
+                type: "PLAYLIST",
+                typeId: album.id,
+              },
+              tracks: {
+                tracks,
+                albums: [album],
+                authors: [artist],
+              },
+            }}
+            playlist={album}
+          />
         </div>
       </div>
       {expanded ? (

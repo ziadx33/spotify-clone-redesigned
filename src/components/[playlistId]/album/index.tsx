@@ -5,9 +5,9 @@ import { EditableData } from "./components/editable-data";
 
 export function Album({ creatorData, data }: PlaylistPageProps) {
   return (
-    <div className="flex h-fit min-h-full w-full flex-col">
+    <div className="flex flex-col">
       <EditableData creatorData={creatorData?.creatorData} data={data}>
-        <div className="flex h-fit w-full flex-col gap-4 pb-4">
+        <div className="flex size-full flex-col gap-4 pb-4">
           <MusicPlayer playlist={data} />
           <MoreAlbums
             artist={creatorData?.creatorData}

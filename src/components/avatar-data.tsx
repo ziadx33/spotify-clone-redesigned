@@ -10,14 +10,15 @@ type AvatarData = {
 export function AvatarData({
   containerClasses,
   title,
+  alt,
   ...restProps
 }: AvatarData) {
   const fallback = useMemo(() => {
-    return getAvatarFallback(title);
-  }, [title]);
+    return getAvatarFallback(title ?? alt);
+  }, [title, alt]);
   return (
     <Avatar className={containerClasses}>
-      <AvatarImage {...restProps} />
+      <AvatarImage draggable={false} {...restProps} />
       <AvatarFallback>{fallback}</AvatarFallback>
     </Avatar>
   );

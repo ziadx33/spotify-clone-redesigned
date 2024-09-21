@@ -21,7 +21,7 @@ type HomeTabProps = {
 export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
   const { data: user, status } = useSession();
   const { data, isLoading } = useQuery({
-    queryKey: [`home-tab-artist-${artist.id}`],
+    queryKey: ["home-tab-artist", artist.id, artist.artistPick],
     queryFn: async () => {
       const [userTopTracks, topTracks, artistPick] = [
         await getUserTopTracks({

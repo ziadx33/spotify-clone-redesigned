@@ -17,6 +17,8 @@ import {
   SkeletonList,
 } from "@/components/artist/components/skeleton";
 import { Author } from "./author";
+import { useMiniMenu } from "@/hooks/use-mini-menu";
+import { cn } from "@/lib/utils";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -38,9 +40,13 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
   const isDoneLoading =
     !isLoading && !!data && !!creatorData && status !== "loading";
 
+  const { value: miniMenuValue } = useMiniMenu();
+
   return (
-    <div className="h-fit w-full">
-      <div className="flex h-fit w-full gap-8 p-8 pb-6">
+    <div>
+      <div
+        className={cn("flex gap-8 p-8 pb-6", miniMenuValue ? "flex-col" : "")}
+      >
         <div className="flex w-[95%] flex-col">
           <h1
             title={data?.title}
@@ -86,8 +92,18 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
           </div>
           {children}
         </div>
-        <div className="flex w-full flex-col gap-4">
-          <div className="group relative h-[500px] w-full">
+        <div
+          className={cn(
+            "flex w-full gap-4",
+            !miniMenuValue ? "flex-col" : "flex-row border-t pt-4",
+          )}
+        >
+          <div
+            className={cn(
+              "group relative",
+              !miniMenuValue ? "size-[500px]" : "size-[300px]",
+            )}
+          >
             {isDoneLoading ? (
               <Image
                 src={data?.imageSrc ?? ""}
@@ -100,33 +116,43 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
               <Skeleton className="size-full" />
             )}
           </div>
-          {data?.genres && (
-            <div className="flex flex-wrap gap-1">
+          <div
+            className={cn(
+              "flex gap-4",
+              !miniMenuValue ? "mb-auto flex-col-reverse" : "flex-col",
+            )}
+          >
+            {data?.genres && (
+              <div className="flex flex-wrap gap-1">
+                {isDoneLoading ? (
+                  (data?.genres as string[]).map((genre) => (
+                    <Badge
+                      key={genre}
+                      className="text-md px-4 py-1"
+                      variant="outline"
+                    >
+                      {enumParser(genre)}
+                    </Badge>
+                  ))
+                ) : (
+                  <>
+                    <SkeletonList
+                      amount={5}
+                      className="h-8 w-20 rounded-full"
+                    />
+                  </>
+                )}
+              </div>
+            )}
+            <div className="flex flex-col gap-4">
               {isDoneLoading ? (
-                (data?.genres as string[]).map((genre) => (
-                  <Badge
-                    key={genre}
-                    className="text-md px-4 py-1"
-                    variant="outline"
-                  >
-                    {enumParser(genre)}
-                  </Badge>
+                tracksData?.authors?.map((author) => (
+                  <Author key={author.id} author={author} playlist={data} />
                 ))
               ) : (
-                <>
-                  <SkeletonList amount={5} className="h-8 w-20 rounded-full" />
-                </>
+                <SkeletonAuthorList amount={5} />
               )}
             </div>
-          )}
-          <div className="flex flex-col gap-4">
-            {isDoneLoading ? (
-              tracksData?.authors?.map((author) => (
-                <Author key={author.id} author={author} playlist={data} />
-              ))
-            ) : (
-              <SkeletonAuthorList amount={5} />
-            )}
           </div>
         </div>
       </div>

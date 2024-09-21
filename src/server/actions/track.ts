@@ -9,66 +9,25 @@ import { type Track, type $Enums, type User } from "@prisma/client";
 import { getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { getPlaylists } from "./playlist";
 
-// type GetTracksDataParams = {
-//   tracks: Track[];
-//   artistType: $Enums.USER_TYPE;
-//   disable?: {
-//     playlists?: boolean;
-//     artists?: boolean;
-//   };
-// };
+type GetTracksDataParams = {
+  tracks: Track[];
+  artistType: $Enums.USER_TYPE;
+  disable?: {
+    playlists?: boolean;
+    artists?: boolean;
+  };
+};
 
-// export const getTracksData = async ({
-//   tracks,
-//   artistType,
-//   disable,
-// }: GetTracksDataParams) => {
-//   const requests = [
-//     !disable?.artists
-//       ? db.user.findMany({
-//           where: {
-//             type: artistType,
-//             OR: [
-//               { id: { in: tracks?.map((track) => track.authorId) } },
-//               {
-//                 id: {
-//                   in: tracks.map((track) => track?.authorIds ?? []).flat(),
-//                 },
-//               },
-//             ],
-//           },
-//         })
-//       : undefined,
-//     !disable?.playlists
-//       ? getPlaylists({
-//           playlistIds: tracks?.map((track) => track.albumId),
-//         })
-//       : undefined,
-//   ] as const;
-//   const [authors, playlists] = await handleRequests(requests);
-//   return { authors, playlists };
-// };
-
-export const getTracksByPlaylistId = unstable_cache(
-  cache(async (playlistId: string | string[]): Promise<TracksSliceType> => {
-    try {
-      const isArray =
-        typeof playlistId === "string"
-          ? { has: playlistId }
-          : { hasSome: playlistId };
-      const tracks = await db.track.findMany({
-        where: {
-          OR: [
-            { playlists: isArray },
-            {
-              albumId: typeof playlistId === "string" ? playlistId : undefined,
-            },
-          ],
-        },
-      });
-      const requests = [
-        db.user.findMany({
+export const getTracksData = async ({
+  tracks,
+  artistType,
+  disable,
+}: GetTracksDataParams) => {
+  const requests = [
+    !disable?.artists
+      ? db.user.findMany({
           where: {
+            type: artistType,
             OR: [
               { id: { in: tracks?.map((track) => track.authorId) } },
               {
@@ -78,23 +37,86 @@ export const getTracksByPlaylistId = unstable_cache(
               },
             ],
           },
-        }),
-        getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
-      ] as const;
-      const [authors, { data }] = await handleRequests(requests);
-      return {
-        data: { tracks: tracks ?? [], authors, albums: data ?? [] },
-        status: "success",
-        error: null,
-      };
-    } catch (error) {
-      return {
-        status: "error",
-        error: (error as { message: string }).message,
-        data: null,
-      };
-    }
-  }),
+        })
+      : undefined,
+    !disable?.playlists
+      ? (
+          await getPlaylists({
+            playlistIds: tracks?.map((track) => track.albumId),
+          })
+        ).data
+      : undefined,
+  ] as const;
+  const [authors, playlists] = await handleRequests(requests);
+  return { authors, playlists };
+};
+
+export const getTracksByPlaylistId = unstable_cache(
+  cache(
+    async (
+      playlistId?: string | string[],
+      trackIds?: string[],
+    ): Promise<TracksSliceType> => {
+      try {
+        const isArray =
+          typeof playlistId === "string"
+            ? { has: playlistId }
+            : { hasSome: playlistId };
+        const tracks = await db.track.findMany({
+          where: playlistId
+            ? {
+                OR: [
+                  {
+                    playlists: isArray,
+                  },
+                  {
+                    albumId: playlistId
+                      ? typeof playlistId === "string"
+                        ? playlistId
+                        : undefined
+                      : undefined,
+                  },
+                ],
+              }
+            : {
+                id: {
+                  in: trackIds,
+                },
+              },
+          orderBy: {
+            order: "asc",
+          },
+        });
+        const requests = [
+          db.user.findMany({
+            where: {
+              OR: [
+                { id: { in: tracks?.map((track) => track.authorId) } },
+                {
+                  id: {
+                    in: tracks.map((track) => track?.authorIds ?? []).flat(),
+                  },
+                },
+              ],
+            },
+          }),
+          getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
+        ] as const;
+        const [authors, { data }] = await handleRequests(requests);
+        return {
+          data: { tracks: tracks ?? [], authors, albums: data ?? [] },
+          status: "success",
+          error: null,
+        };
+      } catch (error) {
+        return {
+          status: "error",
+          error: (error as { message: string }).message,
+          data: null,
+        };
+      }
+    },
+  ),
   ["track", "playlist-id", "id"],
 );
 
@@ -379,7 +401,11 @@ export const getSavedTracks = unstable_cache(
   }),
 );
 
-type GetTracksByIdsParams = { ids?: string[]; artistId?: string };
+type GetTracksByIdsParams = {
+  ids?: string[];
+  artistId?: string;
+  type?: $Enums.PLAYLIST_TYPE;
+};
 
 export const getTracksByIds = unstable_cache(
   cache(async (data: GetTracksByIdsParams) => {
@@ -398,6 +424,9 @@ export const getTracksByIds = unstable_cache(
             : undefined,
           id: {
             in: data.ids,
+          },
+          album: {
+            type: data.type,
           },
         },
       });
@@ -619,6 +648,28 @@ export const getBestOfArtists = unstable_cache(
     }
   }),
   ["best-of-artists-section"],
+  {
+    revalidate: 86400,
+  },
+);
+
+export const getTracksByArtistId = unstable_cache(
+  cache(async (id: string) => {
+    try {
+      const tracks = await db.track.findMany({
+        where: {
+          OR: [{ authorId: id }, { authorIds: { has: id } }],
+        },
+      });
+
+      const data = await getTracksData({ artistType: "ARTIST", tracks });
+
+      return { data, tracks };
+    } catch (error) {
+      throw { error };
+    }
+  }),
+  ["tracks-by-artist-ids"],
   {
     revalidate: 86400,
   },

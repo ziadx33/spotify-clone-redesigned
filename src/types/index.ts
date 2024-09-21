@@ -11,3 +11,9 @@ export type TrackFilters = {
 
 export type ElementType<T extends ReadonlyArray<unknown>> =
   T extends ReadonlyArray<infer ElementType> ? ElementType : never;
+
+export type ChangeValueParam<T> = ((val: T) => T) | T;
+
+export type Nullable<T> = {
+  [P in keyof T]?: T[P] | null;
+};

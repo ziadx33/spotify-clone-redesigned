@@ -8,6 +8,7 @@ import { useTabs } from "@/hooks/use-tabs";
 import { SearchTab } from "./search-tab";
 import { useEffect } from "react";
 import { TabSkeleton } from "@/components/artist/components/skeleton";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export function TabsContent() {
   const { data: tabs, status, error } = useTabs();
@@ -24,28 +25,33 @@ export function TabsContent() {
   }, [status]);
   if (status === "error") throw { error };
   return (
-    <div className="flex w-full gap-1.5 overflow-x-scroll">
-      {status === "success" ? (
-        <>
-          <Tab title="Home" Icon={TiHome} iconSize={23} href={"/"} />
-          <SearchTab />
-          {tabs?.map((tab) => (
-            <Tab
-              key={tab.id}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              title={tab.title ?? ""}
-              deleteData={{ id: tab.id }}
-              Icon={
-                tab.type === "PLAYLIST" ? RiPlayListLine : PiMicrophoneStageBold
-              }
-              iconSize={20}
-              href={tab.href ?? ""}
-            />
-          ))}
-        </>
-      ) : (
-        <TabSkeleton amount={5} />
-      )}
-    </div>
+    <ScrollArea className="w-full">
+      <div className="flex w-full gap-1.5 overflow-x-scroll">
+        {status === "success" ? (
+          <>
+            <Tab title="Home" Icon={TiHome} iconSize={23} href={"/"} />
+            <SearchTab />
+            {tabs?.map((tab) => (
+              <Tab
+                key={tab.id}
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                title={tab.title ?? ""}
+                deleteData={{ id: tab.id }}
+                Icon={
+                  tab.type === "PLAYLIST"
+                    ? RiPlayListLine
+                    : PiMicrophoneStageBold
+                }
+                iconSize={20}
+                href={tab.href ?? ""}
+              />
+            ))}
+          </>
+        ) : (
+          <TabSkeleton amount={5} />
+        )}
+      </div>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   );
 }
