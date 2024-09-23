@@ -21,7 +21,6 @@ export const getPlaylists = unstable_cache(
       type,
     }: GetPlaylistsParams): Promise<PlaylistsSliceType> => {
       try {
-        console.log("ana gadeet", playlistIds);
         const playlists = await db.playlist.findMany({
           where: {
             OR: [
@@ -37,8 +36,6 @@ export const getPlaylists = unstable_cache(
             type,
           },
         });
-
-        console.log("lesa 3ayz at5abes", playlists, playlistIds);
 
         return {
           data: playlists,
@@ -241,16 +238,28 @@ export const getNewPlaylists = unstable_cache(
   ["get-new-releases", "type"],
 );
 
+type GetPopularPlaylists = {
+  type?: $Enums.GENRES;
+  range?: {
+    from?: number;
+    to?: number;
+  };
+};
+
 export const getPopularPlaylists = unstable_cache(
-  cache(async ({ type }: { type: $Enums.GENRES }) => {
+  cache(async ({ type, range = { from: 0, to: 20 } }: GetPopularPlaylists) => {
     try {
-      const defaultOptions = {
+      const defaultOptions: Parameters<typeof db.playlist.findMany>["0"] = {
         where: {
-          genres: {
-            has: type,
-          },
+          genres: type
+            ? {
+                has: type,
+              }
+            : undefined,
+          visibility: "PUBLIC",
         },
-        take: 20,
+        skip: range?.from,
+        take: range?.to,
       };
       const artists = await db.user.findMany({
         orderBy: {

@@ -15,7 +15,7 @@ export const register = async (
     password: data.password,
   });
   const verificationToken = await generateVerificationToken(data.email);
-  const confirmationLink = `${origin}/verification-token?token=${verificationToken.token}`;
+  const confirmationLink = `${data.origin}/verification-token?token=${verificationToken.token}`;
   await sendEmail({
     to: data.email,
     from: "hatemziad384@gmail.com",

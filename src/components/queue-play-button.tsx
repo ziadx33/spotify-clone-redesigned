@@ -3,6 +3,7 @@ import { Button, type ButtonProps } from "./ui/button";
 import { type ReactNode } from "react";
 import { useQueue } from "@/hooks/use-queue";
 import { type QueueListSliceType } from "@/state/slices/queue-list";
+import { useGetPlayData } from "@/hooks/use-get-play-data";
 
 export type QueuePlayButtonProps = {
   data?: {
@@ -18,22 +19,28 @@ export type QueuePlayButtonProps = {
     typePlaylist?: Playlist;
     typeArtist?: User;
   };
+  playlist?: Playlist | null;
   children: ReactNode;
 } & ButtonProps;
 
 export function QueuePlayButton({
   data,
   children,
+  playlist,
   ...buttonProps
 }: QueuePlayButtonProps) {
   const { play } = useQueue();
+  const playlistData = useGetPlayData({ playlist });
   return (
     <Button
       {...buttonProps}
-      disabled={buttonProps.disabled ?? !data}
+      disabled={
+        buttonProps.disabled ||
+        (!data && (playlistData?.tracks?.tracks?.length ?? 0) === 0)
+      }
       onClick={(e) => {
         buttonProps.onClick?.(e);
-        if (data) void play(data);
+        if (data) void play(data ?? playlistData);
       }}
     >
       {children}

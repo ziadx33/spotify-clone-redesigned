@@ -211,6 +211,38 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const clickedPopover = useRef(false);
 
+  const content = (
+    <>
+      <SelectFromLibraryButton open={popoverOpen} setOpen={setPopoverOpen}>
+        <SortableItem
+          draggable={false}
+          title="Select from library"
+          id="select-from"
+        />
+      </SelectFromLibraryButton>
+      <SortableItems
+        items={pinnedSections}
+        helperClass="z-50 bg-muted"
+        onSortEnd={(params) =>
+          sortEnd(params, data?.pinnedHomeSections, "pinnedHomeSections")
+        }
+        lockAxis="y"
+        lockToContainerEdges
+      />
+      <SortableItems
+        items={items?.filter(
+          (item) => !data?.pinnedHomeSections.includes(item.id),
+        )}
+        helperClass="z-50 bg-muted"
+        onSortEnd={(params) =>
+          sortEnd(params, data?.homeSectionsSort ?? arr, "homeSectionsSort")
+        }
+        lockAxis="y"
+        lockToContainerEdges
+      />
+    </>
+  );
+
   return (
     <DropdownMenu
       open={dropdownOpen}
@@ -231,33 +263,14 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
       <DropdownMenuContent className="sortable-items z-40 w-96">
         <DropdownMenuLabel>Customize feed</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <SelectFromLibraryButton open={popoverOpen} setOpen={setPopoverOpen}>
-          <SortableItem
-            draggable={false}
-            title="Select from library"
-            id="select-from"
-          />
-        </SelectFromLibraryButton>
-        <SortableItems
-          items={pinnedSections}
-          helperClass="z-50 bg-muted"
-          onSortEnd={(params) =>
-            sortEnd(params, data?.pinnedHomeSections, "pinnedHomeSections")
-          }
-          lockAxis="y"
-          lockToContainerEdges
-        />
-        <SortableItems
-          items={items?.filter(
-            (item) => !data?.pinnedHomeSections.includes(item.id),
-          )}
-          helperClass="z-50 bg-muted"
-          onSortEnd={(params) =>
-            sortEnd(params, data?.homeSectionsSort ?? arr, "homeSectionsSort")
-          }
-          lockAxis="y"
-          lockToContainerEdges
-        />
+        {(user?.user?.tracksHistory.length ?? 0) > 0 ? (
+          content
+        ) : (
+          <h3 className="p-3 text-center">
+            Listen to a few tracks to help personalize and organize the sections
+            on the homepage!
+          </h3>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

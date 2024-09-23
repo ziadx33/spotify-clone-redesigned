@@ -13,7 +13,6 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
   const newReleases = await getNewPlaylists({ type: genre });
   const popularPlaylists = await getPopularPlaylists({ type: genre });
   const popularUsers = await getPopularUsers({ type: genre });
-  console.log("popoular shitterss", popularUsers);
   return (
     <div className="flex flex-col">
       <div className="flex h-72 items-end border-b pb-8 pl-4">

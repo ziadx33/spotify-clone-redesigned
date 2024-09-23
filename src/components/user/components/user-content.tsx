@@ -37,35 +37,38 @@ export function UserContent({
   topTracks,
   topArtists,
 }: UserContentProps) {
-  const { data: userData } = useSession();
-  const image = userData?.user?.image;
+  const { data: curUser } = useSession();
+  const userData = user?.id === curUser?.user?.id ? curUser?.user : user;
+  const image = userData?.image;
   return (
     <Dialog>
       <div className="flex min-h-full w-full flex-col">
         <div
           style={{
-            background: `url(${user?.coverImage}) no-repeat`,
+            background: `url(${userData?.coverImage}) no-repeat`,
             backgroundSize: "cover",
             backgroundPosition: "top center",
           }}
           className={cn(
             "flex  w-full  border-b p-8",
-            user?.coverImage ? "h-[30rem] items-end" : "h-96 place-items-end",
+            userData?.coverImage
+              ? "h-[30rem] items-end"
+              : "h-96 place-items-end",
           )}
         >
           <div className="flex items-center  gap-6">
-            {!user?.coverImage && (
+            {!userData?.coverImage && (
               <Image
                 src={image ?? ""}
                 width={200}
                 height={200}
-                alt={user?.name ?? ""}
+                alt={userData?.name ?? ""}
                 className="size-[200px] rounded-full"
               />
             )}
             <div className="flex flex-col">
               <p>profile</p>
-              <b className="mb-4 mt-2 text-8xl">{user?.name}</b>
+              <b className="mb-4 mt-2 text-8xl">{userData?.name}</b>
               <p>
                 {publicPlaylists?.length} Public Playlists
                 {isUser && ` - ${followedArtists?.length} Following`}
@@ -90,7 +93,7 @@ export function UserContent({
               <DropdownMenuItem
                 onClick={() =>
                   navigator.clipboard.writeText(
-                    `${window.origin}/artist/${user?.id}`,
+                    `${window.origin}/artist/${userData?.id}`,
                   )
                 }
               >
@@ -99,15 +102,17 @@ export function UserContent({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <TopArtists artists={topArtists} user={user} />
-          <TopTracks user={user} data={topTracks} />
-          <PublicPlaylists playlists={publicPlaylists} user={user} />
-          <FollowedArtists artists={followedArtists} user={user} />
+          <TopArtists artists={topArtists} user={userData} />
+          <TopTracks user={userData} data={topTracks} />
+          <PublicPlaylists playlists={publicPlaylists} user={userData} />
+          <FollowedArtists artists={followedArtists} user={userData} />
         </div>
       </div>
       <DialogContent className="flex h-[26rem] w-[45rem] flex-col">
-        <EditProfile user={user} />
+        <EditProfile user={userData} />
       </DialogContent>
     </Dialog>
   );
 }
+
+// TODO: make profile page loading

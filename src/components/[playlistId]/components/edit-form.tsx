@@ -17,37 +17,55 @@ import { revalidate } from "@/server/actions/revalidate";
 import { uploadPlaylistPic } from "@/server/actions/upload";
 import { editPlaylist } from "@/state/slices/playlists";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Playlist } from "@prisma/client";
+import { $Enums, type Playlist } from "@prisma/client";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { type ReactNode, useRef, useState, type ChangeEvent } from "react";
+import {
+  type ReactNode,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type RefObject,
+} from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { z } from "zod";
 import Image from "next/image";
 import { type AppDispatch } from "@/state/store";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type EditFormProps = {
   editImageOverlay: ReactNode;
   data?: Playlist | null;
-  closeDialog?: () => void;
+  closeDialogRef?: RefObject<HTMLButtonElement>;
 };
 
 const editSchema = z.object({
   title: z.string().min(3),
   description: z.string(),
+  visibility: z.enum([
+    $Enums.PLAYLIST_VISIBILITY.PRIVATE,
+    $Enums.PLAYLIST_VISIBILITY.PUBLIC,
+  ]),
 });
 
 export function EditForm({
   editImageOverlay,
   data,
-  closeDialog,
+  closeDialogRef,
 }: EditFormProps) {
   const form = useForm<z.infer<typeof editSchema>>({
     resolver: zodResolver(editSchema),
     defaultValues: {
       title: data?.title,
       description: data?.description,
+      visibility: data?.visibility,
     },
   });
   const uploadInputRef = useRef<HTMLInputElement>(null);
@@ -68,7 +86,7 @@ export function EditForm({
     await updatePlaylist({ id: data?.id ?? "", data: uploadData });
     dispatch(editPlaylist({ id: data?.id ?? "", data: formData }));
     revalidate(`/playlist/${data?.id}`);
-    closeDialog?.();
+    closeDialogRef?.current?.click();
     setUploadedImage(null);
     setDisabled(false);
   };
@@ -150,6 +168,31 @@ export function EditForm({
                             className="min-h-36 resize-none"
                             {...field}
                           />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="visibility"
+                    render={({ field }) => (
+                      <FormItem className="mb-4">
+                        <FormLabel htmlFor="description">Visibility</FormLabel>
+                        <FormControl>
+                          <Select onValueChange={(e) => alert(e)}>
+                            <SelectTrigger>
+                              <SelectValue
+                                defaultValue={data?.visibility}
+                                placeholder="Select visibility"
+                                {...field}
+                              />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="PUBLIC">Public</SelectItem>
+                              <SelectItem value="PRIVATE">Private</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

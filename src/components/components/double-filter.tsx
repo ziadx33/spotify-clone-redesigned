@@ -53,7 +53,7 @@ export function DoubleFilter({
   return filters.viewAs === "LIST" ? (
     <TableHead>
       {" "}
-      <button onClick={handleTitleChange} className="flex items-center gap-1">
+      <button onClick={handleTitleChange} className="flex  items-center gap-1">
         {filters.sortBy === "artist" ? "Artist" : "Title"}
         {(filters.title ?? filters.artist) &&
           (filters.title === "ASC" || filters.artist === "ASC" ? (

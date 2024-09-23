@@ -58,13 +58,35 @@ const queueListSlice = createSlice({
         state.data.queues =
           state.data.queues.map((queue) => {
             if (queue.queueData?.id === id) {
-              console.log("mesh mabsoot");
               return {
                 ...queue,
                 queueData: {
                   ...queue.queueData,
                   ...data,
                 },
+              };
+            }
+            return queue;
+          }) ?? [];
+    },
+    editQueueDataById(
+      state,
+      {
+        payload: { id, data },
+      }: {
+        payload: {
+          data: Partial<QueueSliceType>;
+          id: string;
+        };
+      },
+    ) {
+      if (state.data?.queues)
+        state.data.queues =
+          state.data.queues.map((queue) => {
+            if (queue.queueData?.id === id) {
+              return {
+                ...queue,
+                ...data,
               };
             }
             return queue;
@@ -103,6 +125,7 @@ export const {
   addQueue,
   removeQueue,
   removeQueues,
+  editQueueDataById,
 } = queueListSlice.actions;
 
 export default queueListSlice.reducer;

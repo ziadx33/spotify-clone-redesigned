@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { type z } from "zod";
@@ -11,6 +10,7 @@ import { registerSchema } from "@/schemas";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { register } from "@/utils/register";
+import { ShowInput } from "../ui/show-input";
 
 export function SubmitForm() {
   const data = useRef<z.infer<typeof registerSchema>>({
@@ -25,7 +25,6 @@ export function SubmitForm() {
   const progressValue = useCallback(() => {
     const dataLength = Object.keys(data.current).length;
     return (fullProgress && 100) || (currentInputIndex / dataLength) * 100;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentInputIndex, fullProgress]);
   const [error, setError] = useState<null | string>(null);
   const currentInput = Object.keys(data.current)[
@@ -35,6 +34,7 @@ export function SubmitForm() {
 
   const saveCurrentInputValue = () => {
     const inputValue = inputRef.current?.value;
+    console.log("beef", inputValue);
     data.current[currentInput] = inputValue!;
   };
 
@@ -85,7 +85,8 @@ export function SubmitForm() {
             >
               {currentInput}
             </Label>
-            <Input
+            <ShowInput
+              show={currentInput === "password"}
               type={currentInput !== "password" ? "text" : "password"}
               disabled={disabled}
               key={currentInput}

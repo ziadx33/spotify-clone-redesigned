@@ -123,48 +123,68 @@ export const getTracksByPlaylistId = unstable_cache(
 type GetRecommendedTracksParams = {
   artistIds: string[];
   trackIds: string[];
+  range?: {
+    from: number;
+    to: number;
+  };
 };
 
 export const getRecommendedTracks = unstable_cache(
-  cache(async ({ artistIds, trackIds }: GetRecommendedTracksParams) => {
-    try {
-      const tracks = await db.track.findMany({
-        where: {
-          id: {
-            notIn: trackIds,
-          },
-          OR: [
-            {
-              authorId: {
-                in: artistIds,
-              },
-            },
-            { authorIds: { hasSome: artistIds } },
-          ],
-        },
-      });
-      const requests = [
-        db.user.findMany({
+  cache(
+    async ({
+      artistIds,
+      trackIds,
+      range = { from: 0, to: 15 },
+    }: GetRecommendedTracksParams) => {
+      try {
+        console.log("yahh");
+
+        let tracks = await db.track.findMany({
           where: {
+            id: {
+              notIn: trackIds,
+            },
             OR: [
-              { id: { in: tracks?.map((track) => track.authorId) } },
               {
-                id: {
-                  in: tracks.map((track) => track?.authorIds ?? []).flat(),
+                authorId: {
+                  in: artistIds,
                 },
               },
+              { authorIds: { hasSome: artistIds } },
             ],
           },
-        }),
-        getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
-      ] as const;
-      const [authors, { data }] = await handleRequests(requests);
-      return { tracks: tracks ?? [], authors, albums: data ?? [] };
-    } catch (error) {
-      return { error };
-    }
-  }),
-  ["recommended-tracks"],
+          skip: range.from,
+          take: range.to,
+        });
+
+        if (tracks.length === 0)
+          tracks = await db.track.findMany({
+            skip: range.from,
+            take: range.to,
+          });
+        const requests = [
+          db.user.findMany({
+            where: {
+              OR: [
+                { id: { in: tracks?.map((track) => track.authorId) } },
+                {
+                  id: {
+                    in: tracks.map((track) => track?.authorIds ?? []).flat(),
+                  },
+                },
+              ],
+            },
+          }),
+          getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
+        ] as const;
+        const [authors, { data }] = await handleRequests(requests);
+        return { tracks: tracks ?? [], authors, albums: data ?? [] };
+      } catch (error) {
+        return { error };
+      }
+    },
+  ),
+  ["get-recommended-tracks"],
 );
 
 export const getTracksBySearchQuery = async ({
@@ -301,70 +321,76 @@ export const addTrackToPlaylistToDB = async ({
 
 type GetPopularTracks = {
   artistId: string | string[];
-  range: {
-    from: number;
-    to: number;
+  range?: {
+    from?: number;
+    to?: number;
   };
   addAlbums?: boolean;
 };
 
 export const getPopularTracks = unstable_cache(
-  cache(async ({ artistId, range, addAlbums }: GetPopularTracks) => {
-    try {
-      const defaultOptions = {
-        where: {
-          OR: [
-            {
-              authorId:
-                typeof artistId === "string" ? artistId : { in: artistId },
-            },
-            {
-              authorIds:
-                typeof artistId === "string"
-                  ? { has: artistId }
-                  : { hasSome: artistId },
-            },
-          ],
-        },
-      };
-      let tracks = await db.track.findMany({
-        ...defaultOptions,
-        orderBy: {
-          plays: "desc",
-        },
-
-        skip: range.from,
-        take: Array.isArray(artistId) ? range.to * artistId.length : range.to,
-      });
-      if (tracks.length === 0) tracks = await db.track.findMany(defaultOptions);
-      const [authors, albums] = [
-        await db.user.findMany({
+  cache(
+    async ({ artistId, range = { from: 0 }, addAlbums }: GetPopularTracks) => {
+      try {
+        const defaultOptions = {
           where: {
             OR: [
-              { id: { in: tracks?.map((track) => track.authorId) } },
               {
-                id: {
-                  in: tracks.map((track) => track?.authorIds ?? []).flat(),
-                },
+                authorId:
+                  typeof artistId === "string" ? artistId : { in: artistId },
+              },
+              {
+                authorIds:
+                  typeof artistId === "string"
+                    ? { has: artistId }
+                    : { hasSome: artistId },
               },
             ],
           },
-        }),
-        addAlbums
-          ? await getPlaylists({
-              playlistIds: tracks?.map((track) => track.albumId),
-            })
-          : undefined,
-      ];
-      return {
-        tracks,
-        authors: authors,
-        albums: albums?.data,
-      };
-    } catch (error) {
-      throw { error };
-    }
-  }),
+          skip: range?.from ?? 0,
+          take:
+            range?.to &&
+            (Array.isArray(artistId) ? range?.to * artistId.length : range?.to),
+        };
+        let tracks = await db.track.findMany({
+          ...defaultOptions,
+          orderBy: {
+            plays: "desc",
+          },
+        });
+        if (tracks.length === 0)
+          tracks = await db.track.findMany(defaultOptions);
+        console.log("battle", artistId);
+        const [authors, albums] = [
+          await db.user.findMany({
+            where: {
+              OR: [
+                { id: { in: tracks?.map((track) => track.authorId) } },
+                {
+                  id: {
+                    in: tracks.map((track) => track?.authorIds ?? []).flat(),
+                  },
+                },
+              ],
+            },
+          }),
+          addAlbums
+            ? await getPlaylists({
+                playlistIds: tracks?.map((track) => track.albumId),
+              })
+            : undefined,
+        ];
+        return {
+          tracks,
+          authors: authors,
+          albums: albums?.data,
+        };
+      } catch (error) {
+        throw { error };
+      }
+    },
+  ),
+  ["popular-tracks"],
 );
 
 type GetSavedTracks = {
@@ -430,7 +456,6 @@ export const getTracksByIds = unstable_cache(
           },
         },
       });
-      console.log("tracks ger out", tracks);
       return tracks;
     } catch (error) {
       throw { error };
@@ -546,13 +571,20 @@ export const addPlaylistToTracks = async ({
 export const getHomeMadeForYouSection = unstable_cache(
   cache(async (historyTracksIds: string[]) => {
     try {
-      const historyTracks = await db.track.findMany({
+      let historyTracks = await db.track.findMany({
         where: {
           id: {
             in: historyTracksIds.slice(0, 50),
           },
         },
       });
+
+      if (historyTracks.length === 0)
+        historyTracks = await db.track.findMany({
+          take: 50,
+          orderBy: { plays: "asc" },
+        });
+
       const historyTracksGenres = [
         ...new Set(
           historyTracks
@@ -629,16 +661,24 @@ export const getHomeMadeForYouSection = unstable_cache(
 export const getBestOfArtists = unstable_cache(
   cache(async (id: string) => {
     try {
-      const followed = await db.user.findMany({
+      const defaultData: Parameters<typeof db.user.findMany>["0"] = {
+        skip: 0,
+        take: 20,
+        where: { type: "ARTIST" },
+      };
+      let followed = await db.user.findMany({
+        ...defaultData,
         where: {
+          ...defaultData.where,
           followers: {
             has: id,
           },
         },
       });
+      if (followed.length > 0) followed = await db.user.findMany(defaultData);
+      console.log("fel gone", followed);
       const tracks = await getPopularTracks({
         artistId: followed.map((follower) => follower.id),
-        range: { from: 0, to: 50 },
         addAlbums: true,
       });
 
@@ -647,7 +687,7 @@ export const getBestOfArtists = unstable_cache(
       throw { error };
     }
   }),
-  ["best-of-artists-section"],
+  [],
   {
     revalidate: 86400,
   },

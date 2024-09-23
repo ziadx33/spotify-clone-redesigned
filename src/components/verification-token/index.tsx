@@ -6,7 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useSession } from "@/hooks/use-session";
 import { verifyToken } from "@/server/actions/verification-token";
+import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -17,15 +19,20 @@ export function VerificationToken({ token }: { token: string | null }) {
   const theme = useTheme();
   const router = useRouter();
   const isMounted = useRef(false);
+  const { update } = useSession();
 
   useEffect(() => {
     if (isMounted.current) return;
 
     if (!token) notFound();
     const verifyAsyncEffect = async () => {
-      const { error } = await verifyToken(token);
+      const { error, data } = await verifyToken(token);
       if (error) return toast.error(error);
-      router.push("/login");
+      await signIn("credentials", {
+        ...data,
+        redirect: false,
+      });
+      router.push("/");
     };
     void verifyAsyncEffect();
     isMounted.current = true;

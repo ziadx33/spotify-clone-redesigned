@@ -19,26 +19,9 @@ export function MusicPlayer({ playlist }: MusicPlayerProps) {
   const [trackQuery, setTrackQuery] = useState<string | null>(null);
   const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
   const handleFilterChange = handleTrackFilterChange(setFilters);
-  const { data, status } = useTracks();
-  const playData = useMemo((): QueuePlayButtonProps["data"] => {
-    if (status !== "success" || !data || !playlist) return;
-    return {
-      data: {
-        trackList: data.tracks?.map((track) => track.id) ?? [],
-        type: "PLAYLIST",
-        typeId: playlist.id,
-        currentPlaying: data.tracks?.[0]?.id ?? "",
-      },
-      tracks: data,
-      typePlaylist: playlist,
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, data, playlist]);
-  console.log("yabn el", playlist);
   return (
     <>
       <Player
-        playData={playData}
         setSelectedTracks={setSelectedTracks}
         selectedTracks={selectedTracks}
         handleFilterChange={handleFilterChange}

@@ -1,28 +1,44 @@
+"use client";
+
 import { Artist } from "../artist";
 import { User } from "../user";
-import { notFound } from "next/navigation";
-import { getServerAuthSession } from "@/server/auth";
-import { type User as UserType } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { getUserById } from "@/server/actions/verification-token";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../ui/loading";
+import { useMemo } from "react";
 
 type ClientProps = {
   artistId: string;
   playlistId?: string;
 };
 
-export async function Client({ artistId, playlistId }: ClientProps) {
-  const userData = await getServerAuthSession();
-  let user: UserType | null | undefined = userData?.user;
-  const isUser = artistId === userData?.user.id;
+export function Client({ artistId, playlistId }: ClientProps) {
+  const router = useRouter();
 
-  if (!isUser) user = await getUserById({ id: artistId });
+  const { data, isLoading } = useQuery({
+    queryKey: [`artist-page-data-${artistId}`],
+    queryFn: async () => {
+      const user = await getUserById({ id: artistId });
+      return { user, isUser: user?.type === "USER" };
+    },
+  });
 
-  if (!user || (user.type === "ARTIST" && !isUser && !playlistId))
-    return notFound();
+  const content = useMemo(() => {
+    if (!playlistId) {
+      router.push("/");
+      return null;
+    }
+    if (isLoading || !data) return <Loading />;
+    return data?.user ? (
+      data.user.type === "ARTIST" && !data.isUser ? (
+        <Artist playlistId={playlistId} artist={data.user} />
+      ) : (
+        <User isUser={data?.isUser ?? false} user={data.user} />
+      )
+    ) : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, isLoading]);
 
-  return user.type === "ARTIST" && !isUser ? (
-    <Artist playlistId={playlistId!} artist={user} />
-  ) : (
-    <User isUser={isUser} user={user} />
-  );
+  return content;
 }

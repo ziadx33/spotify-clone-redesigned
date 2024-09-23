@@ -93,7 +93,7 @@ export const verifyToken = async (token: string) => {
     data: { emailVerified: new Date() },
   });
 
-  return { success: "email verified" };
+  return { success: "email verified", data: existingUser };
 };
 
 export const getVerificationTokenById = async (token: string) => {

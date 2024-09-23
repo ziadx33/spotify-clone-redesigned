@@ -1,6 +1,13 @@
 "use client";
 
-import { PlaylistPage } from "@/components/[playlistId]";
+import dynamic from "next/dynamic";
+
+const PlaylistPage = dynamic(
+  () => import("@/components/[playlistId]").then((file) => file.PlaylistPage),
+  {
+    ssr: false,
+  },
+);
 import { notFound, useParams } from "next/navigation";
 
 export default function Playlist() {

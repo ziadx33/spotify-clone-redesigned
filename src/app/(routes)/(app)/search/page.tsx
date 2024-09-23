@@ -1,6 +1,11 @@
-import { Search } from "@/components/search";
+import dynamic from "next/dynamic";
 
-export const dynamic = "force-dynamic";
+const Search = dynamic(
+  () => import("@/components/search").then((file) => file.Search),
+  {
+    ssr: false,
+  },
+);
 
 export default function SearchPage() {
   return <Search />;

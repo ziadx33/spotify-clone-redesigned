@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Navigate } from "@/components/navigate";
 import { Skeleton } from "@/components/ui/skeleton";
+import { clampText } from "@/utils/clamp-text";
+import { AvatarData } from "@/components/avatar-data";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -57,18 +59,18 @@ function EditableDataComp({
 
   return (
     <Dialog>
-      <div className="flex h-fit w-full gap-8 p-8 pb-6">
+      <div className="flex h-[24rem] w-full gap-8 p-8 pb-6">
         <DialogTrigger
           disabled={!isEditable || isLoading}
-          className="group relative h-[288px] w-[288px]"
+          className="group relative h-full"
         >
           {!isLoading ? (
-            <Image
+            <AvatarData
               src={data?.imageSrc ?? ""}
-              fill
               draggable="false"
               alt={data?.title ?? ""}
               className="rounded-md"
+              containerClasses="h-full w-fit rounded-none"
             />
           ) : (
             <Skeleton className="size-full" />
@@ -77,27 +79,31 @@ function EditableDataComp({
         </DialogTrigger>
         <div className="flex flex-col pt-[6.2rem]">
           {!isLoading ? (
-            <h3 className="mb-4">{type}</h3>
+            <h3 className="mb-2 mt-auto">{type}</h3>
           ) : (
-            <Skeleton className="mb-4 h-2.5 w-16" />
+            <Skeleton className="mb-2 h-2.5 w-16" />
           )}
 
           <DialogTrigger
             disabled={!isEditable || isLoading}
             title={data?.title}
-            className="mb-5 line-clamp-1 w-[59rem] overflow-visible text-start text-8xl font-bold"
+            className="mb-4 line-clamp-1 w-full overflow-visible text-start text-8xl font-bold"
           >
-            {!isLoading ? data?.title : <Skeleton className="mb-4 h-24 w-96" />}
+            {!isLoading ? (
+              clampText(data.title, 23)
+            ) : (
+              <Skeleton className="mb-4 h-24 w-96" />
+            )}
           </DialogTrigger>
           {data?.description &&
             (!isLoading ? (
-              <p className="mb-1 text-sm text-muted-foreground">
+              <p className="mb-2 text-sm text-muted-foreground">
                 {data?.description}
               </p>
             ) : (
               <Skeleton className="mb-4 h-2.5 w-24" />
             ))}
-          <div className="mt-auto flex gap-1.5">
+          <div className="flex gap-1.5">
             {creatorData?.image &&
               (!isLoading ? (
                 <Image
@@ -139,12 +145,12 @@ function EditableDataComp({
       <DialogContent
         className={cn(
           "flex flex-col items-start",
-          isEditable ? "h-[26rem] w-[53rem]" : "size-fit p-10",
+          isEditable ? "h-fit w-[68rem]" : "size-fit p-10",
         )}
       >
         {isEditable ? (
           <EditForm
-            closeDialog={closeDialog}
+            closeDialogRef={closeButtonRef}
             data={data}
             editImageOverlay={editImageOverlay}
           />

@@ -1,6 +1,14 @@
-import { Genre } from "@/components/genre";
 import { type $Enums } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { Loading } from "@/components/genre/loading";
+import dynamic from "next/dynamic";
+
+const Genre = dynamic(
+  () => import("@/components/genre").then((file) => file.Genre),
+  {
+    loading: Loading,
+  },
+);
 
 export default function GenrePage({
   searchParams,

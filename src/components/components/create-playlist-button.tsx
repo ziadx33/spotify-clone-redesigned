@@ -6,40 +6,42 @@ import { useUpdateUser } from "@/hooks/use-update-user";
 import { createPlaylist } from "@/server/actions/playlist";
 import { addPlaylist } from "@/state/slices/playlists";
 import { type AppDispatch } from "@/state/store";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 export function CreatePlaylistButton() {
   const { data: user } = useSession();
   const { update: updateUser } = useUpdateUser();
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const handleCreatePlaylist = async () => {
-    setIsLoading(true);
-    const createdPlaylist = await createPlaylist(user);
-    const playlistsData = [
-      ...(user?.user?.playlists ?? []),
-      createdPlaylist.id,
-    ];
-    await updateUser({
-      data: {
-        playlists: playlistsData,
-      },
-    });
-    dispatch(addPlaylist(createdPlaylist));
-    router.push(`/playlist/${createdPlaylist.id}`);
-    setIsLoading(false);
-  };
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => {
+      const createdPlaylist = await createPlaylist(user);
+      const playlistsData = [
+        ...(user?.user?.playlists ?? []),
+        createdPlaylist.id,
+      ];
+      await updateUser({
+        data: {
+          playlists: playlistsData,
+        },
+      });
+      dispatch(addPlaylist(createdPlaylist));
+      router.push(`/playlist/${createdPlaylist.id}`);
+    },
+    onError: () => toast.error("Oops! Something went wrong"),
+  });
+
   return (
-    <Button onClick={handleCreatePlaylist} size="icon" variant="ghost">
-      {!isLoading ? (
+    <Button onClick={() => mutate()} size="icon" variant="ghost">
+      {!isPending ? (
         <FiPlus className="font-bold" />
       ) : (
-        <FaSpinner className="font-bold" />
+        <FaSpinner className="animate-spin  font-bold" />
       )}
     </Button>
   );

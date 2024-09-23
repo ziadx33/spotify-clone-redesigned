@@ -44,7 +44,7 @@ export function SearchTrack({
   );
 
   return (
-    <div className="flex h-[40rem] flex-col">
+    <div className="mb-4 flex h-fit min-h-[40rem] flex-col">
       <b className="mb-4 text-3xl">
         Let&apos;s find something for your playlist
       </b>

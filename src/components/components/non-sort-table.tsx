@@ -3,6 +3,7 @@ import {
   TableBody,
   TableHead,
   TableRow,
+  TableCaption,
 } from "@/components/ui/table";
 import { type TracksSliceType } from "@/state/slices/tracks";
 import { type Track as TrackType, type Playlist } from "@prisma/client";
@@ -32,6 +33,7 @@ export type NonSortTableProps = {
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
   intersectLastElementRef?: ReturnType<typeof useIntersectionObserver>["ref"];
+  showCaption?: boolean;
 };
 
 export function NonSortTable({
@@ -49,10 +51,13 @@ export function NonSortTable({
   selectedTracks,
   setSelectedTracks,
   intersectLastElementRef,
+  showCaption,
 }: NonSortTableProps) {
-  console.log("abyusif", selectedTracks);
   return (
     <>
+      {(data?.tracks?.length ?? 0) === 0 && showCaption && (
+        <TableCaption>no tracks in the album</TableCaption>
+      )}
       {showHead && (
         <TableHeader>
           <TableRow>
@@ -71,32 +76,38 @@ export function NonSortTable({
         </TableHeader>
       )}
       <TableBody>
-        {data?.tracks
-          ?.slice(0, !limit ? data?.tracks?.length : limit)
-          .map((track, trackIndex) => (
-            <Track
-              setSelectedTracks={setSelectedTracks}
-              selected={!!selectedTracks?.find((id) => id === track.id)}
-              skeleton={skeleton}
-              hidePlayButton={hidePlayButton}
-              replacePlaysWithPlaylist={replacePlaysWithPlaylist}
-              showImage={showTrackImage}
-              isAlbum
-              replaceDurationWithButton={replaceDurationWithButton}
-              playlist={playlist}
-              viewAs={viewAs}
-              key={track.id}
-              intersectLastElementRef={intersectLastElementRef}
-              showIndex={showIndex}
-              track={{ ...track, trackIndex }}
-              authors={data.authors!.filter(
-                (author) =>
-                  track.authorId === author.id ||
-                  track.authorIds.includes(author.id),
-              )}
-              album={data.albums!.find((album) => track.albumId === album.id)}
-            />
-          ))}
+        {(data?.tracks?.length ?? 0) > 0 ? (
+          data?.tracks
+            ?.slice(0, !limit ? data?.tracks?.length : limit)
+            .map((track, trackIndex) => (
+              <Track
+                setSelectedTracks={setSelectedTracks}
+                selected={!!selectedTracks?.find((id) => id === track.id)}
+                skeleton={skeleton}
+                hidePlayButton={hidePlayButton}
+                replacePlaysWithPlaylist={replacePlaysWithPlaylist}
+                showImage={showTrackImage}
+                isAlbum
+                replaceDurationWithButton={replaceDurationWithButton}
+                playlist={playlist}
+                viewAs={viewAs}
+                key={track.id}
+                intersectLastElementRef={intersectLastElementRef}
+                showIndex={showIndex}
+                track={{ ...track, trackIndex }}
+                authors={data.authors!.filter(
+                  (author) =>
+                    track.authorId === author.id ||
+                    track.authorIds.includes(author.id),
+                )}
+                album={data.albums!.find((album) => track.albumId === album.id)}
+              />
+            ))
+        ) : (
+          <div className="grid h-36 place-items-center lowercase">
+            no tracks in the album
+          </div>
+        )}
       </TableBody>
     </>
   );

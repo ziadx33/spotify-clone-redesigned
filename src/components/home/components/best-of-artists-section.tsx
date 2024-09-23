@@ -22,10 +22,11 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
   const { data, isLoading } = useQuery({
     queryKey: [`best-of-artists-section`],
     queryFn: async () => {
+      console.log("lil");
       const tracksData = await getBestOfArtists(user?.user?.id ?? "");
+      console.log("nestad", tracksData);
       return tracksData;
     },
-    enabled: !!user?.user?.tracksHistory,
   });
 
   const colors = useRef([

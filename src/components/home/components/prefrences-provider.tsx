@@ -31,7 +31,7 @@ export type PlaylistSectionType = {
 };
 
 type PrefrencesProviderProps = {
-  data: PrefrenceSliceType;
+  data?: PrefrenceSliceType;
   userId: string;
 };
 
@@ -47,7 +47,7 @@ export function PrefrencesProvider({ userId, data }: PrefrencesProviderProps) {
   });
 
   useEffect(() => {
-    dispatch(setPrefrence(data));
+    if (data) dispatch(setPrefrence(data));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -131,7 +131,6 @@ export function PrefrencesProvider({ userId, data }: PrefrencesProviderProps) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const mapComponents = (key: string) => {
-    console.log("Rendering component for key:", key);
     return (
       <Fragment key={key}>
         {components[key as keyof typeof components]}

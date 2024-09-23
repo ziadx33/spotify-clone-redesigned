@@ -44,6 +44,7 @@ export function Tracks({
           handleFilterChange={handleFilterChange}
           playlist={playlist}
           setFilters={setFilters}
+          showCaption
           trackQuery={trackQuery}
         />
       ) : (
@@ -53,6 +54,7 @@ export function Tracks({
           showTrackImage={showTrackImage}
           viewAs={filters.viewAs}
           data={data}
+          showCaption
           playlist={playlist ?? undefined}
         />
       )}

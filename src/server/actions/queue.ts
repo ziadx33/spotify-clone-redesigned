@@ -67,7 +67,6 @@ export const getQueue = async (userId: string): Promise<QueueListSliceType> => {
     if (!data || !queues) throw "no queue";
     return await getQueueData({ queueList: data, queues });
   } catch (error) {
-    console.log("mesh tamam", error);
     return { data: null, status: "error", error: error as string };
   }
 };

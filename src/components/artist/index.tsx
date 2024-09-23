@@ -9,7 +9,7 @@ type ArtistProps = {
   playlistId: string;
 };
 
-export async function Artist({ artist, playlistId }: ArtistProps) {
+export function Artist({ artist, playlistId }: ArtistProps) {
   return (
     <div className="flex min-h-full w-full flex-col">
       <div

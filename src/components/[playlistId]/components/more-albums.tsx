@@ -87,7 +87,7 @@ export function MoreAlbums({ data, playlist, artist }: MoreAlbumsProps) {
             }
           />
         ) : (
-          <SectionItemSkeleton amount={5} />
+          <SectionItemSkeleton amount={3} />
         )}
       </div>
     </div>

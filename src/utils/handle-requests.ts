@@ -7,8 +7,6 @@ export async function handleRequests<T extends unknown[]>(
 ): Promise<HandleRequestsReturnType<T>> {
   const results = await Promise.allSettled(requests);
 
-  console.log("ger out of hero", results);
-
   return results.map((result) => {
     if (result.status === "fulfilled") return result.value;
     throw { error: result.reason as string };

@@ -35,13 +35,15 @@ export function Recommended({
   const { data, isLoading } = useQuery({
     queryKey: [`recommended-album-${playlistId}`],
     queryFn: async () => {
-      const data = getRecommendedTracks({
+      const data = await getRecommendedTracks({
         artistIds: artists?.map((artist) => artist.id) ?? [],
         trackIds: tracks?.map((track) => track.id) ?? [],
       });
+      console.log("matgeesh", data);
       return data;
     },
     enabled: !!tracks && !!artists,
+    throwOnError: true,
   });
 
   const tableProps: TablePropsType = {
@@ -96,17 +98,15 @@ export function Recommended({
           tableProps={tableProps}
         />
       )}
-      {(data?.tracks?.length ?? 0) > 0 && (
-        <RecommendedTracks
-          addTrackToPlaylistFn={addTrackToPlaylistFn}
-          data={data}
-          isLoading={isLoading}
-          tableProps={tableProps}
-          artists={artists}
-          playlist={playlist}
-          tracks={tracks}
-        />
-      )}
+      <RecommendedTracks
+        addTrackToPlaylistFn={addTrackToPlaylistFn}
+        data={data}
+        isLoading={isLoading}
+        tableProps={tableProps}
+        artists={artists}
+        playlist={playlist}
+        tracks={tracks}
+      />
     </div>
   );
 }

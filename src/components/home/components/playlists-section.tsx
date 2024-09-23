@@ -18,13 +18,13 @@ export function PlaylistsSection({
     ?.slice(0, 8)
     .map((playlist) => <PlaylistItem data={playlist} key={playlist.id} />);
 
-  return (
-    <div className="flex gap-2">
+  return (items?.length ?? 0) > 0 ? (
+    <div className="flex gap-2 pt-4">
       <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2.5 px-2">
         {!isLoading ? items : <SkeletonPlaylists amount={6} />}
       </div>
 
       <SortableList comps={comps} />
     </div>
-  );
+  ) : null;
 }

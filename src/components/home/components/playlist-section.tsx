@@ -6,6 +6,7 @@ import { PopularArtistsSection } from "./popular-artists-section";
 import { EditSectionButton } from "./edit-section-button";
 import { format } from "date-fns";
 import { type PlaylistSectionType } from "./prefrences-provider";
+import { PopularPlaylistsSection } from "./popular-playlists-section";
 
 type PlaylistsSectionProps = {
   playlist: PlaylistSectionType;
@@ -41,7 +42,7 @@ export function PlaylistSection({
         );
       })}
       title={playlist.title}
-      fallbackComponent={<PopularArtistsSection />}
+      fallbackComponent={<PopularPlaylistsSection />}
     />
   );
 }

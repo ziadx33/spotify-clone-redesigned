@@ -52,7 +52,6 @@ type PlayerProps = {
   playlist?: Playlist | null;
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
-  playData?: QueuePlayButtonProps["data"];
 };
 
 export function Comp({
@@ -63,7 +62,6 @@ export function Comp({
   setTrackQuery,
   selectedTracks,
   setSelectedTracks,
-  playData,
 }: PlayerProps) {
   const { data: user } = useSession();
   const isCreatedByUser = user?.user?.id === playlist?.creatorId;
@@ -88,13 +86,13 @@ export function Comp({
               <QueuePlayButton
                 size={"icon"}
                 className="mr-4 size-12 rounded-full"
-                data={playData}
+                playlist={playlist}
               >
                 <FaPlay size={18} />
               </QueuePlayButton>
             )}
             {(selectedTracks?.length ?? 0) < 1 && (
-              <ShuffleButton queueData={playData} />
+              <ShuffleButton playlist={playlist} />
             )}
             {isCreatedByUser ? (
               <Button

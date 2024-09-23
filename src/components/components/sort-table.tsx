@@ -3,6 +3,7 @@ import {
   TableRow,
   TableHead,
   TableBody,
+  TableCaption,
 } from "@/components/ui/table";
 import { BsClock } from "react-icons/bs";
 import { type TrackFilters } from "@/types";
@@ -24,6 +25,7 @@ type SortTableProps = {
   skeleton?: boolean;
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
+  showCaption?: boolean;
 };
 
 export function SortTable({
@@ -35,6 +37,7 @@ export function SortTable({
   playlist,
   skeleton = false,
   selectedTracks,
+  showCaption,
 }: SortTableProps) {
   const memoizedTracks = useMemo(() => {
     return sortTracks({
@@ -62,6 +65,9 @@ export function SortTable({
   }, [data, filters, trackQuery, playlist]);
   return (
     <>
+      {(data?.tracks?.length ?? 0) === 0 && showCaption && (
+        <TableCaption>No tracks in this playlist.</TableCaption>
+      )}
       <TableHeader>
         <TableRow>
           <TableHead className="w-0 pl-4 pr-0">#</TableHead>

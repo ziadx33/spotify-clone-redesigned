@@ -23,10 +23,10 @@ export const getUserByEmail = async (email: string) => {
 
 export const createUser = async (data: z.infer<typeof registerSchema>) => {
   try {
+    console.log("glitch", data);
     const createdUser = await db.user.create({
       data: {
         ...data,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         password: await hash(data.password, 10),
       },
     });
@@ -64,7 +64,6 @@ export const getArtistById = unstable_cache(
           id,
         },
       });
-      console.log("shutup lil user", user);
       return user;
     } catch (error) {
       throw error;
@@ -175,7 +174,6 @@ export const getUsersBySearchQuery = async ({
           (user) => user.id !== (firstUser ? firstUser.id : null),
         ),
       ].filter((v) => v) as User[];
-      console.log("5alas", users, amount);
     }
 
     return users;

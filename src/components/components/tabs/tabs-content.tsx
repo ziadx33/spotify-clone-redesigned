@@ -25,8 +25,8 @@ export function TabsContent() {
   }, [status]);
   if (status === "error") throw { error };
   return (
-    <ScrollArea className="w-full">
-      <div className="flex w-full gap-1.5 overflow-x-scroll">
+    <ScrollArea className="ml-2 w-full whitespace-nowrap">
+      <div className="flex w-full gap-1.5">
         {status === "success" ? (
           <>
             <Tab title="Home" Icon={TiHome} iconSize={23} href={"/"} />

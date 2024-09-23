@@ -21,7 +21,6 @@ export function YourFavArtists({ userId }: YourFavArtistsProps) {
       const topTracks = await getUserTopTracks({
         user: user?.user,
       });
-      console.log("topest", topTracks);
       const data = getArtistsByIds({
         ids:
           topTracks?.data?.tracks

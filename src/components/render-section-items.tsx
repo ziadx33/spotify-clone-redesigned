@@ -47,7 +47,10 @@ export function RenderSectionItems({
           </div>
         </div>
         <div
-          className={cn("flex flex-row overflow-hidden", cardsContainerClasses)}
+          className={cn(
+            "flex flex-row gap-2 overflow-hidden",
+            cardsContainerClasses,
+          )}
         >
           {!isLoading && cards?.length !== 0 ? (
             <RenderCards

@@ -10,7 +10,6 @@ import { handleRequests } from "@/utils/handle-requests";
 
 export function HomeTab({ artist }: { artist: User }) {
   const user = useSession();
-  console.log("Session Data:", user);
 
   const { data, isLoading } = useQuery({
     queryKey: [`${artist.id}-home`],
@@ -24,7 +23,6 @@ export function HomeTab({ artist }: { artist: User }) {
           user: user.data?.user,
           artistId: artist.id,
         }).then((res) => {
-          console.log("User top tracks response:", res);
           return res;
         }),
       ] as const;
@@ -34,8 +32,6 @@ export function HomeTab({ artist }: { artist: User }) {
       return { popular: result[0], artistTopListened: requests[1].data };
     },
   });
-
-  console.log("Query Data:", data);
 
   return (
     <div className="flex min-h-full ">

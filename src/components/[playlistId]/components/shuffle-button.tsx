@@ -1,18 +1,17 @@
 import { type QueuePlayButtonProps } from "@/components/queue-play-button";
 import { Button } from "@/components/ui/button";
+import { useGetPlayData } from "@/hooks/use-get-play-data";
 import { useQueue } from "@/hooks/use-queue";
+import { Playlist } from "@prisma/client";
 import { FaShuffle } from "react-icons/fa6";
 
-export function ShuffleButton({
-  queueData,
-}: {
-  queueData: QueuePlayButtonProps["data"];
-}) {
+export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {
   const {
     data: { data, error },
     play,
     shuffleQueue,
   } = useQueue();
+  const queueData = useGetPlayData({ playlist });
   const shuffleHandler = async () => {
     if (!queueData) return;
     if (error) return await play(queueData, { randomize: true });

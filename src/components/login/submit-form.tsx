@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas";
@@ -20,6 +19,8 @@ import { toast } from "sonner";
 import { login } from "@/utils/login";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { ShowInput } from "../ui/show-input";
+import { useRouter } from "next/navigation";
 
 export function SubmitForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -30,6 +31,7 @@ export function SubmitForm() {
     },
   });
   const [disabled, setDisabled] = useState(false);
+  const router = useRouter();
 
   const formHandler = (data: z.infer<typeof loginSchema>) => {
     setDisabled(true);
@@ -40,6 +42,7 @@ export function SubmitForm() {
         password: data.password,
         redirect: false,
       });
+      router.push("/");
     };
     toast.promise(loginFn(data), {
       loading: "logging in...",
@@ -63,7 +66,7 @@ export function SubmitForm() {
                 <FormItem>
                   <FormLabel htmlFor="email">Email</FormLabel>
                   <FormControl>
-                    <Input id="email" placeholder="Email" {...field} />
+                    <ShowInput id="email" placeholder="Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -76,7 +79,8 @@ export function SubmitForm() {
                 <FormItem>
                   <FormLabel htmlFor="password">Password</FormLabel>
                   <FormControl>
-                    <Input
+                    <ShowInput
+                      show
                       id="password"
                       type="password"
                       placeholder="Password"

@@ -24,6 +24,7 @@ import {
   addQueue,
   removeQueue,
   removeQueues,
+  editQueueDataById,
 } from "@/state/slices/queue-list";
 import { type TrackSliceType } from "@/state/slices/tracks";
 
@@ -121,23 +122,26 @@ export function useQueue() {
       id: data.data!.queues[0]!.queueData!.id,
       ...queueData.data,
     };
+
     dispatch(
-      editQueue({
-        queues: [
-          {
-            defTrackList: queueData.data.trackList,
-            artistTypeData: queueData.typeArtist,
-            playlistTypeData: queueData.typePlaylist,
-            queueData: currentQueueData,
-            dataTracks: queueData.tracks,
-          },
-        ],
+      editQueueDataById({
+        data: {
+          artistTypeData: queueData.typeArtist,
+          playlistTypeData: queueData.typePlaylist,
+          queueData: currentQueueData,
+          dataTracks: queueData.tracks,
+          defTrackList: queueData.data.trackList,
+        },
+        id: currentQueue?.queueData?.id ?? "",
       }),
     );
-    await updateQueue({
-      data: currentQueueData,
-      id: currentQueueData.id,
-    });
+    await editCurQueue({
+      queueData: currentQueue!.queueData!,
+      editData: {
+        ...queueData.data,
+        currentPlaying: queueData.data.trackList[0],
+      },
+    }).runBoth();
   };
 
   const shuffleQueue = async ({
@@ -159,7 +163,6 @@ export function useQueue() {
         queueData.currentPlaying,
         ...shuffleArray(nextTracks),
       ];
-      console.log("saf", trackList);
     } else {
       trackList = currentQueue?.defTrackList ?? [];
     }

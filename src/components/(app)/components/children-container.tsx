@@ -13,7 +13,7 @@ type ChildrenContainerProps = {
 export function ChildrenContainer({ children }: ChildrenContainerProps) {
   const { value } = useMiniMenu();
   return (
-    <div className="flex h-[93%]">
+    <div className="flex h-[93%] w-full">
       <ScrollArea
         className={cn(
           "w-full rounded-lg border-l border-t",

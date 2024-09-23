@@ -7,17 +7,21 @@ import { Navigate } from "../navigate";
 import { enumParser } from "@/utils/enum-parser";
 import { PiQueueBold } from "react-icons/pi";
 import { useQueue } from "@/hooks/use-queue";
+import { FaSpeakerDeck } from "react-icons/fa";
+import { HiMiniSpeakerWave } from "react-icons/hi2";
 
-type PlaylistProps = { userData?: User; imageClassNames?: string } & (
-  | { type: "ARTIST"; data: User }
-  | { type: "PLAYLIST"; data: Playlist }
-);
+type PlaylistProps = {
+  userData?: User;
+  imageClassNames?: string;
+  isActive: boolean;
+} & ({ type: "ARTIST"; data: User } | { type: "PLAYLIST"; data: Playlist });
 
 export function LibraryItem({
   type,
   data,
   userData,
   imageClassNames,
+  isActive,
 }: PlaylistProps) {
   const pathname = usePathname();
   const isArtist = type === "ARTIST";
@@ -79,16 +83,21 @@ export function LibraryItem({
             alt={isArtist ? data.name : data.title}
           />
         </div>
-        <h4 className="flex w-full flex-col items-start gap-1">
-          <span>{isArtist ? data.name : data.title}</span>
-          <span className="flex items-center gap-1.5 capitalize text-muted-foreground">
-            {isArtist
-              ? "artist"
-              : data.creatorId === userData?.id
-                ? "playlist"
-                : enumParser(data.type)}
-          </span>
-        </h4>
+        <div className="flex size-full items-center justify-between pr-3">
+          <h4 className="flex w-full flex-col items-start gap-1">
+            <span className={isActive ? "text-primary" : ""}>
+              {isArtist ? data.name : data.title}
+            </span>
+            <span className="flex items-center gap-1.5 capitalize text-muted-foreground">
+              {isArtist
+                ? "artist"
+                : data.creatorId === userData?.id
+                  ? "playlist"
+                  : enumParser(data.type)}
+            </span>
+          </h4>
+          {isActive && <HiMiniSpeakerWave size={25} className="text-primary" />}
+        </div>
       </Navigate>
     </Button>
   );
