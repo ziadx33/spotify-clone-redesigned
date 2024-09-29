@@ -88,9 +88,9 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
         >
           <DialogTrigger>
             <SectionItem
-              type="PLAYLIST"
+              artistData={datum}
+              type="ARTIST"
               title={datum.name}
-              showPlayButton
               customImage={
                 <div className="size-full overflow-hidden rounded-sm">
                   <AvatarData

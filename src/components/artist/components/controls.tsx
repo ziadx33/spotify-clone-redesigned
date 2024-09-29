@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useFollow } from "@/hooks/use-follow";
 import { type User } from "@prisma/client";
 import { BsThreeDots } from "react-icons/bs";
-import { FaPlay } from "react-icons/fa";
+import { FaPause, FaPlay } from "react-icons/fa";
 import { MdFormatListBulletedAdd, MdOutlineLibraryAdd } from "react-icons/md";
 
 type ControlsProps = {
@@ -26,7 +26,9 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
         size={"icon"}
         className="h-12 w-12 rounded-full"
       >
-        <FaPlay size={15} />
+        {(isPlaying) =>
+          !isPlaying ? <FaPlay size={15} /> : <FaPause size={15} />
+        }
       </QueuePlayButton>
       <Button
         disabled={isFollowing}

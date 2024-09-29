@@ -4,7 +4,7 @@ import { type Track } from "@prisma/client";
 import { type TablePropsType } from "./recommended";
 import { useDebounceState } from "@/hooks/use-debounce-state";
 import { Table } from "@/components/ui/table";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTracksBySearchQuery } from "@/server/actions/track";
 import Loading from "@/components/ui/loading";
@@ -20,7 +20,9 @@ export function SearchTrack({
   addTrackToPlaylistFn,
 }: SearchTrackProps) {
   const { data: tracks } = useTracks();
-  const [search, setSearch, debounce] = useDebounceState("");
+  const [search, setSearch, debounce] = useDebounceState("", () => {
+    void refetch();
+  });
   const { isLoading, data, refetch } = useQuery({
     queryKey: [],
     queryFn: async () => {
@@ -28,11 +30,6 @@ export function SearchTrack({
       return data;
     },
   });
-
-  useEffect(() => {
-    void refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounce]);
 
   const filteredTracks = useMemo(
     () =>

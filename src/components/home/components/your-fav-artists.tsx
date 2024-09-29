@@ -48,6 +48,7 @@ export function YourFavArtists({ userId }: YourFavArtistsProps) {
         return (
           <SectionItem
             type="ARTIST"
+            artistData={artist}
             link={`/artist/${artist.id}?playlist=fav-artists`}
             key={artist.id}
             title={artist.name ?? ""}

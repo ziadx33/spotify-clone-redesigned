@@ -28,6 +28,7 @@ export function DiscographySection({
   ) => ReactElement = (album) => {
     return (
       <SectionItem
+        playlistData={album}
         key={album.id}
         alt={album.title}
         showPlayButton

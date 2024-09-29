@@ -55,6 +55,7 @@ export function AlbumsContent({
         )
         ?.map((album, i) => (
           <SectionItem
+            playlistData={album}
             key={album.id}
             description={`${format(album.createdAt, "YYY")} - ${datum.authors.find((author) => author.id === album.creatorId)?.name}`}
             title={album.title}

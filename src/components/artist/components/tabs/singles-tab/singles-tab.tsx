@@ -1,5 +1,5 @@
 import { SectionItem } from "@/components/components/section-item";
-import { type User } from "@prisma/client";
+import { type Track, type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { SectionItemSkeleton } from "../../skeleton";
@@ -41,15 +41,16 @@ export function SinglesTab({ artist, query }: SinglesTab) {
       <h1 className="mb-4 text-3xl font-bold">Singles</h1>
       <div className="flex flex-wrap">
         {!isLoading && data ? (
-          tracks?.map((track) => (
+          tracks?.map((track: Track) => (
             <SectionItem
               key={track.id}
               description={`${format(new Date(track.dateAdded), "YYY")}`}
               link={`/playlist/${track.id}`}
+              trackData={track}
               image={track.imgSrc}
               title={track.title}
               alt={track.title}
-              type="PLAYLIST"
+              type="TRACK"
               showPlayButton
             />
           ))

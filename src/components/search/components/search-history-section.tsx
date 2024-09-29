@@ -45,7 +45,6 @@ export function SearchHistorySection() {
             title={card.title}
             image={card.image}
             imageClasses={card.type === "ARTIST" ? "rounded-full" : undefined}
-            showPlayButton
             customElement={
               <div
                 onClick={(e) => {

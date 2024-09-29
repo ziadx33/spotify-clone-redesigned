@@ -37,7 +37,7 @@ export function RenderSectionItems({
           <h1 className={cn("pt-8 text-3xl font-bold", titleClasses)}>
             {title}
           </h1>
-          <div className="mr-2 flex h-fit items-center">
+          <div className="mr-2 flex h-fit items-center gap-2">
             {showMoreButton && (
               <DialogTrigger disabled={isLoading} asChild>
                 <Button variant="outline">show more</Button>

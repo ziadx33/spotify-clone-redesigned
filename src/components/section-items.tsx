@@ -15,31 +15,6 @@ type SectionItemsProps = {
 export function SectionItems({ playlists, authors, title }: SectionItemsProps) {
   const sectionItemWidth = 248.062;
 
-  const TEST = [
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-    ...(playlists ?? []),
-  ];
-
   const [nextClicked, setNextClicked] = useState(0);
   const [slicedCards, setSlicedCards] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,12 +32,12 @@ export function SectionItems({ playlists, authors, title }: SectionItemsProps) {
     return () => window.removeEventListener("resize", handleResize);
   }, [sectionItemWidth]);
 
-  const maxScrollIndex = Math.max(0, TEST.length - slicedCards);
+  const maxScrollIndex = Math.max(0, (playlists?.length ?? 0) - slicedCards);
 
   const showArrows = useMemo(() => {
-    const itemsWidth = TEST.length * sectionItemWidth;
+    const itemsWidth = (playlists?.length ?? 0) * sectionItemWidth;
     return itemsWidth > window.innerWidth;
-  }, [TEST.length, sectionItemWidth]);
+  }, [playlists?.length, sectionItemWidth]);
 
   return (
     <div className="flex flex-col gap-3 p-6 pt-14">
@@ -112,7 +87,7 @@ export function SectionItems({ playlists, authors, title }: SectionItemsProps) {
         }}
         ref={containerRef}
       >
-        {TEST.map((playlist, index) => (
+        {playlists?.map((playlist, index) => (
           <SectionItem
             key={`${playlist.id}-${index}`}
             description={
@@ -123,6 +98,7 @@ export function SectionItems({ playlists, authors, title }: SectionItemsProps) {
             link={`/playlist/${playlist.id}`}
             image={playlist.imageSrc}
             showPlayButton
+            playlistData={playlist}
             type="PLAYLIST"
           />
         ))}

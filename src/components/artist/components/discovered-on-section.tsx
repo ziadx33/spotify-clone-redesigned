@@ -70,6 +70,7 @@ export async function DiscoveredOnSection({
           cards={data.map((album: Playlist) => {
             return (
               <SectionItem
+                playlistData={album}
                 key={album.id}
                 alt={album.title}
                 showPlayButton

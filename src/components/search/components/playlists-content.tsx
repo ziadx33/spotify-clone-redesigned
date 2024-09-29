@@ -53,6 +53,7 @@ export function PlaylistsContent({
           if (author?.type === "ARTIST") return;
           return (
             <SectionItem
+              artistData={author}
               onClick={SearchClickFn}
               key={playlist.id}
               description={`${format(playlist.createdAt, "YYY")} - ${author?.name}`}

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { BsThreeDots } from "react-icons/bs";
-import { FaPlay, FaRegArrowAltCircleDown } from "react-icons/fa";
+import { FaPause, FaPlay, FaRegArrowAltCircleDown } from "react-icons/fa";
 import { type Playlist } from "@prisma/client";
 import { AddLibraryButton } from "@/components/components/add-library-button";
 import {
@@ -21,7 +21,9 @@ export function AlbumControl({ playlist, data }: AlbumControlProps) {
         size={"icon"}
         className="mr-2 h-8 w-8 rounded-full"
       >
-        <FaPlay size={12} />
+        {(isPlaying) => {
+          return !isPlaying ? <FaPlay size={12} /> : <FaPause size={12} />;
+        }}
       </QueuePlayButton>
       <Button size={"icon"} variant="ghost" className="h-10 w-10 rounded-full">
         <FaRegArrowAltCircleDown size={20} />

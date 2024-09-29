@@ -66,6 +66,7 @@ export function FansLikeSection({ artist, data }: AppearsOnSectionProps) {
           cards={data.map((user: User) => {
             return (
               <SectionItem
+                artistData={user}
                 type="ARTIST"
                 imageClasses="rounded-full"
                 key={user.id}

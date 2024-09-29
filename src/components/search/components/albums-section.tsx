@@ -27,6 +27,7 @@ export function AlbumsSection({ data, searchClickFn }: ArtistsSectionProps) {
             )
             ?.map((album) => (
               <SectionItem
+                playlistData={album}
                 onClick={searchClickFn}
                 key={album.id}
                 description={`${format(album.createdAt, "YYY")} - ${data.authors.find((author) => author.id === album.creatorId)?.name}`}

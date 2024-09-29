@@ -3,12 +3,23 @@ import { useMemo } from "react";
 import { QueueItem } from "./queue-item";
 
 export function MiniMenuNextQueue() {
-  const { currentQueue, getTrack } = useQueue();
+  const {
+    currentQueue,
+    getTrack,
+    currentData: { isLastTrack, nextQueue: nextQueueData },
+  } = useQueue();
   const id =
     currentQueue?.queueData?.trackList.indexOf(
       currentQueue?.queueData?.currentPlaying,
     ) ?? 0;
-  const track = getTrack(currentQueue?.queueData?.trackList[id + 1] ?? "");
+
+  const track = getTrack(
+    !isLastTrack
+      ? currentQueue?.queueData?.trackList[id + 1]
+      : nextQueueData?.queueData?.trackList[0],
+    isLastTrack ? nextQueueData?.queueData?.id : undefined,
+  );
+  console.log("baby", nextQueueData);
   const nextQueue = useMemo(() => {
     if (!track) return;
 

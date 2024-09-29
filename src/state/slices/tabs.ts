@@ -1,7 +1,7 @@
 import { type ChangeCurrentTabPrams } from "@/server/actions/tab";
 import { type Tab } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
-import { SliceType } from "../types";
+import { type SliceType } from "../types";
 
 export type TabsSliceType = SliceType<Tab[]>;
 

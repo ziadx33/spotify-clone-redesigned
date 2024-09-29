@@ -2,7 +2,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { FaPlay } from "react-icons/fa";
+import { FaPause, FaPlay } from "react-icons/fa";
 import { FaCircleMinus } from "react-icons/fa6";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { BsThreeDots } from "react-icons/bs";
@@ -38,10 +38,7 @@ import {
 import { usePlaylists } from "@/hooks/use-playlists";
 import { addPlaylistToTracks } from "@/server/actions/track";
 import { toast } from "sonner";
-import {
-  QueuePlayButton,
-  type QueuePlayButtonProps,
-} from "@/components/queue-play-button";
+import { QueuePlayButton } from "@/components/queue-play-button";
 import { ShuffleButton } from "./shuffle-button";
 
 type PlayerProps = {
@@ -88,7 +85,9 @@ export function Comp({
                 className="mr-4 size-12 rounded-full"
                 playlist={playlist}
               >
-                <FaPlay size={18} />
+                {(isPlaying) =>
+                  !isPlaying ? <FaPlay size={18} /> : <FaPause size={18} />
+                }
               </QueuePlayButton>
             )}
             {(selectedTracks?.length ?? 0) < 1 && (

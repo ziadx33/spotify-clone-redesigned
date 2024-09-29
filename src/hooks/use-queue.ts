@@ -18,7 +18,6 @@ import { getChangeValue } from "@/utils/get-change-value";
 import { shuffleArray } from "@/utils/shuffle-array";
 import {
   setQueue,
-  editQueue,
   editQueueList,
   editQueueById,
   addQueue,
@@ -27,6 +26,7 @@ import {
   editQueueDataById,
 } from "@/state/slices/queue-list";
 import { type TrackSliceType } from "@/state/slices/tracks";
+import { useQueueController } from "./use-queue-controller";
 
 export function useQueue() {
   const data = useSelector((state: RootState) => state.queueList);
@@ -44,8 +44,30 @@ export function useQueue() {
     [data.data?.queueList.currentQueueId, getQueue],
   );
 
+  const currentData = useMemo(() => {
+    const isLastTrack =
+      currentQueue?.queueData?.currentPlaying ===
+      currentQueue?.queueData?.trackList[
+        currentQueue?.queueData?.trackList.length - 1
+      ];
+    const isFirstTrack =
+      currentQueue?.queueData?.currentPlaying ===
+      currentQueue?.queueData?.trackList[0];
+    const nextQueue =
+      data.data?.queues[
+        data?.data.queues.findIndex(
+          (queue) => queue.queueData?.id === currentQueue?.queueData?.id,
+        ) + 1
+      ];
+    const isLastQueue =
+      data.data?.queues[data.data.queues.length - 1] !==
+      currentQueue?.queueData?.id;
+    return { isLastTrack, isFirstTrack, nextQueue, isLastQueue };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQueue, data.data?.queues]);
+
   const getTrack = useCallback(
-    (trackId: string, queueId?: string): TrackSliceType => {
+    (trackId?: string, queueId?: string): TrackSliceType => {
       const queue = queueId ? getQueue(queueId) : currentQueue;
       const track = queue?.dataTracks?.tracks?.find((t) => t.id === trackId);
       const album = queue?.dataTracks?.albums?.find(
@@ -61,6 +83,8 @@ export function useQueue() {
     },
     [currentQueue, getQueue],
   );
+
+  const { play: playTrack, skipToTrack } = useQueueController();
 
   const editQueueListFn = ({
     queueListData,
@@ -115,12 +139,19 @@ export function useQueue() {
         queueListData,
       });
       dispatch(setQueue(startData));
+      await playTrack?.();
       return;
     }
+
+    const trackListShuffled = data.data?.queueList.randomize
+      ? shuffleArray(queueData.data.trackList)
+      : queueData.data.trackList;
+
     const currentQueueData: Queue = {
       currentPlayingProgress: 0,
       id: data.data!.queues[0]!.queueData!.id,
       ...queueData.data,
+      trackList: trackListShuffled,
     };
 
     dispatch(
@@ -130,7 +161,7 @@ export function useQueue() {
           playlistTypeData: queueData.typePlaylist,
           queueData: currentQueueData,
           dataTracks: queueData.tracks,
-          defTrackList: queueData.data.trackList,
+          defTrackList: trackListShuffled,
         },
         id: currentQueue?.queueData?.id ?? "",
       }),
@@ -139,9 +170,10 @@ export function useQueue() {
       queueData: currentQueue!.queueData!,
       editData: {
         ...queueData.data,
-        currentPlaying: queueData.data.trackList[0],
+        currentPlaying: trackListShuffled[0],
       },
     }).runBoth();
+    return trackListShuffled[0];
   };
 
   const shuffleQueue = async ({
@@ -231,10 +263,9 @@ export function useQueue() {
 
     if (typeof id === "number") {
       const curIndex = queueData.trackList.indexOf(queueData.currentPlaying);
-      const targetIndex = Math.min(
-        curIndex + id,
-        queueData.trackList.length - 1,
-      );
+      const targetIndex = !queueId
+        ? Math.min(curIndex + id, queueData.trackList.length - 1)
+        : curIndex;
       targetTrack = queueData.trackList[targetIndex]!;
     } else {
       targetTrack = id;
@@ -251,6 +282,8 @@ export function useQueue() {
       },
       queueId,
     });
+
+    skipToTrack(targetTrack);
 
     if (queueId && queueId !== currentQueue?.queueData?.id) {
       const { runServer: runListServer, runDispatch: runListDispatch } =
@@ -281,6 +314,7 @@ export function useQueue() {
     }
 
     await runBoth();
+    return targetTrack;
   };
 
   const addPlaylistToQueue = async (
@@ -306,5 +340,8 @@ export function useQueue() {
     currentQueue,
     addPlaylistToQueue,
     removeQueueFromList,
+    editQueueListFn,
+    editCurQueue,
+    currentData,
   };
 }

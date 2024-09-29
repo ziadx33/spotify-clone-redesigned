@@ -15,12 +15,14 @@ export function TopArtists({ artists }: TopArtistsProps) {
         {artists.map((user: User) => {
           return (
             <SectionItem
+              artistData={user}
               imageClasses="rounded-full"
               key={user.id}
               alt={user.name ?? ""}
               title={user.name ?? ""}
               image={user.image ?? ""}
               description="artist"
+              type="ARTIST"
               link={`/artist/${user.id}`}
             />
           );

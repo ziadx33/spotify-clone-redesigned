@@ -24,6 +24,7 @@ export function PopularArtistsSection() {
       cards={data?.map((artist) => {
         return (
           <SectionItem
+            artistData={artist}
             type="ARTIST"
             link={`/artist/${artist.id}?playlist=fav-artists`}
             key={artist.id}

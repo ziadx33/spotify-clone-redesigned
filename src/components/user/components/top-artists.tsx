@@ -63,6 +63,8 @@ export function TopArtists({ artists, user }: TopArtistsProps) {
           cards={artists.map((user: User) => {
             return (
               <SectionItem
+                type="ARTIST"
+                artistData={user}
                 imageClasses="rounded-full"
                 key={user.id}
                 alt={user.name ?? ""}

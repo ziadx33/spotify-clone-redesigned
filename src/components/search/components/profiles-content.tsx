@@ -49,6 +49,7 @@ export function ProfilesContent({
         .map((user, ix) => {
           return (
             <SectionItem
+              artistData={user}
               onClick={SearchClickFn}
               key={user.id}
               description="Profile"

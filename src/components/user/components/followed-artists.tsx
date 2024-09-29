@@ -69,6 +69,8 @@ export function FollowedArtists({ artists, user }: TopArtistsProps) {
                 title={user.name ?? ""}
                 image={user.image ?? ""}
                 description="artist"
+                artistData={user}
+                type="ARTIST"
                 link={`/artist/${user.id}?playlist=following`}
               />
             );

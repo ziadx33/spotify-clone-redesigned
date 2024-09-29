@@ -31,6 +31,13 @@ const queueListSlice = createSlice({
   name: "queue",
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   initialState: initialState as QueueListSliceType,
+  selectors: {
+    getCurrentQueue(state) {
+      return state.data?.queues.find(
+        (queue) => queue.queueData?.id === state.data.queueList.currentQueueId,
+      );
+    },
+  },
   reducers: {
     setQueue(state, { payload }: { payload: QueueListSliceType }) {
       state.status = payload.status;
@@ -76,7 +83,7 @@ const queueListSlice = createSlice({
       }: {
         payload: {
           data: Partial<QueueSliceType>;
-          id: string;
+          id?: string;
         };
       },
     ) {
@@ -127,5 +134,7 @@ export const {
   removeQueues,
   editQueueDataById,
 } = queueListSlice.actions;
+
+export const { getCurrentQueue } = queueListSlice.selectors;
 
 export default queueListSlice.reducer;

@@ -1,8 +1,7 @@
-import { type QueuePlayButtonProps } from "@/components/queue-play-button";
 import { Button } from "@/components/ui/button";
 import { useGetPlayData } from "@/hooks/use-get-play-data";
 import { useQueue } from "@/hooks/use-queue";
-import { Playlist } from "@prisma/client";
+import { type Playlist } from "@prisma/client";
 import { FaShuffle } from "react-icons/fa6";
 
 export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {

@@ -2,7 +2,6 @@
 
 import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
-import { PopularArtistsSection } from "./popular-artists-section";
 import { EditSectionButton } from "./edit-section-button";
 import { format } from "date-fns";
 import { type PlaylistSectionType } from "./prefrences-provider";
@@ -32,6 +31,7 @@ export function PlaylistSection({
         return (
           <SectionItem
             type="PLAYLIST"
+            playlistData={playlist}
             link={`/playlist/${playlist.id}`}
             key={playlist.id}
             title={playlist.title ?? ""}

@@ -1,27 +1,31 @@
-import { useEffect, useState, useRef } from "react";
+import { type ChangeValueParam } from "@/types";
+import { getChangeValue } from "@/utils/get-change-value";
+import { useState, useRef } from "react";
 
-export const useDebounceState = <T>(init: T, timeout = 500) => {
+export const useDebounceState = <T>(
+  init: T,
+  onDebounceChange?: (value: T) => void,
+  timeout = 500,
+) => {
   const [state, setState] = useState(init);
   const [debounceState, setDebounceState] = useState(init);
 
+  const initRef = useRef(init);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
+  const setStateValue = (value: ChangeValueParam<T>) => {
+    const val = getChangeValue<T>(value, initRef.current);
+    setState(val);
+
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
     timeoutRef.current = setTimeout(() => {
-      setDebounceState(state);
+      setDebounceState(val);
+      if (val !== initRef.current) onDebounceChange?.(val);
     }, timeout);
+  };
 
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
-
-  return [state, setState, debounceState] as const;
+  return [state, setStateValue, debounceState] as const;
 };

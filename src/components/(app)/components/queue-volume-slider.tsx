@@ -1,10 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { useState } from "react";
+import { useDebounceState } from "@/hooks/use-debounce-state";
+import { useQueue } from "@/hooks/use-queue";
 import { PiSpeakerLowBold } from "react-icons/pi";
 
 export function QueueVolumeSlider({ defaultValue }: { defaultValue: number }) {
-  const [value, setValue] = useState([defaultValue ?? 0]);
+  const {
+    editQueueListFn,
+    data: { data },
+  } = useQueue();
+  const [value, setValue] = useDebounceState([defaultValue ?? 0], ([value]) => {
+    void editQueueListFn({
+      queueListData: data!.queueList,
+      editData: { volumeLevel: value },
+    }).runBoth();
+  });
   const resetHandler = () => {
     setValue([0]);
   };

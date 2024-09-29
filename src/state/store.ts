@@ -6,6 +6,7 @@ import following from "./slices/following";
 import prefrence from "./slices/prefrence";
 import queueList from "./slices/queue-list";
 import miniMenu from "./slices/mini-menu";
+import queueController from "./slices/queue-controller";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     prefrence,
     queueList,
     miniMenu,
+    queueController,
   },
 });
 

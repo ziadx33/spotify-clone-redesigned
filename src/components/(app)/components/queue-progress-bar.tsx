@@ -1,25 +1,137 @@
 import { Slider } from "@/components/ui/slider";
+import { editQueueController } from "@/state/slices/queue-controller";
+import { type AppDispatch } from "@/state/store";
 import { parseDurationTime } from "@/utils/parse-duration-time";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { QueueControls } from "./queue-controls";
+import { editTrackById } from "@/server/actions/track";
+import { useQueue } from "@/hooks/use-queue";
+import { useQueueController } from "@/hooks/use-queue-controller";
 
 type QueueSliderProps = {
   duration?: number;
-  defaultValue?: number;
 };
 
-export function QueueProgressBar({ duration, defaultValue }: QueueSliderProps) {
-  const [value, setValue] = useState([0]);
+export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
+  const {
+    data: { progress, isPlaying },
+    skipToTime,
+    disablePlayButton,
+  } = useQueueController();
+
+  const [value, setValue] = useState(progress);
+  const dispatch = useDispatch<AppDispatch>();
+  const currentInterval = useRef<NodeJS.Timeout | null>(null);
+  const {
+    currentQueue,
+    skipBy,
+    currentData: { isLastQueue, isLastTrack },
+    data: { data },
+  } = useQueue();
+
+  const isTrackEdited = useRef(false);
+
+  useEffect(() => {
+    if (isTrackEdited.current || !currentQueue?.queueData?.currentPlaying)
+      return;
+
+    const request = async () => {
+      await editTrackById({
+        id: currentQueue.queueData!.currentPlaying,
+        data: { plays: { decrement: 1 } },
+      });
+    };
+
+    void request();
+    isTrackEdited.current = true;
+  }, [currentQueue]);
+
+  useEffect(() => {
+    setValue(progress);
+  }, [progress]);
+
+  useEffect(() => {
+    if (!isPlaying) {
+      if (currentInterval.current) {
+        clearInterval(currentInterval.current);
+        currentInterval.current = null;
+      }
+      return;
+    }
+
+    currentInterval.current = setInterval(() => {
+      setValue((prevValue) => {
+        if (prevValue >= duration) {
+          const handleEndOfTrack = async () => {
+            const currentTrackId = currentQueue?.queueData?.currentPlaying;
+            if (!currentTrackId) return;
+
+            if (data?.queueList.repeatQueue === "TRACK") {
+              dispatch(editQueueController({ currentTrackId, progress: 0 }));
+              void skipToTime(0, currentTrackId);
+              return 0;
+            } else if (isLastQueue && isLastTrack) {
+              let nextTrack = currentQueue?.queueData?.currentPlaying;
+              if (data?.queueList.repeatQueue === "PLAYLIST") {
+                nextTrack = await skipBy(currentQueue.queueData!.trackList[0]!);
+              }
+              dispatch(
+                editQueueController({ currentTrackId: nextTrack, progress: 0 }),
+              );
+              void skipToTime(0, nextTrack);
+            } else {
+              const nextTrack = await skipBy(1);
+              if (!nextTrack)
+                if (currentInterval.current)
+                  clearInterval(currentInterval.current);
+                else {
+                  dispatch(
+                    editQueueController({
+                      currentTrackId: nextTrack,
+                      progress: 0,
+                    }),
+                  );
+                  void skipToTime(0, nextTrack);
+                }
+            }
+          };
+
+          void handleEndOfTrack();
+          return duration;
+        }
+
+        return prevValue + 1;
+      });
+    }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
+
+  const onSliderChange = async (newValue: number) => {
+    setValue(newValue);
+
+    if (Math.abs(newValue - progress) > 1) {
+      dispatch(editQueueController({ progress: newValue }));
+      void skipToTime(newValue);
+    }
+  };
+
   return (
-    <div className="flex gap-2">
-      <h5 className="w-10">{parseDurationTime(value[0])}</h5>
-      <Slider
-        defaultValue={[defaultValue ?? 0]}
-        onValueChange={(v) => setValue(v)}
-        max={duration}
-        step={1}
-        className="w-[30rem]"
-      />
-      <h5 className="ml-0.5 w-10">{parseDurationTime(duration)}</h5>
-    </div>
+    <>
+      <QueueControls value={value} />
+      <div className="flex gap-2">
+        <h5 className="w-10">{parseDurationTime(value)}</h5>
+        <Slider
+          disabled={disablePlayButton}
+          value={[value]}
+          onValueChange={(v) => onSliderChange(v[0] ?? 0)}
+          unselectable="off"
+          max={duration}
+          step={1}
+          className="w-[30rem]"
+        />
+        <h5 className="ml-0.5 w-10">{parseDurationTime(duration)}</h5>
+      </div>
+    </>
   );
 }

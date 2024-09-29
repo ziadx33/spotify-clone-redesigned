@@ -20,6 +20,7 @@ export function ProfilesSection({ data, searchClickFn }: ArtistsSectionProps) {
           .map((user) => {
             return (
               <SectionItem
+                artistData={user}
                 onClick={searchClickFn}
                 key={user.id}
                 description="Profile"

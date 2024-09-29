@@ -1,6 +1,6 @@
 import { type User } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
-import { SliceType } from "../types";
+import { type SliceType } from "../types";
 
 export type UsersSliceType = SliceType<User[]>;
 

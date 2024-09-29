@@ -81,6 +81,7 @@ export function MoreAlbums({ data, playlist, artist }: MoreAlbumsProps) {
                     image={album.imageSrc}
                     description={`${format(new Date(album.createdAt), "yyy")} - ${album.type.toLowerCase()}`}
                     link={`/playlist/${album.id}`}
+                    playlistData={album}
                   />
                 );
               }) ?? []

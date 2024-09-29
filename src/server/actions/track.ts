@@ -714,3 +714,22 @@ export const getTracksByArtistId = unstable_cache(
     revalidate: 86400,
   },
 );
+
+type EditTrackById = {
+  id: string;
+  data: NonNullable<Parameters<typeof db.track.update>["0"]>["data"];
+};
+
+export const editTrackById = async ({ id, data }: EditTrackById) => {
+  try {
+    const editedTrack = await db.track.update({
+      where: {
+        id,
+      },
+      data,
+    });
+    return editedTrack;
+  } catch (error) {
+    throw { error };
+  }
+};

@@ -22,6 +22,7 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
         <RenderSectionItems
           cards={newReleases?.playlists.map((playlist) => (
             <SectionItem
+              playlistData={playlist}
               key={playlist.id}
               description={
                 newReleases.authors.find(
@@ -40,6 +41,7 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
         <RenderSectionItems
           cards={popularPlaylists?.playlists.map((playlist) => (
             <SectionItem
+              playlistData={playlist}
               key={playlist.id}
               description={
                 popularPlaylists.authors.find(
@@ -60,6 +62,7 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
             Array.isArray(popularUsers)
               ? popularUsers?.map((user) => (
                   <SectionItem
+                    artistData={user}
                     key={user.id}
                     description={"artist"}
                     title={user.name}

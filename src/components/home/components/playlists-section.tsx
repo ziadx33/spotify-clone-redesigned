@@ -15,7 +15,7 @@ export function PlaylistsSection({
   const isLoading = status === "loading";
 
   const items = data
-    ?.slice(0, 8)
+    ?.slice(0, 6)
     .map((playlist) => <PlaylistItem data={playlist} key={playlist.id} />);
 
   return (items?.length ?? 0) > 0 ? (

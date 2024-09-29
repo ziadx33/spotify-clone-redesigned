@@ -13,6 +13,8 @@ export function Following({ artists }: FollowingProps) {
         {artists.map((user: User) => {
           return (
             <SectionItem
+              artistData={user}
+              type="ARTIST"
               imageClasses="rounded-full"
               key={user.id}
               alt={user.name ?? ""}

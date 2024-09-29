@@ -69,6 +69,7 @@ export function AppearsOnSection({ artist, data }: AppearsOnSectionProps) {
               <SectionItem
                 key={album.id}
                 alt={album.title}
+                playlistData={album}
                 showPlayButton
                 title={album.title}
                 image={album.imageSrc}

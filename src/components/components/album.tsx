@@ -11,6 +11,8 @@ export function Album({ album }: AlbumProps) {
   return (
     <SectionItem
       key={album.id}
+      playlistData={album}
+      type="PLAYLIST"
       alt={album.title}
       showPlayButton
       title={album.title}

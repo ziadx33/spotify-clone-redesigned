@@ -20,6 +20,7 @@ export function ArtistsSection({ data, searchClickFn }: ArtistsSectionProps) {
             ?.filter((user) => user.type === "ARTIST")
             .map((user) => (
               <SectionItem
+                artistData={user}
                 key={user.id}
                 onClick={searchClickFn}
                 description="Artist"

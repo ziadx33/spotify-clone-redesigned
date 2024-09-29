@@ -5,8 +5,6 @@ import { DEFAULT_TRACK_FILTERS_DATA } from "@/constants";
 import { Player } from "../../components/player";
 import { Tracks } from "../../components/tracks";
 import { handleTrackFilterChange } from "@/utils/track";
-import { useTracks } from "@/hooks/use-tracks";
-import { type QueuePlayButtonProps } from "@/components/queue-play-button";
 
 type MusicPlayerProps = {
   playlist?: Playlist | null;

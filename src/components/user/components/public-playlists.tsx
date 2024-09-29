@@ -64,6 +64,8 @@ export function PublicPlaylists({ playlists, user }: TopArtistsProps) {
           cards={playlists.map((playlist: Playlist) => {
             return (
               <SectionItem
+                playlistData={playlist}
+                type="PLAYLIST"
                 imageClasses="rounded-full"
                 key={playlist.id}
                 alt={playlist.title ?? ""}

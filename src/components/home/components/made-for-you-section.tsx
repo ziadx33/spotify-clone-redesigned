@@ -63,7 +63,6 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
               <SectionItem
                 type="PLAYLIST"
                 title={title}
-                showPlayButton
                 customImage={
                   <div className="size-full overflow-hidden rounded-sm">
                     <AvatarData

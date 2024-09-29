@@ -48,6 +48,7 @@ export function ArtistsContent({
         ?.filter((user) => user.type === "ARTIST")
         ?.map((user, i) => (
           <SectionItem
+            artistData={user}
             key={user.id}
             onClick={SearchClickFn}
             description="Artist"

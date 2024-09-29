@@ -1,20 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { useQueue } from "@/hooks/use-queue";
 import { BsFillSkipBackwardFill, BsFillSkipForwardFill } from "react-icons/bs";
-import { FaRandom, FaPlay } from "react-icons/fa";
+import { FaRandom } from "react-icons/fa";
 import { MdOutlineRepeat, MdOutlineRepeatOne } from "react-icons/md";
+import { QueueControlsPlayButton } from "./queue-controls-play-button";
 
-export function QueueControls() {
+export function QueueControls({ value }: { value: number }) {
   const {
     shuffleQueue,
     repeatQueue,
     skipBy,
-    currentQueue,
+    currentData: { isFirstTrack, isLastTrack, nextQueue },
     data: { data },
   } = useQueue();
+
   const shuffleHandler = () => {
     void shuffleQueue({ value: (v) => !v });
   };
+
   const repeatHandler = () => {
     void repeatQueue({
       value: (v) =>
@@ -33,8 +36,12 @@ export function QueueControls() {
   };
 
   const goForwardHandler = async () => {
-    await skipBy(1);
+    await skipBy(
+      1,
+      nextQueue && isLastTrack ? nextQueue.queueData?.id : undefined,
+    );
   };
+
   return (
     <div className="flex gap-2">
       <Button
@@ -47,30 +54,16 @@ export function QueueControls() {
       <Button
         size="icon"
         variant="outline"
-        disabled={
-          (currentQueue?.queueData?.currentPlaying ?? 0) ===
-          currentQueue?.queueData?.trackList[0]
-        }
+        disabled={isFirstTrack}
         onClick={goBackwardHandler}
       >
         <BsFillSkipBackwardFill />
       </Button>
+      <QueueControlsPlayButton value={value} />
       <Button
         size="icon"
         variant="outline"
-        className="mx-2 rounded-full bg-primary text-primary-foreground"
-      >
-        <FaPlay />
-      </Button>
-      <Button
-        size="icon"
-        variant="outline"
-        disabled={
-          currentQueue?.queueData?.currentPlaying ===
-          currentQueue?.queueData?.trackList[
-            currentQueue?.queueData.trackList.length - 1
-          ]
-        }
+        disabled={isLastTrack}
         onClick={goForwardHandler}
       >
         <BsFillSkipForwardFill />

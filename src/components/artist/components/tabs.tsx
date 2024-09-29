@@ -30,6 +30,7 @@ export function TabsSection({ artist }: TabsSectionProps) {
   });
   const [query, setQuery, debouncedQuery] = useDebounceState<string | null>(
     null,
+    undefined,
     300,
   );
   return (

@@ -41,14 +41,15 @@ export function FeaturingTab({ artist, query }: FeaturingTabProps) {
       <h1 className="mb-4 text-3xl font-bold">Featuring</h1>
       <div className="flex flex-wrap">
         {!isLoading && data ? (
-          albums?.map((track) => (
+          albums?.map((album) => (
             <SectionItem
-              key={track.id}
-              description={`${format(new Date(track.createdAt), "YYY")}`}
-              link={`/playlist/${track.id}`}
-              image={track.imageSrc}
-              title={track.title}
-              alt={track.title}
+              playlistData={album}
+              key={album.id}
+              description={`${format(new Date(album.createdAt), "YYY")}`}
+              link={`/playlist/${album.id}`}
+              image={album.imageSrc}
+              title={album.title}
+              alt={album.title}
               type="PLAYLIST"
               showPlayButton
             />

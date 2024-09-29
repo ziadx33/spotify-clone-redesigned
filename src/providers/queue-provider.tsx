@@ -4,7 +4,7 @@ import { useSession } from "@/hooks/use-session";
 import { getQueue } from "@/server/actions/queue";
 import { setQueue } from "@/state/slices/queue-list";
 import { type AppDispatch } from "@/state/store";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import { useDispatch } from "react-redux";
 
 export function QueueProvider({ children }: { children: ReactNode }) {
@@ -21,5 +21,10 @@ export function QueueProvider({ children }: { children: ReactNode }) {
     };
     void fn();
   }, [dispatch, user?.user?.id]);
-  return children;
+
+  const content = useMemo(() => {
+    return children;
+  }, [children]);
+
+  return content;
 }
