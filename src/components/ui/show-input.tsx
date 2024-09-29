@@ -1,10 +1,5 @@
-import {
-  type ComponentPropsWithoutRef,
-  useState,
-  RefObject,
-  forwardRef,
-} from "react";
-import { Input, InputProps } from "./input";
+import { useState, forwardRef } from "react";
+import { Input, type InputProps } from "./input";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export const ShowInput = forwardRef<
@@ -27,3 +22,5 @@ export const ShowInput = forwardRef<
     </div>
   );
 });
+
+ShowInput.displayName = "ShowInput";

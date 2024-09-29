@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useSession } from "@/hooks/use-session";
 import { verifyToken } from "@/server/actions/verification-token";
 import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
@@ -19,7 +18,6 @@ export function VerificationToken({ token }: { token: string | null }) {
   const theme = useTheme();
   const router = useRouter();
   const isMounted = useRef(false);
-  const { update } = useSession();
 
   useEffect(() => {
     if (isMounted.current) return;

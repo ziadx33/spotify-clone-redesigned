@@ -9,7 +9,7 @@ export function QueueControlsPlayButton({ value }: { value: number }) {
   const dispatch = useDispatch<AppDispatch>();
   const {
     disablePlayButton: disable,
-    data: { progress, isPlaying },
+    data: { isPlaying },
     toggle,
   } = useQueueController();
   const buttonHandler = async () => {

@@ -1,6 +1,6 @@
 import { type Playlist } from "@prisma/client";
 import { type TrackFilters } from "@/types";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { DEFAULT_TRACK_FILTERS_DATA } from "@/constants";
 import { Player } from "../../components/player";
 import { Tracks } from "../../components/tracks";

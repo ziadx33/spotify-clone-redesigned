@@ -283,7 +283,7 @@ export function useQueue() {
       queueId,
     });
 
-    skipToTrack(targetTrack);
+    void skipToTrack(targetTrack);
 
     if (queueId && queueId !== currentQueue?.queueData?.id) {
       const { runServer: runListServer, runDispatch: runListDispatch } =

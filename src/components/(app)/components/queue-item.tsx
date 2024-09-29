@@ -1,7 +1,6 @@
 import { AvatarData } from "@/components/avatar-data";
 import { TrackMoreButton } from "@/components/components/track-more-button";
 import { useQueue } from "@/hooks/use-queue";
-import { useQueueController } from "@/hooks/use-queue-controller";
 import { cn } from "@/lib/utils";
 import { type QueueSliceType } from "@/state/slices/queue-list";
 import { type TrackSliceType } from "@/state/slices/tracks";

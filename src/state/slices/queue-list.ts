@@ -11,8 +11,8 @@ import { type SliceType } from "../types";
 export type QueueSliceType = {
   queueData?: Queue;
   dataTracks?: NonNullable<TracksSliceType["data"]>;
-  artistTypeData?: User;
-  playlistTypeData?: Playlist;
+  artistTypeData?: User | null;
+  playlistTypeData?: Playlist | null;
   defTrackList: string[];
 };
 

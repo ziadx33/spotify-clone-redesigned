@@ -63,6 +63,7 @@ export function useGetPlayData({ playlist, track, artist }: UseGetPlayData) {
       typePlaylist: track ? nonPlaylistData?.playlist : playlist ?? undefined,
       typeArtist: artist ? (usedTypeData as User) : undefined,
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, data, playlist, usedData, usedTypeData, artist]);
 
   return playData;

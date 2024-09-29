@@ -1,6 +1,6 @@
 import { type Preference } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
-import { SliceType } from "../types";
+import { type SliceType } from "../types";
 
 export type PrefrenceSliceType = SliceType<Preference>;
 

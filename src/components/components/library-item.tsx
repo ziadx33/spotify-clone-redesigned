@@ -7,7 +7,6 @@ import { Navigate } from "../navigate";
 import { enumParser } from "@/utils/enum-parser";
 import { PiQueueBold } from "react-icons/pi";
 import { useQueue } from "@/hooks/use-queue";
-import { FaSpeakerDeck } from "react-icons/fa";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 
 type PlaylistProps = {
