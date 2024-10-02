@@ -77,7 +77,8 @@ export function useQueue() {
         (a) => a.id === track?.authorId,
       );
       const authors = queue?.dataTracks?.authors?.filter(
-        (a) => !track?.authorIds.includes(a.id),
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        (a) => track?.authorIds.includes(a.id) || track?.authorId === a.id,
       );
       return { album, track, author, authors };
     },
@@ -129,10 +130,17 @@ export function useQueue() {
   const play = async (
     queueData: NonNullable<QueuePlayButtonProps["data"]>,
     queueListData?: Partial<QueueList>,
+    skipToTrack?: string,
   ) => {
+    const trackListShuffled = data.data?.queueList.randomize
+      ? shuffleArray(queueData.data.trackList, skipToTrack)
+      : queueData.data.trackList;
     if (data.error) {
       const startData = await startQueue({
-        data: queueData.data,
+        data: {
+          ...queueData.data,
+          trackList: trackListShuffled,
+        },
         dataTracks: queueData.tracks!,
         userId: user?.user?.id ?? "",
         dataType: queueData.typePlaylist ?? queueData.typeArtist!,
@@ -142,10 +150,6 @@ export function useQueue() {
       await playTrack?.();
       return;
     }
-
-    const trackListShuffled = data.data?.queueList.randomize
-      ? shuffleArray(queueData.data.trackList)
-      : queueData.data.trackList;
 
     const currentQueueData: Queue = {
       currentPlayingProgress: 0,
@@ -170,10 +174,10 @@ export function useQueue() {
       queueData: currentQueue!.queueData!,
       editData: {
         ...queueData.data,
-        currentPlaying: trackListShuffled[0],
+        currentPlaying: skipToTrack ?? trackListShuffled[0],
       },
     }).runBoth();
-    return trackListShuffled[0];
+    return skipToTrack ?? trackListShuffled[0];
   };
 
   const shuffleQueue = async ({
@@ -187,14 +191,7 @@ export function useQueue() {
     let trackList = queueData.trackList;
 
     if (shuffleValue) {
-      const currentPlayingIndex = trackList.indexOf(queueData.currentPlaying);
-      const validIndex = currentPlayingIndex >= 0 ? currentPlayingIndex : 0;
-      const nextTracks = trackList.slice(validIndex + 1);
-      trackList = [
-        ...trackList.slice(0, validIndex),
-        queueData.currentPlaying,
-        ...shuffleArray(nextTracks),
-      ];
+      trackList = shuffleArray(trackList, queueData.currentPlaying);
     } else {
       trackList = currentQueue?.defTrackList ?? [];
     }
@@ -228,11 +225,6 @@ export function useQueue() {
   };
 
   const removeQueueFromList = (id: string) => {
-    // if (id !== currentQueue?.queueData?.id) {
-    //   if (data?.data?.queues.length ===  1) {
-
-    //   }
-    // }
     const runDispatch = () => dispatch(removeQueue(id));
 
     const runServer = async () => await deleteQueue({ queueId: id });
@@ -283,7 +275,7 @@ export function useQueue() {
       queueId,
     });
 
-    void skipToTrack(targetTrack);
+    await skipToTrack(targetTrack);
 
     if (queueId && queueId !== currentQueue?.queueData?.id) {
       const { runServer: runListServer, runDispatch: runListDispatch } =

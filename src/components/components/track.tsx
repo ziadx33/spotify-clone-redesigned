@@ -3,10 +3,20 @@
 import { TableRow, TableCell } from "@/components/ui/table";
 import { type TrackFilters } from "@/types";
 import { getAgoTime } from "@/utils/get-ago-time";
-import { type User, type Track, type Playlist } from "@prisma/client";
+import {
+  type User,
+  type Track as TrackType,
+  type Playlist,
+} from "@prisma/client";
 import Image from "next/image";
-import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
-import { FaPlay } from "react-icons/fa";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useMemo,
+  useState,
+  memo,
+} from "react";
+import { FaPause, FaPlay } from "react-icons/fa";
 import { TrackMoreButton } from "./track-more-button";
 import { type ReplaceDurationWithButton } from "./non-sort-table";
 import { Button } from "../ui/button";
@@ -17,9 +27,10 @@ import { SkeletonList } from "../artist/components/skeleton";
 import { Checkbox } from "../ui/checkbox";
 import { type useIntersectionObserver } from "usehooks-ts";
 import { parseDurationTime } from "@/utils/parse-duration-time";
+import { QueuePlayButton } from "../queue-play-button";
 
 type Props = {
-  track: Track & { trackIndex: number };
+  track: TrackType & { trackIndex: number };
   authors: User[];
   album?: Playlist;
   viewAs: TrackFilters["viewAs"];
@@ -44,7 +55,7 @@ export type TrackProps =
       "track" | "authors" | "album" | "playlist"
     >);
 
-export function Track(props: TrackProps) {
+function Comp(props: TrackProps) {
   const {
     isAlbum,
     showImage = true,
@@ -122,18 +133,30 @@ export function Track(props: TrackProps) {
       ))
     : undefined;
 
+  const playButton = (
+    <QueuePlayButton
+      isDiv
+      className="cursor-pointer"
+      skipToTrack={!skeleton ? props.track.id : undefined}
+      playlist={!skeleton ? props.playlist : undefined}
+      track={!skeleton ? props.track : undefined}
+    >
+      {(isPlaying, checkTrack) =>
+        !isPlaying || (!skeleton ? !checkTrack?.(props.track.id) : true) ? (
+          <FaPlay size={10} />
+        ) : (
+          <FaPause size={10} />
+        )
+      }
+    </QueuePlayButton>
+  );
+
   const indexAndImage = (
     <>
       {!skeleton
         ? showIndex && (
             <TableCell className="w-12 pl-4 pr-4">
-              <button>
-                {!showButtons ? (
-                  props.track.trackIndex + 1
-                ) : (
-                  <FaPlay size={10} />
-                )}
-              </button>
+              {!showButtons ? props.track.trackIndex + 1 : playButton}
             </TableCell>
           )
         : undefined}
@@ -151,9 +174,7 @@ export function Track(props: TrackProps) {
                 />{" "}
                 {!showIndex && showButtons && (
                   <div className="absolute left-0 top-0 grid size-full place-items-center bg-black bg-opacity-80">
-                    <button>
-                      <FaPlay size={10} />
-                    </button>
+                    {playButton}
                   </div>
                 )}
               </div>
@@ -295,3 +316,5 @@ export function Track(props: TrackProps) {
     </TableRow>
   );
 }
+
+export const Track = memo(Comp);

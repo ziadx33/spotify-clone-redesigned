@@ -13,7 +13,6 @@ import { useQueueController } from "@/hooks/use-queue-controller";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { editQueueController } from "@/state/slices/queue-controller";
-import { useAudios } from "@/hooks/use-audios";
 
 export type QueuePlayButtonProps = Omit<ButtonProps, "children"> & {
   data?: {
@@ -33,8 +32,12 @@ export type QueuePlayButtonProps = Omit<ButtonProps, "children"> & {
   artist?: User | null;
   track?: Track | null;
 
-  children: (isPlaying: boolean) => ReactNode;
+  children: (
+    isPlaying: boolean,
+    checkTrack?: (trackId: string) => boolean,
+  ) => ReactNode;
   isDiv?: boolean;
+  skipToTrack?: string;
 };
 
 export function QueuePlayButton({
@@ -44,58 +47,66 @@ export function QueuePlayButton({
   isDiv,
   track,
   artist,
+  skipToTrack,
   ...buttonProps
 }: QueuePlayButtonProps) {
-  const {
-    play,
-    data: { data: queueData },
-    currentQueue,
-  } = useQueue();
+  const { play, currentQueue, skipBy } = useQueue();
   const dispatch = useDispatch<AppDispatch>();
   const {
     toggle,
+    play: playTrack,
     data: { isPlaying },
-    skipToTime,
     pause,
+    audios,
   } = useQueueController();
-  const audios = useAudios();
-  const playlistData = useGetPlayData({ playlist, artist, track });
-  console.log("go away", playlistData);
-  const returnData = (data ?? playlistData)!;
-  const isCurrentPlaying =
-    (!!currentQueue?.artistTypeData?.id
-      ? currentQueue?.artistTypeData?.id === returnData?.typeArtist?.id
-      : false) ||
-    (!!currentQueue?.playlistTypeData?.id
-      ? returnData?.typePlaylist?.id === currentQueue?.playlistTypeData?.id
-      : false);
+  const { getData } = useGetPlayData({ playlist, artist, track, skipToTrack });
+  const isCurrentlyPlayingTrack =
+    currentQueue?.queueData?.currentPlaying === track?.id;
+  const isCurrentlyPlayingArtist =
+    currentQueue?.artistTypeData?.id === artist?.id;
+  const isCurrentlyPlayingPlaylist =
+    currentQueue?.playlistTypeData?.id === playlist?.id;
+
+  const isCurrentPlaying = playlist
+    ? isCurrentlyPlayingPlaylist
+    : artist
+      ? isCurrentlyPlayingArtist
+      : isCurrentlyPlayingTrack;
 
   const playHandler = async () => {
-    if (queueData && isCurrentPlaying) {
+    const returnedData = await getData();
+    const returnData = (data ?? returnedData.data)!;
+
+    if (isCurrentPlaying) {
+      if (
+        skipToTrack &&
+        skipToTrack !== currentQueue?.queueData?.currentPlaying
+      ) {
+        await skipBy(skipToTrack);
+        return;
+      }
       await toggle();
       return;
     }
+
     pause();
-    console.log("teslam ya sika", returnData);
-    const trackId = await play(returnData);
-    await audios?.loadTracks(returnData.tracks?.tracks ?? []);
+
+    const trackId = await play(returnData, undefined, skipToTrack);
     dispatch(
       editQueueController({
-        isPlaying: true,
+        isPlaying: false,
         progress: 0,
         currentTrackId: trackId,
       }),
     );
-    await skipToTime(0, trackId);
+    await audios?.loadTracks(returnData.tracks?.tracks ?? []);
+
+    await playTrack(true, trackId, 0);
   };
-  console.log("basha inta 3abd", playlistData);
   return !isDiv ? (
     <Button
       {...buttonProps}
-      disabled={
-        !!buttonProps.disabled ||
-        (playlistData?.tracks?.tracks?.length ?? 0) === 0
-      }
+      disabled={!!buttonProps.disabled}
       onClick={async (e) => {
         e.stopPropagation();
         buttonProps.onClick?.(e);
@@ -112,7 +123,11 @@ export function QueuePlayButton({
         await playHandler();
       }}
     >
-      {children(isCurrentPlaying && isPlaying)}
+      {children(
+        isCurrentPlaying && isPlaying,
+        (trackId: string) =>
+          currentQueue?.queueData?.currentPlaying === trackId,
+      )}
     </div>
   );
 }

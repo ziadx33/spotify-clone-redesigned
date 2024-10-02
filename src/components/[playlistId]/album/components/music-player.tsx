@@ -1,6 +1,6 @@
 import { type Playlist } from "@prisma/client";
 import { type TrackFilters } from "@/types";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { DEFAULT_TRACK_FILTERS_DATA } from "@/constants";
 import { Player } from "../../components/player";
 import { Tracks } from "../../components/tracks";
@@ -10,7 +10,7 @@ type MusicPlayerProps = {
   playlist?: Playlist | null;
 };
 
-export function MusicPlayer({ playlist }: MusicPlayerProps) {
+function Comp({ playlist }: MusicPlayerProps) {
   const [filters, setFilters] = useState<TrackFilters>(
     DEFAULT_TRACK_FILTERS_DATA,
   );
@@ -40,3 +40,5 @@ export function MusicPlayer({ playlist }: MusicPlayerProps) {
     </>
   );
 }
+
+export const MusicPlayer = memo(Comp);

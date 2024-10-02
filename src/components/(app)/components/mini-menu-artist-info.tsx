@@ -15,102 +15,99 @@ export function MiniMenuArtistInfo() {
     playlistId: currentData.album?.id ?? "",
   });
 
-  const isDialog = (currentData.author?.about?.trim()?.length ?? 0) === 0;
+  const isDialog = (currentData.author?.about?.trim()?.length ?? 0) !== 0;
+
   const triggerContent = (
-    <>
-      <div className="relative mx-auto flex w-[95%]  flex-col gap-2 overflow-hidden rounded-lg bg-muted">
-        <h3
-          className={cn(
-            "z-10 mb-2 p-3 pt-3.5 font-semibold",
-            currentData.author?.aboutImage ? "absolute" : "",
-          )}
-        >
-          About the artist
-        </h3>
-        {currentData.author?.aboutImage ? (
-          <div className="h-64 w-full">
-            <AvatarData
-              src={currentData.author?.aboutImage ?? undefined}
-              containerClasses="size-full rounded-none"
-            />
-          </div>
-        ) : (
-          <div className="pl-3">
-            <AvatarData
-              src={currentData.author?.image ?? undefined}
-              containerClasses="w-16 h-fit"
-            />
-          </div>
+    <div className="relative mx-auto flex w-[95%] flex-col gap-2 overflow-hidden rounded-lg bg-muted">
+      <h3
+        className={cn(
+          "z-10 mb-2 p-3 pt-3.5 font-semibold",
+          currentData.author?.aboutImage ? "absolute" : "",
         )}
-        <div className="p-3 pt-1">
-          <Link
-            href={`/artist/${currentData.author?.id}?playlist=${currentData.album?.id}`}
-            className="text-lg font-semibold"
+      >
+        About the artist
+      </h3>
+      {currentData.author?.aboutImage ? (
+        <div className="h-64 w-full">
+          <AvatarData
+            src={currentData.author?.aboutImage ?? undefined}
+            containerClasses="size-full rounded-none"
+          />
+        </div>
+      ) : (
+        <div className="pl-3">
+          <AvatarData
+            src={currentData.author?.image ?? undefined}
+            containerClasses="w-16 h-fit"
+          />
+        </div>
+      )}
+      <div className="p-3 pt-1">
+        <Link
+          href={`/artist/${currentData.author?.id}?playlist=${currentData.album?.id}`}
+          className="text-lg font-semibold"
+        >
+          {currentData.author?.name}
+        </Link>
+        <div className="mb-2 mt-1.5 flex items-center justify-between">
+          <h4 className="text-md text-muted-foreground">
+            {(currentData.author?.followers.length ?? 0) - (isFollowed ? 0 : 1)}{" "}
+            followers
+          </h4>
+          <Button
+            onClick={() => toggle()}
+            variant="ghost"
+            size="sm"
+            disabled={isFollowing}
+            className="border border-muted-foreground/30"
           >
-            {currentData.author?.name}
-          </Link>
-          <div className="mb-2 mt-1.5 flex items-center justify-between">
-            <h4 className="text-md text-muted-foreground">
-              {(currentData.author?.followers.length ?? 0) -
-                (isFollowed ? 0 : 1)}{" "}
-              followers
-            </h4>
-            <Button
-              onClick={() => toggle()}
-              variant="ghost"
-              size="sm"
-              disabled={isFollowing}
-              className="border border-muted-foreground/30"
-            >
-              {isFollowed ? "unfollow" : "follow"}
-            </Button>
+            {isFollowed ? "Unfollow" : "Follow"}
+          </Button>
+        </div>
+        <p className="line-clamp-3 text-sm text-muted-foreground">
+          {currentData.author?.about}
+        </p>
+      </div>
+    </div>
+  );
+
+  const dialogContent = (
+    <DialogContent className="flex h-[694.391px] w-full max-w-[768px] flex-col overflow-y-scroll">
+      {currentData.author?.aboutImage && (
+        <Image
+          src={currentData.author?.aboutImage ?? ""}
+          width={320}
+          height={200}
+          alt={currentData.author?.name ?? ""}
+          className="mx-auto"
+        />
+      )}
+      <div className="p-4">
+        <div className="flex items-start gap-4">
+          <div className="flex flex-col">
+            <h2 className="text-3xl font-bold">
+              {new Intl.NumberFormat("en-US").format(
+                currentData.author?.followers.length ?? 0,
+              )}
+            </h2>
+            <p className="text-sm text-muted-foreground">Followers</p>
           </div>
-          <p className="line-clamp-3 text-sm text-muted-foreground">
+          <p className="ml-4 text-muted-foreground">
             {currentData.author?.about}
           </p>
         </div>
       </div>
-    </>
+    </DialogContent>
   );
-  const content = (
-    <>
-      {!isDialog ? (
-        <DialogTrigger
-          className="cursor-pointer"
-          asChild
-          disabled={(currentData.author?.about?.trim()?.length ?? 0) === 0}
-        >
-          {triggerContent}
-        </DialogTrigger>
-      ) : (
-        triggerContent
-      )}
 
-      {!isDialog ? (
-        <DialogContent className="flex h-[694.391px] w-full max-w-[768px] flex-col overflow-y-scroll">
-          <Image
-            src={currentData.author?.aboutImage ?? ""}
-            width={320}
-            height={200}
-            alt={currentData.author?.name ?? ""}
-            className="mx-auto"
-          />
-          <div className="flex">
-            <div className="flex w-[80rem] flex-col">
-              <div className="flex flex-col">
-                <h2 className="text-3xl font-bold">
-                  {new Intl.NumberFormat("en-US").format(
-                    currentData.author?.followers.length ?? 0,
-                  )}
-                </h2>
-                <p className="text-sm text-muted-foreground">Followers</p>
-              </div>
-            </div>
-            <p className="text-muted-foreground">{currentData.author?.about}</p>
-          </div>
-        </DialogContent>
-      ) : null}
-    </>
+  return isDialog ? (
+    <Dialog>
+      <DialogTrigger asChild className="cursor-pointer">
+        {triggerContent}
+      </DialogTrigger>
+      {dialogContent}
+    </Dialog>
+  ) : (
+    triggerContent
   );
-  return !isDialog ? <Dialog>{content}</Dialog> : content;
 }

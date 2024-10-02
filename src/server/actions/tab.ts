@@ -7,13 +7,16 @@ import { handleRequests } from "@/utils/handle-requests";
 
 export const getTabs = async ({
   userId,
+  email,
 }: {
-  userId: string;
+  userId?: string;
+  email?: string;
 }): Promise<TabsSliceType> => {
   try {
     const tabs = await db.tab.findMany({
       where: {
         userId,
+        User: { email },
       },
     });
 

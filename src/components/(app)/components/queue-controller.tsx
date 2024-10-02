@@ -4,8 +4,9 @@ import { type QueueList } from "@prisma/client";
 import Link from "next/link";
 import { PlayControls } from "./play-controls";
 import { QueueProgressBar } from "./queue-progress-bar";
+import { memo } from "react";
 
-export function QueueController({
+export function Comp({
   getData,
   data,
 }: {
@@ -39,3 +40,5 @@ export function QueueController({
     </div>
   );
 }
+
+export const QueueController = memo(Comp);

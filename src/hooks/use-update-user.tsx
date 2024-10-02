@@ -21,5 +21,5 @@ export function useUpdateUser() {
       data: data.data,
     });
   };
-  return { update };
+  return { update, user };
 }

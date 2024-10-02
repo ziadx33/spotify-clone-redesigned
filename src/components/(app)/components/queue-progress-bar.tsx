@@ -18,7 +18,9 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
     data: { progress, isPlaying },
     skipToTime,
     disablePlayButton,
+    editProgress,
   } = useQueueController();
+  const isPlayingStarted = useRef(false);
 
   const [value, setValue] = useState(progress);
   const dispatch = useDispatch<AppDispatch>();
@@ -29,6 +31,7 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
     currentData: { isLastQueue, isLastTrack },
     data: { data },
   } = useQueue();
+  const currentRepeat = useRef(data?.queueList.repeatQueue);
 
   const isTrackEdited = useRef(false);
 
@@ -48,77 +51,97 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
   }, [currentQueue]);
 
   useEffect(() => {
-    setValue(progress);
-  }, [progress]);
+    if (isPlayingStarted.current) return;
+    if (!isPlaying) return;
+    isPlayingStarted.current = true;
+  }, [isPlaying]);
 
   useEffect(() => {
-    if (!isPlaying) {
+    const isCurNotEqualQueueList =
+      currentRepeat.current !== data?.queueList.repeatQueue;
+    if (isCurNotEqualQueueList) {
+      currentRepeat.current = data?.queueList.repeatQueue;
+    }
+    if (!isPlaying || isCurNotEqualQueueList) {
       if (currentInterval.current) {
         clearInterval(currentInterval.current);
         currentInterval.current = null;
+        return;
       }
-      return;
     }
 
-    currentInterval.current = setInterval(() => {
-      setValue((prevValue) => {
-        if (prevValue >= duration) {
-          const handleEndOfTrack = async () => {
-            const currentTrackId = currentQueue?.queueData?.currentPlaying;
-            if (!currentTrackId) return;
+    if (isPlaying)
+      currentInterval.current = setInterval(() => {
+        setValue((prevValue) => {
+          if (prevValue >= duration) {
+            const handleEndOfTrack = async () => {
+              const currentTrackId = currentQueue?.queueData?.currentPlaying;
+              if (!currentTrackId) return;
 
-            if (data?.queueList.repeatQueue === "TRACK") {
-              dispatch(editQueueController({ currentTrackId, progress: 0 }));
-              void skipToTime(0, currentTrackId);
-              return 0;
-            } else if (isLastQueue && isLastTrack) {
-              let nextTrack = currentQueue?.queueData?.currentPlaying;
-              if (data?.queueList.repeatQueue === "PLAYLIST") {
-                nextTrack = await skipBy(currentQueue.queueData!.trackList[0]!);
-              }
-              dispatch(
-                editQueueController({ currentTrackId: nextTrack, progress: 0 }),
-              );
-              void skipToTime(0, nextTrack);
-            } else {
-              const nextTrack = await skipBy(1);
-              if (!nextTrack)
-                if (currentInterval.current)
-                  clearInterval(currentInterval.current);
-                else {
-                  dispatch(
-                    editQueueController({
-                      currentTrackId: nextTrack,
-                      progress: 0,
-                    }),
+              if (data?.queueList.repeatQueue === "TRACK") {
+                editProgress(0);
+                await skipToTime(0, currentTrackId);
+              } else if (isLastQueue && isLastTrack) {
+                let nextTrack: string | undefined = currentTrackId;
+                if (data?.queueList.repeatQueue === "PLAYLIST") {
+                  nextTrack = await skipBy(
+                    currentQueue.queueData!.trackList[0]!,
                   );
-                  void skipToTime(0, nextTrack);
                 }
-            }
-          };
+                editProgress(0);
 
-          void handleEndOfTrack();
-          return duration;
-        }
+                void skipToTime(0, nextTrack);
+              } else {
+                const nextTrack = await skipBy(1);
+                if (!nextTrack)
+                  if (currentInterval.current)
+                    clearInterval(currentInterval.current);
+                  else {
+                    editProgress(0);
+                    void skipToTime(0, nextTrack);
+                  }
+              }
+            };
 
-        return prevValue + 1;
-      });
-    }, 1000);
+            void handleEndOfTrack();
+            return data?.queueList.repeatQueue === "TRACK" ||
+              (isLastQueue && isLastTrack)
+              ? 0
+              : duration;
+          }
+
+          return prevValue + 1;
+        });
+      }, 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying]);
+  }, [isPlaying, data?.queueList.repeatQueue]);
 
   const onSliderChange = async (newValue: number) => {
     setValue(newValue);
 
     if (Math.abs(newValue - progress) > 1) {
-      dispatch(editQueueController({ progress: newValue }));
       void skipToTime(newValue);
     }
   };
 
+  useEffect(() => {
+    if (!isPlayingStarted.current) return;
+    isPlayingStarted.current = true;
+    if (!isPlaying) {
+      editProgress(value);
+    }
+    dispatch(editQueueController({ progress: value }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
+
+  useEffect(() => {
+    setValue(progress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress]);
+
   return (
     <>
-      <QueueControls value={value} />
+      <QueueControls />
       <div className="flex gap-2">
         <h5 className="w-10">{parseDurationTime(value)}</h5>
         <Slider

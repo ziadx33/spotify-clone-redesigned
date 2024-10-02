@@ -1,19 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { useQueueController } from "@/hooks/use-queue-controller";
-import { editQueueController } from "@/state/slices/queue-controller";
-import { type AppDispatch } from "@/state/store";
 import { FaPlay, FaPause } from "react-icons/fa";
-import { useDispatch } from "react-redux";
 
-export function QueueControlsPlayButton({ value }: { value: number }) {
-  const dispatch = useDispatch<AppDispatch>();
+export function QueueControlsPlayButton() {
   const {
     disablePlayButton: disable,
     data: { isPlaying },
     toggle,
   } = useQueueController();
   const buttonHandler = async () => {
-    dispatch(editQueueController({ progress: value }));
     await toggle();
   };
   return (

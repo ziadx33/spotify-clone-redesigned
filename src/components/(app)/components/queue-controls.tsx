@@ -5,7 +5,7 @@ import { FaRandom } from "react-icons/fa";
 import { MdOutlineRepeat, MdOutlineRepeatOne } from "react-icons/md";
 import { QueueControlsPlayButton } from "./queue-controls-play-button";
 
-export function QueueControls({ value }: { value: number }) {
+export function QueueControls() {
   const {
     shuffleQueue,
     repeatQueue,
@@ -59,7 +59,7 @@ export function QueueControls({ value }: { value: number }) {
       >
         <BsFillSkipBackwardFill />
       </Button>
-      <QueueControlsPlayButton value={value} />
+      <QueueControlsPlayButton />
       <Button
         size="icon"
         variant="outline"

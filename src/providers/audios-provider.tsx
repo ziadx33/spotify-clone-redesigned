@@ -1,6 +1,8 @@
 "use client";
 
 import { useQueue } from "@/hooks/use-queue";
+import { editQueueController } from "@/state/slices/queue-controller";
+import { type AppDispatch, type RootState } from "@/state/store";
 import { type Track } from "@prisma/client";
 import {
   type MutableRefObject,
@@ -11,6 +13,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export type AudiosConTextType = {
   data: MutableRefObject<
@@ -36,6 +39,28 @@ export function AudiosProvider({ children }: { children: ReactNode }) {
   const loadedTrackList = useRef<AudiosConTextType["data"]["current"]>();
   const doneSettingTracks = useRef(false);
 
+  const queueData = useSelector((state: RootState) => state.queueList.data);
+  const setCurrentDataDone = useRef(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (setCurrentDataDone.current) return;
+    if (!queueData) return;
+
+    console.log(
+      "mesh mesta7mel 7ad",
+      currentQueue?.queueData?.currentPlayingProgress,
+    );
+    dispatch(
+      editQueueController({
+        progress: currentQueue?.queueData?.currentPlayingProgress ?? 0,
+        volume: queueData?.queueList.volumeLevel,
+        currentTrackId: currentQueue?.queueData?.currentPlaying,
+      }),
+    );
+    setCurrentDataDone.current = true;
+  }, [currentQueue, dispatch, queueData, queueData?.queueList]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadTracks = async (tracks = currentQueue?.dataTracks?.tracks) => {
     setIsLoading(true);
@@ -49,9 +74,9 @@ export function AudiosProvider({ children }: { children: ReactNode }) {
           audio.load();
           loadedTrackList.current = loadedTrackList.current ?? [];
 
-          audio.oncanplaythrough = () => {
+          audio.addEventListener("canplay", () => {
             res({ track, audio });
-          };
+          });
 
           audio.onerror = (error) => {
             rej(error);
@@ -61,7 +86,6 @@ export function AudiosProvider({ children }: { children: ReactNode }) {
 
     try {
       const data = await Promise.all(promises);
-      console.log(data, "shurup motherfucker");
       loadedTrackList.current = data;
       setIsLoading(false);
     } catch (error) {

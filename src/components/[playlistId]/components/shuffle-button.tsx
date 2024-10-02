@@ -10,10 +10,10 @@ export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {
     play,
     shuffleQueue,
   } = useQueue();
-  const queueData = useGetPlayData({ playlist });
+  const { getData } = useGetPlayData({ playlist });
   const shuffleHandler = async () => {
-    if (!queueData) return;
-    if (error) return await play(queueData, { randomize: true });
+    const data = await getData();
+    if (error) return await play(data.data!, { randomize: true });
     await shuffleQueue({ value: (v) => !v });
   };
   return (

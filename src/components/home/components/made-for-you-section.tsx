@@ -46,7 +46,7 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
     return randomColor;
   }, []);
 
-  const [activeDialog, setActiveDialog] = useState(0);
+  const [activeDialog, setActiveDialog] = useState<number | undefined>();
 
   const cardsColors = useMemo(() => {
     return data?.map(() => getRandomMixColor());
@@ -58,7 +58,10 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
         const color = cardsColors?.[index];
         const title = `Daily Mix ${index + 1}`;
         return (
-          <Dialog key={index} onOpenChange={() => setActiveDialog(index)}>
+          <Dialog
+            key={index}
+            onOpenChange={(e) => setActiveDialog(e ? index : undefined)}
+          >
             <DialogTrigger>
               <SectionItem
                 type="PLAYLIST"

@@ -13,6 +13,7 @@ export function PlaylistDialog({ isActive, ...data }: PlaylistDialogProps) {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (!isActive) return;
+    console.log("ye7esh sad", isActive);
     dispatch(
       setTracks({
         status: "success",

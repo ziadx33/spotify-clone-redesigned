@@ -6,7 +6,6 @@ import { getTabs } from "@/server/actions/tab";
 export async function Tabs() {
   const user = await getServerAuthSession();
   const tabs = await getTabs({ userId: user?.user.id ?? "" });
-  console.log("ele me5alas el ba2a");
 
   return (
     <TabsProvider tabs={tabs}>
