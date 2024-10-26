@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { usePrefrences } from "@/hooks/use-prefrences";
@@ -21,8 +22,6 @@ import {
   useCallback,
   useMemo,
   type ReactNode,
-  useState,
-  useRef,
 } from "react";
 import { BsPinAngle, BsPlus } from "react-icons/bs";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -108,14 +107,18 @@ function SortableItem(item: ItemType) {
       </div>
       {item.draggable && (
         <div className="buttons flex gap-2">
-          <button className="drag-button cursor-move">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="drag-button h-full w-6 cursor-move"
+          >
             <MdDragIndicator />
-          </button>
+          </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={hideHandler}
-            className="h-fit w-fit"
+            className="h-full w-6"
           >
             {item.isHidden ? <FaEyeSlash /> : <FaEye />}
           </Button>
@@ -207,19 +210,17 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
     [dispatch, error, user?.user?.id],
   );
 
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const clickedPopover = useRef(false);
-
   const content = (
     <>
-      <SelectFromLibraryButton open={popoverOpen} setOpen={setPopoverOpen}>
-        <SortableItem
-          draggable={false}
-          title="Select from library"
-          id="select-from"
-        />
-      </SelectFromLibraryButton>
+      <DropdownMenuSub>
+        <SelectFromLibraryButton>
+          <SortableItem
+            draggable={false}
+            title="Select from library"
+            id="select-from"
+          />
+        </SelectFromLibraryButton>
+      </DropdownMenuSub>
       <SortableItems
         items={pinnedSections}
         helperClass="z-50 bg-muted"
@@ -244,17 +245,7 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
   );
 
   return (
-    <DropdownMenu
-      open={dropdownOpen}
-      onOpenChange={(e) => {
-        if (dropdownOpen && !popoverOpen && !clickedPopover.current) {
-          clickedPopover.current = true;
-          return setDropdownOpen(true);
-        }
-        if (!e) clickedPopover.current = false;
-        return setDropdownOpen(e);
-      }}
-    >
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
           <MdMenu />

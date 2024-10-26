@@ -9,9 +9,14 @@ import { handleTrackFilterChange } from "@/utils/track";
 type MusicPlayerProps = {
   playlist?: Playlist | null;
   showTrackImage?: boolean;
+  queueTypeId?: string;
 };
 
-export function MusicPlayer({ playlist, showTrackImage }: MusicPlayerProps) {
+export function MusicPlayer({
+  playlist,
+  showTrackImage,
+  queueTypeId,
+}: MusicPlayerProps) {
   const [filters, setFilters] = useState<TrackFilters>(
     DEFAULT_TRACK_FILTERS_DATA,
   );
@@ -20,6 +25,7 @@ export function MusicPlayer({ playlist, showTrackImage }: MusicPlayerProps) {
   return (
     <>
       <Player
+        queueTypeId={queueTypeId}
         playlist={playlist}
         setTrackQuery={setTrackQuery}
         setFilters={setFilters}
@@ -27,6 +33,7 @@ export function MusicPlayer({ playlist, showTrackImage }: MusicPlayerProps) {
         filters={filters}
       />
       <Tracks
+        queueTypeId={queueTypeId}
         showTrackImage={showTrackImage}
         handleFilterChange={handleFilterChange}
         playlist={playlist}

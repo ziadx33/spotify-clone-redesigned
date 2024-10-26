@@ -14,6 +14,8 @@ type UseGetPlayData = {
   artist?: User | null;
   track?: Track | null;
   skipToTrack?: string;
+  noDefPlaylist?: boolean;
+  queueTypeId?: string;
 };
 
 export function useGetPlayData({
@@ -21,6 +23,8 @@ export function useGetPlayData({
   track,
   artist,
   skipToTrack,
+  noDefPlaylist,
+  queueTypeId,
 }: UseGetPlayData): {
   getData: () => Promise<Omit<NonNullable<QueuePlayButtonProps>, "children">>;
 } {
@@ -33,7 +37,6 @@ export function useGetPlayData({
     ],
     queryFn: async () => {
       if (!shouldFetch.current) return null;
-      console.log(artist, track, playlist, "ya 3rs");
       if (artist) {
         const res = await getTracksByArtistId(artist.id);
         return {
@@ -49,7 +52,6 @@ export function useGetPlayData({
 
       if (track) {
         const res = await getTracksByPlaylistId(track.albumId);
-        console.log("w bashot", res);
         const playlistData = await getPlaylist(track.albumId);
         return {
           data: {
@@ -62,9 +64,8 @@ export function useGetPlayData({
         };
       }
 
-      if (playlist && !data) {
+      if (playlist && noDefPlaylist && !queueTypeId) {
         const res = await getTracksByPlaylistId(playlist.id);
-        console.log("ro7 ya 3rs men hena", res);
         return {
           data: {
             tracks: res.data?.tracks ?? [],
@@ -78,7 +79,7 @@ export function useGetPlayData({
 
       return null;
     },
-    enabled: !!track || !!artist,
+    enabled: !!track || !!artist || (!!playlist && noDefPlaylist),
   });
 
   const getData: () => Promise<
@@ -86,25 +87,36 @@ export function useGetPlayData({
   > = async () => {
     shouldFetch.current = true;
     const nonData = nonPlaylistData ?? (await refetch()).data;
-    console.log("betkoon mafshoo5 fash5", nonData);
     const usedData = (nonData ? nonData.data.tracks : data?.tracks)?.map(
       (track) => track.id,
     );
 
     const usedTypeData = artist ?? track ?? playlist;
 
+    const curPlaying = skipToTrack ?? usedData?.[0];
+
+    if (!curPlaying) throw "no current playing";
+
     return {
       data: {
         data: {
           trackList: usedData ?? [],
           type: artist ? "ARTIST" : "PLAYLIST",
-          typeId: usedTypeData!.id,
-          currentPlaying: skipToTrack ?? "",
+          typeId: queueTypeId ?? usedTypeData?.id ?? null,
+          currentPlaying: curPlaying,
         },
-        tracks: (track ?? artist ?? (playlist && !data)
-          ? nonData?.data
+        tracks: (!queueTypeId
+          ? track ?? artist ?? (playlist && noDefPlaylist)
+            ? nonData?.data
+            : data
           : data)!,
-        typePlaylist: track ? nonData?.playlist : playlist ?? undefined,
+        typePlaylist: !queueTypeId
+          ? track
+            ? nonData?.playlist
+            : !queueTypeId
+              ? playlist
+              : undefined
+          : undefined,
         typeArtist: artist ? artist : undefined,
       },
     };

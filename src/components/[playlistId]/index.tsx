@@ -17,7 +17,7 @@ export type PlaylistPageProps = {
   } | null;
   type: string;
   tracks?: ReturnType<typeof useTracks>["data"];
-  data: PlaylistType | null;
+  data: PlaylistType;
   id: string;
 };
 

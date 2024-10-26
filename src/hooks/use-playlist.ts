@@ -10,7 +10,7 @@ type UsePlaylistReturnType = Omit<PlaylistsSliceType, "data"> & {
 };
 
 export function usePlaylist(id: string): UsePlaylistReturnType {
-  const playlists = usePlaylists();
+  const { data: playlists } = usePlaylists();
   const data = playlists.data?.find((playlist) => playlist.id === id);
   const {
     data: playlist,

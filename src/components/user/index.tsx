@@ -2,9 +2,12 @@
 
 import { type User } from "@prisma/client";
 import { UserContent } from "./components/user-content";
-import { handleRequests } from "@/utils/handle-requests";
 import { getPlaylists } from "@/server/actions/playlist";
-import { getArtistsByIds, getFollowedArtists } from "@/server/actions/user";
+import {
+  getArtistsByIds,
+  getFollowedArtists,
+  getUserByIds,
+} from "@/server/actions/user";
 import { getUserTopTracks } from "@/server/actions/track";
 import { getTopArtists } from "@/utils/get-top-artists";
 import { useQuery } from "@tanstack/react-query";
@@ -19,11 +22,17 @@ export async function User({ user, isUser }: ProfileProps) {
   const { data } = useQuery({
     queryKey: [`user-data-${user?.id}`],
     queryFn: async () => {
-      const TopTracks = await getUserTopTracks({ user, artistId: user?.id });
-      const requests = [
-        getPlaylists({ creatorId: user?.id ?? "", playlistIds: [] }),
-        getFollowedArtists({ userId: user?.id ?? "" }),
-        getArtistsByIds({
+      const TopTracks = await getUserTopTracks({ user });
+      const [
+        { data: publicPlaylists },
+        followedArtists,
+        followerUsers,
+        artists,
+      ] = [
+        await getPlaylists({ creatorId: user?.id ?? "", playlistIds: [] }),
+        await getFollowedArtists({ userId: user?.id ?? "" }),
+        await getUserByIds(user?.followers ?? []),
+        await getArtistsByIds({
           ids:
             TopTracks?.data?.tracks
               ?.map((track) =>
@@ -35,16 +44,19 @@ export async function User({ user, isUser }: ProfileProps) {
         }),
       ] as const;
 
-      const [{ data: publicPlaylists }, followedArtists, artists] =
-        await handleRequests(requests);
-
       const topArtists = getTopArtists({
         artists,
         trackIds: TopTracks.trackIds,
         tracks: TopTracks.data.tracks,
       });
 
-      return { publicPlaylists, followedArtists, topArtists, TopTracks };
+      return {
+        publicPlaylists,
+        followedArtists,
+        topArtists,
+        TopTracks,
+        followerUsers,
+      };
     },
   });
 
@@ -54,6 +66,7 @@ export async function User({ user, isUser }: ProfileProps) {
     <UserContent
       isUser={isUser}
       followedArtists={data.followedArtists}
+      followerUsers={data.followerUsers}
       publicPlaylists={data.publicPlaylists ?? []}
       user={user}
       topArtists={data.topArtists}

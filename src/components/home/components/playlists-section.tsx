@@ -5,18 +5,23 @@ import { PlaylistItem } from "./playlist-item";
 import { SkeletonPlaylists } from "@/components/artist/components/skeleton";
 import { SortableList } from "./sortable-list";
 import { type ReactNode } from "react";
+import { PlaylistContext } from "@/components/contexts/playlist-context";
 
 export function PlaylistsSection({
   comps,
 }: {
   comps: Record<string, ReactNode>;
 }) {
-  const { data, status } = usePlaylists();
+  const {
+    data: { data, status },
+  } = usePlaylists();
   const isLoading = status === "loading";
 
-  const items = data
-    ?.slice(0, 6)
-    .map((playlist) => <PlaylistItem data={playlist} key={playlist.id} />);
+  const items = data?.slice(0, 6).map((playlist) => (
+    <PlaylistContext playlist={playlist} key={playlist.id} asChild={false}>
+      <PlaylistItem data={playlist} />
+    </PlaylistContext>
+  ));
 
   return (items?.length ?? 0) > 0 ? (
     <div className="flex gap-2 pt-4">

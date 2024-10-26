@@ -8,7 +8,6 @@ import { ChildrenContainer } from "./components/children-container";
 import { AudiosProvider } from "@/providers/audios-provider";
 
 export function Layout({ children }: { children: ReactNode }) {
-  console.log("sahla w mesh mestahla");
   return (
     <main className="flex h-screen w-screen overflow-hidden">
       <ServerAppDataProvider>

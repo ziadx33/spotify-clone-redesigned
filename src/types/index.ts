@@ -1,3 +1,6 @@
+import { type MouseEventHandler, type ReactNode } from "react";
+import { type IconType } from "react-icons/lib";
+
 export type TrackFilters = {
   title: "ASC" | "DSC" | null;
   album: "ASC" | "DSC" | null;
@@ -17,3 +20,24 @@ export type ChangeValueParam<T> = ((val: T) => T) | T;
 export type Nullable<T> = {
   [P in keyof T]?: T[P] | null;
 };
+
+export type DropdownMenuItemType = {
+  title: string;
+  icon: IconType;
+  content?: ReactNode;
+};
+
+export type NestedMenuType = {
+  isSearchable?: boolean;
+  items: DropdownMenuType[];
+};
+
+export type DropdownMenuType =
+  | (DropdownMenuItemType & {
+      nestedMenu: NestedMenuType;
+      event?: never;
+    })
+  | (DropdownMenuItemType & {
+      event: MouseEventHandler<HTMLDivElement>;
+      nestedMenu?: never;
+    });

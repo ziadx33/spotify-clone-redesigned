@@ -137,8 +137,6 @@ export const getRecommendedTracks = unstable_cache(
       range = { from: 0, to: 15 },
     }: GetRecommendedTracksParams) => {
       try {
-        console.log("yahh");
-
         let tracks = await db.track.findMany({
           where: {
             id: {
@@ -267,6 +265,15 @@ export const getTracksByPlaylistIds = unstable_cache(
   ["tracks", "playlist-ids", "id"],
 );
 
+export const getTracksByAlbumId = async (id: string) => {
+  try {
+    const tracks = await db.track.findMany({ where: { albumId: id } });
+    return tracks;
+  } catch (error) {
+    throw { error };
+  }
+};
+
 type RemoveTrackFromPlaylistDBProps = {
   playlistId: string;
   trackId: string;
@@ -360,7 +367,6 @@ export const getPopularTracks = unstable_cache(
         });
         if (tracks.length === 0)
           tracks = await db.track.findMany(defaultOptions);
-        console.log("battle", artistId);
         const [authors, albums] = [
           await db.user.findMany({
             where: {
@@ -451,9 +457,11 @@ export const getTracksByIds = unstable_cache(
           id: {
             in: data.ids,
           },
-          album: {
-            type: data.type,
-          },
+          album: data.type
+            ? {
+                type: data.type,
+              }
+            : undefined,
         },
       });
       return tracks;
@@ -520,6 +528,8 @@ export const getUserTopTracks = unstable_cache(
       }
     },
   ),
+  [],
+  { revalidate: 86400 },
 );
 
 export type GetUserTopTracksReturnType = Awaited<
@@ -676,7 +686,6 @@ export const getBestOfArtists = unstable_cache(
         },
       });
       if (followed.length > 0) followed = await db.user.findMany(defaultData);
-      console.log("fel gone", followed);
       const tracks = await getPopularTracks({
         artistId: followed.map((follower) => follower.id),
         addAlbums: true,

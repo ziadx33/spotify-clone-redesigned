@@ -105,13 +105,12 @@ enum TAB_TYPE {
 }
 
 model Tab {
-    id      String   @id @default(cuid())
-    title   String   @default("")
-    type    TAB_TYPE @default(PLAYLIST)
-    href    String   @default("")
-    User    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId  String?
-    current Boolean  @default(false)
+    id     String   @id @default(cuid())
+    title  String   @default("")
+    type   TAB_TYPE @default(PLAYLIST)
+    href   String   @default("")
+    User   User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String?
 }
 
 model VerificationToken {
@@ -215,12 +214,12 @@ model QueueList {
 }
 
 model Queue {
-    id                     String     @id @default(cuid())
-    type                   QUEUE_TYPE @default(PLAYLIST)
-    typeId                 String
+    id                     String      @id @default(cuid())
+    type                   QUEUE_TYPE? @default(PLAYLIST)
+    typeId                 String?
     currentPlaying         String
-    currentPlayingProgress Int        @default(0)
-    trackList              String[]   @default([])
+    currentPlayingProgress Int         @default(0)
+    trackList              String[]    @default([])
 
     QueueList QueueList[]
 }

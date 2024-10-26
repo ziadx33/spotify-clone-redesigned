@@ -5,16 +5,14 @@ import {
   type Track,
 } from "@prisma/client";
 import { Button, type ButtonProps } from "./ui/button";
-import { type ReactNode } from "react";
-import { useQueue } from "@/hooks/use-queue";
+import { useRef, type ReactNode } from "react";
 import { type QueueListSliceType } from "@/state/slices/queue-list";
-import { useGetPlayData } from "@/hooks/use-get-play-data";
-import { useQueueController } from "@/hooks/use-queue-controller";
-import { useDispatch } from "react-redux";
-import { type AppDispatch } from "@/state/store";
-import { editQueueController } from "@/state/slices/queue-controller";
+import { usePlayQueue } from "@/hooks/use-play-queue";
 
-export type QueuePlayButtonProps = Omit<ButtonProps, "children"> & {
+export type QueuePlayButtonProps = Omit<
+  ButtonProps,
+  "children" | "className"
+> & {
   data?: {
     data: {
       trackList: Queue["trackList"];
@@ -38,6 +36,10 @@ export type QueuePlayButtonProps = Omit<ButtonProps, "children"> & {
   ) => ReactNode;
   isDiv?: boolean;
   skipToTrack?: string;
+  noDefPlaylist?: boolean;
+  className?: ((va: boolean, isQueuePlaying: boolean) => string) | string;
+  queueTypeId?: string;
+  isCurrent?: boolean;
 };
 
 export function QueuePlayButton({
@@ -48,68 +50,39 @@ export function QueuePlayButton({
   track,
   artist,
   skipToTrack,
+  noDefPlaylist,
+  className,
+  queueTypeId,
+  isCurrent,
   ...buttonProps
 }: QueuePlayButtonProps) {
-  const { play, currentQueue, skipBy } = useQueue();
-  const dispatch = useDispatch<AppDispatch>();
-  const {
-    toggle,
-    play: playTrack,
-    data: { isPlaying },
-    pause,
-    audios,
-  } = useQueueController();
-  const { getData } = useGetPlayData({ playlist, artist, track, skipToTrack });
-  const isCurrentlyPlayingTrack =
-    currentQueue?.queueData?.currentPlaying === track?.id;
-  const isCurrentlyPlayingArtist =
-    currentQueue?.artistTypeData?.id === artist?.id;
-  const isCurrentlyPlayingPlaylist =
-    currentQueue?.playlistTypeData?.id === playlist?.id;
-
-  const isCurrentPlaying = playlist
-    ? isCurrentlyPlayingPlaylist
-    : artist
-      ? isCurrentlyPlayingArtist
-      : isCurrentlyPlayingTrack;
-
-  const playHandler = async () => {
-    const returnedData = await getData();
-    const returnData = (data ?? returnedData.data)!;
-
-    if (isCurrentPlaying) {
-      if (
-        skipToTrack &&
-        skipToTrack !== currentQueue?.queueData?.currentPlaying
-      ) {
-        await skipBy(skipToTrack);
-        return;
-      }
-      await toggle();
-      return;
-    }
-
-    pause();
-
-    const trackId = await play(returnData, undefined, skipToTrack);
-    dispatch(
-      editQueueController({
-        isPlaying: false,
-        progress: 0,
-        currentTrackId: trackId,
-      }),
-    );
-    await audios?.loadTracks(returnData.tracks?.tracks ?? []);
-
-    await playTrack(true, trackId, 0);
-  };
+  const { isPlaying, playHandler, isCurrentPlaying, currentQueue, audios } =
+    usePlayQueue({
+      data,
+      playlist,
+      track,
+      artist,
+      skipToTrack,
+      noDefPlaylist,
+      queueTypeId,
+      isCurrent,
+    });
+  const clickedRef = useRef(false);
+  const buttonClass =
+    typeof className === "function"
+      ? className(isCurrentPlaying, isPlaying)
+      : className;
   return !isDiv ? (
     <Button
       {...buttonProps}
-      disabled={!!buttonProps.disabled}
+      className={buttonClass}
+      disabled={
+        !!buttonProps.disabled || (audios?.isLoading && clickedRef.current)
+      }
       onClick={async (e) => {
         e.stopPropagation();
         buttonProps.onClick?.(e);
+        clickedRef.current = true;
         await playHandler();
       }}
     >
@@ -117,8 +90,9 @@ export function QueuePlayButton({
     </Button>
   ) : (
     <div
-      className={buttonProps.className}
+      className={buttonClass}
       onClick={async (e) => {
+        if (audios?.isLoading) return;
         e.stopPropagation();
         await playHandler();
       }}

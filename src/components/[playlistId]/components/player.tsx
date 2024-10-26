@@ -40,15 +40,17 @@ import { addPlaylistToTracks } from "@/server/actions/track";
 import { toast } from "sonner";
 import { QueuePlayButton } from "@/components/queue-play-button";
 import { ShuffleButton } from "./shuffle-button";
+import { PlaylistDropdown } from "@/components/dropdowns/playlist-dropdown";
 
 type PlayerProps = {
   filters: TrackFilters;
   setFilters?: Dispatch<SetStateAction<TrackFilters>>;
   handleFilterChange?: (name: keyof TrackFilters) => void;
   setTrackQuery?: Dispatch<SetStateAction<string | null>>;
-  playlist?: Playlist | null;
+  playlist: Playlist;
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
+  queueTypeId?: string;
 };
 
 export function Comp({
@@ -59,6 +61,7 @@ export function Comp({
   setTrackQuery,
   selectedTracks,
   setSelectedTracks,
+  queueTypeId,
 }: PlayerProps) {
   const { data: user } = useSession();
   const isCreatedByUser = user?.user?.id === playlist?.creatorId;
@@ -68,11 +71,11 @@ export function Comp({
       <div className="flex w-full items-center justify-between">
         <div
           className={cn(
-            "mt-2 flex h-fit w-full justify-between rounded-full px-4 py-3",
+            "mt-2 flex h-fit w-full justify-between  rounded-full px-4 py-3",
             selectedTracks?.length ?? 0 > 0 ? "bg-muted" : "",
           )}
         >
-          <div className="flex h-fit w-full">
+          <div className="flex h-fit w-full gap-1">
             {selectedTracks?.length ?? 0 > 0 ? (
               <AddTracksToPlaylist
                 playlist={playlist}
@@ -81,9 +84,12 @@ export function Comp({
               />
             ) : (
               <QueuePlayButton
+                queueTypeId={queueTypeId}
+                isCurrent={!!queueTypeId}
                 size={"icon"}
-                className="mr-4 size-12 rounded-full"
+                className="mr-2 size-12 rounded-full"
                 playlist={playlist}
+                noDefPlaylist
               >
                 {(isPlaying) =>
                   !isPlaying ? <FaPlay size={18} /> : <FaPause size={18} />
@@ -108,13 +114,15 @@ export function Comp({
                 playlist={playlist}
               />
             )}
-            <Button
-              size={"icon"}
-              variant="ghost"
-              className="size-12 rounded-full"
-            >
-              <BsThreeDots size={22} />
-            </Button>
+            <PlaylistDropdown playlist={playlist} asChild={false}>
+              <Button
+                size={"icon"}
+                variant="ghost"
+                className="size-12 rounded-full"
+              >
+                <BsThreeDots size={22} />
+              </Button>
+            </PlaylistDropdown>
           </div>
           <div className="flex w-full items-center justify-end gap-2">
             {selectedTracks?.length ?? 0 > 0 ? (
@@ -157,7 +165,9 @@ function AddTracksToPlaylist({
 }: AddTracksToPlaylistProps) {
   const { data: tracks, status: tracksStatus } = useTracks();
   const { data: user } = useSession();
-  const { data: playlists, status: playlistsStatus } = usePlaylists();
+  const {
+    data: { data: playlists, status: playlistsStatus },
+  } = usePlaylists();
   const userPlaylists = useMemo(() => {
     if (playlistsStatus === "loading" || !user?.user?.id) return [];
     return playlists?.filter(

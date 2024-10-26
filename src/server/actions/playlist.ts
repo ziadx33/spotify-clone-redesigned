@@ -5,7 +5,7 @@ import { db } from "../db";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { type Session } from "@/hooks/use-session";
-import { type $Enums, type Playlist } from "@prisma/client";
+import { type Track, type $Enums, type Playlist } from "@prisma/client";
 import { getArtistsByIds } from "./user";
 
 type GetPlaylistsParams = {
@@ -117,18 +117,17 @@ export const createPlaylist = unstable_cache(
   }),
 );
 
-export const deletePlaylist = unstable_cache(
-  cache(async (id: string) => {
-    try {
-      const deletedPlaylist = db.playlist.delete({
-        where: { id },
-      });
-      return deletedPlaylist;
-    } catch (error) {
-      throw { error };
-    }
-  }),
-);
+export const deletePlaylist = async (id: string) => {
+  try {
+    const deletedPlaylist = db.playlist.delete({
+      where: { id },
+    });
+
+    return deletedPlaylist;
+  } catch (error) {
+    throw { error };
+  }
+};
 
 export const updatePlaylist = unstable_cache(
   cache(async ({ id, data }: { id: string; data: Partial<Playlist> }) => {
@@ -290,3 +289,29 @@ export const getPopularPlaylists = unstable_cache(
   }),
   ["get-popular-releases", "type"],
 );
+
+export const addTracksToPlaylist = async ({
+  playlistId,
+  tracks,
+}: {
+  playlistId: string;
+  tracks: Track[];
+}) => {
+  try {
+    const addedTracks = await db.track.updateMany({
+      data: {
+        playlists: { push: playlistId },
+      },
+      where: {
+        id: {
+          in: tracks
+            .filter((track) => !track.playlists.includes(playlistId))
+            .map((track) => track.id),
+        },
+      },
+    });
+    return addedTracks;
+  } catch (error) {
+    throw { error };
+  }
+};

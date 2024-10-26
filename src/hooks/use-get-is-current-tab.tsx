@@ -22,7 +22,7 @@ export function useIsCurrentTab(url: string) {
 
       return (
         pathname === hrefPathname &&
-        (shouldIgnoreSearchParams || searchParams === extractedSearchParams)
+        (!shouldIgnoreSearchParams || searchParams === extractedSearchParams)
       );
     },
     [pathname, searchParams, extractSearchParams],

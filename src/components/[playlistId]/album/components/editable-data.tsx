@@ -1,9 +1,7 @@
 "use client";
 
-import { Navigate } from "@/components/navigate";
 import { Skeleton } from "@/components/ui/skeleton";
-import { type Playlist } from "@prisma/client";
-import { type User } from "next-auth";
+import { type User, type Playlist } from "@prisma/client";
 import { useMemo, memo, type ReactNode } from "react";
 import { FaCircle } from "react-icons/fa";
 import Image from "next/image";
@@ -19,6 +17,8 @@ import {
 import { Author } from "./author";
 import { useMiniMenu } from "@/hooks/use-mini-menu";
 import { cn } from "@/lib/utils";
+import { AuthorContext } from "@/components/contexts/author-context";
+import { PlaylistContext } from "@/components/contexts/playlist-context";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -48,29 +48,28 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
         className={cn("flex gap-8 p-8 pb-6", miniMenuValue ? "flex-col" : "")}
       >
         <div className="flex w-[95%] flex-col">
-          <h1
-            title={data?.title}
-            className="mb-5 line-clamp-1 w-[59rem] overflow-visible text-start text-6xl font-bold"
-          >
-            {isDoneLoading ? (
-              data?.title
-            ) : (
-              <Skeleton className="mb-4 h-24 w-96" />
-            )}
-          </h1>
+          <PlaylistContext playlist={data}>
+            <h1
+              title={data?.title}
+              className="mb-5 line-clamp-1 w-[59rem] overflow-visible text-start text-6xl font-bold"
+            >
+              {isDoneLoading ? (
+                data?.title
+              ) : (
+                <Skeleton className="mb-4 h-24 w-96" />
+              )}
+            </h1>
+          </PlaylistContext>
           <div className="flex gap-1.5">
             {isDoneLoading ? (
               <span className="flex items-center gap-1.5">
-                <Navigate
-                  data={{
-                    href: `/artist/${creatorData?.id}?playlist=${data?.id}`,
-                    title: creatorData?.name ?? "unknown",
-                    type: "ARTIST",
-                  }}
-                  href={`/artist/${creatorData?.id}?playlist=${data?.id}`}
-                >
-                  {creatorData?.name}
-                </Navigate>
+                {creatorData && data ? (
+                  <AuthorContext artist={creatorData} playlistId={data.id}>
+                    <span>{creatorData.name}</span>
+                  </AuthorContext>
+                ) : (
+                  creatorData?.name
+                )}
                 {(tracksData?.tracks?.length ?? 0) > 0 && (
                   <>
                     <FaCircle size="5" className="text-muted-foreground" />

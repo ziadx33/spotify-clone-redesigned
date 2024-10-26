@@ -18,7 +18,7 @@ export default function ArtistPage() {
   const content = useMemo(() => {
     const playlistId = searchParams.get("playlist");
     const userId = pathname.split("/")[2];
-    if (!playlistId || !userId) return router.push("/");
+    if (!userId) return router.push("/");
     return <Client playlistId={playlistId} artistId={userId} />;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

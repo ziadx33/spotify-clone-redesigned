@@ -9,7 +9,7 @@ import { type SearchQueryReturn } from "@/server/actions/search";
 import { enumParser } from "@/utils/enum-parser";
 import { type Track } from "@prisma/client";
 import { useMemo } from "react";
-import { FaPlay } from "react-icons/fa";
+import { FaPause, FaPlay } from "react-icons/fa";
 import { ArtistsSection } from "./artists-section";
 import { AlbumsSection } from "./albums-section";
 import { PlaylistsSection } from "./playlists-section";
@@ -17,6 +17,7 @@ import { ProfilesSection } from "./profiles-section";
 import Link from "next/link";
 import { type NavigateClickParams } from "@/components/components/section-item";
 import { AvatarData } from "@/components/avatar-data";
+import { QueuePlayButton } from "@/components/queue-play-button";
 
 type AllContentProps = SearchQueryReturn & {
   searchClickFn: NavigateClickParams;
@@ -117,12 +118,32 @@ export function AllContent({
                     ]}
                   />
                 )}
-                <Button
-                  size={"icon"}
+                <QueuePlayButton
+                  track={
+                    topSearch?.type === "track" ? topSearch?.data : undefined
+                  }
+                  playlist={
+                    topSearch?.type === "playlist" ? topSearch?.data : undefined
+                  }
+                  artist={
+                    topSearch?.type === "author" ? topSearch?.data : undefined
+                  }
+                  size="icon"
                   className="absolute -bottom-20 right-4 h-16 w-16 rounded-full opacity-0 transition-all duration-300 hover:bg-primary group-hover:bottom-4 group-hover:opacity-100"
                 >
-                  <FaPlay size={20} />
-                </Button>
+                  {(isPlaying, checkTrack) =>
+                    (
+                      !isPlaying ||
+                      ["author", "playlist"].includes(topSearch?.type ?? "")
+                        ? true
+                        : checkTrack?.(topSearch?.data.id ?? "")
+                    ) ? (
+                      <FaPlay size={20} />
+                    ) : (
+                      <FaPause size={20} />
+                    )
+                  }
+                </QueuePlayButton>
               </Navigate>
             </CardContent>
           </Card>

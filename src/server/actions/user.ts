@@ -23,7 +23,6 @@ export const getUserByEmail = async (email: string) => {
 
 export const createUser = async (data: z.infer<typeof registerSchema>) => {
   try {
-    console.log("glitch", data);
     const createdUser = await db.user.create({
       data: {
         ...data,

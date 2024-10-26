@@ -3,7 +3,6 @@ import { type getRecommendedTracks } from "@/server/actions/track";
 import { type Playlist, type Track } from "@prisma/client";
 import { Table } from "@/components/ui/table";
 import { type User } from "next-auth";
-import { notFound } from "next/navigation";
 import { useMemo } from "react";
 import { type TablePropsType } from "./recommended";
 import { TracksListSkeleton } from "@/components/artist/components/skeleton";
@@ -26,7 +25,6 @@ export function RecommendedTracks({
   addTrackToPlaylistFn,
 }: RecommendedTracksProps) {
   const tableData = useMemo(() => {
-    if (!data && !isLoading) notFound();
     return {
       ...data,
       tracks: data?.tracks?.filter(

@@ -34,7 +34,6 @@ export function SubmitForm() {
 
   const saveCurrentInputValue = () => {
     const inputValue = inputRef.current?.value;
-    console.log("beef", inputValue);
     data.current[currentInput] = inputValue!;
   };
 

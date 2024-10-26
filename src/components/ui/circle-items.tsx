@@ -1,9 +1,20 @@
+import { cn } from "@/lib/utils";
 import { Fragment, type ReactNode } from "react";
 import { FaCircle } from "react-icons/fa";
 
-export function CircleItems({ items }: { items: ReactNode[] }) {
+type CircleItemsProps = {
+  items: ReactNode[];
+  className?: string;
+};
+
+export function CircleItems({ items, className }: CircleItemsProps) {
   return (
-    <div className="flex items-center gap-1.5 text-muted-foreground">
+    <div
+      className={cn(
+        "flex items-center gap-1.5 text-muted-foreground",
+        className,
+      )}
+    >
       {items.map((el, index) => (
         <Fragment key={index}>
           {el}

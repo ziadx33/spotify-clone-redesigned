@@ -1,6 +1,6 @@
 import { type Playlist } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
-import { SliceType } from "../types";
+import { type SliceType } from "../types";
 
 export type PlaylistsSliceType = SliceType<Playlist[]>;
 

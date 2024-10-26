@@ -7,7 +7,6 @@ import Link from "next/link";
 export function MiniMenuCreditsSection() {
   const { getTrack, currentQueue } = useQueue();
   const currentData = getTrack(currentQueue?.queueData?.currentPlaying ?? "");
-  console.log("nadman", currentData);
   return (
     <div className="mx-auto mt-3.5 flex w-[95%] flex-col gap-2 overflow-hidden rounded-lg bg-muted p-3 pt-3.5">
       <h3 className="mb-2 font-semibold">Credits</h3>

@@ -108,11 +108,11 @@ function ListView({ tracks, album, artist }: Omit<AlbumProps, "viewAs">) {
 function GridView({ album }: Omit<AlbumProps, "viewAs">) {
   return (
     <SectionItem
-      key={album.id}
       alt={album.title}
       showPlayButton
       title={album.title}
       image={album.imageSrc}
+      playlistData={album}
       description={`${format(new Date(album.createdAt), "yyy")} - ${album.type.toLowerCase()}`}
       link={`/playlist/${album.id}`}
     />

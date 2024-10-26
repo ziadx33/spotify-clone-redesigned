@@ -8,7 +8,7 @@ import { type AppDispatch } from "@/state/store";
 import { followUser, unFollowUser } from "@/state/slices/following";
 
 type UseFollowParams = {
-  artist?: User;
+  artist?: User | null;
   playlistId: string;
 };
 

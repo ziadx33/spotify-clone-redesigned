@@ -1,9 +1,28 @@
-import { type RootState } from "@/state/store";
-import { useSelector } from "react-redux";
+import { createPlaylist } from "@/server/actions/playlist";
+import { type AppDispatch, type RootState } from "@/state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useUpdateUser } from "./use-update-user";
+import { addPlaylist } from "@/state/slices/playlists";
+import { useRouter } from "next/navigation";
 
 export function usePlaylists() {
-  const { status, error, data } = useSelector(
-    (state: RootState) => state.playlists,
-  );
-  return { status, error, data };
+  const data = useSelector((state: RootState) => state.playlists);
+  const { update: updateUser, user } = useUpdateUser();
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const createUserPlaylist = async () => {
+    const createdPlaylist = await createPlaylist(user);
+    const playlistsData = [
+      ...(user?.user?.playlists ?? []),
+      createdPlaylist.id,
+    ];
+    await updateUser({
+      data: {
+        playlists: playlistsData,
+      },
+    });
+    dispatch(addPlaylist(createdPlaylist));
+    router.push(`/playlist/${createdPlaylist.id}`);
+  };
+  return { data, createUserPlaylist };
 }

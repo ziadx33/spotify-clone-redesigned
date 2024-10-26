@@ -1,37 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/hooks/use-session";
-import { useUpdateUser } from "@/hooks/use-update-user";
-import { createPlaylist } from "@/server/actions/playlist";
-import { addPlaylist } from "@/state/slices/playlists";
-import { type AppDispatch } from "@/state/store";
+import { usePlaylists } from "@/hooks/use-playlists";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { FaSpinner } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
-import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 export function CreatePlaylistButton() {
-  const { data: user } = useSession();
-  const { update: updateUser } = useUpdateUser();
-  const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const { createUserPlaylist } = usePlaylists();
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      const createdPlaylist = await createPlaylist(user);
-      const playlistsData = [
-        ...(user?.user?.playlists ?? []),
-        createdPlaylist.id,
-      ];
-      await updateUser({
-        data: {
-          playlists: playlistsData,
-        },
-      });
-      dispatch(addPlaylist(createdPlaylist));
-      router.push(`/playlist/${createdPlaylist.id}`);
+      await createUserPlaylist();
     },
     onError: () => toast.error("Oops! Something went wrong"),
   });

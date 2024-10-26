@@ -64,6 +64,7 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
           >
             <DialogTrigger>
               <SectionItem
+                disableContext
                 type="PLAYLIST"
                 title={title}
                 customImage={
@@ -90,7 +91,11 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
                 description={`${enumParser(datum.genre)} mix`}
               />
             </DialogTrigger>
-            <PlaylistDialog {...datum} isActive={activeDialog === index} />
+            <PlaylistDialog
+              queueTypeId={`made-for-you-${index}`}
+              {...datum}
+              isActive={activeDialog === index}
+            />
           </Dialog>
         );
       }) ?? []

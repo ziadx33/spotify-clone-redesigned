@@ -1,6 +1,7 @@
 import { type User } from "@prisma/client";
 import { useSession } from "./use-session";
 import { updateUserById } from "@/server/actions/user";
+import { revalidate } from "@/server/actions/revalidate";
 
 export function useUpdateUser() {
   const { update: updateSession, data: user } = useSession();
@@ -20,6 +21,7 @@ export function useUpdateUser() {
       id: user?.user?.id,
       data: data.data,
     });
+    revalidate(`/artist/${user.user.id}`);
   };
   return { update, user };
 }

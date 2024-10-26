@@ -58,6 +58,23 @@ const tracksSlice = createSlice({
         });
     },
 
+    addTracks(state, { payload }: { payload: TracksSliceType["data"] }) {
+      if (state.data) {
+        state.data.tracks = [
+          ...(state.data.tracks ?? []),
+          ...(payload?.tracks ?? []),
+        ];
+        state.data.albums = [
+          ...(state.data.albums ?? []),
+          ...(payload?.albums ?? []),
+        ];
+        state.data.authors = [
+          ...(state.data.authors ?? []),
+          ...(payload?.authors ?? []),
+        ];
+      }
+    },
+
     addTrack(
       state,
       {
@@ -90,6 +107,7 @@ export const {
   removeTrackFromPlaylist,
   addTrackToPlaylist,
   addTrack,
+  addTracks,
 } = tracksSlice.actions;
 
 export default tracksSlice.reducer;

@@ -19,7 +19,7 @@ export type ReplaceDurationWithButton = {
 };
 
 export type NonSortTableProps = {
-  data: Partial<TracksSliceType["data"]>;
+  data?: Partial<TracksSliceType["data"]>;
   playlist?: Playlist;
   viewAs: TrackFilters["viewAs"];
   showTrackImage?: boolean;
@@ -34,6 +34,8 @@ export type NonSortTableProps = {
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
   intersectLastElementRef?: ReturnType<typeof useIntersectionObserver>["ref"];
   showCaption?: boolean;
+  isLoading?: boolean;
+  queueTypeId?: string;
 };
 
 export function NonSortTable({
@@ -52,10 +54,23 @@ export function NonSortTable({
   setSelectedTracks,
   intersectLastElementRef,
   showCaption,
+  isLoading,
+  queueTypeId,
 }: NonSortTableProps) {
+  const defTrackProps = {
+    hidePlayButton: hidePlayButton,
+    replacePlaysWithPlaylist: replacePlaysWithPlaylist,
+    showImage: showTrackImage,
+    isAlbum: true,
+    replaceDurationWithButton: replaceDurationWithButton,
+    playlist: playlist,
+    viewAs: viewAs,
+    showIndex: showIndex,
+    queueTypeId: queueTypeId,
+  };
   return (
     <>
-      {(data?.tracks?.length ?? 0) === 0 && showCaption && (
+      {(data?.tracks?.length ?? 0) === 0 && showCaption && !isLoading && (
         <TableCaption>no tracks in the album</TableCaption>
       )}
       {showHead && (
@@ -76,37 +91,39 @@ export function NonSortTable({
         </TableHeader>
       )}
       <TableBody>
-        {(data?.tracks?.length ?? 0) > 0 ? (
-          data?.tracks
-            ?.slice(0, !limit ? data?.tracks?.length : limit)
-            .map((track, trackIndex) => (
-              <Track
-                setSelectedTracks={setSelectedTracks}
-                selected={!!selectedTracks?.find((id) => id === track.id)}
-                skeleton={skeleton}
-                hidePlayButton={hidePlayButton}
-                replacePlaysWithPlaylist={replacePlaysWithPlaylist}
-                showImage={showTrackImage}
-                isAlbum
-                replaceDurationWithButton={replaceDurationWithButton}
-                playlist={playlist}
-                viewAs={viewAs}
-                key={track.id}
-                intersectLastElementRef={intersectLastElementRef}
-                showIndex={showIndex}
-                track={{ ...track, trackIndex }}
-                authors={data.authors!.filter(
-                  (author) =>
-                    track.authorId === author.id ||
-                    track.authorIds.includes(author.id),
-                )}
-                album={data.albums!.find((album) => track.albumId === album.id)}
-              />
-            ))
+        {!isLoading ? (
+          (data?.tracks?.length ?? 0) > 0 ? (
+            data?.tracks
+              ?.slice(0, !limit ? data?.tracks?.length : limit)
+              .sort((a, b) => a.order - b.order)
+              .map((track, trackIndex) => (
+                <Track
+                  {...defTrackProps}
+                  setSelectedTracks={setSelectedTracks}
+                  selected={!!selectedTracks?.find((id) => id === track.id)}
+                  skeleton={skeleton}
+                  key={track.id}
+                  intersectLastElementRef={intersectLastElementRef}
+                  track={{ ...track, trackIndex }}
+                  authors={data.authors!.filter(
+                    (author) =>
+                      track.authorId === author.id ||
+                      track.authorIds.includes(author.id),
+                  )}
+                  album={data.albums!.find(
+                    (album) => track.albumId === album.id,
+                  )}
+                />
+              ))
+          ) : (
+            <div className="grid h-36 place-items-center lowercase">
+              no tracks in the album
+            </div>
+          )
         ) : (
-          <div className="grid h-36 place-items-center lowercase">
-            no tracks in the album
-          </div>
+          Array.from({ length: 5 }).map((_, i) => (
+            <Track skeleton key={i} {...defTrackProps} />
+          ))
         )}
       </TableBody>
     </>

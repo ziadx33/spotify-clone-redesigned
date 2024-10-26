@@ -18,12 +18,13 @@ import { EditProfile } from "./edit-profile";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useSession } from "@/hooks/use-session";
 import { PublicPlaylists } from "./public-playlists";
-import { FollowedArtists } from "./followed-artists";
+import { UsersSection } from "./users-section";
 
 type UserContentProps = {
   user?: User;
   publicPlaylists: Playlist[];
   followedArtists: User[];
+  followerUsers: User[];
   isUser: boolean;
   topArtists: User[];
   topTracks: TracksSliceType["data"];
@@ -36,6 +37,7 @@ export function UserContent({
   isUser,
   topTracks,
   topArtists,
+  followerUsers,
 }: UserContentProps) {
   const { data: curUser } = useSession();
   const userData = user?.id === curUser?.user?.id ? curUser?.user : user;
@@ -105,7 +107,16 @@ export function UserContent({
           <TopArtists artists={topArtists} user={userData} />
           <TopTracks user={userData} data={topTracks} />
           <PublicPlaylists playlists={publicPlaylists} user={userData} />
-          <FollowedArtists artists={followedArtists} user={userData} />
+          <UsersSection
+            users={followedArtists}
+            user={userData}
+            title="Following"
+          />
+          <UsersSection
+            users={followerUsers}
+            user={userData}
+            title="Followers"
+          />
         </div>
       </div>
       <DialogContent className="flex h-[26rem] w-[45rem] flex-col">
@@ -114,5 +125,3 @@ export function UserContent({
     </Dialog>
   );
 }
-
-// TODO: make profile page loading

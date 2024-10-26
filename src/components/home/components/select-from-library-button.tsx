@@ -9,10 +9,10 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { usePlaylists } from "@/hooks/use-playlists";
 import { usePrefrences } from "@/hooks/use-prefrences";
 import { editUserPrefrence } from "@/server/actions/prefrence";
@@ -20,31 +20,25 @@ import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
 import { useSession } from "next-auth/react";
-import {
-  type ReactNode,
-  useMemo,
-  useCallback,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
+import { type ReactNode, useMemo, useCallback, useState } from "react";
 import { RiPlayListLine } from "react-icons/ri";
 import { useDispatch } from "react-redux";
+import { DEFAULT_SECTIONS } from "./prefrences-provider";
 
 type SelectFromLibraryButtonProps = {
   children: ReactNode;
-  open: boolean;
-  setOpen?: Dispatch<SetStateAction<boolean>>;
 };
 
 export function SelectFromLibraryButton({
   children,
-  open,
-  setOpen,
 }: SelectFromLibraryButtonProps) {
   const { data: user } = useSession();
-  const { data: playlists } = usePlaylists();
+  const {
+    data: { data: playlists },
+  } = usePlaylists();
   const dispatch = useDispatch<AppDispatch>();
-  const { data: prefrence, error } = usePrefrences();
+  const { data: prefrence, error, status } = usePrefrences();
+  console.log("lah w mesh", status, prefrence);
 
   const userPlaylists = useMemo(
     () =>
@@ -62,7 +56,7 @@ export function SelectFromLibraryButton({
       const sortData =
         [
           userPlaylists?.find((playlist) => playlist.id === value)?.title ?? "",
-          ...(prefrence?.homeSectionsSort ?? []),
+          ...(prefrence?.homeSectionsSort ?? DEFAULT_SECTIONS),
         ] ?? [];
       const data = {
         homeLibSection: libs,
@@ -87,11 +81,13 @@ export function SelectFromLibraryButton({
     ],
   );
 
+  const [opened, setOpened] = useState(false);
+
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen} modal>
-        <PopoverTrigger className="w-full">{children}</PopoverTrigger>
-        <PopoverContent className="-top-4 w-96 p-0">
+      <DropdownMenu open={opened} onOpenChange={setOpened}>
+        <DropdownMenuTrigger className="w-full">{children}</DropdownMenuTrigger>
+        <DropdownMenuContent className="-top-4 w-96 p-0">
           <Command>
             <CommandInput placeholder="Find a playlist" />
             <CommandEmpty>No playlist found.</CommandEmpty>
@@ -102,8 +98,8 @@ export function SelectFromLibraryButton({
                     key={playlist.id}
                     value={playlist.id}
                     onSelect={(selectedItem) => {
-                      setOpen?.(false);
                       void selectHandler(selectedItem);
+                      setOpened(false);
                     }}
                   >
                     <RiPlayListLine className="mr-2 h-4 w-4" />
@@ -113,8 +109,8 @@ export function SelectFromLibraryButton({
               </CommandGroup>
             </CommandList>
           </Command>
-        </PopoverContent>
-      </Popover>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 }

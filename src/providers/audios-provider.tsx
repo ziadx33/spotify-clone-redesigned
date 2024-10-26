@@ -34,7 +34,7 @@ export const AudiosContext = createContext<undefined | AudiosConTextType>(
 
 export function AudiosProvider({ children }: { children: ReactNode }) {
   const { currentQueue } = useQueue();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const currentTrackRef = useRef();
   const loadedTrackList = useRef<AudiosConTextType["data"]["current"]>();
   const doneSettingTracks = useRef(false);
@@ -47,10 +47,6 @@ export function AudiosProvider({ children }: { children: ReactNode }) {
     if (setCurrentDataDone.current) return;
     if (!queueData) return;
 
-    console.log(
-      "mesh mesta7mel 7ad",
-      currentQueue?.queueData?.currentPlayingProgress,
-    );
     dispatch(
       editQueueController({
         progress: currentQueue?.queueData?.currentPlayingProgress ?? 0,
@@ -89,7 +85,6 @@ export function AudiosProvider({ children }: { children: ReactNode }) {
       loadedTrackList.current = data;
       setIsLoading(false);
     } catch (error) {
-      console.log("stopp", error);
       throw { error };
     }
   };

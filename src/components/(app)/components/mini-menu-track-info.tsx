@@ -1,29 +1,31 @@
 import { AvatarData } from "@/components/avatar-data";
-import {
-  TrackMoreButton,
-  AddToPlaylist,
-} from "@/components/components/track-more-button";
+import { TrackMoreButton } from "@/components/components/track-more-button";
+import { AuthorContext } from "@/components/contexts/author-context";
+import { PlaylistContext } from "@/components/contexts/playlist-context";
+import { TrackContext } from "@/components/contexts/track-context";
 import { useMiniMenu } from "@/hooks/use-mini-menu";
 import { useQueue } from "@/hooks/use-queue";
 import Link from "next/link";
 import { FaX } from "react-icons/fa6";
 import { LuClipboardCopy } from "react-icons/lu";
-import { RiPlayListAddLine } from "react-icons/ri";
 
 export function MiniMenuTrackInfo() {
   const { getTrack, currentQueue } = useQueue();
   const currentData = getTrack(currentQueue?.queueData?.currentPlaying ?? "");
   const { setShowMenu } = useMiniMenu();
+
   return (
-    <div className="p-4 pb-2.5 pt-4">
-      <div className="mb-4 flex justify-between ">
-        <Link
-          className="text-lg font-bold"
-          href={`/${currentQueue?.queueData?.type === "PLAYLIST" ? "playlist" : "artist"}/${currentQueue?.artistTypeData?.id ?? currentQueue?.playlistTypeData?.id}${currentQueue?.queueData?.type === "ARTIST" ? `?playlist=${currentQueue.queueData.currentPlaying}` : ""}`}
-        >
-          {currentQueue?.playlistTypeData?.title ??
-            currentQueue?.artistTypeData?.name}
-        </Link>
+    <div className="w-full p-4 pb-2.5 pt-4">
+      <div className="mb-4 flex w-full justify-between">
+        <PlaylistContext playlist={currentData.album}>
+          <Link
+            className="text-lg font-bold"
+            href={`/${currentQueue?.queueData?.type === "PLAYLIST" ? "playlist" : "artist"}/${currentQueue?.artistTypeData?.id ?? currentQueue?.playlistTypeData?.id}${currentQueue?.queueData?.type === "ARTIST" ? `?playlist=${currentQueue.queueData.currentPlaying}` : ""}`}
+          >
+            {currentQueue?.playlistTypeData?.title ??
+              currentQueue?.artistTypeData?.name}
+          </Link>
+        </PlaylistContext>
         <div className="flex items-center gap-4">
           <TrackMoreButton
             playlist={currentData.album}
@@ -34,26 +36,35 @@ export function MiniMenuTrackInfo() {
           </button>
         </div>
       </div>
-      <Link href={`/playlist/${currentData.album?.id}`} className="size-fit">
-        <AvatarData
-          src={currentData.track?.imgSrc}
-          containerClasses="rounded-lg w-full h-fit mb-4"
-        />
-      </Link>
+      <TrackContext playlist={currentData.album} track={currentData.track}>
+        <Link href={`/playlist/${currentData.album?.id}`} className="size-fit">
+          <AvatarData
+            src={currentData.track?.imgSrc}
+            containerClasses="rounded-lg w-full h-fit mb-4"
+          />
+        </Link>
+      </TrackContext>
       <div className="mb-4 flex justify-between">
         <div className="flex flex-col">
-          <Link
-            href={`/playlist/${currentData.album?.id}`}
-            className="text-2xl font-bold"
+          <TrackContext playlist={currentData.album} track={currentData.track}>
+            <Link
+              href={`/playlist/${currentData.album?.id}`}
+              className="text-2xl font-bold"
+            >
+              {currentData.track?.title}
+            </Link>
+          </TrackContext>
+          <AuthorContext
+            artist={currentData.author}
+            playlistId={currentData.album?.id ?? "playing-album"}
           >
-            {currentData.track?.title}
-          </Link>
-          <Link
-            href={`/artist/${currentData.author?.id}?playlist=${currentData.album?.id}`}
-            className="text-md text-muted-foreground"
-          >
-            {currentData.author?.name}
-          </Link>
+            <Link
+              href={`/artist/${currentData.author?.id}?playlist=${currentData.album?.id}`}
+              className="text-md text-muted-foreground"
+            >
+              {currentData.author?.name}
+            </Link>
+          </AuthorContext>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -65,14 +76,6 @@ export function MiniMenuTrackInfo() {
           >
             <LuClipboardCopy />
           </button>
-          <AddToPlaylist
-            trigger={
-              <button>
-                <RiPlayListAddLine />
-              </button>
-            }
-            track={currentData.track ?? null}
-          />
         </div>
       </div>
     </div>

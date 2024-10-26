@@ -17,6 +17,7 @@ type TracksProps = {
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
   showTrackImage?: boolean;
+  queueTypeId?: string;
 };
 
 export function Tracks({
@@ -28,6 +29,7 @@ export function Tracks({
   setSelectedTracks,
   selectedTracks,
   showTrackImage = false,
+  queueTypeId,
 }: TracksProps) {
   const { data: user } = useSession();
   const { data, status } = useTracks();
@@ -49,6 +51,7 @@ export function Tracks({
         />
       ) : (
         <NonSortTable
+          queueTypeId={queueTypeId}
           setSelectedTracks={setSelectedTracks}
           selectedTracks={selectedTracks}
           showTrackImage={showTrackImage}

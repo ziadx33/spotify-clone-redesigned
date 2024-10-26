@@ -2,18 +2,37 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useDebounceState } from "@/hooks/use-debounce-state";
 import { useQueue } from "@/hooks/use-queue";
+import { useQueueController } from "@/hooks/use-queue-controller";
+import { editQueueController } from "@/state/slices/queue-controller";
+import { type AppDispatch } from "@/state/store";
+import { wait } from "@/utils/wait";
 import { PiSpeakerLowBold } from "react-icons/pi";
+import { useDispatch } from "react-redux";
 
 export function QueueVolumeSlider({ defaultValue }: { defaultValue: number }) {
   const {
     editQueueListFn,
     data: { data },
   } = useQueue();
+  const { play, data: queueControllerData } = useQueueController();
+  const dispatch = useDispatch<AppDispatch>();
   const [value, setValue] = useDebounceState([defaultValue ?? 0], ([value]) => {
     void editQueueListFn({
       queueListData: data!.queueList,
       editData: { volumeLevel: value },
     }).runBoth();
+    const isPlaying = queueControllerData.isPlaying;
+    dispatch(editQueueController({ volume: value, isPlaying: false }));
+    if (!isPlaying) return;
+    void wait(100).then(
+      () =>
+        void play(
+          true,
+          queueControllerData.currentTrackId,
+          queueControllerData.progress,
+          value,
+        ),
+    );
   });
   const resetHandler = () => {
     setValue([0]);

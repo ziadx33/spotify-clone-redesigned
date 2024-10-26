@@ -25,6 +25,8 @@ import {
   useState,
   type ChangeEvent,
   type RefObject,
+  type Dispatch,
+  type SetStateAction,
 } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -44,6 +46,7 @@ type EditFormProps = {
   editImageOverlay: ReactNode;
   data?: Playlist | null;
   closeDialogRef?: RefObject<HTMLButtonElement>;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
 };
 
 const editSchema = z.object({
@@ -59,6 +62,7 @@ export function EditForm({
   editImageOverlay,
   data,
   closeDialogRef,
+  setOpen,
 }: EditFormProps) {
   const form = useForm<z.infer<typeof editSchema>>({
     resolver: zodResolver(editSchema),
@@ -87,6 +91,7 @@ export function EditForm({
     dispatch(editPlaylist({ id: data?.id ?? "", data: formData }));
     revalidate(`/playlist/${data?.id}`);
     closeDialogRef?.current?.click();
+    setOpen?.(false);
     setUploadedImage(null);
     setDisabled(false);
   };

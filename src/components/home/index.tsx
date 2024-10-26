@@ -22,8 +22,6 @@ export function Home() {
     enabled: !!user?.user?.id,
   });
 
-  console.log("broo", data);
-
   const content = useMemo(() => {
     if (isLoading || !user?.user?.id) return <Loading />;
     if (isError) throw error.message;

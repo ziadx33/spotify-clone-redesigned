@@ -22,6 +22,7 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
   return (
     <div className="flex h-fit w-fit items-center">
       <QueuePlayButton
+        artist={artist}
         data={data}
         size={"icon"}
         className="h-12 w-12 rounded-full"

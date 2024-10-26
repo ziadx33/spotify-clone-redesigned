@@ -22,9 +22,7 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
   const { data, isLoading } = useQuery({
     queryKey: [`best-of-artists-section`],
     queryFn: async () => {
-      console.log("lil");
       const tracksData = await getBestOfArtists(user?.user?.id ?? "");
-      console.log("nestad", tracksData);
       return tracksData;
     },
   });
@@ -88,6 +86,7 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
         >
           <DialogTrigger>
             <SectionItem
+              disableContext
               artistData={datum}
               type="ARTIST"
               title={datum.name}
@@ -113,7 +112,11 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
               description={`This is ${datum.name}`}
             />
           </DialogTrigger>
-          <PlaylistDialog isActive={activeDialog === index} {...dialogData} />
+          <PlaylistDialog
+            queueTypeId={`best-of-artists-${index}`}
+            isActive={activeDialog === index}
+            {...dialogData}
+          />
         </Dialog>
       );
     });

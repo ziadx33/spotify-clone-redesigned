@@ -10,12 +10,14 @@ import {
   type TAB_TYPE,
   type Track,
 } from "@prisma/client";
-import { Navigate } from "../navigate";
 import { type ReactNode } from "react";
 import { type useIntersectionObserver } from "usehooks-ts";
 import { type useNavigate } from "@/hooks/use-navigate";
 import { AvatarData } from "../avatar-data";
 import { QueuePlayButton } from "../queue-play-button";
+import { TrackContext } from "../contexts/track-context";
+import { AuthorContext } from "../contexts/author-context";
+import { PlaylistContext } from "../contexts/playlist-context";
 
 export type NavigateClickParams<T extends string = ""> = (
   data: Omit<Parameters<typeof useNavigate>[0] & { image: string }, T>,
@@ -37,6 +39,8 @@ type SectionItem = {
   playlistData?: Playlist;
   artistData?: User;
   trackData?: Track;
+  noDefPlaylist?: boolean;
+  disableContext?: boolean;
 };
 
 export function SectionItem({
@@ -55,6 +59,8 @@ export function SectionItem({
   playlistData,
   artistData,
   trackData,
+  noDefPlaylist = true,
+  disableContext = false,
 }: SectionItem) {
   const content = (
     <>
@@ -72,13 +78,21 @@ export function SectionItem({
         {showPlayButton && (
           <QueuePlayButton
             isDiv
+            noDefPlaylist={noDefPlaylist}
             playlist={playlistData}
             artist={artistData}
             track={trackData}
-            className={cn(
-              buttonVariants({ variant: "default", size: "icon" }),
-              "absolute -bottom-20 right-2 z-20 h-16 w-16 rounded-full opacity-0 transition-all duration-200 hover:bg-primary group-hover:bottom-2 group-hover:opacity-100",
-            )}
+            className={(isPlaying, queuePlaying) =>
+              cn(
+                buttonVariants({ variant: "default", size: "icon" }),
+                cn(
+                  "absolute -bottom-20 right-2 z-20 h-16 w-16 cursor-pointer rounded-full opacity-0 transition-all duration-200 hover:bg-primary",
+                  isPlaying && queuePlaying
+                    ? "bottom-2 opacity-100"
+                    : "group-hover:bottom-2 group-hover:opacity-100",
+                ),
+              )
+            }
           >
             {(isPlaying) =>
               !isPlaying ? <FaPlay size={20} /> : <FaPause size={20} />
@@ -99,27 +113,13 @@ export function SectionItem({
     "flex w-[236.062px] flex-col p-[12px] text-start",
     description ? "h-[295.078px]" : "h-fit",
   );
-  return (
+  const cardContent = (
     <Card
       ref={ref}
-      className="group border-none bg-transparent p-0 transition-colors hover:bg-muted"
+      className="group cursor-pointer border-none bg-transparent p-0 transition-colors hover:bg-muted"
     >
       {link ? (
-        <CardContent className="p-0">
-          <Navigate
-            onClick={onClick}
-            image={image}
-            data={{
-              href: link,
-              title: title ?? "unknown",
-              type: type === "TRACK" ? "PLAYLIST" : type,
-            }}
-            className={containerClasses}
-            href={link}
-          >
-            {content}
-          </Navigate>
-        </CardContent>
+        <CardContent className={containerClasses}>{content}</CardContent>
       ) : onClick ? (
         <button className={containerClasses}>{content}</button>
       ) : (
@@ -127,4 +127,18 @@ export function SectionItem({
       )}
     </Card>
   );
+  const children = !disableContext ? (
+    type === "TRACK" ? (
+      <TrackContext track={trackData}>{cardContent}</TrackContext>
+    ) : type === "ARTIST" ? (
+      <AuthorContext artist={artistData} playlistId="section-item">
+        {cardContent}
+      </AuthorContext>
+    ) : (
+      <PlaylistContext playlist={playlistData}>{cardContent}</PlaylistContext>
+    )
+  ) : (
+    cardContent
+  );
+  return children;
 }

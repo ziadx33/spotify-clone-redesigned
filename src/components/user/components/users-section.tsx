@@ -7,14 +7,15 @@ import { type User } from "@prisma/client";
 import { useState } from "react";
 
 type TopArtistsProps = {
-  artists: User[];
+  users: User[];
   user?: User;
+  title: string;
 };
 
-export function FollowedArtists({ artists, user }: TopArtistsProps) {
+export function UsersSection({ users, user, title }: TopArtistsProps) {
   const [showMoreButton, setShowMoreButton] = useState(false);
 
-  return artists.length > 0 ? (
+  return users.length > 0 ? (
     <div className="w-full flex-col">
       <div className="flex items-center justify-between">
         <Button
@@ -31,15 +32,15 @@ export function FollowedArtists({ artists, user }: TopArtistsProps) {
             <Navigate
               data={{
                 href: `/artist/${user?.id}/following`,
-                title: "Following" ?? "unknown",
+                title: title ?? "unknown",
                 type: "ARTIST",
               }}
               href={`/artist/${user?.id}/following`}
             >
-              Following
+              {title}
             </Navigate>
           ) : (
-            "Following"
+            title
           )}
         </Button>
         {showMoreButton && (
@@ -47,7 +48,7 @@ export function FollowedArtists({ artists, user }: TopArtistsProps) {
             <Navigate
               data={{
                 href: `/artist/${user?.id}/following`,
-                title: "Following" ?? "unknown",
+                title: title ?? "unknown",
                 type: "ARTIST",
               }}
               href={`/artist/${user?.id}/following`}
@@ -60,7 +61,7 @@ export function FollowedArtists({ artists, user }: TopArtistsProps) {
       <div className="flex gap-2 overflow-x-hidden">
         <RenderCards
           setShowMoreButton={setShowMoreButton}
-          cards={artists.map((user: User) => {
+          cards={users.map((user: User) => {
             return (
               <SectionItem
                 imageClasses="rounded-full"
@@ -71,7 +72,7 @@ export function FollowedArtists({ artists, user }: TopArtistsProps) {
                 description="artist"
                 artistData={user}
                 type="ARTIST"
-                link={`/artist/${user.id}?playlist=following`}
+                link={`/artist/${user.id}?playlist=${title}`}
               />
             );
           })}

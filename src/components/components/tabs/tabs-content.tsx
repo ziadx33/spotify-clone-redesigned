@@ -6,23 +6,11 @@ import { TiHome } from "react-icons/ti";
 import { Tab } from "./tab";
 import { useTabs } from "@/hooks/use-tabs";
 import { SearchTab } from "./search-tab";
-import { useEffect } from "react";
 import { TabSkeleton } from "@/components/artist/components/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export function TabsContent() {
   const { data: tabs, status, error } = useTabs();
-  useEffect(() => {
-    if (status !== "success") return;
-    const currentTabHref = tabs?.find((tab) => tab.current)?.href;
-    if (
-      `${location.pathname}${location.search}` !== currentTabHref &&
-      currentTabHref
-    ) {
-      location.replace(`${location.origin}${currentTabHref}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
   if (status === "error") throw { error };
   return (
     <ScrollArea className="ml-2 w-full whitespace-nowrap">

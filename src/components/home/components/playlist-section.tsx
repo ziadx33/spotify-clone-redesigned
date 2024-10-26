@@ -5,7 +5,6 @@ import { RenderSectionItems } from "@/components/render-section-items";
 import { EditSectionButton } from "./edit-section-button";
 import { format } from "date-fns";
 import { type PlaylistSectionType } from "./prefrences-provider";
-import { PopularPlaylistsSection } from "./popular-playlists-section";
 
 type PlaylistsSectionProps = {
   playlist: PlaylistSectionType;
@@ -18,7 +17,7 @@ export function PlaylistSection({
   userId,
   sectionId,
 }: PlaylistsSectionProps) {
-  return (
+  return content.length > 0 ? (
     <RenderSectionItems
       buttons={[
         <EditSectionButton
@@ -42,7 +41,6 @@ export function PlaylistSection({
         );
       })}
       title={playlist.title}
-      fallbackComponent={<PopularPlaylistsSection />}
     />
-  );
+  ) : null;
 }

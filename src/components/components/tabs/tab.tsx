@@ -31,20 +31,14 @@ export function Tab({
   currentContent,
 }: TabProps) {
   const { isCurrentTab, currentTabRef } = useIsCurrentTab(href);
-  const { removeTab, changeCurrentTab, getTabByHref, data: tabs } = useTabs();
+  const { removeTab } = useTabs();
   const router = useRouter();
 
   const removeHandler = async (id: string) => {
     await removeTab(id);
   };
   const changePageHandler = async () => {
-    const tab = getTabByHref(href);
     router.push(href);
-    if (!tab) return;
-    await changeCurrentTab({
-      id: tab?.id ?? "",
-      tabIds: tabs?.map((tab) => tab.id) ?? [],
-    });
   };
 
   const titleSpan = (

@@ -7,13 +7,17 @@ import { useDispatch } from "react-redux";
 
 type PlaylistDialogProps = {
   isActive: boolean;
+  queueTypeId: string;
 } & NonNullable<TracksSliceType["data"]>;
 
-export function PlaylistDialog({ isActive, ...data }: PlaylistDialogProps) {
+export function PlaylistDialog({
+  isActive,
+  queueTypeId,
+  ...data
+}: PlaylistDialogProps) {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (!isActive) return;
-    console.log("ye7esh sad", isActive);
     dispatch(
       setTracks({
         status: "success",
@@ -25,7 +29,7 @@ export function PlaylistDialog({ isActive, ...data }: PlaylistDialogProps) {
   }, [isActive]);
   return (
     <DialogContent className="max-h-[80%] max-w-[1000px] overflow-auto">
-      <MusicPlayer showTrackImage />
+      <MusicPlayer queueTypeId={queueTypeId} showTrackImage />
     </DialogContent>
   );
 }

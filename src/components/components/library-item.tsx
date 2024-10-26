@@ -3,11 +3,13 @@ import { cn } from "@/lib/utils";
 import { type User, type Playlist } from "@prisma/client";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Navigate } from "../navigate";
 import { enumParser } from "@/utils/enum-parser";
-import { PiQueueBold } from "react-icons/pi";
-import { useQueue } from "@/hooks/use-queue";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
+import Link from "next/link";
+import { useState, type DragEvent } from "react";
+import { useTrackDropdownItems } from "@/hooks/use-track-dropdown-items";
+import { useTracks } from "@/hooks/use-tracks";
+import { toast } from "sonner";
 
 type PlaylistProps = {
   userData?: User;
@@ -24,55 +26,58 @@ export function LibraryItem({
 }: PlaylistProps) {
   const pathname = usePathname();
   const isArtist = type === "ARTIST";
-  const {
-    addPlaylistToQueue,
-    data: { data: queueData },
-  } = useQueue();
-  const addToQueueObj = {
-    icon: <PiQueueBold />,
-    title: "Add to queue",
-    onClick: () =>
-      void addPlaylistToQueue(
-        isArtist
-          ? {
-              data,
-              type,
-              queueList: queueData?.queueList,
-            }
-          : {
-              data,
-              type,
-              queueList: queueData?.queueList,
-            },
-      ),
+  const isDroppable = !isArtist && data.creatorId === userData?.id;
+  const getTrackItems = useTrackDropdownItems({ isFn: true });
+  const { data: tracks } = useTracks();
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+  const handleDrop = (e: DragEvent<HTMLButtonElement>) => {
+    setIsDraggingOver(false);
+    if (isArtist) return;
+    const trackId = e.dataTransfer.getData("trackId");
+    if (trackId) {
+      const track = tracks?.tracks?.find((track) => track.id === trackId);
+      if (!track) return toast.error("something went wrong");
+      const { data: items } = getTrackItems(track);
+      const event = items?.events.addToPlaylistHandler;
+      void event?.(data, track);
+    }
   };
+
+  const handleDragEnter = () => {
+    setIsDraggingOver(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLButtonElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDraggingOver(false);
+    }
+  };
+
   return (
     <Button
       variant="ghost"
       className={cn(
-        "h-[4.3rem] gap-3 px-2 ",
+        "h-[4.3rem] w-full gap-3 border-2 border-transparent px-2 !no-underline",
         pathname.startsWith(
           isArtist ? `/artist/${data.id}` : `/playlist/${data.id}`,
         )
           ? "bg-muted"
           : "",
+        isDraggingOver ? "border-2 border-primary" : "",
       )}
       asChild
+      onDrop={isDroppable ? handleDrop : undefined}
+      onDragOver={(e) => e.preventDefault()}
+      onDragEnter={isDroppable ? handleDragEnter : undefined}
+      onDragLeave={isDroppable ? handleDragLeave : undefined}
     >
-      <Navigate
-        data={{
-          href: isArtist
-            ? `/artist/${data.id}?playlist=library`
-            : `/playlist/${data.id}`,
-          title: isArtist ? data.name : data.title ?? "unknown",
-          type: "ARTIST",
-        }}
+      <Link
         href={
-          isArtist
-            ? `/artist/${data.id}?playlist=library`
-            : `/playlist/${data.id}`
+          type === "PLAYLIST"
+            ? `/playlist/${data.id}`
+            : `/artist/${data.id}?playlist=library`
         }
-        contextItems={[addToQueueObj]}
       >
         <div className="relative h-full w-[65px] overflow-hidden">
           <Image
@@ -97,7 +102,7 @@ export function LibraryItem({
           </h4>
           {isActive && <HiMiniSpeakerWave size={25} className="text-primary" />}
         </div>
-      </Navigate>
+      </Link>
     </Button>
   );
 }

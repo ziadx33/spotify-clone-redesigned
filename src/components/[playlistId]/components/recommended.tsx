@@ -39,7 +39,6 @@ export function Recommended({
         artistIds: artists?.map((artist) => artist.id) ?? [],
         trackIds: tracks?.map((track) => track.id) ?? [],
       });
-      console.log("matgeesh", data);
       return data;
     },
     enabled: !!tracks && !!artists,

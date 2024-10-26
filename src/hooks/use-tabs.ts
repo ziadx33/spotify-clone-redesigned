@@ -2,18 +2,11 @@
 
 import {
   addTabToUserTabs,
-  type ChangeCurrentTabPrams,
-  changeCurrentUserTab,
   removeTabFromUserTabs,
   updateTabFromUserTabs,
   type AddTabToUserTabsParams,
 } from "@/server/actions/tab";
-import {
-  addTab,
-  changeCurrentTab,
-  removeTab,
-  updateTab,
-} from "@/state/slices/tabs";
+import { addTab, removeTab, updateTab } from "@/state/slices/tabs";
 import { type AppDispatch, type RootState } from "@/state/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useSession } from "./use-session";
@@ -27,13 +20,7 @@ export function useTabs() {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSession();
   const router = useRouter();
-  const changeCurrentTabFn = async (
-    data: Omit<ChangeCurrentTabPrams, "userId">,
-  ) => {
-    const dataUserId = { ...data, userId: user.data?.user?.id ?? "" };
-    dispatch(changeCurrentTab(dataUserId));
-    void changeCurrentUserTab(dataUserId);
-  };
+
   const addTabFn = async (data: AddTabToUserTabsParams) => {
     router.push(data?.href ?? "");
     const id = crypto.randomUUID();
@@ -45,7 +32,6 @@ export function useTabs() {
         title: data?.title ?? "",
         type: data?.type ?? "PLAYLIST",
         userId: user.data?.user?.id ?? "",
-        current: true,
       }),
     );
     const updateData = await addTabToUserTabs({
@@ -53,20 +39,11 @@ export function useTabs() {
       ...data,
     });
     dispatch(updateTab({ updateData, id }));
-    void changeCurrentTabFn({
-      id: updateData.id ?? "",
-      tabIds: tabsData.data?.map((tab) => tab.id) ?? [],
-    });
   };
   const removeTabFn = async (id: string) => {
     dispatch(removeTab(id));
     void removeTabFromUserTabs(id);
     if (currentTab?.id === id) {
-      void changeCurrentTabFn({
-        id,
-        tabIds: tabsData.data?.map((tab) => tab.id) ?? [],
-        currentBoolean: false,
-      });
       router.push("/");
     }
   };
@@ -91,6 +68,5 @@ export function useTabs() {
     currentTab,
     updateTab: updateTabFn,
     getTabByHref,
-    changeCurrentTab: changeCurrentTabFn,
   };
 }

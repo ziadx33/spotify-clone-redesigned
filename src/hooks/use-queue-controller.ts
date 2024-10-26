@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAudios } from "./use-audios";
 import { editQueueById, getCurrentQueue } from "@/state/slices/queue-list";
 import { updateQueue } from "@/server/actions/queue";
+import { wait } from "@/utils/wait";
 
 export function useQueueController() {
   const data = useSelector((state: RootState) => state.queueController.data);
@@ -17,6 +18,7 @@ export function useQueueController() {
   const playAudio = async (
     startTime?: number,
     trackId = data.currentTrackId,
+    volume = data.volume,
   ) => {
     const audioItem = audios?.data.current?.find(
       (item) => item.track.id === trackId,
@@ -27,6 +29,7 @@ export function useQueueController() {
       if (audios?.currentTrackRef)
         audios.currentTrackRef.current = audioItem.audio;
       audioItem.audio.currentTime = startTime ?? data.progress ?? 0;
+      audioItem.audio.volume = volume / 100 ?? 1;
 
       try {
         await audioItem.audio.play();
@@ -49,6 +52,7 @@ export function useQueueController() {
     isPlaying = true,
     trackId = data.currentTrackId,
     startTime = data.progress,
+    volume = data.volume,
   ) => {
     dispatch(
       editQueueController({
@@ -57,22 +61,25 @@ export function useQueueController() {
         currentTrackId: trackId,
       }),
     );
-    await playAudio(startTime, trackId);
+    await playAudio(startTime, trackId, volume);
   };
 
   const toggle = async () => {
     await (data.isPlaying ? pause() : play());
   };
 
-  const skipToTime = async (time: number, trackId = data.currentTrackId) => {
+  const skipToTime = async (
+    time: number,
+    trackId = data.currentTrackId,
+    volume = data.volume,
+  ) => {
     if (data.isPlaying) {
       pauseAudio();
-      await playAudio(time, trackId);
+      await playAudio(time, trackId, volume);
     }
   };
 
   const editProgress = (value: number) => {
-    console.log(currentQueue, "atta3");
     if (currentQueue?.queueData) {
       const data = { currentPlayingProgress: value };
       dispatch(editQueueById({ data, id: currentQueue.queueData.id }));
@@ -91,11 +98,11 @@ export function useQueueController() {
         isPlaying: false,
       }),
     );
-    await new Promise((res) =>
-      setTimeout(() => {
-        res(null);
-      }, 300),
-    );
+
+    if (audios?.isLoading) return;
+
+    await wait(300);
+
     await play(true, trackId, 0);
     editProgress(0);
   };

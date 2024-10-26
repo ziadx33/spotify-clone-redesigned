@@ -8,6 +8,7 @@ import { QueueControls } from "./queue-controls";
 import { editTrackById } from "@/server/actions/track";
 import { useQueue } from "@/hooks/use-queue";
 import { useQueueController } from "@/hooks/use-queue-controller";
+import { useUpdateUser } from "@/hooks/use-update-user";
 
 type QueueSliderProps = {
   duration?: number;
@@ -32,6 +33,7 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
     data: { data },
   } = useQueue();
   const currentRepeat = useRef(data?.queueList.repeatQueue);
+  const { update, user } = useUpdateUser();
 
   const isTrackEdited = useRef(false);
 
@@ -40,14 +42,26 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
       return;
 
     const request = async () => {
-      await editTrackById({
-        id: currentQueue.queueData!.currentPlaying,
-        data: { plays: { decrement: 1 } },
-      });
+      const currentPlaying = currentQueue.queueData?.currentPlaying;
+      if (currentPlaying) {
+        await editTrackById({
+          id: currentPlaying,
+          data: { plays: { decrement: 1 } },
+        });
+        await update({
+          data: {
+            tracksHistory: [
+              ...(user?.user?.tracksHistory ?? []),
+              currentPlaying,
+            ],
+          },
+        });
+      }
     };
 
     void request();
     isTrackEdited.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQueue]);
 
   useEffect(() => {
@@ -62,12 +76,16 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
     if (isCurNotEqualQueueList) {
       currentRepeat.current = data?.queueList.repeatQueue;
     }
-    if (!isPlaying || isCurNotEqualQueueList) {
+    const clear = () => {
       if (currentInterval.current) {
         clearInterval(currentInterval.current);
         currentInterval.current = null;
         return;
       }
+    };
+    if (!isPlaying) return clear();
+    if (isCurNotEqualQueueList) {
+      clear();
     }
 
     if (isPlaying)
@@ -124,13 +142,18 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
     }
   };
 
-  useEffect(() => {
+  const editProgressFn = (editPromise = true) => {
     if (!isPlayingStarted.current) return;
     isPlayingStarted.current = true;
-    if (!isPlaying) {
+    if (progress === value) return;
+    if (!isPlaying && editPromise) {
       editProgress(value);
     }
     dispatch(editQueueController({ progress: value }));
+  };
+
+  useEffect(() => {
+    editProgressFn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying]);
 
@@ -138,6 +161,11 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
     setValue(progress);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress]);
+
+  useEffect(() => {
+    if (isPlaying) return;
+    editProgressFn(false);
+  }, [value]);
 
   return (
     <>

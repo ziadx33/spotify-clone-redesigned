@@ -10,7 +10,7 @@ import { useMemo } from "react";
 
 type ClientProps = {
   artistId: string;
-  playlistId?: string;
+  playlistId?: string | null;
 };
 
 export function Client({ artistId, playlistId }: ClientProps) {
@@ -25,18 +25,20 @@ export function Client({ artistId, playlistId }: ClientProps) {
   });
 
   const content = useMemo(() => {
-    if (!playlistId) {
+    if (!playlistId && data?.user?.type === "ARTIST") {
       router.push("/");
       return null;
     }
-    if (isLoading || !data) return <Loading />;
+    if (isLoading || !data?.user) return <Loading />;
     return data?.user ? (
-      data.user.type === "ARTIST" && !data.isUser ? (
+      data.user.type === "ARTIST" && !data.isUser && playlistId ? (
         <Artist playlistId={playlistId} artist={data.user} />
       ) : (
         <User isUser={data?.isUser ?? false} user={data.user} />
       )
-    ) : null;
+    ) : (
+      router.push("/")
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isLoading]);
 

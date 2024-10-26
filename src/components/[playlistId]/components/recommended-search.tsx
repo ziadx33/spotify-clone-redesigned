@@ -26,7 +26,10 @@ export function SearchTrack({
   const { isLoading, data, refetch } = useQuery({
     queryKey: [],
     queryFn: async () => {
-      const data = await getTracksBySearchQuery({ query: debounce });
+      const data = await getTracksBySearchQuery({
+        query: debounce,
+        disablePlaylists: true,
+      });
       return data;
     },
   });

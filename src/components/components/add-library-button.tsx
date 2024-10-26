@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { useAddToPlaylist } from "@/hooks/use-add-to-playlist";
 import { type Playlist } from "@prisma/client";
-import { PlusCircle } from "lucide-react";
 import { FaCircleCheck } from "react-icons/fa6";
+import { AiFillPlusCircle } from "react-icons/ai";
 
 type AddPlaylistButtonProps = {
   playlist?: Playlist | null;
@@ -35,7 +35,7 @@ export function AddLibraryButton({
       onClick={toggle}
     >
       {!isAddedToLibrary ? (
-        <PlusCircle size={size - divideBy} />
+        <AiFillPlusCircle size={size - divideBy} />
       ) : (
         <FaCircleCheck size={size - divideBy} />
       )}

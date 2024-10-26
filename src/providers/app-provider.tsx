@@ -20,6 +20,7 @@ export function AppProvider({ children, playlists, following }: AppProvider) {
   const dispatch = useDispatch<AppDispatch>();
   const done = useRef(false);
   useEffect(() => {
+    if (!playlists) return;
     if (done.current) return;
     dispatch(setPlaylists(playlists));
     dispatch(setFollowing({ data: following, error: null, status: "success" }));

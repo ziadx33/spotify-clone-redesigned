@@ -35,6 +35,12 @@ type PrefrencesProviderProps = {
   userId: string;
 };
 
+export const DEFAULT_SECTIONS = [
+  "made for you",
+  "your favorite artists",
+  "best of artists",
+];
+
 export function PrefrencesProvider({ userId, data }: PrefrencesProviderProps) {
   const { data: prefrences, status } = usePrefrences();
 

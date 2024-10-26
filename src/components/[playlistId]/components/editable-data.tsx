@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {} from "@/components/ui/form";
+import { Dialog, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { type Track, type Playlist, type User } from "@prisma/client";
 import Image from "next/image";
 import { memo, useRef, useMemo } from "react";
@@ -14,13 +8,12 @@ import { FaPen } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa6";
 import { getTime } from "@/utils/get-time";
 import { useSession } from "@/hooks/use-session";
-import { EditForm } from "./edit-form";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Navigate } from "@/components/navigate";
 import { Skeleton } from "@/components/ui/skeleton";
 import { clampText } from "@/utils/clamp-text";
 import { AvatarData } from "@/components/avatar-data";
+import { EditPlaylistDialogContent } from "./edit-playlist-dialog-content";
+import { PlaylistContext } from "@/components/contexts/playlist-context";
+import { AuthorContext } from "@/components/contexts/author-context";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -41,8 +34,6 @@ function EditableDataComp({
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const closeDialog = closeButtonRef.current?.click;
-
   const editImageOverlay = (
     <div className="absolute left-0 top-0 hidden size-full flex-col items-center justify-center gap-4 bg-black bg-opacity-30 group-hover:flex">
       <FaPen size={50} />
@@ -84,17 +75,19 @@ function EditableDataComp({
             <Skeleton className="mb-2 h-2.5 w-16" />
           )}
 
-          <DialogTrigger
-            disabled={!isEditable || isLoading}
-            title={data?.title}
-            className="mb-4 line-clamp-1 w-full overflow-visible text-start text-8xl font-bold"
-          >
-            {!isLoading ? (
-              clampText(data.title, 23)
-            ) : (
-              <Skeleton className="mb-4 h-24 w-96" />
-            )}
-          </DialogTrigger>
+          <PlaylistContext playlist={data}>
+            <DialogTrigger
+              disabled={!isEditable || isLoading}
+              title={data?.title}
+              className="mb-4 line-clamp-1 w-full overflow-visible text-start text-8xl font-bold"
+            >
+              {!isLoading ? (
+                clampText(data.title, 23)
+              ) : (
+                <Skeleton className="mb-4 h-24 w-96" />
+              )}
+            </DialogTrigger>
+          </PlaylistContext>
           {data?.description &&
             (!isLoading ? (
               <p className="mb-2 text-sm text-muted-foreground">
@@ -119,16 +112,13 @@ function EditableDataComp({
               ))}
             {!isLoading ? (
               <span className="flex items-center gap-1.5">
-                <Navigate
-                  data={{
-                    href: `/artist/${creatorData?.id}?playlist=${data?.id}`,
-                    title: creatorData?.name ?? "unknown",
-                    type: "ARTIST",
-                  }}
-                  href={`/artist/${creatorData?.id}?playlist=${data?.id}`}
+                <AuthorContext
+                  asChild={false}
+                  artist={creatorData}
+                  playlistId={data.id}
                 >
                   {creatorData?.name}
-                </Navigate>
+                </AuthorContext>
                 {(tracks?.length ?? 0) > 0 && (
                   <>
                     <FaCircle size="5" /> {tracks?.length} tracks{" "}
@@ -142,32 +132,7 @@ function EditableDataComp({
           </div>
         </div>
       </div>
-      <DialogContent
-        className={cn(
-          "flex flex-col items-start",
-          isEditable ? "h-fit w-[68rem]" : "size-fit p-10",
-        )}
-      >
-        {isEditable ? (
-          <EditForm
-            closeDialogRef={closeButtonRef}
-            data={data}
-            editImageOverlay={editImageOverlay}
-          />
-        ) : (
-          <>
-            <Image
-              src={data?.imageSrc ?? ""}
-              width={600}
-              height={600}
-              alt={data?.description ?? ""}
-            />
-            <Button className="w-full" onClick={closeDialog}>
-              close
-            </Button>
-          </>
-        )}
-      </DialogContent>
+      <EditPlaylistDialogContent data={data} closeButtonRef={closeButtonRef} />
       <DialogClose ref={closeButtonRef} />
     </Dialog>
   );

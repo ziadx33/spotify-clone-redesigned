@@ -3,6 +3,7 @@ import { Controls } from "./components/controls";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { TabsSection } from "./components/tabs";
+import { AuthorContext } from "../contexts/author-context";
 
 type ArtistProps = {
   artist: User;
@@ -24,18 +25,22 @@ export function Artist({ artist, playlistId }: ArtistProps) {
         )}
       >
         <div className="flex h-full w-full items-end justify-between">
-          <div className={!artist.coverImage ? "flex items-center gap-3" : ""}>
-            {!artist.coverImage && (
-              <Image
-                src={artist.image ?? ""}
-                width={200}
-                height={200}
-                alt={artist.name ?? ""}
-                className="size-[200px] rounded-full"
-              />
-            )}
-            <b className="text-8xl">{artist.name}</b>
-          </div>
+          <AuthorContext artist={artist} playlistId="artist-page">
+            <div
+              className={!artist.coverImage ? "flex items-center gap-3" : ""}
+            >
+              {!artist.coverImage && (
+                <Image
+                  src={artist.image ?? ""}
+                  width={200}
+                  height={200}
+                  alt={artist.name ?? ""}
+                  className="size-[200px] rounded-full"
+                />
+              )}
+              <b className="text-8xl">{artist.name}</b>
+            </div>
+          </AuthorContext>
           <Controls playlistId={playlistId} artist={artist} />
         </div>
       </div>

@@ -3,7 +3,6 @@
 import { type TabsSliceType } from "@/state/slices/tabs";
 import { db } from "../db";
 import { type Tab } from "@prisma/client";
-import { handleRequests } from "@/utils/handle-requests";
 
 export const getTabs = async ({
   userId,
@@ -87,43 +86,4 @@ export type ChangeCurrentTabPrams = {
   userId: string;
   tabIds: string[];
   currentBoolean?: boolean;
-};
-
-export const changeCurrentUserTab = async ({
-  id,
-  userId,
-  tabIds,
-  currentBoolean = true,
-}: ChangeCurrentTabPrams) => {
-  try {
-    const promises = [
-      db.tab.update({
-        where: {
-          id,
-        },
-        data: {
-          current: currentBoolean,
-        },
-      }),
-      db.tab.updateMany({
-        where: {
-          NOT: {
-            id,
-          },
-          id: {
-            in: tabIds,
-          },
-          userId,
-        },
-        data: {
-          current: false,
-        },
-      }),
-    ] as const;
-    const [updatedCurrentTab, updatedCurrentTabs] =
-      await handleRequests(promises);
-    return { updatedCurrentTab, updatedCurrentTabs };
-  } catch (error) {
-    throw { error };
-  }
 };

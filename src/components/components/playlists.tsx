@@ -6,44 +6,63 @@ import { LibraryItem } from "./library-item";
 import { useFollowing } from "@/hooks/use-following";
 import { LibraryItemSkeleton } from "../artist/components/skeleton";
 import { useQueue } from "@/hooks/use-queue";
+import { AuthorContext } from "../contexts/author-context";
+import { PlaylistContext } from "../contexts/playlist-context";
 
 export function Playlists() {
-  const { status, data: playlists, error } = usePlaylists();
-  const { status: stat, data: following, error: err } = useFollowing();
+  const {
+    data: { status: playlistsStatus, data: playlists, error },
+  } = usePlaylists();
+  const {
+    status: followingStatus,
+    data: following,
+    error: err,
+  } = useFollowing();
   const { data } = useSession();
   const { currentQueue } = useQueue();
   if ([error, err].includes("error")) return <h1>{error}</h1>;
   return (
     <div className="flex flex-col gap-1">
-      {![status, stat].includes("loading") ? (
+      {![playlistsStatus, followingStatus].includes("loading") ? (
         <>
           {playlists?.map((playlist) => (
-            <LibraryItem
-              isActive={
-                !currentQueue?.artistTypeData
-                  ? currentQueue?.playlistTypeData?.id === playlist.id
-                  : false
-              }
+            <PlaylistContext
+              playlist={playlist}
+              asChild={false}
               key={playlist.id}
-              type="PLAYLIST"
-              userData={data?.user}
-              data={playlist}
-            />
+            >
+              <LibraryItem
+                isActive={
+                  !currentQueue?.artistTypeData
+                    ? currentQueue?.playlistTypeData?.id === playlist.id
+                    : false
+                }
+                type="PLAYLIST"
+                userData={data?.user}
+                data={playlist}
+              />
+            </PlaylistContext>
           ))}
           {following?.map((user) => {
             return (
-              <LibraryItem
-                isActive={
-                  !currentQueue?.playlistTypeData
-                    ? currentQueue?.playlistTypeData?.id === user.id
-                    : false
-                }
+              <AuthorContext
+                asChild={false}
                 key={user.id}
-                type="ARTIST"
-                userData={data?.user}
-                data={user}
-                imageClassNames="rounded-full"
-              />
+                artist={user}
+                playlistId="library"
+              >
+                <LibraryItem
+                  isActive={
+                    !currentQueue?.playlistTypeData
+                      ? currentQueue?.playlistTypeData?.id === user.id
+                      : false
+                  }
+                  type="ARTIST"
+                  userData={data?.user}
+                  data={user}
+                  imageClassNames="rounded-full"
+                />
+              </AuthorContext>
             );
           })}
         </>
