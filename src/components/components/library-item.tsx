@@ -35,6 +35,7 @@ export function LibraryItem({
     setIsDraggingOver(false);
     if (isArtist) return;
     const trackId = e.dataTransfer.getData("trackId");
+    console.log("shurup", trackId);
     if (trackId) {
       const track = tracks?.tracks?.find((track) => track.id === trackId);
       if (!track) return toast.error("something went wrong");

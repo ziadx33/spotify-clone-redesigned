@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, memo, useRef } from "react";
+import { useState, memo } from "react";
 import { type TrackProps } from "./types";
 import { PlaysRow } from "./plays-row";
 import { SelectCheckbox } from "./components/select-checkbox";
@@ -28,7 +28,6 @@ function Comp(props: TrackProps) {
   } = props;
 
   const [showButtons, setShowButtons] = useState(false);
-  const badgeRef = useRef<HTMLDivElement>(null);
 
   return (
     <TrackContainer
@@ -39,7 +38,6 @@ function Comp(props: TrackProps) {
       hidePlayButton={hidePlayButton}
       intersectLastElementRef={intersectLastElementRef}
       playlist={!skeleton ? props.playlist : undefined}
-      badgeRef={badgeRef}
     >
       <AuthorsContainer
         authors={!skeleton ? props.authors : undefined}

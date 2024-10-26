@@ -6,7 +6,6 @@ import {
   type Dispatch,
   type SetStateAction,
   type DragEvent,
-  type MutableRefObject,
 } from "react";
 import { type Props } from "../types";
 import { TrackContext } from "@/components/contexts/track-context";
@@ -20,7 +19,6 @@ type TrackContainerProps = {
   selected?: boolean;
   children: ReactNode[];
   playlist?: Playlist;
-  badgeRef: MutableRefObject<HTMLDivElement | null>;
 };
 
 export function TrackContainer({
@@ -32,16 +30,13 @@ export function TrackContainer({
   selected,
   children,
   playlist,
-  badgeRef,
 }: TrackContainerProps) {
   const hoverTrackHandler = (value: boolean) => {
     setShowButtons(value);
   };
 
   const dragStartHandle = (e: DragEvent<HTMLTableRowElement>) => {
-    if (badgeRef.current) {
-      e.dataTransfer.setData("trackId", track?.id ?? "");
-    }
+    e.dataTransfer.setData("trackId", track?.id ?? "");
   };
 
   return (
