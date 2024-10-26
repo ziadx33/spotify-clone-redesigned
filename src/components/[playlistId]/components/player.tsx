@@ -47,7 +47,7 @@ type PlayerProps = {
   setFilters?: Dispatch<SetStateAction<TrackFilters>>;
   handleFilterChange?: (name: keyof TrackFilters) => void;
   setTrackQuery?: Dispatch<SetStateAction<string | null>>;
-  playlist: Playlist;
+  playlist?: Playlist | null;
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
   queueTypeId?: string;

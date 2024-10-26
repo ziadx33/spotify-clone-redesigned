@@ -175,14 +175,14 @@ type GetTrackSliceParams = {
 export async function getQueueTracks({ queues, data }: GetTrackSliceParams) {
   const queuePlaylistTypeData = await getPlaylists({
     playlistIds: queues
-      ?.filter((queue) => queue.type === "PLAYLIST")
-      .map((queue) => queue.typeId),
+      ?.filter((queue) => queue.type === "PLAYLIST" && queue.typeId !== null)
+      .map((queue) => queue.typeId!),
   });
-  const queueArtistTypeData = await getUserByIds(
-    queues
-      ?.filter((queue) => queue.type === "ARTIST")
-      .map((queue) => queue.typeId) ?? [],
-  );
+  const userIds = queues
+    ?.filter((queue) => queue.type === "ARTIST" && queue.typeId !== null)
+    .map((queue) => queue.typeId!);
+
+  const queueArtistTypeData = await getUserByIds(userIds ?? []);
   return queues?.map((queue) => {
     const tracks =
       data?.tracks?.filter((track) => {

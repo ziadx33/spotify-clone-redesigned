@@ -30,14 +30,11 @@ export function Client({ artistId, playlistId }: ClientProps) {
       return null;
     }
     if (isLoading || !data?.user) return <Loading />;
-    return data?.user ? (
-      data.user.type === "ARTIST" && !data.isUser && playlistId ? (
-        <Artist playlistId={playlistId} artist={data.user} />
-      ) : (
-        <User isUser={data?.isUser ?? false} user={data.user} />
-      )
+    if (!data.user) router.push("/");
+    return data.user.type === "ARTIST" && !data.isUser && playlistId ? (
+      <Artist playlistId={playlistId} artist={data.user} />
     ) : (
-      router.push("/")
+      <User isUser={data?.isUser ?? false} user={data.user} />
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isLoading]);

@@ -7,7 +7,7 @@ import { Tracks } from "../../components/tracks";
 import { handleTrackFilterChange } from "@/utils/track";
 
 type MusicPlayerProps = {
-  playlist: Playlist;
+  playlist?: Playlist | null;
 };
 
 function Comp({ playlist }: MusicPlayerProps) {

@@ -4,7 +4,7 @@ import { usePlaylistDropdownItems } from "@/hooks/use-playlist-dropdown-items";
 import { DropdownMenuItems } from "../dropdown-menu-items";
 
 type PlaylistContextProps = {
-  playlist: Playlist;
+  playlist?: Playlist | null;
   children: ReactNode[] | ReactNode;
   asChild?: boolean;
 };

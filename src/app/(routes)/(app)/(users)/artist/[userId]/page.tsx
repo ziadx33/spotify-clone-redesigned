@@ -8,6 +8,7 @@ const Client = dynamic(
     ssr: false,
   },
 );
+
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 

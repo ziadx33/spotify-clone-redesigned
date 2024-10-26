@@ -9,8 +9,8 @@ import { type Track, type $Enums, type Playlist } from "@prisma/client";
 import { getArtistsByIds } from "./user";
 
 type GetPlaylistsParams = {
-  creatorId?: string;
-  playlistIds?: string[];
+  creatorId?: string | null;
+  playlistIds?: string[] | null;
   type?: Playlist["type"];
 };
 export const getPlaylists = unstable_cache(
@@ -25,11 +25,11 @@ export const getPlaylists = unstable_cache(
           where: {
             OR: [
               {
-                creatorId,
+                creatorId: creatorId ?? undefined,
               },
               {
                 id: {
-                  in: playlistIds,
+                  in: playlistIds ?? undefined,
                 },
               },
             ],

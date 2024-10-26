@@ -165,6 +165,7 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
   useEffect(() => {
     if (isPlaying) return;
     editProgressFn(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (

@@ -1,7 +1,8 @@
-import { Track, type TrackProps } from "@/components/components/track";
+import { Track } from "@/components/components/track";
 import { Table, TableBody } from "@/components/ui/table";
 import { type Track as TrackType, type User } from "@prisma/client";
 import { TracksListSkeleton } from "./skeleton";
+import { type TrackProps } from "@/components/components/track/types";
 
 export type RenderTracksProps = {
   data?: { authors: User[]; tracks: TrackType[] };
