@@ -2,19 +2,28 @@ import { Slider } from "@/components/ui/slider";
 import { editQueueController } from "@/state/slices/queue-controller";
 import { type AppDispatch } from "@/state/store";
 import { parseDurationTime } from "@/utils/parse-duration-time";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { QueueControls } from "./queue-controls";
 import { editTrackById } from "@/server/actions/track";
 import { useQueue } from "@/hooks/use-queue";
 import { useQueueController } from "@/hooks/use-queue-controller";
 import { useUpdateUser } from "@/hooks/use-update-user";
+import { cn } from "@/lib/utils";
 
 type QueueSliderProps = {
   duration?: number;
+  progressClassName?: string;
+  queueControlsClassName?: string;
+  handleQueueControls?: (children: ReactNode) => ReactNode;
 };
 
-export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
+export function QueueProgressBar({
+  duration = 0,
+  progressClassName,
+  queueControlsClassName,
+  handleQueueControls,
+}: QueueSliderProps) {
   const {
     data: { progress, isPlaying },
     skipToTime,
@@ -168,9 +177,13 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
+  const queueControls = <QueueControls className={queueControlsClassName} />;
+
   return (
     <>
-      <QueueControls />
+      {!handleQueueControls
+        ? queueControls
+        : handleQueueControls(queueControls)}
       <div className="flex gap-2">
         <h5 className="w-10">{parseDurationTime(value)}</h5>
         <Slider
@@ -180,7 +193,7 @@ export function QueueProgressBar({ duration = 0 }: QueueSliderProps) {
           unselectable="off"
           max={duration}
           step={1}
-          className="w-[30rem]"
+          className={cn("w-[30rem]", progressClassName)}
         />
         <h5 className="ml-0.5 w-10">{parseDurationTime(duration)}</h5>
       </div>

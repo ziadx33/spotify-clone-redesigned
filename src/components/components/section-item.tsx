@@ -18,6 +18,7 @@ import { QueuePlayButton } from "../queue-play-button";
 import { TrackContext } from "../contexts/track-context";
 import { AuthorContext } from "../contexts/author-context";
 import { PlaylistContext } from "../contexts/playlist-context";
+import Link from "next/link";
 
 export type NavigateClickParams<T extends string = ""> = (
   data: Omit<Parameters<typeof useNavigate>[0] & { image: string }, T>,
@@ -129,13 +130,32 @@ export function SectionItem({
   );
   const children = !disableContext ? (
     type === "TRACK" ? (
-      <TrackContext track={trackData}>{cardContent}</TrackContext>
+      <TrackContext track={trackData}>
+        <Link
+          href={`/playlist/${trackData?.albumId}`}
+          className="hover:no-underline"
+        >
+          {cardContent}
+        </Link>
+      </TrackContext>
     ) : type === "ARTIST" ? (
       <AuthorContext artist={artistData} playlistId="section-item">
-        {cardContent}
+        <Link
+          href={`/artist/${artistData?.id}?playlist=unknown`}
+          className="hover:no-underline"
+        >
+          {cardContent}
+        </Link>
       </AuthorContext>
     ) : (
-      <PlaylistContext playlist={playlistData}>{cardContent}</PlaylistContext>
+      <PlaylistContext playlist={playlistData}>
+        <Link
+          href={`/playlist/${playlistData?.id}`}
+          className="hover:no-underline"
+        >
+          {cardContent}
+        </Link>
+      </PlaylistContext>
     )
   ) : (
     cardContent

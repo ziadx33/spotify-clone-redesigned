@@ -4,8 +4,13 @@ import { BsFillSkipBackwardFill, BsFillSkipForwardFill } from "react-icons/bs";
 import { FaRandom } from "react-icons/fa";
 import { MdOutlineRepeat, MdOutlineRepeatOne } from "react-icons/md";
 import { QueueControlsPlayButton } from "./queue-controls-play-button";
+import { cn } from "@/lib/utils";
 
-export function QueueControls() {
+type QueueControlsProps = {
+  className?: string;
+};
+
+export function QueueControls({ className }: QueueControlsProps) {
   const {
     shuffleQueue,
     repeatQueue,
@@ -43,7 +48,7 @@ export function QueueControls() {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className={cn("flex gap-2", className)}>
       <Button
         size="icon"
         variant={data?.queueList.randomize ? "secondary" : "outline"}

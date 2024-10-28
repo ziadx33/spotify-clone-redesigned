@@ -1,14 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { CgPlayButtonR, CgMinimize } from "react-icons/cg";
+import { CgPlayButtonR } from "react-icons/cg";
 import { HiOutlineQueueList } from "react-icons/hi2";
-import { PiArrowsOutSimpleBold } from "react-icons/pi";
 import { QueueVolumeSlider } from "./queue-volume-slider";
 import { useMiniMenu } from "@/hooks/use-mini-menu";
+import { FullViewButton } from "./full-view-button";
+import { cn } from "@/lib/utils";
 
-export function PlayControls({ volumeLevel }: { volumeLevel: number }) {
+type PlayControlsProps = {
+  volumeLevel: number;
+  className?: string;
+};
+
+export function PlayControls({ volumeLevel, className }: PlayControlsProps) {
   const { setShowMenu, enableButton, showQueue, value } = useMiniMenu();
   return (
-    <div className="flex w-fit items-center gap-2">
+    <div className={cn("flex w-fit items-center gap-2", className)}>
       <Button
         size="icon"
         disabled={!enableButton}
@@ -25,12 +31,7 @@ export function PlayControls({ volumeLevel }: { volumeLevel: number }) {
         <HiOutlineQueueList />
       </Button>
       <QueueVolumeSlider defaultValue={volumeLevel} />
-      <Button size="icon" variant="outline">
-        <CgMinimize />
-      </Button>
-      <Button size="icon" variant="outline">
-        <PiArrowsOutSimpleBold />
-      </Button>
+      <FullViewButton />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useQueue } from "./use-queue";
 
 export function useMiniMenu() {
-  const { value, showQueue } = useSelector(
+  const { value, showQueue, showFullMenu } = useSelector(
     (value: RootState) => value.miniMenu,
   );
   const {
@@ -30,5 +30,5 @@ export function useMiniMenu() {
       }),
     );
   };
-  return { value, setShowMenu, enableButton, showQueue };
+  return { value, setShowMenu, enableButton, showQueue, showFullMenu };
 }
