@@ -22,6 +22,7 @@ export function SubmitForm() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [disabled, setDisabled] = useState(false);
   const [fullProgress, setFullProgress] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
   const progressValue = useCallback(() => {
     const dataLength = Object.keys(data.current).length;
     return (fullProgress && 100) || (currentInputIndex / dataLength) * 100;
@@ -52,10 +53,11 @@ export function SubmitForm() {
     setFullProgress(true);
     setDisabled(true);
     toast.promise(register({ ...data.current, origin: location.origin }), {
-      loading: "registering...",
-      success: () => {
+      loading: !isClicked ? "registering..." : "resending...",
+      success: (data) => {
         setDisabled(false);
-        return "Registered successfully, we have sent a verification link to your email.";
+        setIsClicked(true);
+        return data as string;
       },
       error: (err) => {
         setDisabled(false);
@@ -106,7 +108,7 @@ export function SubmitForm() {
           type="submit"
           onClick={isSubmit ? submitHandler : nextInputHandler}
         >
-          {isSubmit ? "submit" : "next"}
+          {!isClicked ? (isSubmit ? "submit" : "next") : "click to resend"}
         </Button>
       </CardFooter>
     </form>
