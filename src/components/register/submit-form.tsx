@@ -108,7 +108,7 @@ export function SubmitForm() {
           type="submit"
           onClick={isSubmit ? submitHandler : nextInputHandler}
         >
-          {!isClicked ? (isSubmit ? "submit" : "next") : "click to resend"}
+          {!isClicked ? (isSubmit ? "submit" : "next") : "resend"}
         </Button>
       </CardFooter>
     </form>
