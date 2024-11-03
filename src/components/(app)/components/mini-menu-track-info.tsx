@@ -10,7 +10,12 @@ import { FaX } from "react-icons/fa6";
 import { LuClipboardCopy } from "react-icons/lu";
 
 export function MiniMenuTrackInfo() {
-  const { getTrack, currentQueue } = useQueue();
+  const {
+    getTrack,
+    getQueue,
+    data: { data: queueListData },
+  } = useQueue();
+  const currentQueue = getQueue(queueListData?.queueList.currentQueueId);
   const currentData = getTrack(currentQueue?.queueData?.currentPlaying ?? "");
   const { setShowMenu } = useMiniMenu();
 

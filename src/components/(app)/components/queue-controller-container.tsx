@@ -13,8 +13,9 @@ export function QueueControllerContainer({
   const {
     data: { status, data },
     getTrack,
-    currentQueue,
+    getQueue,
   } = useQueue();
+  const currentQueue = getQueue(data?.queueList.currentQueueId);
   const currentTrack = getTrack(currentQueue?.queueData?.currentPlaying ?? "");
   return (
     <div className="flex size-full flex-col items-start">

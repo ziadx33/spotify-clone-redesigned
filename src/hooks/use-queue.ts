@@ -11,12 +11,12 @@ import {
 import { type AppDispatch, type RootState } from "@/state/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useSession } from "./use-session";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { type Queue, type QueueList, type $Enums } from "@prisma/client";
 import { type ChangeValueParam } from "@/types";
 import { getChangeValue } from "@/utils/get-change-value";
 import { shuffleArray } from "@/utils/shuffle-array";
-import {
+import queueList, {
   setQueue,
   editQueueList,
   editQueueById,
@@ -24,6 +24,7 @@ import {
   removeQueue,
   removeQueues,
   editQueueDataById,
+  type QueueSliceType,
 } from "@/state/slices/queue-list";
 import { type TrackSliceType } from "@/state/slices/tracks";
 import { useQueueController } from "./use-queue-controller";
@@ -39,35 +40,42 @@ export function useQueue() {
     [data.data?.queues],
   );
 
-  const currentQueue = useMemo(
-    () => getQueue(data.data?.queueList.currentQueueId),
-    [data.data?.queueList.currentQueueId, getQueue],
-  );
+  const getCurrentData = useCallback(
+    (currentQueue?: QueueSliceType | undefined) => {
+      const isLastTrack =
+        currentQueue?.queueData?.currentPlaying ===
+        currentQueue?.queueData?.trackList[
+          currentQueue?.queueData?.trackList.length - 1
+        ];
+      const isFirstTrack =
+        currentQueue?.queueData?.currentPlaying ===
+        currentQueue?.queueData?.trackList[0];
+      const nextQueue =
+        data.data?.queues[
+          data.data.queues.findIndex(
+            (queue) => queue.queueData?.id === currentQueue?.queueData?.id,
+          ) + 1
+        ];
 
-  const currentData = useMemo(() => {
-    const isLastTrack =
-      currentQueue?.queueData?.currentPlaying ===
-      currentQueue?.queueData?.trackList[
-        currentQueue?.queueData?.trackList.length - 1
-      ];
-    const isFirstTrack =
-      currentQueue?.queueData?.currentPlaying ===
-      currentQueue?.queueData?.trackList[0];
-    const nextQueue =
-      data.data?.queues[
-        data?.data.queues.findIndex(
-          (queue) => queue.queueData?.id === currentQueue?.queueData?.id,
-        ) + 1
-      ];
-    const isLastQueue =
-      data.data?.queues[data.data.queues.length - 1] !==
-      currentQueue?.queueData?.id;
-    return { isLastTrack, isFirstTrack, nextQueue, isLastQueue };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentQueue, data.data?.queues]);
+      console.log(
+        "next",
+        nextQueue,
+        data.data?.queues,
+        data.data?.queues[data.data.queues.length - 1],
+      );
+
+      const isLastQueue =
+        data.data?.queues[data.data.queues.length - 1]?.queueData?.id ===
+        currentQueue?.queueData?.id;
+      return { isLastTrack, isFirstTrack, nextQueue, isLastQueue };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [data.data?.queues],
+  );
 
   const getTrack = useCallback(
     (trackId?: string, queueId?: string): TrackSliceType => {
+      const currentQueue = getQueue(data.data?.queueList.currentQueueId);
       const queue = queueId ? getQueue(queueId) : currentQueue;
       const track = queue?.dataTracks?.tracks?.find((t) => t.id === trackId);
       const album = queue?.dataTracks?.albums?.find(
@@ -82,10 +90,15 @@ export function useQueue() {
       );
       return { album, track, author, authors };
     },
-    [currentQueue, getQueue],
+    [data.data?.queueList.currentQueueId, getQueue],
   );
 
-  const { play: playTrack, skipToTrack } = useQueueController();
+  const {
+    play: playTrack,
+    skipToTrack,
+    audios,
+    pause: pauseTrack,
+  } = useQueueController();
 
   const editQueueListFn = ({
     queueListData,
@@ -116,6 +129,7 @@ export function useQueue() {
     queueId?: string;
   }) => {
     const updatedData = { ...queueData, ...editData };
+    const currentQueue = getQueue(data.data?.queueList.currentQueueId);
     const id = queueId ?? currentQueue?.queueData?.id ?? "";
     const runDispatch = () =>
       dispatch(editQueueById({ data: updatedData, id }));
@@ -132,6 +146,7 @@ export function useQueue() {
     queueListData?: Partial<QueueList>,
     skipToTrack?: string,
   ) => {
+    const currentQueue = getQueue(data.data?.queueList.currentQueueId);
     const trackListShuffled = data.data?.queueList.randomize
       ? shuffleArray(queueData.data.trackList, skipToTrack)
       : queueData.data.trackList;
@@ -185,6 +200,7 @@ export function useQueue() {
   }: {
     value: ChangeValueParam<boolean>;
   }) => {
+    const currentQueue = getQueue(data.data?.queueList.currentQueueId);
     const queueList = data.data!.queueList;
     const queueData = currentQueue!.queueData!;
     const shuffleValue = getChangeValue(value, queueList.randomize);
@@ -247,10 +263,13 @@ export function useQueue() {
   };
 
   const skipBy = async (id: string | number, queueId?: string) => {
+    pauseTrack();
+    const currentQueue = getQueue(data.data?.queueList.currentQueueId);
     const queueData = !queueId
       ? currentQueue!.queueData!
       : getQueue(queueId)!.queueData!;
     const queueList = data.data!.queueList;
+    console.log("tego", queueData);
     let targetTrack: string;
 
     if (typeof id === "number") {
@@ -275,6 +294,15 @@ export function useQueue() {
       queueId,
     });
 
+    if (queueId && queueId !== currentQueue?.queueData?.id) {
+      const chosedQueue = data.data?.queues.find(
+        (queue) => queue.queueData?.id === queueId,
+      );
+      const tracks = chosedQueue?.dataTracks?.tracks;
+      console.log("sazz", tracks);
+      if (!tracks) return " shururp";
+      await audios?.loadTracks(tracks);
+    }
     await skipToTrack(targetTrack);
 
     if (queueId && queueId !== currentQueue?.queueData?.id) {
@@ -329,11 +357,13 @@ export function useQueue() {
     shuffleQueue,
     repeatQueue,
     skipBy,
-    currentQueue,
     addPlaylistToQueue,
     removeQueueFromList,
     editQueueListFn,
     editCurQueue,
-    currentData,
+    getQueue,
+    getCurrentData,
   };
 }
+
+// FIX: fix skip by fn

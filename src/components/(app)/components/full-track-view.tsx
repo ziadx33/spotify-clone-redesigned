@@ -9,7 +9,14 @@ import { PlayControls } from "./play-controls";
 import { useQueueController } from "@/hooks/use-queue-controller";
 
 export function Comp() {
-  const { currentQueue, getTrack, currentData } = useQueue();
+  const {
+    getQueue,
+    data: { data: queueListData },
+    getTrack,
+    getCurrentData,
+  } = useQueue();
+  const currentQueue = getQueue(queueListData?.queueList.currentQueueId);
+  const currentData = getCurrentData(currentQueue);
   const currentTrack = getTrack(currentQueue?.queueData?.currentPlaying);
 
   const { isLastTrack, nextQueue: nextQueueData } = currentData || {};

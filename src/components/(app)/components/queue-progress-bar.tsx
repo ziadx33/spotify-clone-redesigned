@@ -36,11 +36,13 @@ export function QueueProgressBar({
   const dispatch = useDispatch<AppDispatch>();
   const currentInterval = useRef<NodeJS.Timeout | null>(null);
   const {
-    currentQueue,
+    getQueue,
     skipBy,
-    currentData: { isLastQueue, isLastTrack },
     data: { data },
+    getCurrentData,
   } = useQueue();
+  const currentQueue = getQueue(data?.queueList.currentQueueId);
+  const { isLastQueue, isLastTrack } = getCurrentData(currentQueue);
   const currentRepeat = useRef(data?.queueList.repeatQueue);
   const { update, user } = useUpdateUser();
 
@@ -105,6 +107,12 @@ export function QueueProgressBar({
               const currentTrackId = currentQueue?.queueData?.currentPlaying;
               if (!currentTrackId) return;
 
+              console.log(
+                data?.queueList.repeatQueue,
+                "tasdkfjasdlfkj",
+                isLastQueue,
+              );
+
               if (data?.queueList.repeatQueue === "TRACK") {
                 editProgress(0);
                 await skipToTime(0, currentTrackId);
@@ -120,6 +128,7 @@ export function QueueProgressBar({
                 void skipToTime(0, nextTrack);
               } else {
                 const nextTrack = await skipBy(1);
+                console.log(nextTrack, "dam");
                 if (!nextTrack)
                   if (currentInterval.current)
                     clearInterval(currentInterval.current);

@@ -19,7 +19,11 @@ export function Playlists() {
     error: err,
   } = useFollowing();
   const { data } = useSession();
-  const { currentQueue } = useQueue();
+  const {
+    data: { data: queueListData },
+    getQueue,
+  } = useQueue();
+  const currentQueue = getQueue(queueListData?.queueList.currentQueueId);
   if ([error, err].includes("error")) return <h1>{error}</h1>;
   return (
     <div className="flex flex-col gap-1">

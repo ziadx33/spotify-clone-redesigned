@@ -3,8 +3,14 @@ import { useMemo } from "react";
 import { QueueItem } from "./queue-item";
 
 export function MiniMenuNextQueue() {
-  const { currentQueue, getTrack, currentData } = useQueue();
-
+  const {
+    getQueue,
+    data: { data: queueListData },
+    getTrack,
+    getCurrentData,
+  } = useQueue();
+  const currentQueue = getQueue(queueListData?.queueList.currentQueueId);
+  const currentData = getCurrentData(currentQueue);
   const { isLastTrack, nextQueue: nextQueueData } = currentData || {};
 
   const id =

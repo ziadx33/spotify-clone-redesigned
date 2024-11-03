@@ -6,8 +6,9 @@ export function QueueMenu() {
   const {
     data: { data },
     getTrack,
-    currentQueue,
+    getQueue,
   } = useQueue();
+  const currentQueue = getQueue(data?.queueList.currentQueueId);
   const currentTrackId = currentQueue?.queueData?.currentPlaying ?? "";
   const currentTrack = getTrack(currentTrackId);
 

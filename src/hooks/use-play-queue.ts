@@ -16,7 +16,13 @@ export function usePlayQueue({
   queueTypeId,
   isCurrent,
 }: Omit<QueuePlayButtonProps, "children"> & { queueTypeId?: string }) {
-  const { play, currentQueue, skipBy } = useQueue();
+  const {
+    play,
+    getQueue,
+    skipBy,
+    data: { data: queueListData },
+  } = useQueue();
+  const currentQueue = getQueue(queueListData?.queueList.currentQueueId);
   const dispatch = useDispatch<AppDispatch>();
   const {
     toggle,

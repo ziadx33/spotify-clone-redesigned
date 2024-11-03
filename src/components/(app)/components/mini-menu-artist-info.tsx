@@ -8,7 +8,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 export function MiniMenuArtistInfo() {
-  const { getTrack, currentQueue } = useQueue();
+  const {
+    getTrack,
+    getQueue,
+    data: { data: queueListData },
+  } = useQueue();
+  const currentQueue = getQueue(queueListData?.queueList.currentQueueId);
   const currentData = getTrack(currentQueue?.queueData?.currentPlaying ?? "");
   const { toggle, isFollowed, isFollowing } = useFollow({
     artist: currentData.author!,

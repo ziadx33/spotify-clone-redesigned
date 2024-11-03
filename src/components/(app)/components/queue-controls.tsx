@@ -15,9 +15,13 @@ export function QueueControls({ className }: QueueControlsProps) {
     shuffleQueue,
     repeatQueue,
     skipBy,
-    currentData: { isFirstTrack, isLastTrack, nextQueue },
     data: { data },
+    getCurrentData,
+    getQueue,
   } = useQueue();
+  const currentQueue = getQueue(data?.queueList.currentQueueId);
+  const { isFirstTrack, isLastTrack, nextQueue, isLastQueue } =
+    getCurrentData(currentQueue);
 
   const shuffleHandler = () => {
     void shuffleQueue({ value: (v) => !v });
@@ -40,7 +44,10 @@ export function QueueControls({ className }: QueueControlsProps) {
     await skipBy(-1);
   };
 
+  console.log("fucker", isLastQueue, nextQueue);
+
   const goForwardHandler = async () => {
+    console.log("mahena", !!(nextQueue && isLastTrack), nextQueue, isLastQueue);
     await skipBy(
       1,
       nextQueue && isLastTrack ? nextQueue.queueData?.id : undefined,
@@ -68,7 +75,7 @@ export function QueueControls({ className }: QueueControlsProps) {
       <Button
         size="icon"
         variant="outline"
-        disabled={isLastTrack}
+        disabled={isLastTrack && isLastQueue}
         onClick={goForwardHandler}
       >
         <BsFillSkipForwardFill />

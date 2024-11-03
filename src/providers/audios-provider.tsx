@@ -33,7 +33,11 @@ export const AudiosContext = createContext<undefined | AudiosConTextType>(
 );
 
 export function AudiosProvider({ children }: { children: ReactNode }) {
-  const { currentQueue } = useQueue();
+  const {
+    data: { data: queueListData },
+    getQueue,
+  } = useQueue();
+  const currentQueue = getQueue(queueListData?.queueList.currentQueueId);
   const [isLoading, setIsLoading] = useState(false);
   const currentTrackRef = useRef();
   const loadedTrackList = useRef<AudiosConTextType["data"]["current"]>();
