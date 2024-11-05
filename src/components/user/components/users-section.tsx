@@ -69,6 +69,7 @@ export function UsersSection({ users, user, title }: TopArtistsProps) {
                 alt={user.name ?? ""}
                 title={user.name ?? ""}
                 image={user.image ?? ""}
+                showPlayButton
                 description="artist"
                 artistData={user}
                 type="ARTIST"

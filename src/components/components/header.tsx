@@ -61,27 +61,27 @@ export function Header({ children }: { children: ReactNode }) {
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem>
               <Navigate
                 data={{
                   href: `/artist/${user?.user?.id}`,
                   title: "Profile" ?? "unknown",
                   type: "ARTIST",
                 }}
-                className="w-full"
+                className="w-full text-start"
                 href={`/artist/${user?.user?.id}`}
               >
                 Profile
               </Navigate>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem>
               <Navigate
                 data={{
                   href: `/artist/${user?.user?.id}/settings`,
                   title: "Settings" ?? "unknown",
                   type: "ARTIST",
                 }}
-                className="w-full"
+                className="w-full text-start"
                 href={`/artist/${user?.user?.id}/settings`}
               >
                 Settings

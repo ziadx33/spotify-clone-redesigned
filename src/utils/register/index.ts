@@ -2,6 +2,7 @@ import { sendEmail } from "@/lib/send-email";
 import { type registerSchema } from "@/schemas";
 import { createUser, getUserByEmail } from "@/server/actions/user";
 import {
+  deleteVerificationTokenById,
   generateVerificationToken,
   getVerificationTokenByEmail,
 } from "@/server/actions/verification-token";
@@ -18,9 +19,14 @@ export const register = async (
       password: data.password,
     });
   }
-  const verificationToken = !user
+  let verificationToken = !user
     ? await generateVerificationToken(data.email)
     : await getVerificationTokenByEmail(user.email);
+  if (user && verificationToken) {
+    const hasExpired = new Date(verificationToken.expires) < new Date();
+    if (hasExpired) await deleteVerificationTokenById(verificationToken.id);
+    verificationToken = await generateVerificationToken(data.email);
+  }
   const confirmationLink = `${data.origin}/verification-token?token=${verificationToken?.token}`;
   await sendEmail({
     to: data.email,

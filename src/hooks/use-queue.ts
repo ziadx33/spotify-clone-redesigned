@@ -16,7 +16,7 @@ import { type Queue, type QueueList, type $Enums } from "@prisma/client";
 import { type ChangeValueParam } from "@/types";
 import { getChangeValue } from "@/utils/get-change-value";
 import { shuffleArray } from "@/utils/shuffle-array";
-import queueList, {
+import {
   setQueue,
   editQueueList,
   editQueueById,

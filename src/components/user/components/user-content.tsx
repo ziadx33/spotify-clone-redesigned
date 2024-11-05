@@ -19,6 +19,9 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useSession } from "@/hooks/use-session";
 import { PublicPlaylists } from "./public-playlists";
 import { UsersSection } from "./users-section";
+import { useQuery } from "@tanstack/react-query";
+import { getPrefrence } from "@/server/actions/prefrence";
+import { RenderSectionItems } from "@/components/render-section-items";
 
 type UserContentProps = {
   user?: User;
@@ -42,6 +45,16 @@ export function UserContent({
   const { data: curUser } = useSession();
   const userData = user?.id === curUser?.user?.id ? curUser?.user : user;
   const image = userData?.image;
+  const isCurUser = curUser?.user?.id === user?.id;
+  const { data: userPrefrence } = useQuery({
+    queryKey: [`profile-prefrence-${user?.id}`],
+    queryFn: async () => {
+      const prefrence = await getPrefrence(user!.id);
+      return prefrence;
+    },
+    enabled: !isCurUser && !!user?.id,
+  });
+  console.log("canada", userPrefrence);
   return (
     <Dialog>
       <div className="flex min-h-full w-full flex-col">
@@ -104,19 +117,73 @@ export function UserContent({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <TopArtists artists={topArtists} user={userData} />
-          <TopTracks user={userData} data={topTracks} />
-          <PublicPlaylists playlists={publicPlaylists} user={userData} />
-          <UsersSection
-            users={followedArtists}
-            user={userData}
-            title="Following"
-          />
-          <UsersSection
-            users={followerUsers}
-            user={userData}
-            title="Followers"
-          />
+          {!isCurUser && !userPrefrence ? (
+            <RenderSectionItems
+              cards={[]}
+              title="Top artists this month"
+              cardsContainerClasses="gap-2"
+              isLoading={true}
+            />
+          ) : (
+              !isCurUser ? userPrefrence?.data?.ShowTopPlayingArtists : true
+            ) ? (
+            <TopArtists artists={topArtists} user={userData} />
+          ) : null}
+
+          {!isCurUser && !userPrefrence ? (
+            <RenderSectionItems
+              cards={[]}
+              title="Top artists this month"
+              cardsContainerClasses="gap-2"
+              isLoading={true}
+            />
+          ) : (
+              !isCurUser ? userPrefrence?.data?.ShowTopPlayingTracks : true
+            ) ? (
+            <TopTracks user={userData} data={topTracks} />
+          ) : null}
+
+          {!isCurUser && !userPrefrence ? (
+            <RenderSectionItems
+              cards={[]}
+              title="Top artists this month"
+              cardsContainerClasses="gap-2"
+              isLoading={true}
+            />
+          ) : (
+              !isCurUser ? userPrefrence?.data?.ShowPlaylistsInProfile : true
+            ) ? (
+            <PublicPlaylists playlists={publicPlaylists} user={userData} />
+          ) : null}
+          {!isCurUser && !userPrefrence ? (
+            <RenderSectionItems
+              cards={[]}
+              title="Top artists this month"
+              cardsContainerClasses="gap-2"
+              isLoading={true}
+            />
+          ) : (!isCurUser ? userPrefrence?.data?.ShowFollowingList : true) ? (
+            <UsersSection
+              users={followedArtists}
+              user={userData}
+              title="Following"
+            />
+          ) : null}
+
+          {!isCurUser && !userPrefrence ? (
+            <RenderSectionItems
+              cards={[]}
+              title="Top artists this month"
+              cardsContainerClasses="gap-2"
+              isLoading={true}
+            />
+          ) : (!isCurUser ? userPrefrence?.data?.ShowFollowersList : true) ? (
+            <UsersSection
+              users={followerUsers}
+              user={userData}
+              title="Followers"
+            />
+          ) : null}
         </div>
       </div>
       <DialogContent className="flex h-[26rem] w-[45rem] flex-col">

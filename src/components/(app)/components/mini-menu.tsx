@@ -9,9 +9,22 @@ import { MiniMenuCreditsSection } from "./mini-menu-credits-section";
 import { QueueMenu } from "./queue-menu";
 import { MiniMenuNextQueue } from "./mini-menu-next-queue";
 import { FullTrackView } from "./full-track-view";
+import { usePrefrences } from "@/hooks/use-prefrences";
+import { useEffect, useRef } from "react";
 
 export function MiniMenu() {
-  const { value, showQueue, showFullMenu } = useMiniMenu();
+  const { value, showQueue, showFullMenu, setShowMenu, status } = useMiniMenu();
+  const { data: prefrences } = usePrefrences();
+  const isDone = useRef(false);
+  console.log("karmeshtelha", prefrences);
+  useEffect(() => {
+    if (isDone.current) return;
+    if (prefrences?.showPlayingView === undefined || status !== "success")
+      return;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    setShowMenu(prefrences?.showPlayingView, false);
+    isDone.current = true;
+  }, [prefrences, prefrences?.showPlayingView, setShowMenu, status]);
   return (
     <>
       {value ? (

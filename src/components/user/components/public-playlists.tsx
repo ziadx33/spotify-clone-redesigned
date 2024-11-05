@@ -66,12 +66,12 @@ export function PublicPlaylists({ playlists, user }: TopArtistsProps) {
               <SectionItem
                 playlistData={playlist}
                 type="PLAYLIST"
-                imageClasses="rounded-full"
                 key={playlist.id}
+                showPlayButton
                 alt={playlist.title ?? ""}
                 title={playlist.title ?? ""}
                 image={playlist.imageSrc ?? ""}
-                description={`${format(new Date(playlist.createdAt), "yyy")} - ${playlist.type.toLowerCase()}`}
+                description={`${format(new Date(playlist.createdAt), "yyy")} - Playlist`}
                 link={`/artist/${user?.id}/public-playlists`}
               />
             );

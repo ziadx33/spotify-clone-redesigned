@@ -147,7 +147,7 @@ export function SectionItem({
           {cardContent}
         </Link>
       </AuthorContext>
-    ) : (
+    ) : type === "PLAYLIST" ? (
       <PlaylistContext playlist={playlistData}>
         <Link
           href={`/playlist/${playlistData?.id}`}
@@ -156,6 +156,8 @@ export function SectionItem({
           {cardContent}
         </Link>
       </PlaylistContext>
+    ) : (
+      link && <Link href={link}>{cardContent}</Link>
     )
   ) : (
     cardContent

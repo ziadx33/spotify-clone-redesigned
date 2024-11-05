@@ -251,7 +251,7 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
           <MdMenu />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="sortable-items z-40 w-96">
+      <DropdownMenuContent className="sortable-items z-40 w-96 bg-transparent backdrop-blur-3xl">
         <DropdownMenuLabel>Customize feed</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {(user?.user?.tracksHistory.length ?? 0) > 0 ? (

@@ -12,12 +12,7 @@ import {
   useState,
   useRef,
 } from "react";
-import {
-  setPrefrence,
-  type PrefrenceSliceType,
-} from "@/state/slices/prefrence";
-import { useDispatch } from "react-redux";
-import { type AppDispatch } from "@/state/store";
+import { type PrefrenceSliceType } from "@/state/slices/prefrence";
 import { usePrefrences } from "@/hooks/use-prefrences";
 import { type Playlist } from "@prisma/client";
 import { PlaylistSection } from "./playlist-section";
@@ -41,10 +36,8 @@ export const DEFAULT_SECTIONS = [
   "best of artists",
 ];
 
-export function PrefrencesProvider({ userId, data }: PrefrencesProviderProps) {
+export function PrefrencesProvider({ userId }: PrefrencesProviderProps) {
   const { data: prefrences, status } = usePrefrences();
-
-  const dispatch = useDispatch<AppDispatch>();
 
   const [components, setComponents] = useState({
     "made for you": <MadeForYouSection userId={userId} />,
@@ -52,19 +45,12 @@ export function PrefrencesProvider({ userId, data }: PrefrencesProviderProps) {
     "best of artists": <BestOfArtistsSection userId={userId} />,
   });
 
-  useEffect(() => {
-    if (data) dispatch(setPrefrence(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const initRefetch = useRef(false);
 
   const { data: playlists, refetch } = useQuery({
     queryKey: ["prefrences"],
     queryFn: async () => {
-      const sections = initRefetch.current
-        ? prefrences?.homeLibSection
-        : data?.data?.homeLibSection;
+      const sections = prefrences?.homeLibSection;
       if (!sections) {
         return [];
       }

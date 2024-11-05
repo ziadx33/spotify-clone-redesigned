@@ -187,6 +187,13 @@ model Preference {
     homeSectionsSort   String[] @default(["made for you", "your favorite artists", "best of artists"])
     homeLibSection     String[] @default([])
 
+    showPlayingView        Boolean @default(true)
+    ShowPlaylistsInProfile Boolean @default(true)
+    ShowTopPlayingArtists  Boolean @default(false)
+    ShowFollowingList      Boolean @default(false)
+    ShowFollowersList      Boolean @default(true)
+    ShowTopPlayingTracks   Boolean @default(false)
+
     @@unique([userId])
 }
 

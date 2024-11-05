@@ -25,7 +25,7 @@ export function PlaylistsSection({
 
   return (items?.length ?? 0) > 0 ? (
     <div className="flex gap-2 pt-4">
-      <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2.5 px-2">
+      <div className="flex w-full flex-wrap  gap-2.5 px-2">
         {!isLoading ? items : <SkeletonPlaylists amount={6} />}
       </div>
 

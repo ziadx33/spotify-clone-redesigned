@@ -1,8 +1,6 @@
 "use client";
 
 import { PrefrencesProvider } from "./components/prefrences-provider";
-import { getPrefrence } from "@/server/actions/prefrence";
-import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/loading";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
@@ -12,23 +10,12 @@ export function Home() {
   const { data: user } = useSession();
   const router = useRouter();
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["home-prefrences-get", user?.user?.id],
-    queryFn: async () => {
-      if (!user?.user?.id) throw new Error("User not authenticated");
-      const userPrefrence = await getPrefrence(user.user.id);
-      return userPrefrence;
-    },
-    enabled: !!user?.user?.id,
-  });
-
   const content = useMemo(() => {
-    if (isLoading || !user?.user?.id) return <Loading />;
-    if (isError) throw error.message;
+    if (!user?.user?.id) return <Loading />;
 
-    return <PrefrencesProvider userId={user.user.id} data={data} />;
+    return <PrefrencesProvider userId={user.user.id} />;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isLoading, isError]);
+  }, [user?.user?.id]);
 
   if (user && !user?.user?.id) {
     router.push("/login");

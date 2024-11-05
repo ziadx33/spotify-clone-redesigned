@@ -30,5 +30,5 @@ export function useMiniMenu() {
       }),
     );
   };
-  return { value, setShowMenu, enableButton, showQueue, showFullMenu };
+  return { value, setShowMenu, enableButton, showQueue, showFullMenu, status };
 }
