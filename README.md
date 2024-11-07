@@ -20,7 +20,7 @@ A modern redesign of Spotify, built using React, Next.js, TypeScript, and Tailwi
 
 ## Tech Stack
 
-- **Frontend:** React, Next.js, TypeScript, Tailwind CSS
+- **Frontend:** React, Next.js, TypeScript, Tanstack Query, Tailwind CSS
 - **Backend:** Prisma, Next.js
 - **Database:** PostgreSQL
 
