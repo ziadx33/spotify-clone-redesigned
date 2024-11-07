@@ -16,7 +16,7 @@ export function ChildrenContainer({ children }: ChildrenContainerProps) {
     <div className="flex h-[93%] w-full">
       <ScrollArea
         className={cn(
-          "w-full rounded-lg border-l border-t",
+          "relative min-h-full w-full rounded-lg border-l border-t",
           value ? "border-r" : "",
         )}
       >

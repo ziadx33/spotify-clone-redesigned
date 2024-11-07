@@ -1,25 +1,23 @@
 import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
-import {
-  type NavigateClickParams,
-  SectionItem,
-} from "@/components/components/section-item";
+import { SectionItem } from "@/components/components/section-item";
 import { getPlaylistsBySearchQuery } from "@/server/actions/playlist";
 import { type Playlist, type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
+import { type SearchClickFnType } from "./search-content";
 
 type PlaylistsContentProps = {
   playlists: { playlists: Playlist[]; authors: User[] };
   query: string;
-  SearchClickFn: NavigateClickParams;
+  searchClickFn: SearchClickFnType;
 };
 
 export function PlaylistsContent({
   playlists,
   query,
-  SearchClickFn,
+  searchClickFn,
 }: PlaylistsContentProps) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.2,
@@ -51,10 +49,12 @@ export function PlaylistsContent({
             (author) => author.id === playlist.creatorId,
           );
           if (author?.type === "ARTIST") return;
+          const fn = () =>
+            searchClickFn({ searchPlaylist: playlist.id, type: "PLAYLIST" });
           return (
             <SectionItem
               artistData={author}
-              onClick={SearchClickFn}
+              onClick={fn}
               key={playlist.id}
               description={`${format(playlist.createdAt, "YYY")} - ${author?.name}`}
               title={playlist.title}

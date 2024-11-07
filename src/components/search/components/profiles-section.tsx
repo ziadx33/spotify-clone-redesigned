@@ -1,14 +1,12 @@
-import {
-  type NavigateClickParams,
-  SectionItem,
-} from "@/components/components/section-item";
+import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { type User } from "@prisma/client";
 import { useMemo } from "react";
+import { type SearchClickFnType } from "./search-content";
 
 type ArtistsSectionProps = {
   data?: User[];
-  searchClickFn: NavigateClickParams;
+  searchClickFn: SearchClickFnType;
 };
 
 export function ProfilesSection({ data, searchClickFn }: ArtistsSectionProps) {
@@ -18,10 +16,12 @@ export function ProfilesSection({ data, searchClickFn }: ArtistsSectionProps) {
         cards={data
           ?.filter((user) => user.type === "USER")
           .map((user) => {
+            const fn = () =>
+              searchClickFn({ searchUser: user.id, type: "ARTIST" });
             return (
               <SectionItem
                 artistData={user}
-                onClick={searchClickFn}
+                onClick={fn}
                 key={user.id}
                 description="Profile"
                 title={user.name}

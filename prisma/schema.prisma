@@ -168,13 +168,14 @@ model Track {
 }
 
 model SearchHistory {
-    id        String   @id @default(cuid())
-    title     String   @default("")
-    type      TAB_TYPE @default(PLAYLIST)
-    href      String   @default("")
-    image     String   @default("")
-    User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String?
+    id     String   @id @default(cuid())
+    type   TAB_TYPE @default(PLAYLIST)
+    User   User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String?
+
+    searchUser     String?
+    searchPlaylist String?
+
     createdAt DateTime @default(now())
 }
 

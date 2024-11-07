@@ -30,6 +30,12 @@ const prefrenceSlice = createSlice({
             pinnedHomeSections: [],
             userId: "",
             homeLibSection: [],
+            showPlayingView: true,
+            ShowPlaylistsInProfile: true,
+            ShowTopPlayingArtists: false,
+            ShowFollowingList: false,
+            ShowFollowersList: true,
+            ShowTopPlayingTracks: false,
             ...payload,
           };
       state.status = "success";

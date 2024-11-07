@@ -8,14 +8,16 @@ import { PlaylistsContent } from "./playlists-content";
 import { ArtistsContent } from "./artists-content";
 import { ProfilesContent } from "./profiles-content";
 import { AddToSearchHistory } from "@/server/actions/search-history";
-import { type NavigateClickParams } from "@/components/components/section-item";
 import { useSession } from "@/hooks/use-session";
 import { revalidate } from "@/server/actions/revalidate";
+import { type SearchHistory } from "@prisma/client";
 
 type SearchContentProps = {
   data: SearchQueryReturn;
   query: string;
 };
+
+export type SearchClickFnType = (data: Partial<SearchHistory>) => unknown;
 
 export function SearchContent({ data, query }: SearchContentProps) {
   const tabs = [
@@ -33,13 +35,11 @@ export function SearchContent({ data, query }: SearchContentProps) {
 
   const currentTab = values.tab ?? "all";
 
-  const searchClickFn: NavigateClickParams = async ({ data, image }) => {
+  const searchClickFn: SearchClickFnType = async (data) => {
     await AddToSearchHistory({
       data: {
         ...data,
-        image,
-        userId: user?.user?.id,
-        id: undefined,
+        userId: user!.user!.id,
       },
     });
     revalidate("/search");
@@ -70,12 +70,12 @@ export function SearchContent({ data, query }: SearchContentProps) {
         <AlbumsContent
           query={query}
           playlists={data.playlists}
-          SearchClickFn={searchClickFn}
+          searchClickFn={searchClickFn}
         />
       </TabsContent>
       <TabsContent value="playlists">
         <PlaylistsContent
-          SearchClickFn={searchClickFn}
+          searchClickFn={searchClickFn}
           query={query}
           playlists={data.playlists}
         />
@@ -84,14 +84,14 @@ export function SearchContent({ data, query }: SearchContentProps) {
         <ArtistsContent
           query={query}
           users={data.authors}
-          SearchClickFn={searchClickFn}
+          searchClickFn={searchClickFn}
         />
       </TabsContent>
       <TabsContent value="profiles">
         <ProfilesContent
           query={query}
           users={data.authors}
-          SearchClickFn={searchClickFn}
+          searchClickFn={searchClickFn}
         />
       </TabsContent>
     </Tabs>

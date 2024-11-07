@@ -1,25 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
-import {
-  type NavigateClickParams,
-  SectionItem,
-} from "@/components/components/section-item";
+import { SectionItem } from "@/components/components/section-item";
 import { getUsersBySearchQuery } from "@/server/actions/user";
 import { type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
+import { type SearchClickFnType } from "./search-content";
 
 type ProfilesContentProps = {
   users: User[];
   query: string;
-  SearchClickFn: NavigateClickParams;
+  searchClickFn: SearchClickFnType;
 };
 
 export function ProfilesContent({
   users,
   query,
-  SearchClickFn,
+  searchClickFn,
 }: ProfilesContentProps) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.2,
@@ -47,10 +45,12 @@ export function ProfilesContent({
       datum
         ?.filter((user) => user.type === "USER")
         .map((user, ix) => {
+          const fn = () =>
+            searchClickFn({ searchUser: user.id, type: "ARTIST" });
           return (
             <SectionItem
               artistData={user}
-              onClick={SearchClickFn}
+              onClick={fn}
               key={user.id}
               description="Profile"
               title={user.name}

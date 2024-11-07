@@ -1,16 +1,14 @@
-import {
-  type NavigateClickParams,
-  SectionItem,
-} from "@/components/components/section-item";
+import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { type User, type Playlist } from "@prisma/client";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { useMemo } from "react";
+import { type SearchClickFnType } from "./search-content";
 
 type ArtistsSectionProps = {
   data?: { playlists: Playlist[]; authors: User[] };
-  searchClickFn: NavigateClickParams;
+  searchClickFn: SearchClickFnType;
 };
 
 export function PlaylistsSection({ data, searchClickFn }: ArtistsSectionProps) {
@@ -26,10 +24,15 @@ export function PlaylistsSection({ data, searchClickFn }: ArtistsSectionProps) {
                 (author) => author.id === playlist.creatorId,
               );
               if (author?.type === "ARTIST") return;
+              const fn = () =>
+                searchClickFn({
+                  searchPlaylist: playlist.id,
+                  type: "PLAYLIST",
+                });
               return (
                 <SectionItem
                   playlistData={playlist}
-                  onClick={searchClickFn}
+                  onClick={fn}
                   key={playlist.id}
                   description={`${format(playlist.createdAt, "YYY")} - ${author?.name}`}
                   title={playlist.title}

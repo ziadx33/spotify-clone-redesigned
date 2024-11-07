@@ -6,7 +6,6 @@ import { QueryProvider } from "@/providers/query-provider";
 import { mainFont } from "@/fonts";
 import { QueueProvider } from "@/providers/queue-provider";
 import { AuthProvider } from "@/providers/auth-provider";
-import { PrefrencesProvider } from "@/providers/prefrences-provider";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (

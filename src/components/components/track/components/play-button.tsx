@@ -25,6 +25,7 @@ export const PlayButton = ({
       queueTypeId={queueTypeId}
       isDiv
       className="cursor-pointer"
+      disableButtonVariant
       skipToTrack={!skeleton ? track.id : undefined}
       playlist={!skeleton ? playlist : undefined}
       track={!skeleton ? track : undefined}

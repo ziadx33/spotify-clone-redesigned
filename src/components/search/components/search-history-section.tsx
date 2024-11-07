@@ -2,11 +2,13 @@ import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/use-session";
+import { getPlaylists } from "@/server/actions/playlist";
 import { revalidate } from "@/server/actions/revalidate";
 import {
   getSearchHistory,
   removeSearchHistoryById,
 } from "@/server/actions/search-history";
+import { getUserByIds } from "@/server/actions/user";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useMemo, useState } from "react";
@@ -20,7 +22,27 @@ export function SearchHistorySection() {
     queryKey: ["search-history"],
     queryFn: async () => {
       const searchHistory = await getSearchHistory(user?.user?.id ?? "");
-      return searchHistory;
+      const { data: playlists } = await getPlaylists({
+        playlistIds: searchHistory
+          .filter(
+            (history) => history.type === "PLAYLIST" && history.searchPlaylist,
+          )
+          .map((history) => history.searchPlaylist!),
+      });
+      const users = await getUserByIds(
+        searchHistory
+          .filter((history) => history.type === "ARTIST" && history.searchUser)
+          .map((history) => history.searchUser!),
+      );
+      return searchHistory.map((item) => {
+        return {
+          searchItem: item,
+          user: users.find((user) => user.id === item.searchUser),
+          playlist: playlists?.find(
+            (playlist) => playlist.id === item.searchPlaylist,
+          ),
+        };
+      });
     },
     enabled: !!user?.user?.id,
   });
@@ -29,22 +51,37 @@ export function SearchHistorySection() {
     await removeSearchHistoryById(id);
     revalidate(`/search`);
   };
+  console.log("habal", data);
   const cards = useMemo(() => {
     return (
       data
-        ?.filter((card) => !currentRemovedSearchHistoryIds.includes(card.id))
+        ?.filter(
+          (card) =>
+            !currentRemovedSearchHistoryIds.includes(card.searchItem.id),
+        )
         ?.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+            new Date(b.searchItem.createdAt).getTime() -
+            new Date(a.searchItem.createdAt).getTime(),
         )
         .map((card) => (
           <SectionItem
-            key={card.id}
-            description={`searched on ${format(new Date(card.createdAt), "yyy-MM-d")}`}
-            link={card.href}
-            title={card.title}
-            image={card.image}
-            imageClasses={card.type === "ARTIST" ? "rounded-full" : undefined}
+            type={card.searchItem.type}
+            key={card.searchItem.id}
+            description={`searched on ${format(new Date(card.searchItem.createdAt), "yyy-MM-d")}`}
+            link={
+              card.searchItem.type === "ARTIST"
+                ? `/artist/${card.user?.id}?playlist=search`
+                : `/playlist/${card.playlist?.id}`
+            }
+            title={(card.user?.name ?? card.playlist?.title)!}
+            image={card.user?.image ?? card.playlist?.imageSrc}
+            artistData={card.user}
+            playlistData={card.playlist}
+            showPlayButton
+            imageClasses={
+              card.searchItem.type === "ARTIST" ? "rounded-full" : undefined
+            }
             customElement={
               <div
                 onClick={(e) => {
@@ -53,7 +90,7 @@ export function SearchHistorySection() {
               >
                 <Button
                   onClick={() => {
-                    void removeFromHistoryHandler(card.id);
+                    void removeFromHistoryHandler(card.searchItem.id);
                   }}
                   size="icon"
                   variant="outline"

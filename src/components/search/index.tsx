@@ -32,7 +32,7 @@ export function Search() {
     },
   });
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex h-full flex-col p-4">
       {!isLoading ? (
         queryRef.current ? (
           data && <SearchContent query={queryRef.current ?? ""} data={data} />
@@ -40,7 +40,7 @@ export function Search() {
           <BrowsePage />
         )
       ) : (
-        <Loading className="h-[50rem]" />
+        <Loading />
       )}
     </div>
   );

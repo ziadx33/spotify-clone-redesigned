@@ -4,10 +4,11 @@ import {
   type Queue,
   type Track,
 } from "@prisma/client";
-import { Button, type ButtonProps } from "./ui/button";
+import { buttonVariants, type ButtonProps } from "./ui/button";
 import { useRef, type ReactNode } from "react";
 import { type QueueListSliceType } from "@/state/slices/queue-list";
 import { usePlayQueue } from "@/hooks/use-play-queue";
+import { cn } from "@/lib/utils";
 
 export type QueuePlayButtonProps = Omit<
   ButtonProps,
@@ -40,13 +41,13 @@ export type QueuePlayButtonProps = Omit<
   className?: ((va: boolean, isQueuePlaying: boolean) => string) | string;
   queueTypeId?: string;
   isCurrent?: boolean;
+  disableButtonVariant?: boolean;
 };
 
 export function QueuePlayButton({
   data,
   children,
   playlist,
-  isDiv,
   track,
   artist,
   skipToTrack,
@@ -54,28 +55,31 @@ export function QueuePlayButton({
   className,
   queueTypeId,
   isCurrent,
+  disableButtonVariant,
   ...buttonProps
 }: QueuePlayButtonProps) {
-  const { isPlaying, playHandler, isCurrentPlaying, currentQueue, audios } =
-    usePlayQueue({
-      data,
-      playlist,
-      track,
-      artist,
-      skipToTrack,
-      noDefPlaylist,
-      queueTypeId,
-      isCurrent,
-    });
+  const { isPlaying, playHandler, isCurrentPlaying, audios } = usePlayQueue({
+    data,
+    playlist,
+    track,
+    artist,
+    skipToTrack,
+    noDefPlaylist,
+    queueTypeId,
+    isCurrent,
+  });
   const clickedRef = useRef(false);
   const buttonClass =
     typeof className === "function"
       ? className(isCurrentPlaying, isPlaying)
-      : className;
-  return !isDiv ? (
-    <Button
+      : cn("pointer-events-auto", className);
+  return (
+    <button
       {...buttonProps}
-      className={buttonClass}
+      className={cn(
+        !disableButtonVariant ? buttonVariants() : undefined,
+        buttonClass,
+      )}
       disabled={
         !!buttonProps.disabled || (audios?.isLoading && clickedRef.current)
       }
@@ -87,21 +91,6 @@ export function QueuePlayButton({
       }}
     >
       {children(isCurrentPlaying && isPlaying)}
-    </Button>
-  ) : (
-    <div
-      className={buttonClass}
-      onClick={async (e) => {
-        if (audios?.isLoading) return;
-        e.stopPropagation();
-        await playHandler();
-      }}
-    >
-      {children(
-        isCurrentPlaying && isPlaying,
-        (trackId: string) =>
-          currentQueue?.queueData?.currentPlaying === trackId,
-      )}
-    </div>
+    </button>
   );
 }

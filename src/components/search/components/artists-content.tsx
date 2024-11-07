@@ -1,24 +1,22 @@
 import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
-import {
-  type NavigateClickParams,
-  SectionItem,
-} from "@/components/components/section-item";
+import { SectionItem } from "@/components/components/section-item";
 import { getUsersBySearchQuery } from "@/server/actions/user";
 import { type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
+import { type SearchClickFnType } from "./search-content";
 
 type ArtistsContentProps = {
   users: User[];
   query: string;
-  SearchClickFn: NavigateClickParams;
+  searchClickFn: SearchClickFnType;
 };
 
 export function ArtistsContent({
   users,
   query,
-  SearchClickFn,
+  searchClickFn,
 }: ArtistsContentProps) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.2,
@@ -46,21 +44,25 @@ export function ArtistsContent({
     return (
       datum
         ?.filter((user) => user.type === "ARTIST")
-        ?.map((user, i) => (
-          <SectionItem
-            artistData={user}
-            key={user.id}
-            onClick={SearchClickFn}
-            description="Artist"
-            title={user.name}
-            link={`/artist/${user.id}?playlist=search`}
-            image={user.image ?? ""}
-            type="ARTIST"
-            imageClasses="rounded-full"
-            showPlayButton
-            ref={i === datum.length ? ref : null}
-          />
-        )) ?? []
+        ?.map((user, i) => {
+          const fn = () =>
+            searchClickFn({ searchUser: user.id, type: "ARTIST" });
+          return (
+            <SectionItem
+              artistData={user}
+              key={user.id}
+              onClick={fn}
+              description="Artist"
+              title={user.name}
+              link={`/artist/${user.id}?playlist=search`}
+              image={user.image ?? ""}
+              type="ARTIST"
+              imageClasses="rounded-full"
+              showPlayButton
+              ref={i === datum.length ? ref : null}
+            />
+          );
+        }) ?? []
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, users]);

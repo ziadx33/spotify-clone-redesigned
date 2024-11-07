@@ -17,7 +17,7 @@ export function Setting({
   const changeValue = useCallback(() => {
     const currentValue = !setting.value;
     setSettingsItems?.((v) => {
-      const settingItems = v[itemSettingsKey] as Setting[];
+      const settingItems = v?.[itemSettingsKey] as Setting[];
       return {
         ...v,
         [itemSettingsKey]: settingItems.map((item) => {

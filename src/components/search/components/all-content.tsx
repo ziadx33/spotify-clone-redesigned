@@ -14,12 +14,12 @@ import { AlbumsSection } from "./albums-section";
 import { PlaylistsSection } from "./playlists-section";
 import { ProfilesSection } from "./profiles-section";
 import Link from "next/link";
-import { type NavigateClickParams } from "@/components/components/section-item";
 import { AvatarData } from "@/components/avatar-data";
 import { QueuePlayButton } from "@/components/queue-play-button";
+import { type SearchClickFnType } from "./search-content";
 
 type AllContentProps = SearchQueryReturn & {
-  searchClickFn: NavigateClickParams;
+  searchClickFn: SearchClickFnType;
 };
 
 export function AllContent({

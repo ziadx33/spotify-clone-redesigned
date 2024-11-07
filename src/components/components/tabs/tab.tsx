@@ -19,6 +19,7 @@ type TabProps = {
     id: string;
   };
   currentContent?: ReactNode;
+  alwaysCurrentContent?: boolean;
 };
 
 export function Tab({
@@ -29,6 +30,7 @@ export function Tab({
   gap = 8,
   iconSize = 30,
   currentContent,
+  alwaysCurrentContent,
 }: TabProps) {
   const { isCurrentTab, currentTabRef } = useIsCurrentTab(href);
   const { removeTab } = useTabs();
@@ -75,7 +77,9 @@ export function Tab({
               }}
             />
           )}
-          {currentContent && isCurrentTab ? currentContent : titleSpan}
+          {!!(currentContent && isCurrentTab) || !!alwaysCurrentContent
+            ? currentContent
+            : titleSpan}
         </button>
         {deleteData && (
           <Button

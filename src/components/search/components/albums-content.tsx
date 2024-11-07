@@ -1,8 +1,5 @@
 import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
-import {
-  type NavigateClickParams,
-  SectionItem,
-} from "@/components/components/section-item";
+import { SectionItem } from "@/components/components/section-item";
 import { useSession } from "@/hooks/use-session";
 import { getPlaylistsBySearchQuery } from "@/server/actions/playlist";
 import { type Playlist, type User } from "@prisma/client";
@@ -10,17 +7,18 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
+import { type SearchClickFnType } from "./search-content";
 
 type AlbumsContentProps = {
   playlists: { playlists: Playlist[]; authors: User[] };
   query: string;
-  SearchClickFn: NavigateClickParams;
+  searchClickFn: SearchClickFnType;
 };
 
 export function AlbumsContent({
   playlists,
   query,
-  SearchClickFn,
+  searchClickFn,
 }: AlbumsContentProps) {
   const { data: user } = useSession();
   const { isIntersecting, ref } = useIntersectionObserver({
@@ -53,20 +51,24 @@ export function AlbumsContent({
           (album) =>
             album.creatorId !== user?.user?.id && album.type === "ALBUM",
         )
-        ?.map((album, i) => (
-          <SectionItem
-            playlistData={album}
-            key={album.id}
-            description={`${format(album.createdAt, "YYY")} - ${datum.authors.find((author) => author.id === album.creatorId)?.name}`}
-            title={album.title}
-            onClick={SearchClickFn}
-            link={`/playlist/${album.id}`}
-            image={album.imageSrc ?? ""}
-            type="PLAYLIST"
-            showPlayButton
-            ref={i === datum.playlists.length ? ref : null}
-          />
-        )) ?? []
+        ?.map((album, i) => {
+          const fn = () =>
+            searchClickFn({ searchPlaylist: album.id, type: "PLAYLIST" });
+          return (
+            <SectionItem
+              playlistData={album}
+              key={album.id}
+              description={`${format(album.createdAt, "YYY")} - ${datum.authors.find((author) => author.id === album.creatorId)?.name}`}
+              title={album.title}
+              onClick={fn}
+              link={`/playlist/${album.id}`}
+              image={album.imageSrc ?? ""}
+              type="PLAYLIST"
+              showPlayButton
+              ref={i === datum.playlists.length ? ref : null}
+            />
+          );
+        }) ?? []
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, playlists, user?.user?.id]);

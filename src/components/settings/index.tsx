@@ -10,6 +10,8 @@ import { type User } from "@prisma/client";
 import { revalidate } from "@/server/actions/revalidate";
 import { DEFAULT_SECTIONS } from "../home/components/prefrences-provider";
 import { toast } from "sonner";
+import { SkeletonSettings } from "./components/skeleton-setting";
+import { cn } from "@/lib/utils";
 
 type DefSetting = {
   title: string;
@@ -31,6 +33,7 @@ export type SettingsItems = Record<string, Setting[]>;
 
 export function Settings({ user }: { user: User }) {
   const { data: prefrences, error: prefrencesError } = usePrefrences();
+  console.log("eyad", prefrences);
   const dispatch = useDispatch<AppDispatch>();
   const [settingsItems, setSettingsItems] = useState<SettingsItems | null>(
     null,
@@ -216,7 +219,9 @@ export function Settings({ user }: { user: User }) {
       <div className="mb-10 flex justify-between">
         <h1 className="text-3xl font-bold">Settings</h1>
       </div>
-      <div className="flex flex-col gap-4">{settingsContent}</div>
+      <div className={cn("flex flex-col", settingsItems ? "gap-4" : "gap-2")}>
+        {settingsItems ? settingsContent : <SkeletonSettings />}
+      </div>
     </div>
   );
 }

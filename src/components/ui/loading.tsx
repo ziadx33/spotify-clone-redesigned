@@ -3,7 +3,12 @@ import { RotatingLines } from "react-loader-spinner";
 
 export default function Loading({ className }: { className?: string }) {
   return (
-    <div className={cn("grid h-screen w-full place-items-center", className)}>
+    <div
+      className={cn(
+        "absolute grid h-full w-full place-items-center",
+        className,
+      )}
+    >
       <RotatingLines
         strokeColor="grey"
         strokeWidth="5"
