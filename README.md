@@ -21,7 +21,7 @@ A modern redesign of Spotify, built using React, Next.js, TypeScript, and Tailwi
 ## Tech Stack
 
 - **Frontend:** React, Next.js, TypeScript, Tailwind CSS
-- **Backend:** Node.js, Express, Prisma
+- **Backend:** Prisma, Next.js
 - **Database:** PostgreSQL
 
 ## Installation
@@ -29,17 +29,20 @@ A modern redesign of Spotify, built using React, Next.js, TypeScript, and Tailwi
 To set up the project locally, follow these steps:
 
 1. **Clone the Repository:**
+
    ```bash
    git clone https://github.com/ziadx33/spotify-clone-redesigned.git
    cd spotify-clone-redesigned
    ```
 
 2. **Install Dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Set Up Environment Variables:**
+
    - Copy the example environment file:
      ```bash
      cp .env.example .env
@@ -47,6 +50,7 @@ To set up the project locally, follow these steps:
    - Edit the `.env` file and update it with your database connection details and other configuration settings.
 
 4. **Set Up the Database:**
+
    - Ensure PostgreSQL is installed and running.
    - Create a new PostgreSQL database.
    - Update the `.env` file with your database connection details.
@@ -56,9 +60,11 @@ To set up the project locally, follow these steps:
      ```
 
 5. **Run the Development Server:**
+
    ```bash
    npm run dev
    ```
+
    - Open your browser and go to `http://localhost:3000` to view the application.
 
 6. **Build and Run for Production (Optional):**
@@ -70,7 +76,3 @@ To set up the project locally, follow these steps:
      ```bash
      npm start
      ```
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes. Make sure to follow the project's coding standards and include relevant tests.
