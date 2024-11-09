@@ -2,7 +2,7 @@ import { type TrackFilters } from "@/types";
 
 const AUTH_ROUTES = ["/login", "/register", "/verification-token"];
 
-const CATEGORIES = ["Playlists", "Artists", "Podcasts & Shows"];
+const CATEGORIES = ["Playlists", "Artists", "Albums"] as const;
 
 const DEFAULT_TRACK_FILTERS_DATA: TrackFilters = {
   album: null,

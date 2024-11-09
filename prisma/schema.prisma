@@ -179,6 +179,12 @@ model SearchHistory {
     createdAt DateTime @default(now())
 }
 
+enum CATEGORIES {
+    Playlists
+    Artists
+    Albums
+}
+
 model Preference {
     id                 String   @id @default(cuid())
     user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -194,6 +200,9 @@ model Preference {
     ShowFollowingList      Boolean @default(false)
     ShowFollowersList      Boolean @default(true)
     ShowTopPlayingTracks   Boolean @default(false)
+
+    showSidebar     Boolean     @default(true)
+    currentCategory CATEGORIES?
 
     @@unique([userId])
 }

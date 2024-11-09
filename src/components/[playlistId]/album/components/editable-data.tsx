@@ -45,7 +45,10 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
   return (
     <div>
       <div
-        className={cn("flex gap-8 p-8 pb-6", miniMenuValue ? "flex-col" : "")}
+        className={cn(
+          "flex justify-between gap-8 p-8 pb-6",
+          miniMenuValue ? "flex-col" : "",
+        )}
       >
         <div className="flex w-[95%] flex-col">
           <PlaylistContext playlist={data}>
@@ -93,7 +96,7 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
         </div>
         <div
           className={cn(
-            "flex w-full gap-4",
+            "flex w-fit gap-4",
             !miniMenuValue ? "flex-col" : "flex-row border-t pt-4",
           )}
         >

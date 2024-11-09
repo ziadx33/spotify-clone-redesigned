@@ -10,6 +10,7 @@ import { useState, type DragEvent } from "react";
 import { useTrackDropdownItems } from "@/hooks/use-track-dropdown-items";
 import { useTracks } from "@/hooks/use-tracks";
 import { toast } from "sonner";
+import { usePrefrences } from "@/hooks/use-prefrences";
 
 type PlaylistProps = {
   userData?: User;
@@ -30,6 +31,7 @@ export function LibraryItem({
   const getTrackItems = useTrackDropdownItems({ isFn: true });
   const { data: tracks } = useTracks();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const { data: prefrences } = usePrefrences();
 
   const handleDrop = (e: DragEvent<HTMLButtonElement>) => {
     setIsDraggingOver(false);
@@ -66,6 +68,7 @@ export function LibraryItem({
           ? "bg-muted"
           : "",
         isDraggingOver ? "border-2 border-primary" : "",
+        !prefrences?.showSidebar ? "h-[4.3rem]" : "h-20",
       )}
       asChild
       onDrop={isDroppable ? handleDrop : undefined}
@@ -79,6 +82,7 @@ export function LibraryItem({
             ? `/playlist/${data.id}`
             : `/artist/${data.id}?playlist=library`
         }
+        className="flex w-full justify-start"
       >
         <div className="relative h-full w-[65px] overflow-hidden">
           <Image
@@ -88,21 +92,25 @@ export function LibraryItem({
             alt={isArtist ? data.name : data.title}
           />
         </div>
-        <div className="flex size-full items-center justify-between pr-3">
-          <h4 className="flex w-full flex-col items-start gap-1">
-            <span className={isActive ? "text-primary" : ""}>
-              {isArtist ? data.name : data.title}
-            </span>
-            <span className="flex items-center gap-1.5 capitalize text-muted-foreground">
-              {isArtist
-                ? "artist"
-                : data.creatorId === userData?.id
-                  ? "playlist"
-                  : enumParser(data.type)}
-            </span>
-          </h4>
-          {isActive && <HiMiniSpeakerWave size={25} className="text-primary" />}
-        </div>
+        {!prefrences?.showSidebar ? (
+          <div className="flex size-full items-center justify-between pr-3">
+            <h4 className="flex w-full flex-col items-start gap-1">
+              <span className={isActive ? "text-primary" : ""}>
+                {isArtist ? data.name : data.title}
+              </span>
+              <span className="flex items-center gap-1.5 capitalize text-muted-foreground">
+                {isArtist
+                  ? "artist"
+                  : data.creatorId === userData?.id
+                    ? "playlist"
+                    : enumParser(data.type)}
+              </span>
+            </h4>
+            {isActive && (
+              <HiMiniSpeakerWave size={25} className="text-primary" />
+            )}
+          </div>
+        ) : undefined}
       </Link>
     </Button>
   );

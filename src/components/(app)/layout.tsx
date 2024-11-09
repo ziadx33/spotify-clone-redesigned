@@ -16,7 +16,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <AudiosProvider>
             <QueueControllerContainer>
               <Sidebar />
-              <div className="flex h-full w-[80%] flex-col overflow-hidden rounded-lg">
+              <div className="flex h-full w-full flex-col overflow-hidden rounded-lg">
                 <Header>
                   <Tabs />
                 </Header>
