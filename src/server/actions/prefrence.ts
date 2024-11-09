@@ -1,35 +1,30 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
-import { cache } from "react";
 import { db } from "../db";
 import { type PrefrenceSliceType } from "@/state/slices/prefrence";
 import { type Preference } from "@prisma/client";
 
-export const getPrefrence = unstable_cache(
-  cache(async (id: string): Promise<PrefrenceSliceType> => {
-    try {
-      const prefrence = await db.preference.findUnique({
-        where: {
-          userId: id,
-        },
-      });
-      if (!prefrence) throw "no prefrence";
-      return {
-        data: prefrence,
-        error: null,
-        status: "success",
-      };
-    } catch (error) {
-      return {
-        data: null,
-        error: error as string,
-        status: "error",
-      };
-    }
-  }),
-  ["user-prefrence"],
-);
+export const getPrefrence = async (id: string): Promise<PrefrenceSliceType> => {
+  try {
+    const prefrence = await db.preference.findUnique({
+      where: {
+        userId: id,
+      },
+    });
+    if (!prefrence) throw "no prefrence";
+    return {
+      data: prefrence,
+      error: null,
+      status: "success",
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as string,
+      status: "error",
+    };
+  }
+};
 
 type EditUserPreferenceParams = {
   error: string | null;

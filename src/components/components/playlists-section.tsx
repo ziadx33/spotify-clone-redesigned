@@ -8,7 +8,6 @@ import { type AppDispatch } from "@/state/store";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { editUserPrefrence } from "@/server/actions/prefrence";
 import { useSession } from "@/hooks/use-session";
-import { revalidate } from "@/server/actions/revalidate";
 
 export function PlaylistSection() {
   const { data, error } = usePrefrences();
@@ -23,7 +22,6 @@ export function PlaylistSection() {
       type: "set",
       userId: user!.user!.id,
     });
-    revalidate("/");
   };
   return (
     <div className={cn("", data?.showSidebar ? "w-24 px-2" : "w-full px-4")}>

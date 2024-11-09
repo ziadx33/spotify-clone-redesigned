@@ -11,7 +11,6 @@ import { editPrefrence } from "@/state/slices/prefrence";
 import { editUserPrefrence } from "@/server/actions/prefrence";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
-import { revalidate } from "@/server/actions/revalidate";
 import { useSession } from "@/hooks/use-session";
 
 export function PlaylistFilters() {
@@ -35,7 +34,6 @@ export function PlaylistFilters() {
         type: "set",
         userId: user.user.id,
       });
-      revalidate("/");
     },
     [dispatch, error, prefrence?.currentCategory, user],
   );
