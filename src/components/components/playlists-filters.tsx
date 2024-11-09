@@ -26,7 +26,7 @@ export function PlaylistFilters() {
       const usedData = {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         currentCategory:
-          prefrence?.currentCategory === category ? undefined : category,
+          prefrence?.currentCategory === category ? null : category,
       };
       dispatch(editPrefrence(usedData));
       await editUserPrefrence({

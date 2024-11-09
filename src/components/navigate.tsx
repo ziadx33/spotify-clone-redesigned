@@ -8,7 +8,6 @@ import {
   ContextMenuItem,
 } from "@/components/ui/context-menu";
 import { type ComponentPropsWithoutRef, type ReactNode } from "react";
-import { type NavigateClickParams } from "./components/section-item";
 import { MdOutlineBackupTable } from "react-icons/md";
 
 type MenuItemProps = {
@@ -22,12 +21,12 @@ export function Navigate({
   data,
   href,
   onClick,
-  image,
   contextItems,
   ...restProps
 }: NavigateProps & {
   children: ReactNode;
-  onClick?: NavigateClickParams;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  onClick?: () => unknown | Promise<unknown>;
   image?: string;
   contextItems?: Partial<MenuItemProps>[];
 } & Omit<ComponentPropsWithoutRef<"button">, "onClick">) {
@@ -37,7 +36,7 @@ export function Navigate({
       <ContextMenuTrigger asChild>
         <button
           onClick={async () => {
-            await onClick?.({ data, href, image: image ?? "" });
+            await onClick?.();
             navigate();
           }}
           {...restProps}
