@@ -33,7 +33,7 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
       </QueuePlayButton>
       <Button
         disabled={isFollowing}
-        onClick={toggle}
+        onClick={() => toggle()}
         variant="outline"
         className="mx-2 bg-transparent backdrop-blur-lg transition-all hover:bg-transparent hover:backdrop-blur-2xl"
       >
