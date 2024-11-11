@@ -13,11 +13,12 @@ export function MiniMenuTrackInfo() {
   const {
     getTrack,
     getQueue,
-    data: { data: queueListData },
+    data: { data: queueListData, status },
   } = useQueue();
   const currentQueue = getQueue(queueListData?.queueList.currentQueueId);
   const currentData = getTrack(currentQueue?.queueData?.currentPlaying ?? "");
   const { setShowMenu } = useMiniMenu();
+  const isDraggable = status === "success";
 
   return (
     <div className="w-full p-4 pb-2.5 pt-4">
@@ -41,7 +42,11 @@ export function MiniMenuTrackInfo() {
           </button>
         </div>
       </div>
-      <TrackContext playlist={currentData.album} track={currentData.track}>
+      <TrackContext
+        playlist={currentData.album}
+        track={currentData.track}
+        dragController={isDraggable}
+      >
         <Link href={`/playlist/${currentData.album?.id}`} className="size-fit">
           <AvatarData
             src={currentData.track?.imgSrc}
@@ -51,7 +56,11 @@ export function MiniMenuTrackInfo() {
       </TrackContext>
       <div className="mb-4 flex justify-between">
         <div className="flex flex-col">
-          <TrackContext playlist={currentData.album} track={currentData.track}>
+          <TrackContext
+            playlist={currentData.album}
+            track={currentData.track}
+            dragController={isDraggable}
+          >
             <Link
               href={`/playlist/${currentData.album?.id}`}
               className="text-2xl font-bold"
@@ -60,12 +69,13 @@ export function MiniMenuTrackInfo() {
             </Link>
           </TrackContext>
           <AuthorContext
+            dragController={isDraggable}
             artist={currentData.author}
             playlistId={currentData.album?.id ?? "playing-album"}
           >
             <Link
               href={`/artist/${currentData.author?.id}?playlist=${currentData.album?.id}`}
-              className="text-md text-muted-foreground"
+              className="text-md bg-transparent text-muted-foreground"
             >
               {currentData.author?.name}
             </Link>

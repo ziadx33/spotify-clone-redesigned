@@ -35,15 +35,16 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
     setIsFollowing(false);
   };
 
-  const follow = async () => {
+  const follow = async (otherUser?: User | null) => {
     setIsFollowing(true);
-    if (artist) dispatch(followUser(artist));
+    const artistData = artist ?? otherUser;
+    if (artistData) dispatch(followUser(artistData));
     await updateUserById({
-      id: artist?.id ?? "",
+      id: artistData?.id ?? "",
       data: {
-        followers: [...(artist?.followers ?? []), user?.user?.id ?? ""],
+        followers: [...(artistData?.followers ?? []), user?.user?.id ?? ""],
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        discoveredOn: [...(artist?.discoveredOn ?? []), playlistId],
+        discoveredOn: [...(artistData?.discoveredOn ?? []), playlistId],
       },
     });
     reset();

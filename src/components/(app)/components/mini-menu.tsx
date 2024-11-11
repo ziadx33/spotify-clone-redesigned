@@ -16,7 +16,6 @@ export function MiniMenu() {
   const { value, showQueue, showFullMenu, setShowMenu, status } = useMiniMenu();
   const { data: prefrences } = usePrefrences();
   const isDone = useRef(false);
-  console.log("karmeshtelha", prefrences);
   useEffect(() => {
     if (isDone.current) return;
     if (prefrences?.showPlayingView === undefined || status !== "success")

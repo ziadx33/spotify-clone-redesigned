@@ -6,11 +6,12 @@ import { usePathname } from "next/navigation";
 import { enumParser } from "@/utils/enum-parser";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import Link from "next/link";
-import { useState, type DragEvent } from "react";
+import { useState } from "react";
 import { useTrackDropdownItems } from "@/hooks/use-track-dropdown-items";
-import { useTracks } from "@/hooks/use-tracks";
 import { toast } from "sonner";
 import { usePrefrences } from "@/hooks/use-prefrences";
+import { useDrop } from "@/hooks/use-drop";
+import { getTrackById } from "@/server/actions/track";
 
 type PlaylistProps = {
   userData?: User;
@@ -29,33 +30,30 @@ export function LibraryItem({
   const isArtist = type === "ARTIST";
   const isDroppable = !isArtist && data.creatorId === userData?.id;
   const getTrackItems = useTrackDropdownItems({ isFn: true });
-  const { data: tracks } = useTracks();
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const { data: prefrences } = usePrefrences();
 
-  const handleDrop = (e: DragEvent<HTMLButtonElement>) => {
-    setIsDraggingOver(false);
-    if (isArtist) return;
-    const trackId = e.dataTransfer.getData("trackId");
-    console.log("shurup", trackId);
-    if (trackId) {
-      const track = tracks?.tracks?.find((track) => track.id === trackId);
-      if (!track) return toast.error("something went wrong");
+  const { ref } = useDrop<HTMLButtonElement>(
+    "trackId",
+    async (trackId) => {
+      setIsDraggingOver(false);
+      if (isArtist) return;
+      const track = await getTrackById(trackId);
+      if (!track) return toast.error("Something went wrong");
       const { data: items } = getTrackItems(track);
       const event = items?.events.addToPlaylistHandler;
-      void event?.(data, track);
-    }
-  };
-
-  const handleDragEnter = () => {
-    setIsDraggingOver(true);
-  };
-
-  const handleDragLeave = (e: DragEvent<HTMLButtonElement>) => {
-    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-      setIsDraggingOver(false);
-    }
-  };
+      event?.(data, track);
+    },
+    () => {
+      setIsDraggingOver(true);
+    },
+    (e) => {
+      if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+        setIsDraggingOver(false);
+      }
+    },
+    isDroppable,
+  );
 
   return (
     <Button
@@ -71,10 +69,7 @@ export function LibraryItem({
         !prefrences?.showSidebar ? "h-[4.3rem]" : "h-20",
       )}
       asChild
-      onDrop={isDroppable ? handleDrop : undefined}
-      onDragOver={(e) => e.preventDefault()}
-      onDragEnter={isDroppable ? handleDragEnter : undefined}
-      onDragLeave={isDroppable ? handleDragLeave : undefined}
+      ref={ref}
     >
       <Link
         href={

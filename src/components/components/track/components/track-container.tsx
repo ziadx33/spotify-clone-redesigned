@@ -1,13 +1,7 @@
 import { TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { type Playlist, type Track } from "@prisma/client";
-import {
-  type ReactNode,
-  type Dispatch,
-  type SetStateAction,
-  type DragEvent,
-} from "react";
-import { type Props } from "../types";
+import { type ReactNode, type Dispatch, type SetStateAction } from "react";
 import { TrackContext } from "@/components/contexts/track-context";
 
 type TrackContainerProps = {
@@ -15,7 +9,6 @@ type TrackContainerProps = {
   skeleton: boolean;
   track?: Track;
   hidePlayButton?: boolean;
-  intersectLastElementRef?: Props["intersectLastElementRef"];
   selected?: boolean;
   children: ReactNode[];
   playlist?: Playlist;
@@ -26,7 +19,6 @@ export function TrackContainer({
   skeleton,
   track,
   hidePlayButton,
-  intersectLastElementRef,
   selected,
   children,
   playlist,
@@ -35,17 +27,13 @@ export function TrackContainer({
     setShowButtons(value);
   };
 
-  const dragStartHandle = (e: DragEvent<HTMLTableRowElement>) => {
-    e.dataTransfer.setData("trackId", track?.id ?? "");
-  };
-
   return (
     <TrackContext
       track={!skeleton ? track : undefined}
       playlist={!skeleton ? playlist : undefined}
+      dragController={!skeleton}
     >
       <TableRow
-        ref={intersectLastElementRef}
         key={!skeleton ? track!.id : crypto.randomUUID()}
         onMouseOver={() => hoverTrackHandler(true)}
         onMouseLeave={() => hoverTrackHandler(false)}
@@ -54,8 +42,6 @@ export function TrackContainer({
           hidePlayButton ? "flex w-full justify-between " : "",
           selected ? "bg-muted" : "",
         )}
-        draggable={!skeleton}
-        onDragStart={dragStartHandle}
       >
         {children}
       </TableRow>

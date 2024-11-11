@@ -23,7 +23,6 @@ function Comp(props: TrackProps) {
     viewAs,
     selected,
     setSelectedTracks,
-    intersectLastElementRef,
     queueTypeId,
   } = props;
 
@@ -36,7 +35,6 @@ function Comp(props: TrackProps) {
       skeleton={skeleton}
       track={!skeleton ? props.track : undefined}
       hidePlayButton={hidePlayButton}
-      intersectLastElementRef={intersectLastElementRef}
       playlist={!skeleton ? props.playlist : undefined}
     >
       <AuthorsContainer

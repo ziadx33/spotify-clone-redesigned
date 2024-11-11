@@ -54,7 +54,7 @@
     @apply select-none border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply overflow-hidden bg-background text-foreground;
   }
   img {
     @apply object-cover;
