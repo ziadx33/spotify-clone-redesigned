@@ -45,7 +45,10 @@ export function TrackContext({
       <ContextMenuTrigger asChild={asChild} className={className} ref={addRef}>
         {children}
       </ContextMenuTrigger>
-      <ContextMenuPortal forceMount>
+      <ContextMenuPortal
+        forceMount
+        container={document.getElementById("drag-items-container")}
+      >
         <span
           ref={(el) => setTrackDragRef(el)}
           className={cn(

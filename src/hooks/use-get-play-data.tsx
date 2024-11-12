@@ -28,7 +28,9 @@ export function useGetPlayData({
 }: UseGetPlayData): {
   getData: () => Promise<Omit<NonNullable<QueuePlayButtonProps>, "children">>;
 } {
-  const { data } = useTracks();
+  const {
+    data: { data },
+  } = useTracks();
   const shouldFetch = useRef(false);
 
   const { refetch, data: nonPlaylistData } = useQuery({

@@ -315,3 +315,22 @@ export const addTracksToPlaylist = async ({
     throw { error };
   }
 };
+
+export const getNumberSavedPlaylist = async ({
+  playlistId,
+}: {
+  playlistId: string;
+}) => {
+  try {
+    const numberSaved = await db.user.count({
+      where: {
+        playlists: {
+          has: playlistId,
+        },
+      },
+    });
+    return numberSaved;
+  } catch (error) {
+    throw { error };
+  }
+};

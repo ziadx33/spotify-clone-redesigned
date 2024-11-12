@@ -11,7 +11,10 @@ export function Authors({ authors, playlistId }: TrackAuthorsProps) {
   return (
     <>
       {authors.map((author, index) => (
-        <div key={author.id} className="text-muted-foreground">
+        <div
+          key={author.id}
+          className="line-clamp-1 flex text-muted-foreground"
+        >
           <AuthorContext
             artist={author}
             playlistId={playlistId ?? "liked-tracks"}

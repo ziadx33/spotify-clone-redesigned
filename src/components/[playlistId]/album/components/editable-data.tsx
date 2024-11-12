@@ -28,7 +28,9 @@ type EditableDataProps = {
 
 function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
   const isLoading = !data;
-  const { data: tracksData, status } = useTracks();
+  const {
+    data: { data: tracksData, status },
+  } = useTracks();
 
   const tracksTime = useMemo(() => {
     const seconds = tracksData?.tracks

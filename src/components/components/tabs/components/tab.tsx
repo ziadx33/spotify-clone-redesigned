@@ -20,6 +20,7 @@ type TabProps = {
   };
   currentContent?: ReactNode;
   alwaysCurrentContent?: boolean;
+  onClick?: () => void;
 };
 
 export function Tab({
@@ -31,6 +32,7 @@ export function Tab({
   iconSize = 30,
   currentContent,
   alwaysCurrentContent,
+  onClick,
 }: TabProps) {
   const { isCurrentTab, currentTabRef } = useIsCurrentTab(href);
   const { removeTab } = useTabs();
@@ -40,6 +42,7 @@ export function Tab({
     await removeTab(id);
   };
   const changePageHandler = async () => {
+    onClick?.();
     router.push(href);
   };
 

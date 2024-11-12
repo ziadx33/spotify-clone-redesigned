@@ -11,6 +11,7 @@ type TrackMoreButtonProps = {
   className?: string;
   disableClasses?: boolean;
   trigger?: ReactNode;
+  disable?: boolean;
 };
 
 export function TrackMoreButton({
@@ -19,6 +20,7 @@ export function TrackMoreButton({
   className,
   trigger,
   disableClasses,
+  disable,
 }: TrackMoreButtonProps) {
   const { data: dropdownItems, status } = useTrackDropdownItems({
     playlist,
@@ -33,6 +35,7 @@ export function TrackMoreButton({
   return (
     <DropdownMenuItems items={dropdownItems.data}>
       <DropdownMenuItems.Trigger
+        disabled={disable}
         onClick={(e) => e.stopPropagation()}
         className={
           !disableClasses

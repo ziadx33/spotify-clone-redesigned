@@ -16,7 +16,7 @@ export function Playlist({
       <EditableData
         creatorData={creatorData?.creatorData}
         data={data}
-        tracks={tracks?.tracks ?? []}
+        tracks={tracks?.data?.tracks ?? []}
         type={type}
       />
       <div className="flex h-fit w-full flex-col gap-4 px-8 pb-4">
@@ -30,9 +30,9 @@ export function Playlist({
         ) : (
           <Recommended
             playlistId={id}
-            tracks={tracks?.tracks}
+            tracks={tracks?.data?.tracks}
             playlist={data}
-            artists={tracks?.authors}
+            artists={tracks?.data?.authors}
           />
         )}
       </div>

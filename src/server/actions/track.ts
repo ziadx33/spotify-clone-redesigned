@@ -8,6 +8,7 @@ import { handleRequests } from "@/utils/handle-requests";
 import { type Track, type $Enums, type User } from "@prisma/client";
 import { getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { getPlaylists } from "./playlist";
+import { ExploreSliceData } from "@/state/slices/explore";
 
 type GetTracksDataParams = {
   tracks: Track[];
@@ -738,6 +739,59 @@ export const editTrackById = async ({ id, data }: EditTrackById) => {
       data,
     });
     return editedTrack;
+  } catch (error) {
+    throw { error };
+  }
+};
+
+type GetTracksByGenresParams = {
+  genres: $Enums.GENRES[];
+  range?: {
+    from?: number;
+    to?: number;
+  };
+};
+
+export const getTracksByGenres = async ({
+  genres,
+  range,
+}: GetTracksByGenresParams) => {
+  try {
+    const tracks = await db.track.findMany({
+      where: {
+        genres: {
+          hasSome: genres,
+        },
+      },
+      skip: range?.from,
+      take: range?.to,
+      orderBy: {
+        dateAdded: "asc",
+      },
+    });
+    const requests = [
+      db.user.findMany({
+        where: {
+          OR: [
+            { id: { in: tracks?.map((track) => track?.authorId ?? "") } },
+            {
+              id: {
+                in: tracks?.map((track) => track?.authorIds ?? []).flat() ?? [],
+              },
+            },
+          ],
+        },
+      }),
+      getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
+    ] as const;
+    const [authors, { data: albums }] = await handleRequests(requests);
+    const data: ExploreSliceData["data"] = {
+      tracks: tracks ?? [],
+      albums: albums ?? [],
+      authors,
+      randomly: true,
+    };
+    return data;
   } catch (error) {
     throw { error };
   }

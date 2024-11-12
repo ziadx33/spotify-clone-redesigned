@@ -27,6 +27,10 @@ export function Layout({ children }: { children: ReactNode }) {
             </ThemeProvider>
           </ReduxProvider>
         </AuthProvider>
+        <div
+          id="drag-items-container"
+          className="absolute -top-24 -z-50 flex w-full gap-2 overflow-y-scroll"
+        ></div>
       </body>
     </html>
   );

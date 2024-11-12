@@ -43,7 +43,7 @@ export function usePlaylistDropdownItems({
   const { data: user } = useSession();
   const { toggle, isAddedToLibrary } = useAddToPlaylist({ playlist });
   const {
-    addPlaylistToQueue,
+    addDataToQueue,
     data: { data: queueData },
   } = useQueue();
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
@@ -53,7 +53,9 @@ export function usePlaylistDropdownItems({
     data: { data: playlists, status: playlistStatus },
   } = usePlaylists();
   const router = useRouter();
-  const { data: tracks } = useTracks();
+  const {
+    data: { data: tracks },
+  } = useTracks();
   const navigate = useNavigate({
     data: {
       href: `/playlist/${playlist?.id}`,
@@ -153,7 +155,7 @@ export function usePlaylistDropdownItems({
       icon: PiQueueBold,
       title: "Add to queue",
       event: () =>
-        void addPlaylistToQueue({
+        void addDataToQueue({
           data: playlist,
           type: "PLAYLIST",
           queueList: queueData?.queueList,

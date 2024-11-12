@@ -48,7 +48,10 @@ export function AuthorContext({
       >
         {children}
       </ContextMenuTrigger>
-      <ContextMenuPortal forceMount>
+      <ContextMenuPortal
+        forceMount
+        container={document.getElementById("drag-items-container")}
+      >
         <span
           ref={(el) => setTrackDragItem(el)}
           className={cn(

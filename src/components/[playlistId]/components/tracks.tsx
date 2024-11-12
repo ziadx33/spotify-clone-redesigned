@@ -32,7 +32,9 @@ export function Tracks({
   queueTypeId,
 }: TracksProps) {
   const { data: user } = useSession();
-  const { data, status } = useTracks();
+  const {
+    data: { data, status },
+  } = useTracks();
   const isCreatedByUser = playlist?.creatorId === user?.user?.id;
 
   return !!playlist || status !== "loading" ? (

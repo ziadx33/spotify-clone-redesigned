@@ -10,9 +10,10 @@ import { followUser, unFollowUser } from "@/state/slices/following";
 type UseFollowParams = {
   artist?: User | null;
   playlistId: string;
+  t?: string;
 };
 
-export function useFollow({ artist, playlistId }: UseFollowParams) {
+export function useFollow({ artist, playlistId, t }: UseFollowParams) {
   const { data: user } = useSession();
   const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
   const followedSetDone = useRef(false);
@@ -21,12 +22,14 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
 
   useEffect(() => {
     if (followedSetDone.current) return;
+    if (!artist) return;
     if (!user?.user?.id) return;
+    console.log(t, artist);
     setIsFollowed(artist?.followers?.includes(user?.user?.id) ?? false);
     followedSetDone.current = true;
     setIsFollowing(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.user?.id]);
+  }, [user?.user?.id, artist]);
 
   const reset = () => {
     revalidate(`/artist/${artist?.id}`);

@@ -102,6 +102,16 @@ const tracksSlice = createSlice({
   },
 });
 
+/*
+  selectors: {
+    getCurrentQueue(state) {
+      return state.data?.queues.find(
+        (queue) => queue.queueData?.id === state.data.queueList.currentQueueId,
+      );
+    },
+  },
+*/
+
 export const {
   setTracks,
   removeTrackFromPlaylist,

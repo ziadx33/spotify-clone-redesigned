@@ -1,6 +1,6 @@
 import { getServerAuthSession } from "@/server/auth";
-import { TabsContent } from "./tabs-content";
-import { TabsProvider } from "./tabs-provider";
+import { TabsContent } from "./components/tabs-content";
+import { TabsProvider } from "./components/tabs-provider";
 import { getTabs } from "@/server/actions/tab";
 
 export async function Tabs() {

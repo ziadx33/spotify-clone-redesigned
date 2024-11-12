@@ -19,7 +19,9 @@ export function SearchTrack({
   tableProps,
   addTrackToPlaylistFn,
 }: SearchTrackProps) {
-  const { data: tracks } = useTracks();
+  const {
+    data: { data: tracks },
+  } = useTracks();
   const [search, setSearch, debounce] = useDebounceState("", () => {
     void refetch();
   });

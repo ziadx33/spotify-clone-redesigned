@@ -53,13 +53,26 @@
   * {
     @apply select-none border-border;
   }
+
   body {
-    @apply overflow-hidden bg-background text-foreground;
+    @apply relative flex flex-col justify-between bg-background text-foreground;
   }
   img {
     @apply object-cover;
   }
   a {
     @apply hover:underline;
+  }
+
+  @keyframes full-bounce {
+    0% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-20px); /* Move up */
+    }
+    100% {
+      transform: translateY(0); /* Return to original position */
+    }
   }
 }

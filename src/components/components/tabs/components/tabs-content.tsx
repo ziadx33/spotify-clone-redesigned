@@ -8,6 +8,7 @@ import { useTabs } from "@/hooks/use-tabs";
 import { SearchTab } from "./search-tab";
 import { TabSkeleton } from "@/components/artist/components/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ExploreTab } from "./explore-tab";
 
 export function TabsContent() {
   const { data: tabs, status, error } = useTabs();
@@ -18,6 +19,7 @@ export function TabsContent() {
         {status === "success" ? (
           <>
             <Tab title="Home" Icon={TiHome} iconSize={23} href={"/"} />
+            <ExploreTab />
             <SearchTab />
             {tabs?.map((tab) => (
               <Tab

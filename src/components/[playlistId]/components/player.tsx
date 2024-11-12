@@ -41,6 +41,7 @@ import { toast } from "sonner";
 import { QueuePlayButton } from "@/components/queue-play-button";
 import { ShuffleButton } from "./shuffle-button";
 import { PlaylistDropdown } from "@/components/dropdowns/playlist-dropdown";
+import { ExploreButton } from "./explore-button";
 
 type PlayerProps = {
   filters: TrackFilters;
@@ -76,6 +77,7 @@ export function Comp({
           )}
         >
           <div className="flex h-fit w-full gap-1">
+            <ExploreButton playlist={playlist} />
             {selectedTracks?.length ?? 0 > 0 ? (
               <AddTracksToPlaylist
                 playlist={playlist}
@@ -163,7 +165,9 @@ function AddTracksToPlaylist({
   setSelectedTracks,
   selectedTracksIds,
 }: AddTracksToPlaylistProps) {
-  const { data: tracks, status: tracksStatus } = useTracks();
+  const {
+    data: { data: tracks, status: tracksStatus },
+  } = useTracks();
   const { data: user } = useSession();
   const {
     data: { data: playlists, status: playlistsStatus },

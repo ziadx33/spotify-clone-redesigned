@@ -337,7 +337,7 @@ export function useQueue() {
     return targetTrack;
   };
 
-  const addPlaylistToQueue = async (
+  const addDataToQueue = async (
     params: addToQueueData & { queueList?: QueueList | null },
   ) => {
     if (data.error) return;
@@ -357,7 +357,7 @@ export function useQueue() {
     shuffleQueue,
     repeatQueue,
     skipBy,
-    addPlaylistToQueue,
+    addDataToQueue,
     removeQueueFromList,
     editQueueListFn,
     editCurQueue,
