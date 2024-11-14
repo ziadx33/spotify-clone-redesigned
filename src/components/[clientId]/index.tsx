@@ -7,6 +7,9 @@ import { getUserById } from "@/server/actions/verification-token";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/loading";
 import { useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "@/state/store";
+import { editNotFoundType } from "@/state/slices/not-found";
 
 type ClientProps = {
   artistId: string;
@@ -15,11 +18,17 @@ type ClientProps = {
 
 export function Client({ artistId, playlistId }: ClientProps) {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const { data, isLoading } = useQuery({
     queryKey: [`artist-page-data-${artistId}`],
     queryFn: async () => {
       const user = await getUserById({ id: artistId });
+      console.log("tester", user);
+      if (!user) {
+        dispatch(editNotFoundType("ARTIST"));
+        return router.push("/404-error");
+      }
       return { user, isUser: user?.type === "USER" };
     },
   });

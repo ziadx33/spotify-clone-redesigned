@@ -19,7 +19,7 @@ export function ScrollContainer({
   setCurrentItem,
   exploreData,
 }: ScrollContainerProps) {
-  const currentItemNumRef = useRef(1);
+  const currentItemNumRef = useRef(0);
   const scrollLengthRef = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
 

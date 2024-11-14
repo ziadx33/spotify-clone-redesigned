@@ -99,7 +99,7 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
         <div
           className={cn(
             "flex w-fit gap-4",
-            !miniMenuValue ? "flex-col" : "flex-row border-t pt-4",
+            !miniMenuValue ? "flex-col" : "w-full flex-row border-t pt-4",
           )}
         >
           <div

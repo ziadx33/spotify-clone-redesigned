@@ -12,5 +12,6 @@ export function useSkipFirstEffect(
     } else {
       hasMounted.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }

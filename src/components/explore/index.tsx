@@ -84,7 +84,8 @@ export function Explore() {
   };
 
   useEffect(() => {
-    if (!exploreFetchData || !explore.randomly) return;
+    if (!explore.randomly) return;
+    if (!exploreFetchData) return;
     if (!initRender) {
       setInitRender(true);
 
@@ -120,8 +121,6 @@ export function Explore() {
   const currentItemData = useMemo(() => {
     return data.find((item) => item.track?.id === currentItem?.id);
   }, [data, currentItem]);
-
-  console.log("I'm just bahawel", exploreData.tracks?.length);
 
   return (
     <ScrollContainer exploreData={exploreData} setCurrentItem={setCurrentItem}>

@@ -8,6 +8,7 @@ import queueList from "./slices/queue-list";
 import miniMenu from "./slices/mini-menu";
 import queueController from "./slices/queue-controller";
 import explore from "./slices/explore";
+import notFound from "./slices/not-found";
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     miniMenu,
     queueController,
     explore,
+    notFound,
   },
 });
 

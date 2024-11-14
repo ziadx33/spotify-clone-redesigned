@@ -1,7 +1,7 @@
 import { Switch } from "@/components/ui/switch";
-import { type SettingsItems, type Setting } from "..";
 import { useCallback, type Dispatch, type SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
+import { type Setting, type SettingsItems } from "@/hooks/use-settings";
 
 type SettingProps = {
   setting: Setting;
@@ -46,7 +46,7 @@ export function Setting({
       {setting.type === "SWITCH" ? (
         <Switch checked={setting.value} onCheckedChange={switchChange} />
       ) : (
-        <Button variant="outline" onClick={switchChange}>
+        <Button variant={setting.variant ?? "outline"} onClick={switchChange}>
           {setting.value}
         </Button>
       )}
