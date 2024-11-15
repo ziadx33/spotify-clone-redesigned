@@ -7,12 +7,26 @@ import { compare, hash } from "bcrypt";
 import { type $Enums, type User } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
+import bcrypt from "bcrypt";
 
 export const getUserByEmail = async (email: string) => {
   try {
     const user = await db.user.findUnique({
       where: {
         email,
+      },
+    });
+    return user;
+  } catch (err) {
+    throw { error: err };
+  }
+};
+
+export const deleteUserById = async (id: string) => {
+  try {
+    const user = await db.user.delete({
+      where: {
+        id,
       },
     });
     return user;
@@ -234,3 +248,7 @@ export const getArtistsByIds = unstable_cache(
     }
   }),
 );
+
+export const hashPassword = async (password: string, salt = 10) => {
+  return await bcrypt.hash(password, salt);
+};

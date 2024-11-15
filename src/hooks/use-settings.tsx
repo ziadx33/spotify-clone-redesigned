@@ -9,6 +9,9 @@ import { toast } from "sonner";
 import { usePrefrences } from "./use-prefrences";
 import { type User } from "@prisma/client";
 import { type ButtonProps } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { deleteUserById } from "@/server/actions/user";
 
 type DefSetting = {
   title: string;
@@ -38,11 +41,12 @@ export function useSettings({ user }: { user: User }) {
   const [settingsItems, setSettingsItems] = useState<SettingsItems | null>(
     null,
   );
+  const router = useRouter();
   const isDoneRef = useRef(false);
 
   useEffect(() => {
     if (isDoneRef.current) return;
-    if (!prefrences) return;
+    if (!prefrences && !prefrencesError) return;
     setSettingsItems({
       display: [
         {
@@ -189,8 +193,9 @@ export function useSettings({ user }: { user: User }) {
           type: "BUTTON",
           value: "logout",
           order: 0,
-          onEvent: () => {
-            console.log("hi");
+          onEvent: async () => {
+            await signOut();
+            router.push("/");
           },
         },
         {
@@ -199,7 +204,7 @@ export function useSettings({ user }: { user: User }) {
           value: "change password",
           order: 1,
           onEvent: () => {
-            console.log("hi");
+            router.push(`/artist/${user.id}/change-password`);
           },
         },
         {
@@ -208,14 +213,27 @@ export function useSettings({ user }: { user: User }) {
           value: "delete account",
           order: 2,
           onEvent: () => {
-            console.log("hi");
+            toast("We're sorry to see you go!", {
+              description:
+                "This action is permanent and will erase all your data. Are you sure you want to delete your account?",
+              action: {
+                label: "Delete",
+                onClick: () => {
+                  const fn = async () => {
+                    await signOut();
+                    await deleteUserById(user.id);
+                  };
+                  void fn();
+                },
+              },
+            });
           },
           variant: "destructive",
         },
       ],
     });
     isDoneRef.current = true;
-  }, [dispatch, prefrences, prefrencesError, user.id]);
+  }, [dispatch, prefrences, prefrencesError, router, user.id]);
 
   return [settingsItems, setSettingsItems] as const;
 }

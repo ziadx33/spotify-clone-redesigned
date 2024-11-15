@@ -46,7 +46,11 @@ export function Setting({
       {setting.type === "SWITCH" ? (
         <Switch checked={setting.value} onCheckedChange={switchChange} />
       ) : (
-        <Button variant={setting.variant ?? "outline"} onClick={switchChange}>
+        <Button
+          size="sm"
+          variant={setting.variant ?? "outline"}
+          onClick={switchChange}
+        >
           {setting.value}
         </Button>
       )}

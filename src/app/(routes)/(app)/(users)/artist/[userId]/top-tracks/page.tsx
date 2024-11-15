@@ -13,7 +13,7 @@ export default function TopTracksPage() {
       const data = await getUserTopTracks({ user: user!.user });
       return data.data;
     },
-    enabled: !!user,
+    enabled: !!user?.user,
   });
   return <TopTracks tracks={data} />;
 }

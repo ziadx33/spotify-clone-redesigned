@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useMemo } from "react";
 import { Setting } from "./components/setting";

@@ -80,7 +80,7 @@ model User {
     about         String?
     aboutImage    String?
     type          USER_TYPE  @default(USER)
-    password      String?
+    password      String
     accounts      Account[]
     sessions      Session[]
     Album         Playlist[]
