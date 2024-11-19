@@ -1,27 +1,21 @@
-"use client";
+import ClientProvider from "@/components/[clientId]/client-id-provider";
+import { getUserById } from "@/server/actions/verification-token";
+import { type GenerateMetadataProps } from "@/types";
 
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
 
-const Client = dynamic(
-  () => import("@/components/[clientId]").then((file) => file.Client),
-  {
-    ssr: false,
-  },
-);
+export async function generateMetadata({
+  params,
+}: GenerateMetadataProps<{ userId: string }>): Promise<Metadata> {
+  const id = (await params).userId;
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+  const user = await getUserById({ id });
+
+  return {
+    title: `${user?.name} | Spotify Clone`,
+  };
+}
 
 export default function ArtistPage() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const content = useMemo(() => {
-    const playlistId = searchParams.get("playlist");
-    const userId = pathname.split("/")[2];
-    if (!userId) return router.push("/");
-    return <Client playlistId={playlistId} artistId={userId} />;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return content;
+  return <ClientProvider />;
 }

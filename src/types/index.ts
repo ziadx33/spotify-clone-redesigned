@@ -41,3 +41,8 @@ export type DropdownMenuType =
       event: MouseEventHandler<HTMLDivElement>;
       nestedMenu?: never;
     });
+
+export type GenerateMetadataProps<T extends object> = {
+  params: Promise<T>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};

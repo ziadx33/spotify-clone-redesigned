@@ -1,3 +1,5 @@
+"use client";
+
 import { useExplore } from "@/hooks/use-explore";
 import { type Track } from "@prisma/client";
 import { useEffect, useMemo, useRef, useState } from "react";

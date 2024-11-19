@@ -1,25 +1,22 @@
-"use client";
+import { PlaylistProvider } from "@/components/[playlistId]/playlist-provider";
+import { getPlaylist } from "@/server/actions/playlist";
+import { getUserById } from "@/server/actions/verification-token";
+import { type GenerateMetadataProps } from "@/types";
+import { type Metadata } from "next";
 
-import { editNotFoundType } from "@/state/slices/not-found";
-import dynamic from "next/dynamic";
+export async function generateMetadata({
+  params,
+}: GenerateMetadataProps<{ playlistId: string }>): Promise<Metadata> {
+  const id = (await params).playlistId;
 
-const PlaylistPage = dynamic(
-  () => import("@/components/[playlistId]").then((file) => file.PlaylistPage),
-  {
-    ssr: false,
-  },
-);
-import { useParams, useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+  const playlist = await getPlaylist(id);
+  const creatorData = await getUserById({ id: playlist?.creatorId });
+
+  return {
+    title: `${playlist?.title} - playlist by ${creatorData?.name}`,
+  };
+}
 
 export default function Playlist() {
-  const params = useParams();
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const playlistId = params.playlistId as string | null;
-  if (!playlistId) {
-    dispatch(editNotFoundType("PLAYLIST"));
-    return router.push("/404-error");
-  }
-  return <PlaylistPage id={playlistId} />;
+  return <PlaylistProvider />;
 }

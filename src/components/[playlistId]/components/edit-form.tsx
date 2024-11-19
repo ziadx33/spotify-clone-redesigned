@@ -185,7 +185,7 @@ export function EditForm({
                       <FormItem className="mb-4">
                         <FormLabel htmlFor="description">Visibility</FormLabel>
                         <FormControl>
-                          <Select onValueChange={(e) => alert(e)}>
+                          <Select>
                             <SelectTrigger>
                               <SelectValue
                                 defaultValue={data?.visibility}
