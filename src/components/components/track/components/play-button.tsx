@@ -42,7 +42,7 @@ export const PlayButton = ({
             />
           );
         }
-        return !isPlaying || (!skeleton ? !checkTrack?.(track.id) : true) ? (
+        return !isPlaying && (!skeleton ? !checkTrack?.(track) : true) ? (
           <FaPlay size={10} />
         ) : (
           <FaPause size={10} />

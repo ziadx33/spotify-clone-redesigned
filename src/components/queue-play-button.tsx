@@ -9,6 +9,7 @@ import { useRef, type ReactNode } from "react";
 import { type QueueListSliceType } from "@/state/slices/queue-list";
 import { usePlayQueue } from "@/hooks/use-play-queue";
 import { cn } from "@/lib/utils";
+import { useQueue } from "@/hooks/use-queue";
 
 export type QueuePlayButtonProps = Omit<
   ButtonProps,
@@ -33,7 +34,7 @@ export type QueuePlayButtonProps = Omit<
 
   children: (
     isPlaying: boolean,
-    checkTrack?: (trackId: string) => boolean,
+    checkTrack?: (track?: Track) => boolean,
   ) => ReactNode;
   isDiv?: boolean;
   skipToTrack?: string;
@@ -68,6 +69,9 @@ export function QueuePlayButton({
     queueTypeId,
     isCurrent,
   });
+  const {
+    data: { status },
+  } = useQueue();
   const clickedRef = useRef(false);
   const buttonClass =
     typeof className === "function"
@@ -81,7 +85,9 @@ export function QueuePlayButton({
         buttonClass,
       )}
       disabled={
-        !!buttonProps.disabled || (audios?.isLoading && clickedRef.current)
+        !!buttonProps.disabled ||
+        !!(audios?.isLoading && clickedRef.current) ||
+        status === "loading"
       }
       onClick={async (e) => {
         e.stopPropagation();

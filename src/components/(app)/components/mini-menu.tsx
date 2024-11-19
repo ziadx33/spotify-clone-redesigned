@@ -10,7 +10,7 @@ import { QueueMenu } from "./queue-menu";
 import { MiniMenuNextQueue } from "./mini-menu-next-queue";
 import { FullTrackView } from "./full-track-view";
 import { usePrefrences } from "@/hooks/use-prefrences";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export function MiniMenu() {
   const { value, showQueue, showFullMenu, setShowMenu, status } = useMiniMenu();

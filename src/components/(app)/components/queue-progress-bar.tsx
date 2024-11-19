@@ -145,7 +145,7 @@ export function QueueProgressBar({
               ? 0
               : duration;
           }
-
+          console.log("donia");
           return prevValue + 1;
         });
       }, 1000);

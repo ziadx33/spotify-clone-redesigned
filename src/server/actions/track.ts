@@ -57,6 +57,7 @@ export const getTracksByPlaylistId = unstable_cache(
     async (
       playlistId?: string | string[],
       trackIds?: string[],
+      albumData?: boolean,
     ): Promise<TracksSliceType> => {
       try {
         const isArray =
@@ -65,20 +66,29 @@ export const getTracksByPlaylistId = unstable_cache(
             : { hasSome: playlistId };
         const tracks = await db.track.findMany({
           where: playlistId
-            ? {
-                OR: [
-                  {
-                    playlists: isArray,
-                  },
-                  {
-                    albumId: playlistId
-                      ? typeof playlistId === "string"
-                        ? playlistId
-                        : undefined
-                      : undefined,
-                  },
-                ],
-              }
+            ? !albumData
+              ? {
+                  OR: [
+                    {
+                      playlists: isArray,
+                    },
+                    {
+                      albumId: playlistId
+                        ? typeof playlistId === "string"
+                          ? playlistId
+                          : undefined
+                        : undefined,
+                    },
+                  ],
+                }
+              : {
+                  albumId:
+                    typeof playlistId === "string"
+                      ? playlistId
+                      : {
+                          in: playlistId,
+                        },
+                }
             : {
                 id: {
                   in: trackIds,

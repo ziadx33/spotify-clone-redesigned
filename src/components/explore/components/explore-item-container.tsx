@@ -1,7 +1,7 @@
 import { useSkipFirstEffect } from "@/hooks/use-skip-first-render";
 import { cn } from "@/lib/utils";
-import { TrackSliceType } from "@/state/slices/tracks";
-import { ReactNode, useMemo, useRef, useState } from "react";
+import { type TrackSliceType } from "@/state/slices/tracks";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 
 type ExploreItemContainerProps = {
   children: ReactNode;

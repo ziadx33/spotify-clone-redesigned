@@ -6,17 +6,19 @@ import { Table } from "@/components/ui/table";
 import { NonSortTable } from "@/components/components/non-sort-table";
 import { SectionItem } from "@/components/components/section-item";
 import { CircleItems } from "@/components/ui/circle-items";
-import { Navigate } from "@/components/navigate";
 import { Button } from "@/components/ui/button";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { type FiltersStateType } from "../albums-tab";
+import { PlaylistContext } from "@/components/contexts/playlist-context";
+import { enumParser } from "@/utils/enum-parser";
 
 type AlbumProps = {
   tracks: Track[];
   album: Playlist;
-  artist: User;
+  artist?: User;
   viewAs: FiltersStateType["viewAs"];
+  addType?: boolean;
 };
 
 export function Album({ viewAs, ...restProps }: AlbumProps) {
@@ -27,35 +29,57 @@ export function Album({ viewAs, ...restProps }: AlbumProps) {
   );
 }
 
-function ListView({ tracks, album, artist }: Omit<AlbumProps, "viewAs">) {
+function ListView({
+  tracks,
+  album,
+  artist,
+  addType,
+}: Omit<AlbumProps, "viewAs">) {
   const [expanded, setExpanded] = useState(false);
+  const table = useMemo(() => {
+    return (
+      <Table>
+        <NonSortTable
+          showTrackImage={false}
+          data={{ tracks, albums: [album], authors: artist ? [artist] : [] }}
+          playlist={album}
+          viewAs="LIST"
+        />
+      </Table>
+    );
+  }, [tracks, album, artist]);
   return (
     <div className="flex flex-col gap-6">
       <div className="flex w-full gap-6 px-6">
-        <Image
-          src={album.imageSrc ?? ""}
-          alt={album.title ?? ""}
-          width={130}
-          height={130}
-          className="size-[130px] rounded-md"
-          draggable="false"
-        />
+        <PlaylistContext
+          linkProps={{ className: "relative h-[150px] w-[180px]" }}
+          playlist={album}
+          asChild
+        >
+          <Image
+            src={album.imageSrc ?? ""}
+            alt={album.title ?? ""}
+            fill
+            className="rounded-md"
+            draggable="false"
+          />
+        </PlaylistContext>
         <div className="flex w-full flex-col justify-between">
           <div className="flex w-full justify-between">
             <div className="flex flex-col">
-              <Navigate
-                data={{
-                  href: `/playlist/${album.id}`,
-                  title: album.title ?? "unknown",
-                  type: "PLAYLIST",
-                }}
-                href={`/playlist/${album.id}`}
-                className="text-3xl font-bold hover:underline"
-              >
-                {album.title}
-              </Navigate>
+              <PlaylistContext playlist={album} linkProps={{}}>
+                <span className="text-3xl font-bold hover:underline">
+                  {album.title}
+                </span>
+              </PlaylistContext>
+
               <CircleItems
                 items={[
+                  addType && (
+                    <span key={album.type} className="">
+                      {enumParser(album.type)}
+                    </span>
+                  ),
                   <span key={album.createdAt.toString()}>
                     {format(new Date(album.createdAt), "yyy")}
                   </span>,
@@ -74,34 +98,10 @@ function ListView({ tracks, album, artist }: Omit<AlbumProps, "viewAs">) {
               {!expanded ? <FaArrowDown size={12} /> : <FaArrowUp size={12} />}
             </Button>
           </div>
-          <AlbumControl
-            data={{
-              data: {
-                currentPlaying: tracks[0]?.id ?? "",
-                trackList: tracks.map((track) => track.id),
-                type: "PLAYLIST",
-                typeId: album.id,
-              },
-              tracks: {
-                tracks,
-                albums: [album],
-                authors: [artist],
-              },
-            }}
-            playlist={album}
-          />
+          <AlbumControl author={artist} tracks={tracks} playlist={album} />
         </div>
       </div>
-      {expanded ? (
-        <Table>
-          <NonSortTable
-            showTrackImage={false}
-            data={{ tracks, albums: [album], authors: [artist] }}
-            playlist={album}
-            viewAs="LIST"
-          />
-        </Table>
-      ) : null}
+      {expanded ? table : null}
     </div>
   );
 }

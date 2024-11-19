@@ -26,7 +26,9 @@ export function useGetPlayData({
   noDefPlaylist,
   queueTypeId,
 }: UseGetPlayData): {
-  getData: () => Promise<Omit<NonNullable<QueuePlayButtonProps>, "children">>;
+  getData: () => Promise<
+    Omit<NonNullable<QueuePlayButtonProps>, "children"> | undefined
+  >;
 } {
   const {
     data: { data },
@@ -85,7 +87,7 @@ export function useGetPlayData({
   });
 
   const getData: () => Promise<
-    Omit<QueuePlayButtonProps, "children">
+    Omit<QueuePlayButtonProps, "children"> | undefined
   > = async () => {
     shouldFetch.current = true;
     const nonData = nonPlaylistData ?? (await refetch()).data;
@@ -97,7 +99,7 @@ export function useGetPlayData({
 
     const curPlaying = skipToTrack ?? usedData?.[0];
 
-    if (!curPlaying) throw "no current playing";
+    if (!curPlaying) return undefined;
 
     return {
       data: {

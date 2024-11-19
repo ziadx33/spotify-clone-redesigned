@@ -86,6 +86,7 @@ export function AudiosProvider({ children }: { children: ReactNode }) {
 
     try {
       const data = await Promise.all(promises);
+      console.log("dataerrrrrrrrr", data);
       loadedTrackList.current = data;
       setIsLoading(false);
     } catch (error) {

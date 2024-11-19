@@ -9,6 +9,7 @@ import miniMenu from "./slices/mini-menu";
 import queueController from "./slices/queue-controller";
 import explore from "./slices/explore";
 import notFound from "./slices/not-found";
+import notifications from "./slices/notifications";
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     queueController,
     explore,
     notFound,
+    notifications,
   },
 });
 

@@ -135,7 +135,7 @@ export function AllContent({
                       !isPlaying ||
                       ["author", "playlist"].includes(topSearch?.type ?? "")
                         ? true
-                        : checkTrack?.(topSearch?.data.id ?? "")
+                        : checkTrack?.(topSearch!.data as Track)
                     ) ? (
                       <FaPlay size={20} />
                     ) : (

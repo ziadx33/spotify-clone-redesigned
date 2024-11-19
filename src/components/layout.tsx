@@ -4,7 +4,7 @@ import { Toaster } from "./ui/sonner";
 import { ReduxProvider } from "@/providers/redux-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { mainFont } from "@/fonts";
-import { QueueProvider } from "@/providers/queue-provider";
+import { DataProvider } from "@/providers/data-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 
 export function Layout({ children }: { children: ReactNode }) {
@@ -21,7 +21,7 @@ export function Layout({ children }: { children: ReactNode }) {
               disableTransitionOnChange
             >
               <QueryProvider>
-                <QueueProvider>{children}</QueueProvider>
+                <DataProvider>{children}</DataProvider>
               </QueryProvider>
               <Toaster />
             </ThemeProvider>

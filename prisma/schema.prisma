@@ -97,6 +97,18 @@ model User {
     SearchHistory          SearchHistory[]
     Preference             Preference[]
     QueueList              QueueList[]
+
+    seenNotifications String[]       @default([])
+    Notification      Notification[]
+}
+
+model Notification {
+    id String @id @default(cuid())
+
+    artist     User      @relation(fields: [userId], references: [id])
+    userId     String
+    playlist   Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+    playlistId String
 }
 
 enum TAB_TYPE {
@@ -146,7 +158,8 @@ model Playlist {
     visibility PLAYLIST_VISIBILITY @default(PUBLIC)
     genres     GENRES[]            @default([])
 
-    Track Track[]
+    Track        Track[]
+    Notification Notification[]
 }
 
 model Track {

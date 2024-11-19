@@ -8,6 +8,7 @@ type CircleItemsProps = {
 };
 
 export function CircleItems({ items, className }: CircleItemsProps) {
+  const usedItems = items.filter((item) => !!item);
   return (
     <div
       className={cn(
@@ -15,10 +16,10 @@ export function CircleItems({ items, className }: CircleItemsProps) {
         className,
       )}
     >
-      {items.map((el, index) => (
+      {usedItems.map((el, index) => (
         <Fragment key={index}>
           {el}
-          {index !== items.length - 1 && <FaCircle size={5} />}
+          {index !== usedItems.length - 1 && <FaCircle size={5} />}
         </Fragment>
       ))}
     </div>

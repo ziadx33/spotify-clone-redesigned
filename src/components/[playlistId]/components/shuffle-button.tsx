@@ -13,7 +13,7 @@ export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {
   const { getData } = useGetPlayData({ playlist });
   const shuffleHandler = async () => {
     const data = await getData();
-    if (error) return await play(data.data!, { randomize: true });
+    if (error) return await play(data!.data!, { randomize: true });
     await shuffleQueue({ value: (v) => !v });
   };
   return (

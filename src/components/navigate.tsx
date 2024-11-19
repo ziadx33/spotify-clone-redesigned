@@ -1,5 +1,3 @@
-"use client";
-
 import { type NavigateProps, useNavigate } from "@/hooks/use-navigate";
 import {
   ContextMenu,

@@ -48,7 +48,7 @@ export function ChangePassword({ user }: { user: User }) {
       setDisabled(true);
       const isCorrectPassword = await comparePassword(
         data.currentPassword,
-        user.password!,
+        user.password,
       );
 
       if (!isCorrectPassword) {

@@ -146,10 +146,12 @@ export function useQueue() {
     queueListData?: Partial<QueueList>,
     skipToTrack?: string,
   ) => {
+    if (data.status === "loading") return;
     const currentQueue = getQueue(data.data?.queueList.currentQueueId);
     const trackListShuffled = data.data?.queueList.randomize
       ? shuffleArray(queueData.data.trackList, skipToTrack)
       : queueData.data.trackList;
+
     if (data.error) {
       const startData = await startQueue({
         data: {

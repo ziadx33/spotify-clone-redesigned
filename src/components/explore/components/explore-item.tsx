@@ -43,6 +43,7 @@ export function ExploreItem({
             alt={currentItemData?.track?.title ?? ""}
             src={currentItemData?.track?.imgSrc ?? ""}
             fill
+            draggable="false"
           />
         ) : (
           <Skeleton className="size-full" />

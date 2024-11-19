@@ -56,7 +56,9 @@ export function usePlayQueue({
 
   const playHandler = async () => {
     const returnedData = await getData();
-    const returnData = (data ?? returnedData.data)!;
+    const returnData = (data ? data : returnedData!.data)!;
+
+    console.log(returnData, "sorry zay el lurry");
 
     if (
       !isCurrent
@@ -84,7 +86,10 @@ export function usePlayQueue({
         currentTrackId: trackId,
       }),
     );
+    console.log("aw momken", returnData.tracks?.tracks);
     await audios?.loadTracks(returnData.tracks?.tracks ?? []);
+
+    console.log("law 7ad keda");
 
     await playTrack(true, trackId, 0);
   };
