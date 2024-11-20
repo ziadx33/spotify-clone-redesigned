@@ -128,7 +128,6 @@ export function QueueProgressBar({
                 void skipToTime(0, nextTrack);
               } else {
                 const nextTrack = await skipBy(1);
-                console.log(nextTrack, "dam");
                 if (!nextTrack)
                   if (currentInterval.current)
                     clearInterval(currentInterval.current);
@@ -145,7 +144,6 @@ export function QueueProgressBar({
               ? 0
               : duration;
           }
-          console.log("donia");
           return prevValue + 1;
         });
       }, 1000);

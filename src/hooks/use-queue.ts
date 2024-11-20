@@ -57,13 +57,6 @@ export function useQueue() {
           ) + 1
         ];
 
-      console.log(
-        "next",
-        nextQueue,
-        data.data?.queues,
-        data.data?.queues[data.data.queues.length - 1],
-      );
-
       const isLastQueue =
         data.data?.queues[data.data.queues.length - 1]?.queueData?.id ===
         currentQueue?.queueData?.id;
