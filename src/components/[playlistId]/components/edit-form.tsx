@@ -83,7 +83,6 @@ export function EditForm({
       const path = await uploadPlaylistPic({
         id: data?.id ?? "",
         file: uploadedImage,
-        currentImageURL: data?.imageSrc ?? "",
       });
       uploadData.imageSrc = `${SUPABASE_BUCKET_URL}/images/${path}?${performance.now()}`;
     }

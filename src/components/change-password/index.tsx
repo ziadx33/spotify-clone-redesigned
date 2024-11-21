@@ -46,10 +46,9 @@ export function ChangePassword({ user }: { user: User }) {
   const formHandler = async (data: z.infer<typeof changePasswordSchema>) => {
     try {
       setDisabled(true);
-      const isCorrectPassword = await comparePassword(
-        data.currentPassword,
-        user.password,
-      );
+      const isCorrectPassword = user.password
+        ? await comparePassword(data.currentPassword, user.password)
+        : true;
 
       if (!isCorrectPassword) {
         return toast.error("wrong password!");

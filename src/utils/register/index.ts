@@ -21,7 +21,7 @@ export const register = async (
   }
   let verificationToken = !user
     ? await generateVerificationToken(data.email)
-    : await getVerificationTokenByEmail(user.email);
+    : await getVerificationTokenByEmail(user.email ?? "");
   if (user && verificationToken) {
     const hasExpired = new Date(verificationToken.expires) < new Date();
     if (hasExpired) await deleteVerificationTokenById(verificationToken.id);

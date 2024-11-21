@@ -7,7 +7,9 @@ export const login = async (data: z.infer<typeof loginSchema>) => {
   if (!user?.emailVerified) {
     throw { error: "email does not exist!" };
   }
-  const isCorrectPassword = await comparePassword(data.password, user.password);
+  const isCorrectPassword = user.password
+    ? await comparePassword(data.password, user.password)
+    : true;
 
   if (!isCorrectPassword) {
     throw { error: "wrong password!" };
