@@ -73,14 +73,15 @@ enum GENRES {
 model User {
     id            String     @id @default(cuid())
     name          String
-    email         String     @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
     coverImage    String?
     about         String?
     aboutImage    String?
     type          USER_TYPE  @default(USER)
-    password      String
+    password      String?
+    isPremium     Boolean    @default(false)
     accounts      Account[]
     sessions      Session[]
     Album         Playlist[]

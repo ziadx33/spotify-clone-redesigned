@@ -10,6 +10,9 @@ import { type User } from "@prisma/client";
 import { db } from "@/server/db";
 import { getUserByEmail } from "./actions/user";
 import { getUserById } from "./actions/verification-token";
+import GoogleProvider from "next-auth/providers/google";
+import GithubProvider from "next-auth/providers/github";
+import { env } from "@/env";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -38,8 +41,10 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  debug: true,
   callbacks: {
     async signIn({ user, account }) {
+      console.log("Elshare3", account);
       if (account?.provider !== "credentials") return true;
       const existingUser = await getUserById({ id: user.id });
       if (!existingUser?.emailVerified) return false;
@@ -88,6 +93,14 @@ export const authOptions: NextAuthOptions = {
         return { ...user, id: user.id };
       },
     },
+    GoogleProvider({
+      clientId: env.GOOGLE_AUTH_CLIENT_ID,
+      clientSecret: env.GOOGLE_AUTH_CLIENT_SECRET,
+    }),
+    GithubProvider({
+      clientId: env.GITHUB_AUTH_CLIENT_ID,
+      clientSecret: env.GITHUB_AUTH_CLIENT_SECRET,
+    }),
   ],
 };
 

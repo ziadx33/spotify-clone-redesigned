@@ -10,7 +10,8 @@ import { registerSchema } from "@/schemas";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { register } from "@/utils/register";
-import { ShowInput } from "../ui/show-input";
+import { AuthProviders } from "../../components/auth-providers";
+import { ShowInput } from "@/components/ui/show-input";
 
 export function SubmitForm() {
   const data = useRef<z.infer<typeof registerSchema>>({
@@ -98,6 +99,7 @@ export function SubmitForm() {
             <p className="text-destructive">{error}</p>
           </div>
         </div>
+        <AuthProviders />
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button disabled={disabled} asChild variant="outline">

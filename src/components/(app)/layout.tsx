@@ -3,10 +3,10 @@ import { Sidebar } from "../components/sidebar";
 import { ServerAppDataProvider } from "@/providers/server-app-data-provider";
 import { QueueControllerContainer } from "./components/queue-controller-container";
 import { Tabs } from "../components/tabs/tabs";
-import { Header } from "../components/header";
 import { ChildrenContainer } from "./components/children-container";
 import { AudiosProvider } from "@/providers/audios-provider";
 import { PrefrencesProvider } from "@/providers/prefrences-provider";
+import { Header } from "../components/header/header";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (

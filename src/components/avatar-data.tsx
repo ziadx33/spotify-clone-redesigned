@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useMemo, useState, type ComponentPropsWithoutRef } from "react";
@@ -20,6 +21,7 @@ export function AvatarData({
   const fallback = useMemo(() => {
     return getAvatarFallback(title ?? alt);
   }, [title, alt]);
+
   const [showImage, setShowImage] = useState(false);
   return (
     <Avatar className={cn("relative", containerClasses)}>

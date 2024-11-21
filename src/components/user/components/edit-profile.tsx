@@ -56,7 +56,6 @@ export function EditProfile({ user }: { user: Session["user"] }) {
       const path = await uploadPlaylistPic({
         id: user?.id ?? "",
         file: uploadedImage,
-        currentImageURL: user?.image ?? "",
       });
       uploadData.image = `${SUPABASE_BUCKET_URL}/images/${path}?${performance.now()}`;
     }

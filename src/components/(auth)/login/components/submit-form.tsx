@@ -19,8 +19,9 @@ import { toast } from "sonner";
 import { login } from "@/utils/login";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { ShowInput } from "../ui/show-input";
+import { ShowInput } from "../../../ui/show-input";
 import { useRouter } from "next/navigation";
+import { AuthProviders } from "../../components/auth-providers";
 
 export function SubmitForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -92,6 +93,7 @@ export function SubmitForm() {
               )}
             />
           </div>
+          <AuthProviders />
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button disabled={disabled} asChild variant="outline">

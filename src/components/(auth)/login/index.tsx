@@ -1,5 +1,5 @@
 import { CardHeader, CardTitle } from "@/components/ui/card";
-import { SubmitForm } from "./submit-form";
+import { SubmitForm } from "./components/submit-form";
 
 export function Login() {
   return (

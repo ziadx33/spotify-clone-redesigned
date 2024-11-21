@@ -7,11 +7,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { AvatarData } from "../../../avatar-data";
 import { Navigate } from "../../../navigate";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
+import Image from "next/image";
 
 export function ProfileDropdownMenu() {
   const { data: user } = useSession();
@@ -23,7 +23,13 @@ export function ProfileDropdownMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <AvatarData src={user?.user?.image ?? ""} title={user?.user?.name} />
+        <div className="relative size-10 overflow-hidden rounded-full">
+          <Image
+            fill
+            src={user?.user?.image ?? ""}
+            alt={user?.user?.name ?? ""}
+          />
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>

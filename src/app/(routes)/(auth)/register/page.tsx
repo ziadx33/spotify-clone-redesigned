@@ -1,4 +1,4 @@
-import { Register } from "@/components/register";
+import { Register } from "@/components/(auth)/register";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
