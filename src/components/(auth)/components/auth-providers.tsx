@@ -13,11 +13,14 @@ export function AuthProviders() {
   const authHandler = async (provider: PROVIDER) => {
     toast.promise(
       signIn(provider, {
-        redirect: false,
+        redirect: true,
+        callbackUrl: "/",
       }),
       {
         loading: `Signing you in with ${provider}...`,
-        success: "Successfully logged in! Redirecting to home page...",
+        success: () => {
+          return "Successfully logged in! Redirecting to home page...";
+        },
         error: "Oops! Something went wrong. Please try again.",
       },
     );
