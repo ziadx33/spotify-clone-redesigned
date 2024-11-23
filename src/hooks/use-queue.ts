@@ -86,12 +86,7 @@ export function useQueue() {
     [data.data?.queueList.currentQueueId, getQueue],
   );
 
-  const {
-    play: playTrack,
-    skipToTrack,
-    audios,
-    pause: pauseTrack,
-  } = useQueueController();
+  const { skipToTrack, audios, pause: pauseTrack } = useQueueController();
 
   const editQueueListFn = ({
     queueListData,
@@ -140,9 +135,13 @@ export function useQueue() {
     skipToTrack?: string,
   ) => {
     if (data.status === "loading") return;
+    console.log("feinnn", data.data?.queueList.randomize);
     const currentQueue = getQueue(data.data?.queueList.currentQueueId);
     const trackListShuffled = data.data?.queueList.randomize
-      ? shuffleArray(queueData.data.trackList, skipToTrack)
+      ? shuffleArray(
+          queueData.data.trackList,
+          skipToTrack ?? queueData.data.trackList[0],
+        )
       : queueData.data.trackList;
 
     if (data.error) {
@@ -157,8 +156,13 @@ export function useQueue() {
         queueListData,
       });
       dispatch(setQueue(startData));
-      await playTrack?.();
-      return;
+      return {
+        trackId: trackListShuffled[0] ?? "",
+        queue: {
+          queueList: startData.data?.queueList,
+          currentQueue: startData.data?.queues[0],
+        },
+      };
     }
 
     const currentQueueData: Queue = {
@@ -187,16 +191,22 @@ export function useQueue() {
         currentPlaying: skipToTrack ?? trackListShuffled[0],
       },
     }).runBoth();
-    return skipToTrack ?? trackListShuffled[0];
+    return {
+      trackId: skipToTrack ?? trackListShuffled[0],
+      queue: { queueList: data.data?.queueList, currentQueue },
+    };
   };
 
   const shuffleQueue = async ({
     value,
+    currentQueue = getQueue(data.data?.queueList.currentQueueId),
+    currentQueueList,
   }: {
     value: ChangeValueParam<boolean>;
+    currentQueue?: ReturnType<typeof getQueue>;
+    currentQueueList?: QueueList;
   }) => {
-    const currentQueue = getQueue(data.data?.queueList.currentQueueId);
-    const queueList = data.data!.queueList;
+    const queueList = currentQueueList ?? data.data!.queueList;
     const queueData = currentQueue!.queueData!;
     const shuffleValue = getChangeValue(value, queueList.randomize);
     let trackList = queueData.trackList;
@@ -360,5 +370,3 @@ export function useQueue() {
     getCurrentData,
   };
 }
-
-// FIX: fix skip by fn

@@ -3,15 +3,16 @@ import { editUserPrefrence } from "@/server/actions/prefrence";
 import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, type ReactNode } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { usePrefrences } from "./use-prefrences";
 import { type User } from "@prisma/client";
 import { type ButtonProps } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { deleteUserById } from "@/server/actions/user";
+import { usePrefrences } from "../use-prefrences";
+import { SwitchToArtistDialog } from "./components/swith-to-artist-dialog";
 
 type DefSetting = {
   title: string;
@@ -20,18 +21,27 @@ type DefSetting = {
   order: number;
 };
 
-export type Setting =
-  | ({
-      type: "BUTTON";
-      value: string;
-      variant?: ButtonProps["variant"];
-    } & DefSetting)
-  | ({
-      type: "SWITCH";
-      value: boolean;
-      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-      onEvent: (value: boolean) => unknown | Promise<unknown>;
-    } & Omit<DefSetting, "onEvent">);
+type ButtonSetting = {
+  type: "BUTTON";
+  value: string;
+  variant?: ButtonProps["variant"];
+} & DefSetting;
+
+type SwitchSetting = {
+  type: "SWITCH";
+  value: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  onEvent: (value: boolean) => unknown | Promise<unknown>;
+} & Omit<DefSetting, "onEvent">;
+
+type DialogSetting = {
+  type: "DIALOG";
+  content: ReactNode;
+  value: string;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+} & Omit<ButtonSetting, "onEvent" | "type">;
+
+export type Setting = ButtonSetting | SwitchSetting | DialogSetting;
 
 export type SettingsItems = Record<string, Setting[]>;
 
@@ -180,11 +190,14 @@ export function useSettings({ user }: { user: User }) {
           },
         },
         {
+          type: "DIALOG",
           order: 5,
-          title: "switch to artist mode",
-          type: "BUTTON",
-          value: "switch",
-          onEvent: () => alert("3ayz amoot"),
+          title:
+            user.type === "USER"
+              ? "switch to artist mode"
+              : "edit your profile artist data",
+          content: <SwitchToArtistDialog />,
+          value: user.type === "USER" ? "switch" : "edit",
         },
       ],
       ["account management"]: [
@@ -220,8 +233,8 @@ export function useSettings({ user }: { user: User }) {
                 label: "Delete",
                 onClick: () => {
                   const fn = async () => {
-                    await signOut();
                     await deleteUserById(user.id);
+                    await signOut();
                   };
                   void fn();
                 },
@@ -233,6 +246,7 @@ export function useSettings({ user }: { user: User }) {
       ],
     });
     isDoneRef.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, prefrences, prefrencesError, router, user.id]);
 
   return [settingsItems, setSettingsItems] as const;

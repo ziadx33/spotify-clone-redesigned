@@ -72,7 +72,6 @@ function ListView({
                   {album.title}
                 </span>
               </PlaylistContext>
-
               <CircleItems
                 items={[
                   addType && (
@@ -105,6 +104,7 @@ function ListView({
     </div>
   );
 }
+
 function GridView({ album }: Omit<AlbumProps, "viewAs">) {
   return (
     <SectionItem

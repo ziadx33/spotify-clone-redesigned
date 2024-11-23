@@ -5,6 +5,7 @@ import { useGetPlayData } from "./use-get-play-data";
 import { useQueue } from "./use-queue";
 import { useQueueController } from "./use-queue-controller";
 import { type QueuePlayButtonProps } from "@/components/queue-play-button";
+import { wait } from "@/utils/wait";
 
 export function usePlayQueue({
   playlist,
@@ -57,9 +58,6 @@ export function usePlayQueue({
   const playHandler = async () => {
     const returnedData = await getData();
     const returnData = (data ? data : returnedData!.data)!;
-
-    console.log(returnData, "sorry zay el lurry");
-
     if (
       !isCurrent
         ? isCurrentPlaying
@@ -75,23 +73,24 @@ export function usePlayQueue({
       await toggle();
       return;
     }
-
     pause();
+    const playData = await play(returnData, undefined, skipToTrack);
 
-    const trackId = await play(returnData, undefined, skipToTrack);
     dispatch(
       editQueueController({
         isPlaying: false,
         progress: 0,
-        currentTrackId: trackId,
+        currentTrackId: playData?.trackId,
       }),
     );
-    console.log("aw momken", returnData.tracks?.tracks);
-    await audios?.loadTracks(returnData.tracks?.tracks ?? []);
-
-    console.log("law 7ad keda");
-
-    await playTrack(true, trackId, 0);
+    console.log(
+      "ana mebayet araneb fel sala",
+      skipToTrack && currentQueue?.queueData?.trackList.includes(skipToTrack),
+    );
+    if (skipToTrack && currentQueue?.queueData?.trackList.includes(skipToTrack))
+      await wait(300);
+    else await audios?.loadTracks(returnData.tracks?.tracks ?? []);
+    await playTrack(true, playData?.trackId, 0);
   };
   return {
     isPlaying,

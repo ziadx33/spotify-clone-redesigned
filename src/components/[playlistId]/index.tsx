@@ -41,9 +41,7 @@ export function PlaylistPage({ id }: { id: string }) {
   });
 
   const { data: tracks } = useTracks();
-  const type =
-    (userData?.user?.id === data?.creatorId ? "Playlist" : "Album") ??
-    "Playlist";
+  const type = data?.type ?? "PLAYLIST";
   const props: PlaylistPageProps = {
     id,
     type,
@@ -51,5 +49,9 @@ export function PlaylistPage({ id }: { id: string }) {
     data,
     tracks,
   };
-  return type === "Playlist" ? <Playlist {...props} /> : <Album {...props} />;
+  return data?.type === "PLAYLIST" || userData?.user?.id === data?.creatorId ? (
+    <Playlist {...props} />
+  ) : (
+    <Album {...props} />
+  );
 }

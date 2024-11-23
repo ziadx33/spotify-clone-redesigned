@@ -86,7 +86,7 @@ export function QueuePlayButton({
       )}
       disabled={
         !!buttonProps.disabled ||
-        !!(audios?.isLoading && clickedRef.current) ||
+        !!(!!audios?.isLoading && !!clickedRef.current) ||
         status === "loading"
       }
       onClick={async (e) => {

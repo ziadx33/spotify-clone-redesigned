@@ -6,15 +6,22 @@ import { FaShuffle } from "react-icons/fa6";
 
 export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {
   const {
-    data: { data, error },
-    play,
+    data: { data },
     shuffleQueue,
+    play,
+    getQueue,
   } = useQueue();
+  const currentQueue = getQueue(data?.queueList.currentQueueId);
+
   const { getData } = useGetPlayData({ playlist });
   const shuffleHandler = async () => {
-    const data = await getData();
-    if (error) return await play(data!.data!, { randomize: true });
-    await shuffleQueue({ value: (v) => !v });
+    const playlistData = await getData();
+    if (currentQueue?.queueData?.typeId !== playlist?.id || !currentQueue) {
+      return (await play(playlistData!.data!, { randomize: true }))?.queue;
+    }
+    await shuffleQueue({
+      value: (v) => !v,
+    });
   };
   return (
     <Button

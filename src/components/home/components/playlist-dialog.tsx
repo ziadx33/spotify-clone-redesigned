@@ -29,7 +29,11 @@ export function PlaylistDialog({
   }, [isActive]);
   return (
     <DialogContent className="max-h-[80%] max-w-[1000px] overflow-auto">
-      <MusicPlayer queueTypeId={queueTypeId} showTrackImage />
+      <MusicPlayer
+        showExploreButton={false}
+        queueTypeId={queueTypeId}
+        showTrackImage
+      />
     </DialogContent>
   );
 }

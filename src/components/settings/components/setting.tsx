@@ -1,7 +1,13 @@
 import { Switch } from "@/components/ui/switch";
-import { useCallback, type Dispatch, type SetStateAction } from "react";
+import {
+  type ComponentPropsWithoutRef,
+  useCallback,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { type Setting, type SettingsItems } from "@/hooks/use-settings";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 type SettingProps = {
   setting: Setting;
@@ -38,21 +44,34 @@ export function Setting({
 
     setting.type === "BUTTON"
       ? setting.onEvent()
-      : setting.onEvent(currentValue);
+      : setting.type === "SWITCH" && setting.onEvent(currentValue);
   };
+
+  const ButtonSetting = ({
+    click,
+  }: {
+    click?: ComponentPropsWithoutRef<"button">["onClick"];
+  }) =>
+    setting.type !== "SWITCH" && (
+      <Button size="sm" variant={setting.variant ?? "outline"} onClick={click}>
+        {setting.value}
+      </Button>
+    );
+
   return (
     <div key={setting.title} className="flex items-center justify-between">
       <h4 className="text-muted-foreground">{setting.title}</h4>
       {setting.type === "SWITCH" ? (
         <Switch checked={setting.value} onCheckedChange={switchChange} />
+      ) : setting.type === "BUTTON" ? (
+        <ButtonSetting click={switchChange} />
       ) : (
-        <Button
-          size="sm"
-          variant={setting.variant ?? "outline"}
-          onClick={switchChange}
-        >
-          {setting.value}
-        </Button>
+        <Dialog>
+          <DialogTrigger>
+            <ButtonSetting />
+          </DialogTrigger>
+          {setting.content}
+        </Dialog>
       )}
     </div>
   );

@@ -106,7 +106,7 @@ model User {
 model Notification {
     id String @id @default(cuid())
 
-    artist     User      @relation(fields: [userId], references: [id])
+    artist     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId     String
     playlist   Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
     playlistId String
@@ -138,6 +138,7 @@ model VerificationToken {
 enum PLAYLIST_TYPE {
     SINGLE
     ALBUM
+    PLAYLIST
 }
 
 enum PLAYLIST_VISIBILITY {
@@ -149,12 +150,12 @@ model Playlist {
     id          String @id @default(cuid())
     title       String
     description String
-    imageSrc    String @default("https://hvillzcyzejfbqcubhwi.supabase.co/storage/v1/object/public/images/no-image-src-album")
+    imageSrc    String @default("/images/no-image-playlist.png")
 
     creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
     creatorId String
 
-    type       PLAYLIST_TYPE       @default(ALBUM)
+    type       PLAYLIST_TYPE       @default(PLAYLIST)
     createdAt  DateTime            @default(now())
     visibility PLAYLIST_VISIBILITY @default(PUBLIC)
     genres     GENRES[]            @default([])
@@ -235,7 +236,7 @@ enum REPEAT_QUEUE_TYPE {
 
 model QueueList {
     id             String             @id @default(cuid())
-    user           User               @relation(fields: [userId], references: [id])
+    user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId         String
     queues         Queue[]
     volumeLevel    Int                @default(50)

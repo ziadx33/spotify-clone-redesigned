@@ -53,6 +53,7 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
             />
           )}
           <RenderTracks
+            fallback="This artist hasn’t released any tracks yet. Stay tuned—new music might be coming soon!"
             title="Popular"
             data={data?.topTracks}
             loading={isLoading || status !== "authenticated"}

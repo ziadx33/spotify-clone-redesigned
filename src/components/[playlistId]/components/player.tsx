@@ -52,6 +52,7 @@ type PlayerProps = {
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
   queueTypeId?: string;
+  showExploreButton?: boolean;
 };
 
 export function Comp({
@@ -63,6 +64,7 @@ export function Comp({
   selectedTracks,
   setSelectedTracks,
   queueTypeId,
+  showExploreButton,
 }: PlayerProps) {
   const { data: user } = useSession();
   const isCreatedByUser = user?.user?.id === playlist?.creatorId;
@@ -77,7 +79,7 @@ export function Comp({
           )}
         >
           <div className="flex h-fit w-full gap-1">
-            <ExploreButton playlist={playlist} />
+            {showExploreButton && <ExploreButton playlist={playlist} />}
             {selectedTracks?.length ?? 0 > 0 ? (
               <AddTracksToPlaylist
                 playlist={playlist}

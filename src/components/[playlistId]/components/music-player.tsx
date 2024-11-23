@@ -10,12 +10,14 @@ type MusicPlayerProps = {
   playlist?: Playlist | null;
   showTrackImage?: boolean;
   queueTypeId?: string;
+  showExploreButton?: boolean;
 };
 
 export function MusicPlayer({
   playlist,
   showTrackImage,
   queueTypeId,
+  showExploreButton = true,
 }: MusicPlayerProps) {
   const [filters, setFilters] = useState<TrackFilters>(
     DEFAULT_TRACK_FILTERS_DATA,
@@ -25,6 +27,7 @@ export function MusicPlayer({
   return (
     <>
       <Player
+        showExploreButton={showExploreButton}
         queueTypeId={queueTypeId}
         playlist={playlist}
         setTrackQuery={setTrackQuery}
