@@ -26,7 +26,6 @@ export function Client({ artistId, playlistId }: ClientProps) {
     queryKey: [`artist-page-data-${artistId}`],
     queryFn: async () => {
       const user = await getUserById({ id: artistId });
-      console.log("tester", user);
       if (!user) {
         dispatch(editNotFoundType("ARTIST"));
         return router.push("/404-error");

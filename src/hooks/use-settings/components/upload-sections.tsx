@@ -29,7 +29,6 @@ export function UploadSections({
   const coverImageDef = coverImage
     ? URL.createObjectURL(coverImage)
     : user?.user?.coverImage;
-  console.log("taxi", image);
 
   const onCoverImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

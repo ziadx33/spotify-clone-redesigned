@@ -17,7 +17,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user?.user?.id) return;
     if (isDone.current) return;
-    console.log("awy ya3ny", { test: "ana mareed" });
     const fn = async () => {
       if (!user?.user?.id) return;
       const queueData = await getQueue(user?.user?.id);
@@ -28,7 +27,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
         undefined,
         true,
       );
-      console.log("dayfaker", playlists);
 
       dispatch(
         setNotificationsData({

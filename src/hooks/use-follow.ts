@@ -10,10 +10,9 @@ import { followUser, unFollowUser } from "@/state/slices/following";
 type UseFollowParams = {
   artist?: User | null;
   playlistId: string;
-  t?: string;
 };
 
-export function useFollow({ artist, playlistId, t }: UseFollowParams) {
+export function useFollow({ artist, playlistId }: UseFollowParams) {
   const { data: user } = useSession();
   const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
   const followedSetDone = useRef(false);
@@ -24,7 +23,6 @@ export function useFollow({ artist, playlistId, t }: UseFollowParams) {
     if (followedSetDone.current) return;
     if (!artist) return;
     if (!user?.user?.id) return;
-    console.log(t, artist);
     setIsFollowed(artist?.followers?.includes(user?.user?.id) ?? false);
     followedSetDone.current = true;
     setIsFollowing(false);

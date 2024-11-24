@@ -107,12 +107,6 @@ export function QueueProgressBar({
               const currentTrackId = currentQueue?.queueData?.currentPlaying;
               if (!currentTrackId) return;
 
-              console.log(
-                data?.queueList.repeatQueue,
-                "tasdkfjasdlfkj",
-                isLastQueue,
-              );
-
               if (data?.queueList.repeatQueue === "TRACK") {
                 editProgress(0);
                 await skipToTime(0, currentTrackId);

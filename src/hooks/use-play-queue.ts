@@ -83,10 +83,7 @@ export function usePlayQueue({
         currentTrackId: playData?.trackId,
       }),
     );
-    console.log(
-      "ana mebayet araneb fel sala",
-      skipToTrack && currentQueue?.queueData?.trackList.includes(skipToTrack),
-    );
+
     if (skipToTrack && currentQueue?.queueData?.trackList.includes(skipToTrack))
       await wait(300);
     else await audios?.loadTracks(returnData.tracks?.tracks ?? []);

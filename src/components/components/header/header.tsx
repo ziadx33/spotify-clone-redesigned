@@ -2,7 +2,6 @@ import { type ReactNode } from "react";
 import { ProfileDropdownMenu } from "./components/profile-dropdown-menu";
 import { NotificationBell } from "./components/notification-bell";
 import { MoveArrows } from "./components/move-arrows";
-import { PremiumButton } from "./components/premium-button";
 
 export function Header({ children }: { children: ReactNode }) {
   return (

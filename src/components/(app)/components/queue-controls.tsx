@@ -44,10 +44,7 @@ export function QueueControls({ className }: QueueControlsProps) {
     await skipBy(-1);
   };
 
-  console.log("fucker", isLastQueue, nextQueue);
-
   const goForwardHandler = async () => {
-    console.log("mahena", !!(nextQueue && isLastTrack), nextQueue, isLastQueue);
     await skipBy(
       1,
       nextQueue && isLastTrack ? nextQueue.queueData?.id : undefined,

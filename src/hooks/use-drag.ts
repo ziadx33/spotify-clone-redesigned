@@ -14,7 +14,6 @@ export function useDrag<T extends HTMLElement>(
 
       const handleDragStart = (e: DragEvent) => {
         e.dataTransfer?.setData(dragId, value);
-        console.log(dragImage, "hasala");
         if (dragImage) e.dataTransfer?.setDragImage(dragImage, 0, 0);
       };
 

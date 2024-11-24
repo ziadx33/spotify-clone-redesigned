@@ -37,8 +37,7 @@ export function SelectFromLibraryButton({
     data: { data: playlists },
   } = usePlaylists();
   const dispatch = useDispatch<AppDispatch>();
-  const { data: prefrence, error, status } = usePrefrences();
-  console.log("lah w mesh", status, prefrence);
+  const { data: prefrence, error } = usePrefrences();
 
   const userPlaylists = useMemo(
     () =>

@@ -47,7 +47,6 @@ export function UserContent({
     },
     enabled: !isCurUser && !!user?.id,
   });
-  console.log("canada", userPrefrence);
   return (
     <Dialog>
       <div className="flex min-h-full w-full flex-col">

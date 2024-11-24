@@ -135,7 +135,6 @@ export function useQueue() {
     skipToTrack?: string,
   ) => {
     if (data.status === "loading") return;
-    console.log("feinnn", data.data?.queueList.randomize);
     const currentQueue = getQueue(data.data?.queueList.currentQueueId);
     const trackListShuffled = data.data?.queueList.randomize
       ? shuffleArray(
@@ -274,7 +273,6 @@ export function useQueue() {
       ? currentQueue!.queueData!
       : getQueue(queueId)!.queueData!;
     const queueList = data.data!.queueList;
-    console.log("tego", queueData);
     let targetTrack: string;
 
     if (typeof id === "number") {
@@ -304,7 +302,6 @@ export function useQueue() {
         (queue) => queue.queueData?.id === queueId,
       );
       const tracks = chosedQueue?.dataTracks?.tracks;
-      console.log("sazz", tracks);
       if (!tracks) return " shururp";
       await audios?.loadTracks(tracks);
     }

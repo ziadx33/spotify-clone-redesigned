@@ -13,7 +13,6 @@ type AlbumControlProps = {
 };
 
 export function AlbumControl({ playlist, tracks, author }: AlbumControlProps) {
-  console.log("enta elly nabart", tracks);
   return (
     <div className="flex items-center">
       <QueuePlayButton

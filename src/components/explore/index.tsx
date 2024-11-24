@@ -37,7 +37,6 @@ export function Explore() {
       });
       const genres = userTracks.map((track) => track.genres).flat();
       const curScrollValue = scrollFetchRef.current;
-      console.log("fel hamam", curScrollValue);
       const tracks = await getTracksByGenres({
         genres,
         range: {
@@ -80,7 +79,6 @@ export function Explore() {
       ],
       randomly: true,
     };
-    console.log("kaka", returnData);
     setExploreData(returnData);
     return returnData;
   };
@@ -94,7 +92,6 @@ export function Explore() {
       const exploreFetchDataUsed = setExploreDataRefToFetchData();
       setCurrentItem(exploreFetchDataUsed?.tracks?.[0]);
     } else {
-      console.log("kont w knot", exploreFetchData);
       setExploreDataRefToFetchData(exploreFetchData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,7 +108,6 @@ export function Explore() {
       const lastIndexItem = (exploreData?.tracks?.length ?? 0) - 5;
       const lastItem = exploreData.tracks?.[lastIndexItem];
       if (currentItem.id === lastItem?.id) {
-        console.log("enta elly nabart");
         scrollFetchRef.current = scrollFetchRef.current + 10;
         void refetchExploreData();
       }

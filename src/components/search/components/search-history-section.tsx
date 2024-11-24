@@ -51,7 +51,6 @@ export function SearchHistorySection() {
     await removeSearchHistoryById(id);
     revalidate(`/search`);
   };
-  console.log("habal", data);
   const cards = useMemo(() => {
     return (
       data
