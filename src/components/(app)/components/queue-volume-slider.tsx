@@ -14,7 +14,7 @@ export function QueueVolumeSlider({ defaultValue }: { defaultValue: number }) {
     editQueueListFn,
     data: { data },
   } = useQueue();
-  const { play, data: queueControllerData } = useQueueController();
+  const { play, data: queueControllerData, pause } = useQueueController();
   const dispatch = useDispatch<AppDispatch>();
   const [value, setValue] = useDebounceState([defaultValue ?? 0], ([value]) => {
     void editQueueListFn({
@@ -23,15 +23,11 @@ export function QueueVolumeSlider({ defaultValue }: { defaultValue: number }) {
     }).runBoth();
     const isPlaying = queueControllerData.isPlaying;
     dispatch(editQueueController({ volume: value, isPlaying: false }));
+    pause();
     if (!isPlaying) return;
     void wait(100).then(
       () =>
-        void play(
-          true,
-          queueControllerData.currentTrackId,
-          queueControllerData.progress,
-          value,
-        ),
+        void play(true, queueControllerData.currentTrackId, undefined, value),
     );
   });
   const resetHandler = () => {
