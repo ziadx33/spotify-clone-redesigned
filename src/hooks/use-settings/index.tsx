@@ -104,7 +104,14 @@ export function useSettings({ user }: { user?: User | null }) {
           title: "choose your preferred theme",
           type: "DROPDOWN",
           defaultOption: "light",
-          options: [{ title: "light", onSelect: () => {} }],
+          options: [
+            {
+              title: "light",
+              onSelect: () => {
+                return;
+              },
+            },
+          ],
         },
         {
           order: 2,
