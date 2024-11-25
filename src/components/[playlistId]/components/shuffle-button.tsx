@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useGetPlayData } from "@/hooks/use-get-play-data";
+import { usePlayQueue } from "@/hooks/use-play-queue";
 import { useQueue } from "@/hooks/use-queue";
 import { type Playlist } from "@prisma/client";
 import { FaShuffle } from "react-icons/fa6";
@@ -7,21 +7,22 @@ import { FaShuffle } from "react-icons/fa6";
 export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {
   const {
     data: { data },
-    shuffleQueue,
-    play,
     getQueue,
+    editQueueListFn,
   } = useQueue();
+
+  const { playHandler } = usePlayQueue({ playlist, noDefPlaylist: true });
   const currentQueue = getQueue(data?.queueList.currentQueueId);
 
-  const { getData } = useGetPlayData({ playlist });
   const shuffleHandler = async () => {
-    const playlistData = await getData();
-    if (currentQueue?.queueData?.typeId !== playlist?.id || !currentQueue) {
-      return (await play(playlistData!.data!, { randomize: true }))?.queue;
+    if (!currentQueue) {
+      return await playHandler(false, { randomize: true });
+    } else if (data?.queueList) {
+      return await editQueueListFn({
+        queueListData: data.queueList,
+        editData: { randomize: !data?.queueList.randomize },
+      }).runBoth();
     }
-    await shuffleQueue({
-      value: (v) => !v,
-    });
   };
   return (
     <Button

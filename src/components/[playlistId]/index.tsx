@@ -34,6 +34,7 @@ export function PlaylistPage({ id }: { id: string }) {
       const { data: playlists } = await getPlaylists({
         creatorId: res?.id ?? "",
         playlistIds: [],
+        excludedIds: [id],
       });
       return { creatorData: res, playlists: playlists! };
     },

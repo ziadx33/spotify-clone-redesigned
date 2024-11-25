@@ -12,6 +12,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useCallback,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -62,36 +63,39 @@ export function AudiosProvider({ children }: { children: ReactNode }) {
   }, [currentQueue, dispatch, queueData, queueData?.queueList]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const loadTracks = async (tracks = currentQueue?.dataTracks?.tracks) => {
-    setIsLoading(true);
+  const loadTracks = useCallback(
+    async (tracks = currentQueue?.dataTracks?.tracks) => {
+      setIsLoading(true);
 
-    const promises =
-      tracks?.map((track) => {
-        return new Promise<
-          NonNullable<AudiosConTextType["data"]["current"]>[number]
-        >((res, rej) => {
-          const audio = new Audio(track.trackSrc);
-          audio.load();
-          loadedTrackList.current = loadedTrackList.current ?? [];
+      const promises =
+        tracks?.map((track) => {
+          return new Promise<
+            NonNullable<AudiosConTextType["data"]["current"]>[number]
+          >((res, rej) => {
+            const audio = new Audio(track.trackSrc);
+            audio.load();
+            loadedTrackList.current = loadedTrackList.current ?? [];
 
-          audio.addEventListener("canplay", () => {
-            res({ track, audio });
+            audio.addEventListener("canplay", () => {
+              res({ track, audio });
+            });
+
+            audio.onerror = (error) => {
+              rej(error);
+            };
           });
+        }) ?? [];
 
-          audio.onerror = (error) => {
-            rej(error);
-          };
-        });
-      }) ?? [];
-
-    try {
-      const data = await Promise.all(promises);
-      loadedTrackList.current = data;
-      setIsLoading(false);
-    } catch (error) {
-      throw { error };
-    }
-  };
+      try {
+        const data = await Promise.all(promises);
+        loadedTrackList.current = data;
+        setIsLoading(false);
+      } catch (error) {
+        throw { error };
+      }
+    },
+    [currentQueue?.dataTracks?.tracks],
+  );
 
   useEffect(() => {
     if (!currentQueue?.dataTracks?.tracks) return;

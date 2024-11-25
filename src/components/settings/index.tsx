@@ -8,7 +8,7 @@ import { SkeletonSettings } from "./components/skeleton-setting";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/hooks/use-settings";
 
-export function Settings({ user }: { user: User }) {
+export function Settings({ user }: { user?: User | null }) {
   const [settingsItems, setSettingsItems] = useSettings({ user });
 
   const settingsContent = useMemo(() => {
@@ -45,7 +45,7 @@ export function Settings({ user }: { user: User }) {
         <h1 className="text-3xl font-bold">Settings</h1>
       </div>
       <div className={cn("flex flex-col", settingsItems ? "gap-4" : "gap-2")}>
-        {settingsItems ? settingsContent : <SkeletonSettings />}
+        {settingsItems && !!user ? settingsContent : <SkeletonSettings />}
       </div>
     </div>
   );

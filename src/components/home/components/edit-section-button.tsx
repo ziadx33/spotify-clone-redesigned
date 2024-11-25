@@ -26,7 +26,7 @@ export function EditSectionButton({
   sectionId,
 }: EditSectionButtonProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: prefrence, error } = usePrefrences();
+  const { data: prefrence } = usePrefrences();
   type PrefrenceRule = "pinnedHomeSections" | "hiddenHomeSections";
   const isExistInRule = useCallback(
     (rule: PrefrenceRule) => {
@@ -44,14 +44,12 @@ export function EditSectionButton({
       }),
     );
     await editUserPrefrence({
-      error,
       userId,
       data: {
         [rule]: isAlreadyExist
           ? prefrence?.[rule].filter((rule) => rule !== sectionId)
           : [sectionId],
       },
-      type: isAlreadyExist ? "set" : "push",
     });
     revalidate("/");
   };

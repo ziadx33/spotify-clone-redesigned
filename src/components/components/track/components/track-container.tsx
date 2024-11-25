@@ -12,6 +12,7 @@ type TrackContainerProps = {
   selected?: boolean;
   children: ReactNode[];
   playlist?: Playlist;
+  album?: Playlist;
 };
 
 export function TrackContainer({
@@ -22,6 +23,7 @@ export function TrackContainer({
   selected,
   children,
   playlist,
+  album,
 }: TrackContainerProps) {
   const hoverTrackHandler = (value: boolean) => {
     setShowButtons(value);
@@ -31,6 +33,7 @@ export function TrackContainer({
     <TrackContext
       track={!skeleton ? track : undefined}
       playlist={!skeleton ? playlist : undefined}
+      album={!skeleton ? album : undefined}
       dragController={!skeleton}
     >
       <TableRow

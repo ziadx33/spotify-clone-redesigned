@@ -48,32 +48,29 @@ export function QueueProgressBar({
 
   const isTrackEdited = useRef(false);
 
+  const editTrackPlays = async () => {
+    const currentPlaying = currentQueue?.queueData?.currentPlaying;
+    if (currentPlaying) {
+      await editTrackById({
+        id: currentPlaying,
+        data: { plays: { decrement: 1 } },
+      });
+      await update({
+        data: {
+          tracksHistory: [...(user?.user?.tracksHistory ?? []), currentPlaying],
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     if (isTrackEdited.current || !currentQueue?.queueData?.currentPlaying)
       return;
 
-    const request = async () => {
-      const currentPlaying = currentQueue.queueData?.currentPlaying;
-      if (currentPlaying) {
-        await editTrackById({
-          id: currentPlaying,
-          data: { plays: { decrement: 1 } },
-        });
-        await update({
-          data: {
-            tracksHistory: [
-              ...(user?.user?.tracksHistory ?? []),
-              currentPlaying,
-            ],
-          },
-        });
-      }
-    };
-
-    void request();
+    void editTrackPlays();
     isTrackEdited.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentQueue]);
+  }, [currentQueue?.queueData?.currentPlaying]);
 
   useEffect(() => {
     if (isPlayingStarted.current) return;
@@ -110,6 +107,7 @@ export function QueueProgressBar({
               if (data?.queueList.repeatQueue === "TRACK") {
                 editProgress(0);
                 await skipToTime(0, currentTrackId);
+                await editTrackPlays();
               } else if (isLastQueue && isLastTrack) {
                 let nextTrack: string | undefined = currentTrackId;
                 if (data?.queueList.repeatQueue === "PLAYLIST") {

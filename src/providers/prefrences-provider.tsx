@@ -2,7 +2,7 @@
 
 import Loading from "@/components/ui/loading";
 import { useSession } from "@/hooks/use-session";
-import { getPrefrence } from "@/server/actions/prefrence";
+import { createPrefrence, getPrefrence } from "@/server/actions/prefrence";
 import { setPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
 import { useQuery } from "@tanstack/react-query";
@@ -17,7 +17,9 @@ export function PrefrencesProvider({ children }: { children: ReactNode }) {
     queryKey: ["home-prefrences-get", user?.user?.id],
     queryFn: async () => {
       if (!user?.user?.id) throw new Error("User not authenticated");
-      const userPrefrence = await getPrefrence(user.user.id);
+      let userPrefrence = await getPrefrence(user.user.id);
+      if (!userPrefrence.data)
+        userPrefrence = await createPrefrence(user.user.id);
       return userPrefrence;
     },
     enabled: !!user?.user?.id,

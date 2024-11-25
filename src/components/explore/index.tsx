@@ -1,7 +1,7 @@
 "use client";
 
 import { useExplore } from "@/hooks/use-explore";
-import { type Track } from "@prisma/client";
+import { $Enums, type Track } from "@prisma/client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ExploreItem } from "./components/explore-item";
 import { ExploreControls } from "./components/explore-controls";
@@ -33,9 +33,13 @@ export function Explore() {
     queryFn: async () => {
       const userData = user!.user!;
       const userTracks = await getTracksByIds({
-        ids: userData.tracksHistory,
+        ids: userData.tracksHistory.slice(0, 30),
       });
-      const genres = userTracks.map((track) => track.genres).flat();
+      let genres: $Enums.GENRES[] = userTracks
+        .map((track) => track.genres)
+        .flat();
+      if (genres.length === 0)
+        genres = Object.keys($Enums.GENRES) as $Enums.GENRES[];
       const curScrollValue = scrollFetchRef.current;
       const tracks = await getTracksByGenres({
         genres,

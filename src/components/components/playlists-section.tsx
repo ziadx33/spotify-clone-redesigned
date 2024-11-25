@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 export function PlaylistSection() {
-  const { data, error } = usePrefrences();
+  const { data } = usePrefrences();
   const dispatch = useDispatch<AppDispatch>();
   const { data: user } = useSession();
   const buttonHandler = async () => {
@@ -23,8 +23,6 @@ export function PlaylistSection() {
     dispatch(editPrefrence(usedData));
     await editUserPrefrence({
       data: usedData,
-      error,
-      type: "set",
       userId: user!.user!.id,
     });
   };

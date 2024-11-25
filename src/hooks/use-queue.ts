@@ -135,7 +135,6 @@ export function useQueue() {
     skipToTrack?: string,
   ) => {
     if (data.status === "loading") return;
-    const currentQueue = getQueue(data.data?.queueList.currentQueueId);
     const trackListShuffled = data.data?.queueList.randomize
       ? shuffleArray(
           queueData.data.trackList,
@@ -163,6 +162,7 @@ export function useQueue() {
         },
       };
     }
+    const currentQueue = getQueue(data.data?.queueList.currentQueueId);
 
     const currentQueueData: Queue = {
       currentPlayingProgress: 0,

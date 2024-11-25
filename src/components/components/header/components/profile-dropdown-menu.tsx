@@ -48,12 +48,12 @@ export function ProfileDropdownMenu() {
         <DropdownMenuItem>
           <Navigate
             data={{
-              href: `/artist/${user?.user?.id}/settings`,
+              href: `/settings`,
               title: "Settings" ?? "unknown",
               type: "ARTIST",
             }}
             className="w-full text-start"
-            href={`/artist/${user?.user?.id}/settings`}
+            href={`/settings`}
           >
             Settings
           </Navigate>

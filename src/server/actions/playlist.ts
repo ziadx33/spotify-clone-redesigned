@@ -12,6 +12,7 @@ type GetPlaylistsParams = {
   creatorId?: string | null;
   playlistIds?: string[] | null;
   type?: Playlist["type"];
+  excludedIds?: string[];
 };
 export const getPlaylists = unstable_cache(
   cache(
@@ -19,6 +20,7 @@ export const getPlaylists = unstable_cache(
       creatorId,
       playlistIds,
       type,
+      excludedIds,
     }: GetPlaylistsParams): Promise<PlaylistsSliceType> => {
       try {
         const playlists = await db.playlist.findMany({
@@ -30,6 +32,7 @@ export const getPlaylists = unstable_cache(
               {
                 id: {
                   in: playlistIds ?? undefined,
+                  notIn: excludedIds,
                 },
               },
             ],

@@ -12,6 +12,7 @@ type TrackContextProps = {
   children?: ReactNode;
   track?: Track | null;
   playlist?: Playlist | null;
+  album?: Playlist | null;
   asChild?: boolean;
   className?: string;
   dragController?: boolean;
@@ -24,6 +25,7 @@ export function TrackContext({
   asChild = true,
   className,
   dragController,
+  album,
 }: TrackContextProps) {
   const { data: dropdownItems } = useTrackDropdownItems({
     track,
@@ -58,7 +60,7 @@ export function TrackContext({
         >
           <CircleItems
             className="text-primary-foreground"
-            items={[track?.title, playlist?.title]}
+            items={[track?.title, (album ?? playlist)?.title]}
           />
         </span>
       </ContextMenuPortal>

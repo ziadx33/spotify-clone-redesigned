@@ -14,7 +14,7 @@ import { type AppDispatch } from "@/state/store";
 import { useSession } from "@/hooks/use-session";
 
 export function PlaylistFilters() {
-  const { data: prefrence, error } = usePrefrences();
+  const { data: prefrence } = usePrefrences();
 
   const dispatch = useDispatch<AppDispatch>();
   const { data: user } = useSession();
@@ -30,12 +30,10 @@ export function PlaylistFilters() {
       dispatch(editPrefrence(usedData));
       await editUserPrefrence({
         data: usedData,
-        error,
-        type: "set",
         userId: user.user.id,
       });
     },
-    [dispatch, error, prefrence?.currentCategory, user],
+    [dispatch, prefrence?.currentCategory, user],
   );
 
   const categories = useMemo(() => {

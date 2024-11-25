@@ -21,31 +21,55 @@ type DefSetting = {
   order: number;
 };
 
-type ButtonSetting = {
+export type ButtonSetting = {
   type: "BUTTON";
   value: string;
   variant?: ButtonProps["variant"];
 } & DefSetting;
 
-type SwitchSetting = {
+export type SwitchSetting = {
   type: "SWITCH";
   value: boolean;
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   onEvent: (value: boolean) => unknown | Promise<unknown>;
 } & Omit<DefSetting, "onEvent">;
 
-type DialogSetting = {
+export type DialogSetting = {
   type: "DIALOG";
   content: ReactNode;
   value: string;
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 } & Omit<ButtonSetting, "onEvent" | "type">;
 
-export type Setting = ButtonSetting | SwitchSetting | DialogSetting;
+export type AlertSetting = {
+  type: "ALERT";
+  description: string;
+  alertTitle: string;
+  value: string;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+} & Omit<ButtonSetting, "type">;
+
+export type DropdownSettingOption = {
+  title: string;
+  onSelect: DefSetting["onEvent"];
+};
+
+export type DropdownSetting = {
+  type: "DROPDOWN";
+  defaultOption: string;
+  options: DropdownSettingOption[];
+} & Omit<DefSetting, "onEvent">;
+
+export type Setting =
+  | ButtonSetting
+  | SwitchSetting
+  | DialogSetting
+  | AlertSetting
+  | DropdownSetting;
 
 export type SettingsItems = Record<string, Setting[]>;
 
-export function useSettings({ user }: { user: User }) {
+export function useSettings({ user }: { user?: User | null }) {
   const { data: prefrences, error: prefrencesError } = usePrefrences();
   const dispatch = useDispatch<AppDispatch>();
   const [settingsItems, setSettingsItems] = useState<SettingsItems | null>(
@@ -55,8 +79,8 @@ export function useSettings({ user }: { user: User }) {
   const isDoneRef = useRef(false);
 
   useEffect(() => {
+    if ((!prefrences && !prefrencesError) || !user) return;
     if (isDoneRef.current) return;
-    if (!prefrences && !prefrencesError) return;
     setSettingsItems({
       display: [
         {
@@ -71,14 +95,19 @@ export function useSettings({ user }: { user: User }) {
             dispatch(editPrefrence(data));
             await editUserPrefrence({
               data,
-              error: prefrencesError,
-              type: "set",
               userId: user.id,
             });
           },
         },
         {
           order: 1,
+          title: "choose your preferred theme",
+          type: "DROPDOWN",
+          defaultOption: "light",
+          options: [{ title: "light", onSelect: () => {} }],
+        },
+        {
+          order: 2,
           title: "reset home page prefrences",
           type: "BUTTON",
           value: "reset",
@@ -94,8 +123,6 @@ export function useSettings({ user }: { user: User }) {
             dispatch(editPrefrence(data));
             await editUserPrefrence({
               data,
-              error: prefrencesError,
-              type: "set",
               userId: user.id,
             });
 
@@ -115,8 +142,6 @@ export function useSettings({ user }: { user: User }) {
             dispatch(editPrefrence(data));
             await editUserPrefrence({
               data,
-              error: prefrencesError,
-              type: "set",
               userId: user.id,
             });
           },
@@ -132,8 +157,6 @@ export function useSettings({ user }: { user: User }) {
             dispatch(editPrefrence(data));
             await editUserPrefrence({
               data,
-              error: prefrencesError,
-              type: "set",
               userId: user.id,
             });
           },
@@ -149,8 +172,6 @@ export function useSettings({ user }: { user: User }) {
             dispatch(editPrefrence(data));
             await editUserPrefrence({
               data,
-              error: prefrencesError,
-              type: "set",
               userId: user.id,
             });
           },
@@ -166,8 +187,6 @@ export function useSettings({ user }: { user: User }) {
             dispatch(editPrefrence(data));
             await editUserPrefrence({
               data,
-              error: prefrencesError,
-              type: "set",
               userId: user.id,
             });
           },
@@ -183,22 +202,27 @@ export function useSettings({ user }: { user: User }) {
             dispatch(editPrefrence(data));
             await editUserPrefrence({
               data,
-              error: prefrencesError,
-              type: "set",
               userId: user.id,
             });
           },
         },
-        {
-          type: "DIALOG",
-          order: 5,
-          title:
-            user.type === "USER"
-              ? "switch to artist mode"
-              : "edit your profile artist data",
-          content: <SwitchToArtistDialog />,
-          value: user.type === "USER" ? "switch" : "edit",
-        },
+        user.type === "USER"
+          ? {
+              type: "DIALOG",
+              order: 5,
+              title: "switch to artist mode",
+              content: <SwitchToArtistDialog />,
+              value: "switch",
+            }
+          : {
+              type: "BUTTON",
+              order: 5,
+              title: "switch to normal user mode",
+              value: "switch",
+              onEvent() {
+                console.log("hi");
+              },
+            },
       ],
       ["account management"]: [
         {
@@ -221,33 +245,27 @@ export function useSettings({ user }: { user: User }) {
           },
         },
         {
+          type: "ALERT",
           title: "permanently delete your account",
-          type: "BUTTON",
           value: "delete account",
           order: 2,
-          onEvent: () => {
-            toast("We're sorry to see you go!", {
-              description:
-                "This action is permanent and will erase all your data. Are you sure you want to delete your account?",
-              action: {
-                label: "Delete",
-                onClick: () => {
-                  const fn = async () => {
-                    await deleteUserById(user.id);
-                    await signOut();
-                  };
-                  void fn();
-                },
-              },
-            });
+          onEvent: async () => {
+            await deleteUserById(user.id);
+            revalidate("/login");
+            revalidate("/register");
+            revalidate("/");
+            await signOut();
           },
           variant: "destructive",
+          alertTitle: "We're sorry to see you go!",
+          description:
+            "This action is permanent and will erase all your data. Are you sure you want to delete your account?",
         },
       ],
     });
     isDoneRef.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, prefrences, prefrencesError, router, user.id]);
+  }, [dispatch, prefrences, prefrencesError, router, user?.id]);
 
   return [settingsItems, setSettingsItems] as const;
 }

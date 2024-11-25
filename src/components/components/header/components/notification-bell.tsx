@@ -30,7 +30,7 @@ export function NotificationBell() {
         size="icon"
       >
         <BsBell />
-        {!isThereIsNewNotification && !isCurrentRoute && (
+        {isThereIsNewNotification && !isCurrentRoute && (
           <div className="absolute bottom-2.5 right-2.5 size-2 rounded-full bg-primary" />
         )}
       </Button>

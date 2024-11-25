@@ -1,5 +1,6 @@
 import { sendEmail } from "@/lib/send-email";
 import { type registerSchema } from "@/schemas";
+import { createPrefrence } from "@/server/actions/prefrence";
 import { createUser, getUserByEmail } from "@/server/actions/user";
 import {
   deleteVerificationTokenById,
@@ -13,11 +14,12 @@ export const register = async (
 ) => {
   const user = await getUserByEmail(data.email);
   if (!user) {
-    await createUser({
+    const createdUser = await createUser({
       email: data.email,
       name: data.name,
       password: data.password,
     });
+    await createPrefrence(createdUser.id);
   }
   let verificationToken = !user
     ? await generateVerificationToken(data.email)

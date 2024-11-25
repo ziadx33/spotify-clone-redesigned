@@ -65,8 +65,6 @@ function SortableItem(item: ItemType) {
         [text]: sections,
       },
       userId: user?.user?.id ?? "",
-      error,
-      type: "set",
     });
     if (error) dispatch(editPrefrence(res));
     revalidate("/");
@@ -199,9 +197,7 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
           data: {
             [prop]: updatedSortOrder,
           },
-          type: "set",
           userId: user?.user?.id ?? "",
-          error,
         });
         if (error) dispatch(editPrefrence(res));
         revalidate("/");

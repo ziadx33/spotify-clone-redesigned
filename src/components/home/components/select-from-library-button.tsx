@@ -37,7 +37,7 @@ export function SelectFromLibraryButton({
     data: { data: playlists },
   } = usePlaylists();
   const dispatch = useDispatch<AppDispatch>();
-  const { data: prefrence, error } = usePrefrences();
+  const { data: prefrence } = usePrefrences();
 
   const userPlaylists = useMemo(
     () =>
@@ -64,15 +64,12 @@ export function SelectFromLibraryButton({
       dispatch(editPrefrence(data));
       await editUserPrefrence({
         data,
-        error,
-        type: "set",
         userId: user?.user.id ?? "",
       });
       revalidate("/");
     },
     [
       dispatch,
-      error,
       prefrence?.homeLibSection,
       prefrence?.homeSectionsSort,
       user?.user.id,

@@ -87,8 +87,6 @@ export function usePlaylistDropdownItems({
     await editUserPrefrence({
       data: prefrenceData,
       userId: user.user!.id,
-      type: "set",
-      error: null,
     });
     dispatch(editPrefrence(prefrenceData));
     revalidate("/");

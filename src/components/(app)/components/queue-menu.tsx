@@ -29,6 +29,12 @@ export function QueueMenu() {
 
       const typeId = queue.queueData?.typeId?.replaceAll("-", " ");
 
+      console.log(
+        "hases eny tamam",
+        queue?.playlistTypeData?.title,
+        queue.artistTypeData?.artistPick,
+      );
+
       return (
         <div key={queue.queueData?.id} className="flex w-full flex-col">
           <h3 className="mb-2.5 text-lg font-semibold">

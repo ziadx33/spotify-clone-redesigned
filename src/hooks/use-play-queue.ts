@@ -6,6 +6,7 @@ import { useQueue } from "./use-queue";
 import { useQueueController } from "./use-queue-controller";
 import { type QueuePlayButtonProps } from "@/components/queue-play-button";
 import { wait } from "@/utils/wait";
+import { type QueueList } from "@prisma/client";
 
 export function usePlayQueue({
   playlist,
@@ -55,7 +56,10 @@ export function usePlayQueue({
         : isCurrentlyPlayingTrack
     : queueTypeId === currentQueue?.queueData?.typeId;
 
-  const playHandler = async () => {
+  const playHandler = async (
+    playAudio = true,
+    queueListData?: Partial<QueueList>,
+  ) => {
     const returnedData = await getData();
     const returnData = (data ? data : returnedData!.data)!;
     if (
@@ -74,7 +78,7 @@ export function usePlayQueue({
       return;
     }
     pause();
-    const playData = await play(returnData, undefined, skipToTrack);
+    const playData = await play(returnData, queueListData, skipToTrack);
 
     dispatch(
       editQueueController({
@@ -87,7 +91,7 @@ export function usePlayQueue({
     if (skipToTrack && currentQueue?.queueData?.trackList.includes(skipToTrack))
       await wait(300);
     else await audios?.loadTracks(returnData.tracks?.tracks ?? []);
-    await playTrack(true, playData?.trackId, 0);
+    if (playAudio) await playTrack(true, playData?.trackId, 0);
   };
   return {
     isPlaying,

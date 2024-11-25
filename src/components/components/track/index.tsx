@@ -36,6 +36,7 @@ function Comp(props: TrackProps) {
       track={!skeleton ? props.track : undefined}
       hidePlayButton={hidePlayButton}
       playlist={!skeleton ? props.playlist : undefined}
+      album={!skeleton ? props.album : undefined}
     >
       <AuthorsContainer
         authors={!skeleton ? props.authors : undefined}
