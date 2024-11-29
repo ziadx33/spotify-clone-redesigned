@@ -65,7 +65,7 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
         artist={artist}
         data={data}
         size={"icon"}
-        className="h-12 w-12 rounded-full"
+        className="group h-12 w-12 rounded-full"
       >
         {(isPlaying) =>
           !isPlaying ? <FaPlay size={15} /> : <FaPause size={15} />
@@ -75,7 +75,7 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
         disabled={isFollowing}
         onClick={() => toggle()}
         variant="outline"
-        className="mx-2 bg-transparent backdrop-blur-lg transition-all hover:bg-transparent hover:backdrop-blur-2xl"
+        className="mx-2 hover:backdrop-blur-2xl dark:bg-transparent dark:backdrop-blur-lg dark:transition-all dark:hover:bg-transparent"
       >
         {isFollowed ? "Following" : "follow"}
       </Button>
@@ -84,26 +84,35 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
         disabled={openNewTabStatus === "pending"}
         onClick={() => openInNewTabHandler()}
         variant="ghost"
-        className="h-12 w-12 rounded-full"
+        className="group h-12 w-12 rounded-full"
       >
-        <MdOutlineLibraryAdd size={20} />
+        <MdOutlineLibraryAdd
+          size={20}
+          className="text-white group-hover:text-black dark:text-primary-foreground"
+        />
       </Button>
       <Button
         onClick={() => addToQueueHandler()}
         disabled={addToQueueStatus === "pending"}
         size={"icon"}
         variant="ghost"
-        className="h-12 w-12 rounded-full"
+        className="group h-12 w-12 rounded-full"
       >
-        <MdFormatListBulletedAdd size={20} />
+        <MdFormatListBulletedAdd
+          size={20}
+          className="text-white group-hover:text-black dark:text-primary-foreground"
+        />
       </Button>
       <AuthorDropdown artist={artist} playlistId={playlistId}>
         <Button
           size={"icon"}
           variant="ghost"
-          className="h-12 w-12 rounded-full"
+          className="group h-12 w-12 rounded-full"
         >
-          <BsThreeDots size={20} />
+          <BsThreeDots
+            size={20}
+            className="text-white group-hover:text-black dark:text-primary-foreground"
+          />
         </Button>
       </AuthorDropdown>
     </div>

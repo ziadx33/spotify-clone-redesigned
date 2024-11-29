@@ -26,7 +26,7 @@ export function MiniMenuArtistInfo() {
     <div className="relative mx-auto flex w-[95%] flex-col gap-2 overflow-hidden rounded-lg bg-muted">
       <h3
         className={cn(
-          "z-10 mb-2 p-3 pt-3.5 font-semibold",
+          "z-10 mb-2 p-3 pt-3.5 font-semibold text-black dark:text-white",
           currentData.author?.aboutImage ? "absolute" : "",
         )}
       >
@@ -60,7 +60,10 @@ export function MiniMenuArtistInfo() {
             followers
           </h4>
           <Button
-            onClick={() => toggle()}
+            onClick={async (e) => {
+              e.preventDefault();
+              await toggle();
+            }}
             variant="ghost"
             size="sm"
             disabled={isFollowing}

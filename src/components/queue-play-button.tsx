@@ -73,10 +73,11 @@ export function QueuePlayButton({
     data: { status },
   } = useQueue();
   const clickedRef = useRef(false);
+  const DEF_CLASSES = "pointer-events-auto";
   const buttonClass =
     typeof className === "function"
-      ? className(isCurrentPlaying, isPlaying)
-      : cn("pointer-events-auto", className);
+      ? cn(DEF_CLASSES, className(isCurrentPlaying, isPlaying))
+      : cn(DEF_CLASSES, className);
   return (
     <button
       {...buttonProps}

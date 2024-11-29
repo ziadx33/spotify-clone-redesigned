@@ -38,7 +38,7 @@ export function Artist({ artist, playlistId }: ArtistProps) {
                   className="size-[200px] rounded-full"
                 />
               )}
-              <b className="text-8xl">{artist.name}</b>
+              <b className="text-8xl text-primary-foreground">{artist.name}</b>
             </div>
           </AuthorContext>
           <Controls playlistId={playlistId} artist={artist} />
