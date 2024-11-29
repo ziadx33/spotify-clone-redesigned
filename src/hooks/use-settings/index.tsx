@@ -3,71 +3,19 @@ import { editUserPrefrence } from "@/server/actions/prefrence";
 import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
-import { useState, useRef, useEffect, type ReactNode } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { type User } from "@prisma/client";
-import { type ButtonProps } from "@/components/ui/button";
+import { $Enums, type User } from "@prisma/client";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { deleteUserById } from "@/server/actions/user";
 import { usePrefrences } from "../use-prefrences";
 import { SwitchToArtistDialog } from "./components/swith-to-artist-dialog";
-
-type DefSetting = {
-  title: string;
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  onEvent: () => unknown | Promise<unknown>;
-  order: number;
-};
-
-export type ButtonSetting = {
-  type: "BUTTON";
-  value: string;
-  variant?: ButtonProps["variant"];
-} & DefSetting;
-
-export type SwitchSetting = {
-  type: "SWITCH";
-  value: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  onEvent: (value: boolean) => unknown | Promise<unknown>;
-} & Omit<DefSetting, "onEvent">;
-
-export type DialogSetting = {
-  type: "DIALOG";
-  content: ReactNode;
-  value: string;
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-} & Omit<ButtonSetting, "onEvent" | "type">;
-
-export type AlertSetting = {
-  type: "ALERT";
-  description: string;
-  alertTitle: string;
-  value: string;
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-} & Omit<ButtonSetting, "type">;
-
-export type DropdownSettingOption = {
-  title: string;
-  onSelect: DefSetting["onEvent"];
-};
-
-export type DropdownSetting = {
-  type: "DROPDOWN";
-  defaultOption: string;
-  options: DropdownSettingOption[];
-} & Omit<DefSetting, "onEvent">;
-
-export type Setting =
-  | ButtonSetting
-  | SwitchSetting
-  | DialogSetting
-  | AlertSetting
-  | DropdownSetting;
-
-export type SettingsItems = Record<string, Setting[]>;
+import { type SettingsItems } from "./types";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { RiComputerLine } from "react-icons/ri";
+import { useUpdateUser } from "../use-update-user";
 
 export function useSettings({ user }: { user?: User | null }) {
   const { data: prefrences, error: prefrencesError } = usePrefrences();
@@ -77,6 +25,7 @@ export function useSettings({ user }: { user?: User | null }) {
   );
   const router = useRouter();
   const isDoneRef = useRef(false);
+  const { update: updateUser } = useUpdateUser();
 
   useEffect(() => {
     if ((!prefrences && !prefrencesError) || !user) return;
@@ -103,13 +52,39 @@ export function useSettings({ user }: { user?: User | null }) {
           order: 1,
           title: "choose your preferred theme",
           type: "DROPDOWN",
-          defaultOption: "light",
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          defaultOption: user.theme ?? "dark",
+          placehoder: "select a theme",
           options: [
             {
-              title: "light",
-              onSelect: () => {
+              title: "system",
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              value: $Enums.USER_THEME.SYSTEM,
+              onSelect: async () => {
+                await updateUser({ data: { theme: "SYSTEM" } });
                 return;
               },
+              icon: <RiComputerLine />,
+            },
+            {
+              title: "light",
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              value: $Enums.USER_THEME.LIGHT,
+              onSelect: async () => {
+                await updateUser({ data: { theme: "LIGHT" } });
+                return;
+              },
+              icon: <FaSun />,
+            },
+            {
+              title: "dark",
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              value: $Enums.USER_THEME.DARK,
+              onSelect: async () => {
+                await updateUser({ data: { theme: "DARK" } });
+                return;
+              },
+              icon: <FaMoon />,
             },
           ],
         },

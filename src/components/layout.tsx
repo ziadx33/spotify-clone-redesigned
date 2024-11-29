@@ -1,4 +1,3 @@
-import { ThemeProvider } from "next-themes";
 import { type ReactNode } from "react";
 import { Toaster } from "./ui/sonner";
 import { ReduxProvider } from "@/providers/redux-provider";
@@ -6,6 +5,7 @@ import { QueryProvider } from "@/providers/query-provider";
 import { mainFont } from "@/fonts";
 import { DataProvider } from "@/providers/data-provider";
 import { AuthProvider } from "@/providers/auth-provider";
+import { UserThemeProvider } from "@/providers/user-theme-provider";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -13,18 +13,12 @@ export function Layout({ children }: { children: ReactNode }) {
       <body className={mainFont.className}>
         <AuthProvider>
           <ReduxProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              forcedTheme="dark"
-              disableTransitionOnChange
-            >
+            <UserThemeProvider>
               <QueryProvider>
                 <DataProvider>{children}</DataProvider>
               </QueryProvider>
               <Toaster />
-            </ThemeProvider>
+            </UserThemeProvider>
           </ReduxProvider>
         </AuthProvider>
         <div

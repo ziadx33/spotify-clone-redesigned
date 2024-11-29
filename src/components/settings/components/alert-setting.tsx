@@ -2,7 +2,6 @@ import {
   AlertDialogHeader,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
-import { type AlertSetting } from "@/hooks/use-settings";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -13,6 +12,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { ButtonSettings } from "./button-settings";
+import { type AlertSetting } from "@/hooks/use-settings/types";
 
 type SettingAlertProps = {
   setting: AlertSetting;

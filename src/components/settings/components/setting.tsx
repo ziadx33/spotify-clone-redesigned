@@ -1,9 +1,10 @@
 import { type Dispatch, type SetStateAction } from "react";
-import { type Setting, type SettingsItems } from "@/hooks/use-settings";
 import { SettingAlert } from "./alert-setting";
 import { SettingDialog } from "./dialog-setting";
 import { SettingSwitch } from "./switch-setting";
 import { ButtonSetting } from "./button-setting";
+import { SettingDropdown } from "./dropdown-setting";
+import { type Setting, type SettingsItems } from "@/hooks/use-settings/types";
 
 type SettingProps = {
   setting: Setting;
@@ -32,7 +33,7 @@ export function Setting({
       ) : setting.type === "ALERT" ? (
         <SettingAlert setting={setting} />
       ) : (
-        <div></div>
+        <SettingDropdown setting={setting} />
       )}
     </div>
   );

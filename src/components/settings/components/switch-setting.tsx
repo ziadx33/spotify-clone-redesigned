@@ -2,7 +2,7 @@ import {
   type Setting,
   type SettingsItems,
   type SwitchSetting,
-} from "@/hooks/use-settings";
+} from "@/hooks/use-settings/types";
 import { Switch } from "@/components/ui/switch";
 import { type SetStateAction, useCallback, type Dispatch } from "react";
 

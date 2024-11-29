@@ -1,4 +1,4 @@
-import { type DialogSetting } from "@/hooks/use-settings";
+import { type DialogSetting } from "@/hooks/use-settings/types";
 import { ButtonSettings } from "./button-settings";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 

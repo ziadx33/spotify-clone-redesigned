@@ -1,4 +1,4 @@
-import { type ButtonSetting } from "@/hooks/use-settings";
+import { type ButtonSetting } from "@/hooks/use-settings/types";
 import { ButtonSettings } from "./button-settings";
 
 type ButtonSettingProps = {

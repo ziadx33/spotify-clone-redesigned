@@ -70,6 +70,12 @@ enum GENRES {
     LATIN
 }
 
+enum USER_THEME {
+    DARK
+    LIGHT
+    SYSTEM
+}
+
 model User {
     id            String     @id @default(cuid())
     name          String
@@ -98,6 +104,7 @@ model User {
     SearchHistory          SearchHistory[]
     Preference             Preference[]
     QueueList              QueueList[]
+    theme                  USER_THEME      @default(SYSTEM)
 
     seenNotifications String[]       @default([])
     Notification      Notification[]
