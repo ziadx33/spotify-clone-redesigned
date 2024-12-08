@@ -1,4 +1,4 @@
-import { BsGithub, BsGoogle } from "react-icons/bs";
+import { BsDiscord, BsGithub, BsGoogle } from "react-icons/bs";
 import { AuthProvider } from "./auth-provider";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
@@ -7,6 +7,7 @@ enum PROVIDER {
   GOOGLE = "google",
   GITHUB = "github",
   X = "twitter",
+  DISCORD = "discord",
 }
 
 export function AuthProviders() {
@@ -32,6 +33,9 @@ export function AuthProviders() {
       </AuthProvider>
       <AuthProvider onClick={() => authHandler(PROVIDER.GITHUB)}>
         <BsGithub size={20} />
+      </AuthProvider>
+      <AuthProvider onClick={() => authHandler(PROVIDER.DISCORD)}>
+        <BsDiscord size={20} />
       </AuthProvider>
     </div>
   );

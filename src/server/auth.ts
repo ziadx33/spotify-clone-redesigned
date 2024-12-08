@@ -12,6 +12,7 @@ import { getUserByEmail } from "./actions/user";
 import { getUserById } from "./actions/verification-token";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+import DiscordProvider from "next-auth/providers/discord";
 import { env } from "@/env";
 
 /**
@@ -99,6 +100,10 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: env.GITHUB_AUTH_CLIENT_ID,
       clientSecret: env.GITHUB_AUTH_CLIENT_SECRET,
+    }),
+    DiscordProvider({
+      clientId: env.DISCORD_AUTH_CLIENT_ID,
+      clientSecret: env.DISCORD_AUTH_CLIENT_SECRET,
     }),
   ],
 };
