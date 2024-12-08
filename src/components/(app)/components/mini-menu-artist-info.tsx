@@ -56,8 +56,7 @@ export function MiniMenuArtistInfo() {
         </Link>
         <div className="mb-2 mt-1.5 flex items-center justify-between">
           <h4 className="text-md text-muted-foreground">
-            {(currentData.author?.followers.length ?? 0) - (isFollowed ? 0 : 1)}{" "}
-            followers
+            {currentData.author?.followers.length ?? 0} followers
           </h4>
           <Button
             onClick={async (e) => {

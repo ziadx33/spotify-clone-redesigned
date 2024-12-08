@@ -88,7 +88,7 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
       >
         <MdOutlineLibraryAdd
           size={20}
-          className="text-white group-hover:text-black dark:text-primary-foreground"
+          className="text-white group-hover:text-black dark:text-secondary-foreground dark:group-hover:text-secondary-foreground"
         />
       </Button>
       <Button
@@ -100,7 +100,7 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
       >
         <MdFormatListBulletedAdd
           size={20}
-          className="text-white group-hover:text-black dark:text-primary-foreground"
+          className="text-white group-hover:text-black dark:text-secondary-foreground dark:group-hover:text-secondary-foreground"
         />
       </Button>
       <AuthorDropdown artist={artist} playlistId={playlistId}>
@@ -111,7 +111,7 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
         >
           <BsThreeDots
             size={20}
-            className="text-white group-hover:text-black dark:text-primary-foreground"
+            className="text-white group-hover:text-black dark:text-secondary-foreground dark:group-hover:text-secondary-foreground"
           />
         </Button>
       </AuthorDropdown>

@@ -37,7 +37,6 @@ const prefrenceSlice = createSlice({
             ShowFollowersList: true,
             ShowTopPlayingTracks: false,
             showSidebar: true,
-            currentCategory: null,
             ...payload,
           };
       state.status = "success";

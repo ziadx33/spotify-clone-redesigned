@@ -1,7 +1,7 @@
 "use client";
 
-import { ScrollArea } from "../ui/scroll-area";
-import { PlaylistSection } from "./playlists-section";
+import { ScrollArea } from "../../ui/scroll-area";
+import { PlaylistSection } from "./components/playlists-section";
 import { cn } from "@/lib/utils";
 import { usePrefrences } from "@/hooks/use-prefrences";
 

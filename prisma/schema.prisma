@@ -225,8 +225,7 @@ model Preference {
     ShowFollowersList      Boolean @default(true)
     ShowTopPlayingTracks   Boolean @default(false)
 
-    showSidebar     Boolean     @default(true)
-    currentCategory CATEGORIES?
+    showSidebar Boolean @default(true)
 
     @@unique([userId])
 }

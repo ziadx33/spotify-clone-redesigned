@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { Sidebar } from "../components/sidebar";
+import { Sidebar } from "../components/sidebar/sidebar";
 import { ServerAppDataProvider } from "@/providers/server-app-data-provider";
 import { QueueControllerContainer } from "./components/queue-controller-container";
 import { Tabs } from "../components/tabs/tabs";
