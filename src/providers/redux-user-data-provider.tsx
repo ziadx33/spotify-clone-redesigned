@@ -8,8 +8,10 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useDispatch } from "react-redux";
 
 export function ReduxUserDataProvider({ children }: { children: ReactNode }) {
-  const { data: user } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: user, status } = useSession();
+  const [isLoading, setIsLoading] = useState(
+    status === "unauthenticated" ? false : true,
+  );
   const isDone = useRef(false);
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
