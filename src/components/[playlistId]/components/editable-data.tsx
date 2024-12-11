@@ -7,13 +7,13 @@ import { memo, useRef, useMemo } from "react";
 import { FaPen } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa6";
 import { getTime } from "@/utils/get-time";
-import { useSession } from "@/hooks/use-session";
 import { Skeleton } from "@/components/ui/skeleton";
 import { clampText } from "@/utils/clamp-text";
 import { AvatarData } from "@/components/avatar-data";
 import { EditPlaylistDialogContent } from "./edit-playlist-dialog-content";
 import { PlaylistContext } from "@/components/contexts/playlist-context";
 import { AuthorContext } from "@/components/contexts/author-context";
+import { useUserData } from "@/hooks/use-user-data";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -28,8 +28,8 @@ function EditableDataComp({
   creatorData,
   tracks,
 }: EditableDataProps) {
-  const { data: user } = useSession();
-  const isEditable = user?.user?.id === data?.creatorId;
+  const user = useUserData();
+  const isEditable = user?.id === data?.creatorId;
   const isLoading = !data;
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -74,7 +74,6 @@ function EditableDataComp({
           ) : (
             <Skeleton className="mb-2 h-2.5 w-16" />
           )}
-
           <PlaylistContext playlist={data}>
             <DialogTrigger
               disabled={!isEditable || isLoading}

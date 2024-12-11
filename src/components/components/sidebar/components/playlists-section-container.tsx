@@ -1,7 +1,7 @@
 import { useDrop } from "@/hooks/use-drop";
 import { useFollow } from "@/hooks/use-follow";
 import { usePrefrences } from "@/hooks/use-prefrences";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { cn } from "@/lib/utils";
 import { getArtistById } from "@/server/actions/user";
 import { useState, type ReactNode } from "react";
@@ -13,7 +13,7 @@ export function PlaylistsSectionContainer({
   children: ReactNode;
 }) {
   const { data } = usePrefrences();
-  const { data: user } = useSession();
+  const user = useUserData();
   const { follow } = useFollow({ playlistId: "unkown" });
   const [isDropping, setIsDropping] = useState(false);
   const { ref } = useDrop<HTMLDivElement>(
@@ -21,7 +21,7 @@ export function PlaylistsSectionContainer({
     async (id) => {
       setIsDropping(false);
       const artist = await getArtistById(id);
-      if (user?.user?.id && artist?.followers.includes(user?.user?.id))
+      if (user?.id && artist?.followers.includes(user?.id))
         return toast.error("already followed artist");
       if (!artist) return toast.error("Something went wrong");
       await follow(artist);

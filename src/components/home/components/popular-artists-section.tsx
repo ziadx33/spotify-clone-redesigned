@@ -1,11 +1,11 @@
 import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { getPopularUsers } from "@/server/actions/user";
 import { useQuery } from "@tanstack/react-query";
 
 export function PopularArtistsSection() {
-  const { data: user } = useSession();
+  const user = useUserData();
   const { data, isLoading } = useQuery({
     queryKey: ["popular-artists-home-page"],
     queryFn: async () => {

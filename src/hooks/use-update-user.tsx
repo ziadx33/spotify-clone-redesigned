@@ -1,10 +1,14 @@
 import { type User } from "@prisma/client";
-import { useSession } from "./use-session";
 import { updateUserById } from "@/server/actions/user";
 import { revalidate } from "@/server/actions/revalidate";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "@/state/store";
+import { useUserData } from "./use-user-data";
+import { editUserData } from "@/state/slices/user";
 
 export function useUpdateUser() {
-  const { update: updateSession, data: user } = useSession();
+  const user = useUserData();
+  const dispatch = useDispatch<AppDispatch>();
   const update = async (
     updateData:
       | { data: Partial<User> }
@@ -12,16 +16,16 @@ export function useUpdateUser() {
   ) => {
     let data: { data: Partial<User> };
     if (typeof updateData === "function") {
-      data = updateData(user?.user);
+      data = updateData(user);
     } else data = updateData;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    void updateSession(data.data);
-    if (!user?.user?.id) return;
+    dispatch(editUserData(data.data));
+    if (!user?.id) return;
     await updateUserById({
-      id: user?.user?.id,
+      id: user?.id,
       data: data.data,
     });
-    revalidate(`/artist/${user.user.id}`);
+    revalidate(`/artist/${user.id}`);
   };
   return { update, user };
 }

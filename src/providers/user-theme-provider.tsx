@@ -1,11 +1,11 @@
 "use client";
 
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { ThemeProvider } from "next-themes";
 import { useMemo, type ReactNode } from "react";
 
 export function UserThemeProvider({ children }: { children: ReactNode }) {
-  const { data } = useSession();
+  const data = useUserData();
   const content = useMemo(() => {
     return children;
   }, [children]);
@@ -15,7 +15,7 @@ export function UserThemeProvider({ children }: { children: ReactNode }) {
       defaultTheme="system"
       enableSystem
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      forcedTheme={data?.user?.theme.toLowerCase()}
+      forcedTheme={data?.theme?.toLowerCase()}
       disableTransitionOnChange
     >
       {content}

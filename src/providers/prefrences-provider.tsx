@@ -1,7 +1,7 @@
 "use client";
 
 import Loading from "@/components/ui/loading";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { createPrefrence, getPrefrence } from "@/server/actions/prefrence";
 import { setPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
@@ -10,19 +10,18 @@ import { useEffect, type ReactNode } from "react";
 import { useDispatch } from "react-redux";
 
 export function PrefrencesProvider({ children }: { children: ReactNode }) {
-  const { data: user } = useSession();
+  const user = useUserData();
   const dispatch = useDispatch<AppDispatch>();
 
   const { data, status } = useQuery({
-    queryKey: ["home-prefrences-get", user?.user?.id],
+    queryKey: ["home-prefrences-get", user?.id],
     queryFn: async () => {
-      if (!user?.user?.id) throw new Error("User not authenticated");
-      let userPrefrence = await getPrefrence(user.user.id);
-      if (!userPrefrence.data)
-        userPrefrence = await createPrefrence(user.user.id);
+      if (!user?.id) throw new Error("User not authenticated");
+      let userPrefrence = await getPrefrence(user?.id);
+      if (!userPrefrence.data) userPrefrence = await createPrefrence(user?.id);
       return userPrefrence;
     },
-    enabled: !!user?.user?.id,
+    enabled: !!user?.id,
   });
 
   useEffect(() => {

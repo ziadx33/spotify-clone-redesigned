@@ -19,11 +19,11 @@ import { editUserPrefrence } from "@/server/actions/prefrence";
 import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
-import { useSession } from "next-auth/react";
 import { type ReactNode, useMemo, useCallback, useState } from "react";
 import { RiPlayListLine } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { DEFAULT_SECTIONS } from "./prefrences-provider";
+import { useUserData } from "@/hooks/use-user-data";
 
 type SelectFromLibraryButtonProps = {
   children: ReactNode;
@@ -32,7 +32,7 @@ type SelectFromLibraryButtonProps = {
 export function SelectFromLibraryButton({
   children,
 }: SelectFromLibraryButtonProps) {
-  const { data: user } = useSession();
+  const user = useUserData();
   const {
     data: { data: playlists },
   } = usePlaylists();
@@ -43,10 +43,10 @@ export function SelectFromLibraryButton({
     () =>
       playlists?.filter(
         (playlist) =>
-          playlist.creatorId === user?.user?.id &&
+          playlist.creatorId === user?.id &&
           !prefrence?.homeLibSection.includes(playlist.id),
       ),
-    [playlists, prefrence?.homeLibSection, user?.user?.id],
+    [playlists, prefrence?.homeLibSection, user?.id],
   );
 
   const selectHandler = useCallback(
@@ -64,7 +64,7 @@ export function SelectFromLibraryButton({
       dispatch(editPrefrence(data));
       await editUserPrefrence({
         data,
-        userId: user?.user.id ?? "",
+        userId: user?.id ?? "",
       });
       revalidate("/");
     },
@@ -72,7 +72,7 @@ export function SelectFromLibraryButton({
       dispatch,
       prefrence?.homeLibSection,
       prefrence?.homeSectionsSort,
-      user?.user.id,
+      user?.id,
       userPlaylists,
     ],
   );

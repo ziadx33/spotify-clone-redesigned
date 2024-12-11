@@ -4,16 +4,16 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { usePlaylists } from "@/hooks/use-playlists";
-import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { RiAlbumLine } from "react-icons/ri";
 import { SidebarItem } from "./sidebar-item";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function SidebarAlbumsAccordion() {
-  const { data: user } = useSession();
+  const user = useUserData();
   const { data } = usePlaylists();
   const playlists = data?.data?.filter(
-    (playlist) => playlist.creatorId !== user?.user?.id,
+    (playlist) => playlist.creatorId !== user?.id,
   );
   const pathname = usePathname();
   return (

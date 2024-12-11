@@ -1,5 +1,4 @@
 import { type DropdownMenuType } from "@/types";
-import { useSession } from "./use-session";
 import { $Enums, type Playlist } from "@prisma/client";
 import { useAddToPlaylist } from "./use-add-to-playlist";
 import { FaCircleCheck } from "react-icons/fa6";
@@ -34,13 +33,14 @@ import { useNavigate } from "./use-navigate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { usePrefrences } from "./use-prefrences";
 import { editUserPrefrence } from "@/server/actions/prefrence";
+import { useUserData } from "./use-user-data";
 
 export function usePlaylistDropdownItems({
   playlist,
 }: {
   playlist?: Playlist | null;
 }): SliceType<DropdownMenuType[]> {
-  const { data: user } = useSession();
+  const user = useUserData();
   const { toggle, isAddedToLibrary } = useAddToPlaylist({ playlist });
   const {
     addDataToQueue,
@@ -86,7 +86,7 @@ export function usePlaylistDropdownItems({
     };
     await editUserPrefrence({
       data: prefrenceData,
-      userId: user.user!.id,
+      userId: user.id,
     });
     dispatch(editPrefrence(prefrenceData));
     revalidate("/");
@@ -123,7 +123,7 @@ export function usePlaylistDropdownItems({
     revalidate(`/playlist/${id}`);
   };
 
-  const isUserPlaylist = user?.user?.id === playlist.creatorId;
+  const isUserPlaylist = user?.id === playlist.creatorId;
 
   const playlistDialog = isUserPlaylist ? (
     <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
@@ -203,7 +203,7 @@ export function usePlaylistDropdownItems({
         items: playlists
           .filter(
             (playlst) =>
-              playlst.creatorId === user.user?.id && playlst.id !== playlist.id,
+              playlst.creatorId === user?.id && playlst.id !== playlist.id,
           )
           .map((playlist) => ({
             title: playlist.title,

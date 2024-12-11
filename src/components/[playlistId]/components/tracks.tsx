@@ -3,10 +3,10 @@ import { useTracks } from "@/hooks/use-tracks";
 import { type TrackFilters } from "@/types";
 import { type Dispatch, type SetStateAction } from "react";
 import { type Playlist } from "@prisma/client";
-import { useSession } from "@/hooks/use-session";
 import { NonSortTable } from "@/components/components/non-sort-table";
 import { SortTable } from "@/components/components/sort-table";
 import { TracksListSkeleton } from "@/components/artist/components/skeleton";
+import { useUserData } from "@/hooks/use-user-data";
 
 type TracksProps = {
   filters: TrackFilters;
@@ -31,11 +31,11 @@ export function Tracks({
   showTrackImage = false,
   queueTypeId,
 }: TracksProps) {
-  const { data: user } = useSession();
+  const user = useUserData();
   const {
     data: { data, status },
   } = useTracks();
-  const isCreatedByUser = playlist?.creatorId === user?.user?.id;
+  const isCreatedByUser = playlist?.creatorId === user?.id;
 
   return !!playlist || status !== "loading" ? (
     <Table>

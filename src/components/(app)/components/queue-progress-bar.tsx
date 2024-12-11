@@ -57,7 +57,7 @@ export function QueueProgressBar({
       });
       await update({
         data: {
-          tracksHistory: [...(user?.user?.tracksHistory ?? []), currentPlaying],
+          tracksHistory: [...(user?.tracksHistory ?? []), currentPlaying],
         },
       });
     }

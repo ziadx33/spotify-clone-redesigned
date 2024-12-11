@@ -2,18 +2,18 @@ import { removePlaylist, addPlaylist } from "@/state/slices/playlists";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useUpdateUser } from "./use-update-user";
-import { useSession } from "./use-session";
 import { type Playlist } from "@prisma/client";
 import { revalidate } from "@/server/actions/revalidate";
 import { type AppDispatch } from "@/state/store";
+import { useUserData } from "./use-user-data";
 
 type UseAddPlaylistProps = {
   playlist?: Playlist | null;
 };
 
 export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {
-  const { data: user } = useSession();
-  const isAddedToLibrary = user?.user?.playlists?.includes(playlist?.id ?? "");
+  const user = useUserData();
+  const isAddedToLibrary = user?.playlists?.includes(playlist?.id ?? "");
   const { update: updateUser } = useUpdateUser();
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
@@ -22,8 +22,7 @@ export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {
     setIsLoading(true);
     const data = {
       playlists:
-        user?.user?.playlists?.filter((playlist) => playlist !== playlist) ??
-        [],
+        user?.playlists?.filter((playlist) => playlist !== playlist) ?? [],
     };
     await updateUser({
       data,
@@ -37,7 +36,7 @@ export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {
   const handleAddPlaylist = async () => {
     setIsLoading(true);
     const data = {
-      playlists: [...(user?.user?.playlists ?? []), playlist?.id ?? ""],
+      playlists: [...(user?.playlists ?? []), playlist?.id ?? ""],
     };
 
     await updateUser({

@@ -6,26 +6,26 @@ import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { editUserPrefrence } from "@/server/actions/prefrence";
-import { useSession } from "@/hooks/use-session";
 import { PlaylistsSectionContainer } from "./playlists-section-container";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function PlaylistSection() {
   const { data } = usePrefrences();
   const dispatch = useDispatch<AppDispatch>();
-  const { data: user } = useSession();
+  const user = useUserData();
   const buttonHandler = async () => {
     const usedData = { showSidebar: !data?.showSidebar };
     dispatch(editPrefrence(usedData));
     await editUserPrefrence({
       data: usedData,
-      userId: user!.user!.id,
+      userId: user.id,
     });
   };
   return (
     <PlaylistsSectionContainer>
       <div className="mb-4 flex items-center justify-between">
         <button
-          disabled={!user?.user?.id}
+          disabled={!user?.id}
           onClick={buttonHandler}
           className="flex gap-2 text-lg font-semibold"
         >

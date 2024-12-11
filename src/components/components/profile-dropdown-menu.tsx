@@ -11,10 +11,10 @@ import { AvatarData } from "../avatar-data";
 import { Navigate } from "../navigate";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function ProfileDropdownMenu() {
-  const { data: user } = useSession();
+  const user = useUserData();
   const router = useRouter();
   const logoutHandler = async () => {
     await signOut();
@@ -23,18 +23,18 @@ export function ProfileDropdownMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <AvatarData src={user?.user?.image ?? ""} title={user?.user?.name} />
+        <AvatarData src={user?.image ?? ""} title={user?.name} />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
           <Navigate
             data={{
-              href: `/artist/${user?.user?.id}`,
+              href: `/artist/${user?.id}`,
               title: "Profile" ?? "unknown",
               type: "ARTIST",
             }}
             className="w-full text-start"
-            href={`/artist/${user?.user?.id}`}
+            href={`/artist/${user?.id}`}
           >
             Profile
           </Navigate>
@@ -42,12 +42,12 @@ export function ProfileDropdownMenu() {
         <DropdownMenuItem>
           <Navigate
             data={{
-              href: `/artist/${user?.user?.id}/settings`,
+              href: `/artist/${user?.id}/settings`,
               title: "Settings" ?? "unknown",
               type: "ARTIST",
             }}
             className="w-full text-start"
-            href={`/artist/${user?.user?.id}/settings`}
+            href={`/artist/${user?.id}/settings`}
           >
             Settings
           </Navigate>

@@ -1,7 +1,7 @@
 "use client";
 
 import Loading from "@/components/ui/loading";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { type User } from "@prisma/client";
 import { redirect, useParams } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
@@ -13,21 +13,21 @@ type UserRouteProps = {
 export default function UserRoute({ children }: UserRouteProps) {
   const params = useParams();
   const userId = params.userId;
-  const { data: user } = useSession();
+  const user = useUserData();
   const [isLoading, setIsLoading] = useState(false);
   const isDone = useRef(false);
   useEffect(() => {
     if (isDone.current) return;
-    if (userId !== user?.user?.id) redirect("/");
+    if (userId !== user?.id) redirect("/");
     else {
       setIsLoading(false);
     }
     isDone.current = true;
-  }, [user?.user?.id, userId]);
+  }, [user?.id, userId]);
 
-  return !isLoading && user?.user ? (
+  return !isLoading && user ? (
     typeof children === "function" ? (
-      children(user.user)
+      children(user)
     ) : (
       children
     )

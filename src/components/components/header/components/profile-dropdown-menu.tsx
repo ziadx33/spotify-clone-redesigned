@@ -10,11 +10,11 @@ import {
 import { Navigate } from "../../../navigate";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/hooks/use-session";
 import Image from "next/image";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function ProfileDropdownMenu() {
-  const { data: user } = useSession();
+  const user = useUserData();
   const router = useRouter();
   const logoutHandler = async () => {
     await signOut();
@@ -24,23 +24,19 @@ export function ProfileDropdownMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <div className="relative size-10 overflow-hidden rounded-full">
-          <Image
-            fill
-            src={user?.user?.image ?? ""}
-            alt={user?.user?.name ?? ""}
-          />
+          <Image fill src={user?.image ?? ""} alt={user?.name ?? ""} />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
           <Navigate
             data={{
-              href: `/artist/${user?.user?.id}`,
+              href: `/artist/${user?.id}`,
               title: "Profile" ?? "unknown",
               type: "ARTIST",
             }}
             className="w-full text-start"
-            href={`/artist/${user?.user?.id}`}
+            href={`/artist/${user?.id}`}
           >
             Profile
           </Navigate>

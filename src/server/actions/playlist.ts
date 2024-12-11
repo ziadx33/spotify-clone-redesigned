@@ -4,8 +4,12 @@ import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { db } from "../db";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
-import { type Session } from "@/hooks/use-session";
-import { type Track, type $Enums, type Playlist } from "@prisma/client";
+import {
+  type Track,
+  type $Enums,
+  type Playlist,
+  type User,
+} from "@prisma/client";
 import { getArtistsByIds } from "./user";
 
 type GetPlaylistsParams = {
@@ -104,13 +108,13 @@ export const getPlaylist = unstable_cache(
 );
 
 export const createPlaylist = unstable_cache(
-  cache(async (user: Session | null) => {
+  cache(async (user: User | null) => {
     try {
       const createdPlaylist = db.playlist.create({
         data: {
           description: "",
           title: "Untitled playlist",
-          creatorId: user!.user!.id,
+          creatorId: user!.id,
         },
       });
       return createdPlaylist;

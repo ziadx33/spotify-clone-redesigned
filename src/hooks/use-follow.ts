@@ -1,11 +1,11 @@
 import { type User } from "@prisma/client";
-import { useSession } from "./use-session";
 import { useEffect, useRef, useState } from "react";
 import { updateUserById } from "@/server/actions/user";
 import { revalidate } from "@/server/actions/revalidate";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { followUser, unFollowUser } from "@/state/slices/following";
+import { useUserData } from "./use-user-data";
 
 type UseFollowParams = {
   artist?: User | null;
@@ -13,7 +13,7 @@ type UseFollowParams = {
 };
 
 export function useFollow({ artist, playlistId }: UseFollowParams) {
-  const { data: user } = useSession();
+  const user = useUserData();
   const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
   const followedSetDone = useRef(false);
   const [isFollowing, setIsFollowing] = useState(true);
@@ -22,12 +22,12 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
   useEffect(() => {
     if (followedSetDone.current) return;
     if (!artist) return;
-    if (!user?.user?.id) return;
-    setIsFollowed(artist?.followers?.includes(user?.user?.id) ?? false);
+    if (!user?.id) return;
+    setIsFollowed(artist?.followers?.includes(user?.id) ?? false);
     followedSetDone.current = true;
     setIsFollowing(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.user?.id, artist]);
+  }, [user?.id, artist]);
 
   const reset = () => {
     revalidate(`/artist/${artist?.id}`);
@@ -43,7 +43,7 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
     await updateUserById({
       id: artistData?.id ?? "",
       data: {
-        followers: [...(artistData?.followers ?? []), user?.user?.id ?? ""],
+        followers: [...(artistData?.followers ?? []), user?.id ?? ""],
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         discoveredOn: [...(artistData?.discoveredOn ?? []), playlistId],
       },
@@ -59,7 +59,7 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
       data: {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         followers: artist?.followers.filter(
-          (follower) => follower !== user?.user?.id,
+          (follower) => follower !== user?.id,
         ),
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         discoveredOn:

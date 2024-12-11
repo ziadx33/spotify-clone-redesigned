@@ -189,6 +189,8 @@ model Track {
     genres        GENRES[] @default([])
     bestTimeStart Int?     @default(0)
     bestTimeEnd   Int?     @default(15)
+
+    likedUsers String[] @default([])
 }
 
 model SearchHistory {

@@ -8,13 +8,13 @@ import { type TracksSliceType } from "@/state/slices/tracks";
 import { TopTracks } from "./top-tracks";
 import { EditProfile } from "./edit-profile";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useSession } from "@/hooks/use-session";
 import { PublicPlaylists } from "./public-playlists";
 import { UsersSection } from "./users-section";
 import { useQuery } from "@tanstack/react-query";
 import { getPrefrence } from "@/server/actions/prefrence";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { EditDropdown } from "./edit-dropdown";
+import { useUserData } from "@/hooks/use-user-data";
 
 type UserContentProps = {
   user?: User;
@@ -35,10 +35,10 @@ export function UserContent({
   topArtists,
   followerUsers,
 }: UserContentProps) {
-  const { data: curUser } = useSession();
-  const userData = user?.id === curUser?.user?.id ? curUser?.user : user;
+  const curUser = useUserData();
+  const userData = user?.id === curUser.id ? curUser : user;
   const image = userData?.image;
-  const isCurUser = curUser?.user?.id === user?.id;
+  const isCurUser = curUser.id === user?.id;
   const { data: userPrefrence } = useQuery({
     queryKey: [`profile-prefrence-${user?.id}`],
     queryFn: async () => {

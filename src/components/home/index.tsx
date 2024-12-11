@@ -3,21 +3,21 @@
 import { PrefrencesProvider } from "./components/prefrences-provider";
 import Loading from "../ui/loading";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/hooks/use-session";
 import { useMemo } from "react";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function Home() {
-  const { data: user } = useSession();
+  const user = useUserData();
   const router = useRouter();
 
   const content = useMemo(() => {
-    if (!user?.user?.id) return <Loading />;
+    if (!user?.id) return <Loading />;
 
-    return <PrefrencesProvider userId={user.user.id} />;
+    return <PrefrencesProvider userId={user.id} />;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.user?.id]);
+  }, [user?.id]);
 
-  if (user && !user?.user?.id) {
+  if (user && !user?.id) {
     router.push("/login");
     return null;
   }

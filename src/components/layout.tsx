@@ -6,6 +6,7 @@ import { mainFont } from "@/fonts";
 import { DataProvider } from "@/providers/data-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { UserThemeProvider } from "@/providers/user-theme-provider";
+import { ReduxUserDataProvider } from "@/providers/redux-user-data-provider";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -14,10 +15,12 @@ export function Layout({ children }: { children: ReactNode }) {
         <AuthProvider>
           <ReduxProvider>
             <UserThemeProvider>
-              <QueryProvider>
-                <DataProvider>{children}</DataProvider>
-              </QueryProvider>
-              <Toaster />
+              <ReduxUserDataProvider>
+                <QueryProvider>
+                  <DataProvider>{children}</DataProvider>
+                </QueryProvider>
+                <Toaster />
+              </ReduxUserDataProvider>
             </UserThemeProvider>
           </ReduxProvider>
         </AuthProvider>

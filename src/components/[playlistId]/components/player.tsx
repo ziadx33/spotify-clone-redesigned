@@ -16,7 +16,6 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { useSession } from "@/hooks/use-session";
 import { SearchInput } from "../../components/search-input";
 import { AddLibraryButton } from "@/components/components/add-library-button";
 import { cn } from "@/lib/utils";
@@ -42,6 +41,7 @@ import { QueuePlayButton } from "@/components/queue-play-button";
 import { ShuffleButton } from "./shuffle-button";
 import { PlaylistDropdown } from "@/components/dropdowns/playlist-dropdown";
 import { ExploreButton } from "./explore-button";
+import { useUserData } from "@/hooks/use-user-data";
 
 type PlayerProps = {
   filters: TrackFilters;
@@ -66,8 +66,8 @@ export function Comp({
   queueTypeId,
   showExploreButton,
 }: PlayerProps) {
-  const { data: user } = useSession();
-  const isCreatedByUser = user?.user?.id === playlist?.creatorId;
+  const user = useUserData();
+  const isCreatedByUser = user?.id === playlist?.creatorId;
 
   return (
     <div className="flex w-full items-center">
@@ -170,16 +170,14 @@ function AddTracksToPlaylist({
   const {
     data: { data: tracks, status: tracksStatus },
   } = useTracks();
-  const { data: user } = useSession();
+  const user = useUserData();
   const {
     data: { data: playlists, status: playlistsStatus },
   } = usePlaylists();
   const userPlaylists = useMemo(() => {
-    if (playlistsStatus === "loading" || !user?.user?.id) return [];
-    return playlists?.filter(
-      (playlist) => playlist.creatorId === user?.user?.id,
-    );
-  }, [playlists, playlistsStatus, user?.user?.id]);
+    if (playlistsStatus === "loading" || !user?.id) return [];
+    return playlists?.filter((playlist) => playlist.creatorId === user?.id);
+  }, [playlists, playlistsStatus, user?.id]);
   const [open, setOpen] = useState(false);
   const playlistSelectHandler = async (value: string) => {
     const selectedTracks =

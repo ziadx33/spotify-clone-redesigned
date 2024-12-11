@@ -3,7 +3,6 @@ import { type Playlist, type Track } from "@prisma/client";
 import { BsShare, BsTrash } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa";
 import { usePlayQueue } from "./use-play-queue";
-import { useSession } from "./use-session";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { usePlaylists } from "./use-playlists";
@@ -25,6 +24,7 @@ import {
 import { toast } from "sonner";
 import { type SliceType } from "@/state/types";
 import { useRouter } from "next/navigation";
+import { useUserData } from "./use-user-data";
 
 type ReturnType = SliceType<{
   events: {
@@ -70,7 +70,7 @@ export function useTrackDropdownItems({
 }): unknown {
   const { data } = usePlaylists();
   const dispatch = useDispatch<AppDispatch>();
-  const { data: user } = useSession();
+  const user = useUserData();
   const { playHandler: addQueue } = usePlayQueue({
     skipToTrack: track?.id,
     track,
@@ -81,7 +81,7 @@ export function useTrackDropdownItems({
     return { status: "loading", data: null, error: null };
   }
 
-  const isInUserPlaylist = playlist?.creatorId === user?.user?.id;
+  const isInUserPlaylist = playlist?.creatorId === user?.id;
 
   if (data.status !== "success") return data;
   if (!track && !isFn) {
@@ -141,7 +141,7 @@ export function useTrackDropdownItems({
         nestedMenu: {
           isSearchable: true,
           items: data.data
-            .filter((playlist) => playlist.creatorId === user?.user?.id)
+            .filter((playlist) => playlist.creatorId === user?.id)
             ?.map((playlist) => ({
               title: playlist.title,
               icon: RiPlayListLine,

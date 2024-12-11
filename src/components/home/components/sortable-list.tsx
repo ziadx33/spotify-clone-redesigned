@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { usePrefrences } from "@/hooks/use-prefrences";
-import { useSession } from "@/hooks/use-session";
 import { cn } from "@/lib/utils";
 import { editUserPrefrence } from "@/server/actions/prefrence";
 import { revalidate } from "@/server/actions/revalidate";
@@ -33,6 +32,7 @@ import {
   arrayMove,
 } from "react-sortable-hoc";
 import { SelectFromLibraryButton } from "./select-from-library-button";
+import { useUserData } from "@/hooks/use-user-data";
 
 type ItemType = {
   title: string;
@@ -45,7 +45,7 @@ type ItemType = {
 function SortableItem(item: ItemType) {
   const dispatch = useDispatch<AppDispatch>();
   const { data, error } = usePrefrences();
-  const { data: user } = useSession();
+  const user = useUserData();
 
   const handler = async (text: "pinnedHomeSections" | "hiddenHomeSections") => {
     const sections = item[
@@ -64,7 +64,7 @@ function SortableItem(item: ItemType) {
       data: {
         [text]: sections,
       },
-      userId: user?.user?.id ?? "",
+      userId: user?.id ?? "",
     });
     if (error) dispatch(editPrefrence(res));
     revalidate("/");
@@ -149,7 +149,7 @@ const SortableItems = SortableContainer<SortableItemsType>(
 export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
   const { data, error } = usePrefrences();
   const dispatch = useDispatch<AppDispatch>();
-  const { data: user } = useSession();
+  const user = useUserData();
   const arr = Object.keys(comps);
 
   const getItems = useCallback(
@@ -197,13 +197,13 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
           data: {
             [prop]: updatedSortOrder,
           },
-          userId: user?.user?.id ?? "",
+          userId: user?.id ?? "",
         });
         if (error) dispatch(editPrefrence(res));
         revalidate("/");
       })();
     },
-    [dispatch, error, user?.user?.id],
+    [dispatch, error, user?.id],
   );
 
   const content = (
@@ -250,7 +250,7 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
       <DropdownMenuContent className="sortable-items z-40 w-96 bg-transparent backdrop-blur-3xl">
         <DropdownMenuLabel>Customize feed</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {(user?.user?.tracksHistory.length ?? 0) > 0 ? (
+        {(user?.tracksHistory.length ?? 0) > 0 ? (
           content
         ) : (
           <h3 className="p-3 text-center">

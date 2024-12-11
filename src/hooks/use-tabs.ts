@@ -9,16 +9,16 @@ import {
 import { addTab, removeTab, updateTab } from "@/state/slices/tabs";
 import { type AppDispatch, type RootState } from "@/state/store";
 import { useDispatch, useSelector } from "react-redux";
-import { useSession } from "./use-session";
 import { usePathname, useRouter } from "next/navigation";
 import { type Tab } from "@prisma/client";
+import { useUserData } from "./use-user-data";
 
 export function useTabs() {
   const tabsData = useSelector((state: RootState) => state.tabs);
   const pathname = usePathname();
 
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSession();
+  const user = useUserData();
   const router = useRouter();
 
   const addTabFn = async (data: AddTabToUserTabsParams) => {
@@ -31,11 +31,11 @@ export function useTabs() {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         title: data?.title ?? "",
         type: data?.type ?? "PLAYLIST",
-        userId: user.data?.user?.id ?? "",
+        userId: user?.id ?? "",
       }),
     );
     const updateData = await addTabToUserTabs({
-      userId: user.data?.user?.id as unknown as undefined,
+      userId: user?.id as unknown as undefined,
       ...data,
     });
     dispatch(updateTab({ updateData, id }));

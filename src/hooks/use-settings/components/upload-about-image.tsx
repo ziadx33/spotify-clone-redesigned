@@ -1,4 +1,4 @@
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import {
   type Dispatch,
   type SetStateAction,
@@ -14,9 +14,9 @@ type UploadSectionsProps = {
 };
 
 export function UploadAboutImage({ image, setImage }: UploadSectionsProps) {
-  const { data: user } = useSession();
+  const user = useUserData();
   const imageUploadRef = useRef<HTMLInputElement>(null);
-  const imageDef = image ? URL.createObjectURL(image) : user?.user?.aboutImage;
+  const imageDef = image ? URL.createObjectURL(image) : user?.aboutImage;
 
   const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

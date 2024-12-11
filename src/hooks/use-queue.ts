@@ -10,7 +10,6 @@ import {
 } from "@/server/actions/queue";
 import { type AppDispatch, type RootState } from "@/state/store";
 import { useDispatch, useSelector } from "react-redux";
-import { useSession } from "./use-session";
 import { useCallback } from "react";
 import { type Queue, type QueueList, type $Enums } from "@prisma/client";
 import { type ChangeValueParam } from "@/types";
@@ -28,11 +27,12 @@ import {
 } from "@/state/slices/queue-list";
 import { type TrackSliceType } from "@/state/slices/tracks";
 import { useQueueController } from "./use-queue-controller";
+import { useUserData } from "./use-user-data";
 
 export function useQueue() {
   const data = useSelector((state: RootState) => state.queueList);
   const dispatch = useDispatch<AppDispatch>();
-  const { data: user } = useSession();
+  const user = useUserData();
 
   const getQueue = useCallback(
     (queueId?: string) =>
@@ -149,7 +149,7 @@ export function useQueue() {
           trackList: trackListShuffled,
         },
         dataTracks: queueData.tracks!,
-        userId: user?.user?.id ?? "",
+        userId: user?.id ?? "",
         dataType: queueData.typePlaylist ?? queueData.typeArtist!,
         queueListData,
       });

@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useSession } from "../../use-session";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -27,6 +26,7 @@ import { useUpdateUser } from "@/hooks/use-update-user";
 import { type User } from "@prisma/client";
 import { uploadPlaylistPic } from "@/server/actions/upload";
 import { SUPABASE_BUCKET_URL } from "@/constants";
+import { useUserData } from "@/hooks/use-user-data";
 
 const formSchema = z.object({
   name: z.string().min(3).max(20),
@@ -34,12 +34,12 @@ const formSchema = z.object({
 });
 
 export function SwitchToArtistDialog() {
-  const { data: user } = useSession();
+  const user = useUserData();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: user?.user?.name ?? "",
-      about: user?.user?.about ?? "",
+      name: user?.name ?? "",
+      about: user?.about ?? "",
     },
   });
   const [coverImage, setCoverImage] = useState<File | null>(null);
@@ -58,21 +58,21 @@ export function SwitchToArtistDialog() {
     };
     if (image) {
       const path = await uploadPlaylistPic({
-        id: user?.user?.id ?? "",
+        id: user?.id ?? "",
         file: image,
       });
       uploadData.image = `${SUPABASE_BUCKET_URL}/images/${path}?${performance.now()}`;
     }
     if (coverImage) {
       const path = await uploadPlaylistPic({
-        id: `${user?.user?.id}-cover-image` ?? "",
+        id: `${user?.id}-cover-image` ?? "",
         file: coverImage,
       });
       uploadData.coverImage = `${SUPABASE_BUCKET_URL}/images/${path}?${performance.now()}`;
     }
     if (aboutImage) {
       const path = await uploadPlaylistPic({
-        id: `${user?.user?.id}-about-image` ?? "",
+        id: `${user?.id}-about-image` ?? "",
         file: aboutImage,
       });
       uploadData.aboutImage = `${SUPABASE_BUCKET_URL}/images/${path}?${performance.now()}`;

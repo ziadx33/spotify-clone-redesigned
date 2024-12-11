@@ -1,7 +1,7 @@
 import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { getPlaylists } from "@/server/actions/playlist";
 import { revalidate } from "@/server/actions/revalidate";
 import {
@@ -15,13 +15,13 @@ import { useMemo, useState } from "react";
 import { FaX } from "react-icons/fa6";
 
 export function SearchHistorySection() {
-  const { data: user } = useSession();
+  const user = useUserData();
   const [currentRemovedSearchHistoryIds, setCurrentRemovedSearchHistoryIds] =
     useState<string[]>([]);
   const { data, isLoading } = useQuery({
     queryKey: ["search-history"],
     queryFn: async () => {
-      const searchHistory = await getSearchHistory(user?.user?.id ?? "");
+      const searchHistory = await getSearchHistory(user?.id ?? "");
       const { data: playlists } = await getPlaylists({
         playlistIds: searchHistory
           .filter(
@@ -44,7 +44,7 @@ export function SearchHistorySection() {
         };
       });
     },
-    enabled: !!user?.user?.id,
+    enabled: !!user?.id,
   });
   const removeFromHistoryHandler = async (id: string) => {
     setCurrentRemovedSearchHistoryIds((v) => [...v, id]);

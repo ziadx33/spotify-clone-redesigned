@@ -2,24 +2,24 @@
 
 import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
-import { useSession } from "@/hooks/use-session";
 import { getUserTopTracks } from "@/server/actions/track";
 import { getArtistsByIds } from "@/server/actions/user";
 import { useQuery } from "@tanstack/react-query";
 import { PopularArtistsSection } from "./popular-artists-section";
 import { EditSectionButton } from "./edit-section-button";
+import { useUserData } from "@/hooks/use-user-data";
 
 type YourFavArtistsProps = {
   userId: string;
 };
 
 export function YourFavArtists({ userId }: YourFavArtistsProps) {
-  const { data: user } = useSession();
+  const user = useUserData();
   const { data, isLoading } = useQuery({
     queryKey: ["fav-artists-home"],
     queryFn: async () => {
       const topTracks = await getUserTopTracks({
-        user: user?.user,
+        user: user,
       });
       const data = getArtistsByIds({
         ids:

@@ -4,7 +4,6 @@ import { AvatarData } from "@/components/avatar-data";
 import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { useSession } from "@/hooks/use-session";
 import { getHomeMadeForYouSection } from "@/server/actions/track";
 import { enumParser } from "@/utils/enum-parser";
 import { getRandomValue } from "@/utils/get-random-value";
@@ -12,20 +11,21 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState, useRef } from "react";
 import { PlaylistDialog } from "./playlist-dialog";
 import { EditSectionButton } from "./edit-section-button";
+import { useUserData } from "@/hooks/use-user-data";
 
 type MadeForYouSectionProps = {
   userId: string;
 };
 
 export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
-  const { data: user } = useSession();
+  const { tracksHistory } = useUserData();
   const { data } = useQuery({
     queryKey: [`home-made-for-you-section`],
     queryFn: async () => {
-      const data = getHomeMadeForYouSection(user?.user?.tracksHistory ?? []);
+      const data = getHomeMadeForYouSection(tracksHistory ?? []);
       return data;
     },
-    enabled: !!user?.user?.tracksHistory,
+    enabled: !!tracksHistory,
   });
 
   const colors = useRef([

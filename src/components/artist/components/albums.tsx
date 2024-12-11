@@ -5,11 +5,11 @@ import Loading from "@/components/ui/loading";
 import { useQuery } from "@tanstack/react-query";
 import { type User } from "@prisma/client";
 import { getPopularTracks, getUserTopTracks } from "@/server/actions/track";
-import { useSession } from "@/hooks/use-session";
 import { handleRequests } from "@/utils/handle-requests";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function HomeTab({ artist }: { artist: User }) {
-  const user = useSession();
+  const user = useUserData();
 
   const { data, isLoading } = useQuery({
     queryKey: [`${artist.id}-home`],
@@ -20,7 +20,7 @@ export function HomeTab({ artist }: { artist: User }) {
           range: { from: 0, to: 10 },
         }),
         await getUserTopTracks({
-          user: user.data?.user,
+          user,
           artistId: artist.id,
         }).then((res) => {
           return res;

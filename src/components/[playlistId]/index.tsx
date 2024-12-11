@@ -1,7 +1,6 @@
 "use client";
 
 import { usePlaylist } from "@/hooks/use-playlist";
-import { useSession } from "@/hooks/use-session";
 import { useQuery } from "@tanstack/react-query";
 import { useTracks } from "@/hooks/use-tracks";
 import { getUserById } from "@/server/actions/verification-token";
@@ -9,6 +8,7 @@ import { getPlaylists } from "@/server/actions/playlist";
 import { type Playlist as PlaylistType, type User } from "@prisma/client";
 import { Album } from "./album";
 import { Playlist } from "./playlist";
+import { useUserData } from "@/hooks/use-user-data";
 
 export type PlaylistPageProps = {
   creatorData?: {
@@ -23,13 +23,13 @@ export type PlaylistPageProps = {
 
 export function PlaylistPage({ id }: { id: string }) {
   const { data } = usePlaylist(id);
-  const { data: userData, status } = useSession();
+  const userData = useUserData();
   const { data: creatorData } = useQuery({
     queryKey: [`creator-data-${data?.creatorId}-${id}`],
     queryFn: async () => {
       if (!data?.creatorId) return null;
-      if (data?.creatorId === userData?.user?.id)
-        return { creatorData: userData?.user, playlists: [] };
+      if (data?.creatorId === userData?.id)
+        return { creatorData: userData, playlists: [] };
       const res = await getUserById({ id: data.creatorId });
       const { data: playlists } = await getPlaylists({
         creatorId: res?.id ?? "",
@@ -38,7 +38,7 @@ export function PlaylistPage({ id }: { id: string }) {
       });
       return { creatorData: res, playlists: playlists! };
     },
-    enabled: !!data?.creatorId && status === "authenticated",
+    enabled: !!data?.creatorId,
   });
 
   const { data: tracks } = useTracks();
@@ -50,7 +50,7 @@ export function PlaylistPage({ id }: { id: string }) {
     data,
     tracks,
   };
-  return data?.type === "PLAYLIST" || userData?.user?.id === data?.creatorId ? (
+  return data?.type === "PLAYLIST" || userData?.id === data?.creatorId ? (
     <Playlist {...props} />
   ) : (
     <Album {...props} />

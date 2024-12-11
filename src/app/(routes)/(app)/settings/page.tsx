@@ -1,9 +1,9 @@
 "use client";
 
 import { Settings } from "@/components/settings";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 
 export default function SettingsPage() {
-  const { data: user } = useSession();
-  return <Settings user={user?.user} />;
+  const user = useUserData();
+  return <Settings user={user} />;
 }

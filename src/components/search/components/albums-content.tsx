@@ -1,6 +1,5 @@
 import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
 import { SectionItem } from "@/components/components/section-item";
-import { useSession } from "@/hooks/use-session";
 import { getPlaylistsBySearchQuery } from "@/server/actions/playlist";
 import { type Playlist, type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +7,7 @@ import { format } from "date-fns";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 import { type SearchClickFnType } from "./search-content";
+import { useUserData } from "@/hooks/use-user-data";
 
 type AlbumsContentProps = {
   playlists: { playlists: Playlist[]; authors: User[] };
@@ -20,7 +20,7 @@ export function AlbumsContent({
   query,
   searchClickFn,
 }: AlbumsContentProps) {
-  const { data: user } = useSession();
+  const user = useUserData();
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.2,
   });
@@ -43,13 +43,12 @@ export function AlbumsContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isIntersecting]);
   const cards = useMemo(() => {
-    if (!user?.user?.id) return;
+    if (!user?.id) return;
     const datum = data ?? playlists;
     return (
       datum?.playlists
         ?.filter(
-          (album) =>
-            album.creatorId !== user?.user?.id && album.type === "ALBUM",
+          (album) => album.creatorId !== user?.id && album.type === "ALBUM",
         )
         ?.map((album, i) => {
           const fn = () =>
@@ -71,12 +70,12 @@ export function AlbumsContent({
         }) ?? []
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, playlists, user?.user?.id]);
+  }, [data, playlists, user?.id]);
   return (
     <div className="flex flex-col">
       <div className="flex flex-wrap gap-2">
         {cards}
-        {(isLoading || !user?.user?.id) && <SectionItemSkeleton amount={10} />}
+        {(isLoading || !user?.id) && <SectionItemSkeleton amount={10} />}
       </div>
     </div>
   );

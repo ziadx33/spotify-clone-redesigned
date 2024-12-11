@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import {
-  type AlertSetting,
-  type ButtonSetting,
-  type DialogSetting,
-} from "@/hooks/use-settings";
+import type {
+  AlertSetting,
+  ButtonSetting,
+  DialogSetting,
+} from "@/hooks/use-settings/types";
 import { type ComponentPropsWithoutRef } from "react";
 
 type ButtonSettingsProps = {

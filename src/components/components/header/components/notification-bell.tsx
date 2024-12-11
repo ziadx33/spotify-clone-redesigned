@@ -5,23 +5,23 @@ import { Button } from "../../../ui/button";
 import { useSelector } from "react-redux";
 import { type RootState } from "@/state/store";
 import { useMemo } from "react";
-import { useSession } from "@/hooks/use-session";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function NotificationBell() {
   const notifications = useSelector(
     (state: RootState) => state.notifications.data,
   );
-  const { data: user } = useSession();
+  const user = useUserData();
   const pathname = usePathname();
   const isCurrentRoute = pathname === "/notifications";
   const isThereIsNewNotification = useMemo(() => {
-    if (!user?.user?.id) return;
+    if (!user?.id) return;
     return notifications.some((notification) =>
-      user?.user?.seenNotifications.includes(notification.id),
+      user?.seenNotifications.includes(notification.id),
     );
-  }, [notifications, user?.user?.id, user?.user?.seenNotifications]);
+  }, [notifications, user?.id, user?.seenNotifications]);
   return (
     <Link href="/notifications" className="size-full">
       <Button

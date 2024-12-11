@@ -10,7 +10,7 @@ import { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { editNotFoundType } from "@/state/slices/not-found";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 
 type ClientProps = {
   artistId: string;
@@ -20,7 +20,7 @@ type ClientProps = {
 export function Client({ artistId, playlistId }: ClientProps) {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { data: user } = useSession();
+  const user = useUserData();
 
   const { data, isLoading } = useQuery({
     queryKey: [`artist-page-data-${artistId}`],
@@ -38,7 +38,7 @@ export function Client({ artistId, playlistId }: ClientProps) {
     if (
       !playlistId &&
       data?.user?.type === "ARTIST" &&
-      data.user.id !== user?.user?.id
+      data.user.id !== user?.id
     ) {
       router.push("/");
       return null;

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useFollow } from "@/hooks/use-follow";
 import { useNavigate } from "@/hooks/use-navigate";
 import { useQueue } from "@/hooks/use-queue";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { type User } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { BsThreeDots } from "react-icons/bs";
@@ -29,14 +29,14 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
     data: { data: queueListData },
   } = useQueue();
   const artistHref = `/artist/${artist.id}?playlist=${playlistId}`;
-  const { data: user } = useSession();
+  const user = useUserData();
   const navigate = useNavigate({
     href: artistHref,
     data: {
       title: artist.name,
       type: "ARTIST",
       href: artistHref,
-      userId: user?.user?.id,
+      userId: user.id,
     },
   });
   const { status: addToQueueStatus, mutate: addToQueueHandler } = useMutation({
@@ -53,7 +53,7 @@ export function Controls({ artist, playlistId, data }: ControlsProps) {
     {
       mutationKey: ["add-artist-in-new-tab"],
       mutationFn: async () => {
-        if (!user?.user?.id) return;
+        if (!user?.id) return;
         navigate.apply({}, [, , false]);
       },
     },

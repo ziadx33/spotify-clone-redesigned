@@ -8,10 +8,10 @@ import {
   getTrackById,
   getUserTopTracks,
 } from "@/server/actions/track";
-import { useSession } from "@/hooks/use-session";
 import { RenderTracks } from "../../render-tracks";
 import { AboutSection } from "./components/about-section";
 import { type tabs } from "../../tabs";
+import { useUserData } from "@/hooks/use-user-data";
 
 type HomeTabProps = {
   artist: User;
@@ -19,13 +19,13 @@ type HomeTabProps = {
 };
 
 export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
-  const { data: user, status } = useSession();
+  const user = useUserData();
   const { data, isLoading } = useQuery({
     queryKey: [`home-tab-artist-${artist.id}-${artist.artistPick}`],
     queryFn: async () => {
       const [userTopTracks, topTracks, artistPick] = [
         await getUserTopTracks({
-          user: user?.user,
+          user,
           artistId: artist.id,
         }),
         await getPopularTracks({

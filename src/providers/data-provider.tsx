@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { getNotificationsByUserId } from "@/server/actions/notification";
 import { getQueue } from "@/server/actions/queue";
 import { getTracksByPlaylistId } from "@/server/actions/track";
@@ -12,16 +12,16 @@ import { useDispatch } from "react-redux";
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: user } = useSession();
+  const user = useUserData();
   const isDone = useRef(false);
   useEffect(() => {
-    if (!user?.user?.id) return;
+    if (!user?.id) return;
     if (isDone.current) return;
     const fn = async () => {
-      if (!user?.user?.id) return;
-      const queueData = await getQueue(user?.user?.id);
+      if (!user?.id) return;
+      const queueData = await getQueue(user?.id);
       dispatch(setQueue(queueData));
-      const notifications = await getNotificationsByUserId(user?.user?.id);
+      const notifications = await getNotificationsByUserId(user?.id);
       const { data: playlists } = await getTracksByPlaylistId(
         notifications.map((notification) => notification.playlistId),
         undefined,
@@ -37,7 +37,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       isDone.current = true;
     };
     void fn();
-  }, [dispatch, user?.user?.id]);
+  }, [dispatch, user?.id]);
 
   const content = useMemo(() => {
     return children;

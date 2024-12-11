@@ -12,10 +12,7 @@ export function usePlaylists() {
   const router = useRouter();
   const createUserPlaylist = async () => {
     const createdPlaylist = await createPlaylist(user);
-    const playlistsData = [
-      ...(user?.user?.playlists ?? []),
-      createdPlaylist.id,
-    ];
+    const playlistsData = [...(user?.playlists ?? []), createdPlaylist.id];
     await updateUser({
       data: {
         playlists: playlistsData,

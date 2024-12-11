@@ -9,9 +9,9 @@ import { type TrackSliceType } from "@/state/slices/tracks";
 import { useTracks } from "@/hooks/use-tracks";
 import { ScrollContainer } from "./components/scroll-container";
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "@/hooks/use-session";
 import { getTracksByGenres, getTracksByIds } from "@/server/actions/track";
 import { type ExploreSliceData } from "@/state/slices/explore";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function Explore() {
   const {
@@ -23,7 +23,7 @@ export function Explore() {
   const [currentItem, setCurrentItem] = useState<Track | undefined>(
     exploreData.tracks?.[0],
   );
-  const { data: user } = useSession();
+  const user = useUserData();
 
   const scrollFetchRef = useRef(0);
   const [initRender, setInitRender] = useState(false);
@@ -31,7 +31,7 @@ export function Explore() {
   const { data: exploreFetchData, refetch: refetchExploreData } = useQuery({
     queryKey: ["explore-data", scrollFetchRef.current],
     queryFn: async () => {
-      const userData = user!.user!;
+      const userData = user;
       const userTracks = await getTracksByIds({
         ids: userData.tracksHistory.slice(0, 30),
       });
@@ -51,7 +51,7 @@ export function Explore() {
       return tracks;
     },
     staleTime: 0,
-    enabled: explore.randomly && !!user?.user?.id,
+    enabled: explore.randomly && !!user?.id,
   });
 
   const isExploreFetchLoading =

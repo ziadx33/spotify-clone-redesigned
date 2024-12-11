@@ -1,12 +1,12 @@
 import { usePlaylists } from "./use-playlists";
 import { type SliceType } from "@/state/types";
 import { type User } from "@prisma/client";
-import { useSession } from "./use-session";
 import { type DropdownMenuType } from "@/types";
 import { useFollow } from "./use-follow";
 import { FiUserMinus, FiUserPlus } from "react-icons/fi";
 import { useNavigate } from "./use-navigate";
 import { MdIosShare, MdOutlineBackupTable } from "react-icons/md";
+import { useUserData } from "./use-user-data";
 
 export function useArtistDropdownItems({
   artist,
@@ -16,7 +16,7 @@ export function useArtistDropdownItems({
   playlistId: string;
 }): SliceType<DropdownMenuType[]> {
   const { data } = usePlaylists();
-  const { data: user } = useSession();
+  const user = useUserData();
 
   const { isFollowed, toggle } = useFollow({ artist, playlistId });
   const navigate = useNavigate({

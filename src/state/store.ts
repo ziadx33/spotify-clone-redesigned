@@ -10,9 +10,11 @@ import queueController from "./slices/queue-controller";
 import explore from "./slices/explore";
 import notFound from "./slices/not-found";
 import notifications from "./slices/notifications";
+import user from "./slices/user";
 
 export const store = configureStore({
   reducer: {
+    user,
     playlists,
     tracks,
     tabs,

@@ -9,20 +9,20 @@ import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState, useMemo, useRef } from "react";
 import { PlaylistDialog } from "./playlist-dialog";
-import { useSession } from "@/hooks/use-session";
 import { EditSectionButton } from "./edit-section-button";
+import { useUserData } from "@/hooks/use-user-data";
 
 type BestOfArtistsSectionProps = {
   userId: string;
 };
 
 export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
-  const { data: user } = useSession();
+  const user = useUserData();
 
   const { data, isLoading } = useQuery({
     queryKey: [`best-of-artists-section`],
     queryFn: async () => {
-      const tracksData = await getBestOfArtists(user?.user?.id ?? "");
+      const tracksData = await getBestOfArtists(user?.id ?? "");
       return tracksData;
     },
   });

@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { usePlaylists } from "@/hooks/use-playlists";
-import { useSession } from "@/hooks/use-session";
 import { useMutation } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
@@ -13,11 +12,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../../ui/dropdown-menu";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function CreatePlaylistButton() {
   const { createUserPlaylist } = usePlaylists();
-  const { data: userData } = useSession();
-  const user = userData?.user;
+  const user = useUserData();
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       await createUserPlaylist();

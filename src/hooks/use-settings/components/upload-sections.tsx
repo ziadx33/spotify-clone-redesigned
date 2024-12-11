@@ -1,4 +1,4 @@
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 import { cn } from "@/lib/utils";
 import {
   type Dispatch,
@@ -22,13 +22,13 @@ export function UploadSections({
   setCoverImage,
   setImage,
 }: UploadSectionsProps) {
-  const { data: user } = useSession();
+  const user = useUserData();
   const coverImageUploadRef = useRef<HTMLInputElement>(null);
   const imageUploadRef = useRef<HTMLInputElement>(null);
-  const imageDef = image ? URL.createObjectURL(image) : user?.user?.image;
+  const imageDef = image ? URL.createObjectURL(image) : user?.image;
   const coverImageDef = coverImage
     ? URL.createObjectURL(coverImage)
-    : user?.user?.coverImage;
+    : user?.coverImage;
 
   const onCoverImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

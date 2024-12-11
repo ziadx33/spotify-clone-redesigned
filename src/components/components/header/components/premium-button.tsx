@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useSession } from "@/hooks/use-session";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function PremiumButton() {
-  const { data: user } = useSession();
-  return !user?.user?.isPremium ? <Comp /> : null;
+  const user = useUserData();
+  return !user?.isPremium ? <Comp /> : null;
 }
 
 function Comp() {

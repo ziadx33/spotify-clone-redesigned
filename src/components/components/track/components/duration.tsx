@@ -1,10 +1,10 @@
 import { TableCell } from "@/components/ui/table";
 import { type Playlist, type Track } from "@prisma/client";
 import { type TrackProps } from "../types";
-import { TrackMoreButton } from "../../track-more-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { parseDurationTime } from "@/utils/parse-duration-time";
+import { MoreButtons } from "./more-buttons";
 
 type DurationProps = {
   track?: Track;
@@ -25,11 +25,7 @@ export function Duration({
         !skeleton ? (
           <div className="flex h-full w-24 items-center gap-3">
             {parseDurationTime(track!.duration)}
-            <TrackMoreButton
-              playlist={playlist}
-              track={track}
-              className=" opacity-0 transition-opacity group-hover:opacity-100"
-            />
+            <MoreButtons playlist={playlist} track={track} />
           </div>
         ) : (
           <Skeleton className="h-2.5 w-24" />

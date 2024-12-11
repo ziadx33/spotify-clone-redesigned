@@ -8,9 +8,9 @@ import { PlaylistsContent } from "./playlists-content";
 import { ArtistsContent } from "./artists-content";
 import { ProfilesContent } from "./profiles-content";
 import { AddToSearchHistory } from "@/server/actions/search-history";
-import { useSession } from "@/hooks/use-session";
 import { revalidate } from "@/server/actions/revalidate";
 import { type SearchHistory } from "@prisma/client";
+import { useUserData } from "@/hooks/use-user-data";
 
 type SearchContentProps = {
   data: SearchQueryReturn;
@@ -31,7 +31,7 @@ export function SearchContent({ data, query }: SearchContentProps) {
   const { values, setQuery } = useSearch({
     data: { tab: "all" },
   });
-  const { data: user } = useSession();
+  const user = useUserData();
 
   const currentTab = values.tab ?? "all";
 
@@ -39,7 +39,7 @@ export function SearchContent({ data, query }: SearchContentProps) {
     await AddToSearchHistory({
       data: {
         ...data,
-        userId: user!.user!.id,
+        userId: user.id,
       },
     });
     revalidate("/search");
