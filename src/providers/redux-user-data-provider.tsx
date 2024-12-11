@@ -9,11 +9,14 @@ import { useDispatch } from "react-redux";
 
 export function ReduxUserDataProvider({ children }: { children: ReactNode }) {
   const { data: user, status } = useSession();
-  const [isLoading, setIsLoading] = useState(
-    status === "unauthenticated" ? false : true,
-  );
+  const [isLoading, setIsLoading] = useState(true);
   const isDone = useRef(false);
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    setIsLoading(status !== "unauthenticated");
+  }, [status]);
   useEffect(() => {
     if (!user?.user) return;
     if (isDone.current) return;
