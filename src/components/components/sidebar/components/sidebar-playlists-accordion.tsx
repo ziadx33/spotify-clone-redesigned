@@ -19,7 +19,7 @@ export function SidebarPlaylistsAccordion() {
   return (
     <AccordionItem value="item-2">
       <AccordionTrigger>
-        <div className="flex items-center gap-2 text-xl">
+        <div className="flex items-center gap-2 px-2 text-xl">
           <RiFolderMusicLine size={23} />
           Playlists
         </div>

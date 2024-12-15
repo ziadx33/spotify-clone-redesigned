@@ -21,11 +21,12 @@ type SortTableProps = {
   setFilters: Dispatch<SetStateAction<TrackFilters>>;
   data: Partial<TracksSliceType["data"]>;
   trackQuery: string | null;
-  playlist: Playlist;
+  playlist?: Playlist;
   skeleton?: boolean;
   selectedTracks?: string[];
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
   showCaption?: boolean;
+  isLoading?: boolean;
 };
 
 export function SortTable({
@@ -38,29 +39,35 @@ export function SortTable({
   skeleton = false,
   selectedTracks,
   showCaption,
+  isLoading,
 }: SortTableProps) {
   const memoizedTracks = useMemo(() => {
-    return sortTracks({
-      tracks: data?.tracks ?? [],
-      albums: data?.albums,
-      authors: data?.authors,
-      filters,
-      trackQuery,
-    })?.map((track, trackIndex) => (
-      <Track
-        selected={!!selectedTracks?.find((id) => id === track.id)}
-        skeleton={skeleton}
-        playlist={playlist}
-        viewAs={filters.viewAs}
-        key={track.id}
-        track={{ ...track, trackIndex }}
-        authors={data!.authors!.filter(
-          (author) =>
-            track.authorId === author.id || track.authorIds.includes(author.id),
-        )}
-        album={data!.albums!.find((album) => track.albumId === album.id)}
-      />
-    ));
+    return !isLoading
+      ? sortTracks({
+          tracks: data?.tracks ?? [],
+          albums: data?.albums,
+          authors: data?.authors,
+          filters,
+          trackQuery,
+        })?.map((track, trackIndex) => (
+          <Track
+            selected={!!selectedTracks?.find((id) => id === track.id)}
+            skeleton={skeleton}
+            playlist={playlist}
+            viewAs={filters.viewAs}
+            key={track.id}
+            track={{ ...track, trackIndex }}
+            authors={data!.authors!.filter(
+              (author) =>
+                track.authorId === author.id ||
+                track.authorIds.includes(author.id),
+            )}
+            album={data!.albums!.find((album) => track.albumId === album.id)}
+          />
+        ))
+      : Array.from({ length: 5 }).map((_, i) => (
+          <Track viewAs="LIST" skeleton key={i} />
+        ));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, filters, trackQuery, playlist]);
   return (

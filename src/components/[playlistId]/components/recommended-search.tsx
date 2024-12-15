@@ -46,7 +46,7 @@ export function SearchTrack({
   );
 
   return (
-    <div className="mb-4 flex h-fit min-h-[40rem] flex-col">
+    <div className="mb-4 flex h-fit min-h-[40rem] w-full flex-col">
       <b className="mb-4 text-3xl">
         Let&apos;s find something for your playlist
       </b>
@@ -59,7 +59,7 @@ export function SearchTrack({
       {isLoading ? (
         <Loading className="h-96" />
       ) : filteredTracks?.length ?? 0 > 0 ? (
-        <Table>
+        <Table className="w-full">
           <NonSortTable
             {...tableProps}
             data={{ ...data, tracks: filteredTracks }}

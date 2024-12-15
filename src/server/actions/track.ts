@@ -9,6 +9,7 @@ import { type Track, type $Enums, type User } from "@prisma/client";
 import { getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { getPlaylists } from "./playlist";
 import { type ExploreSliceData } from "@/state/slices/explore";
+import { getUserByIds } from "./user";
 
 type GetTracksDataParams = {
   tracks: Track[];
@@ -806,3 +807,26 @@ export const getTracksByGenres = async ({
     throw { error };
   }
 };
+
+export const getUserLikedSongs = unstable_cache(
+  cache(async (userId: string) => {
+    try {
+      const tracks = await db.track.findMany({
+        where: { likedUsers: { has: userId } },
+      });
+
+      const [authors, { data: albums }] = await handleRequests([
+        await getUserByIds(
+          tracks.map((track) => [track.authorId, ...track.authorIds]).flat(),
+        ),
+        await getPlaylists({
+          playlistIds: tracks.map((track) => track.albumId),
+        }),
+      ]);
+
+      return { tracks, authors, albums };
+    } catch (error) {
+      throw { error };
+    }
+  }),
+);

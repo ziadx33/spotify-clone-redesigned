@@ -19,7 +19,7 @@ export function SidebarAlbumsAccordion() {
   return (
     <AccordionItem value="item-3">
       <AccordionTrigger>
-        <div className="flex items-center gap-2 text-xl">
+        <div className="flex items-center gap-2 px-2 text-xl">
           <RiAlbumLine size={23} />
           Albums
         </div>

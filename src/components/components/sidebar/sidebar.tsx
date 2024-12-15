@@ -10,7 +10,7 @@ export function Sidebar() {
   return (
     <ScrollArea
       className={cn(
-        "relative z-10 h-full overflow-hidden bg-background p-2",
+        "relative z-10 h-full overflow-hidden bg-background py-2",
         !data?.showSidebar ? "w-[20%]" : "w-28",
       )}
     >

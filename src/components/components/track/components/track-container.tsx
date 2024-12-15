@@ -42,7 +42,7 @@ export function TrackContainer({
         onMouseLeave={() => hoverTrackHandler(false)}
         className={cn(
           "group w-full overflow-hidden",
-          hidePlayButton ? "flex w-full justify-between " : "",
+          hidePlayButton ? "flex w-full justify-between" : "",
           selected ? "bg-muted" : "",
         )}
       >

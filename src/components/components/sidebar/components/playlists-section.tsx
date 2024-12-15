@@ -23,7 +23,7 @@ export function PlaylistSection() {
   };
   return (
     <PlaylistsSectionContainer>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between px-2">
         <button
           disabled={!user?.id}
           onClick={buttonHandler}

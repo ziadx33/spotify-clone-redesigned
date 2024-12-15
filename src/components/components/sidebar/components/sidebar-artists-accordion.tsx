@@ -14,7 +14,7 @@ export function SidebarArtistsAccordion() {
   return (
     <AccordionItem value="item-1">
       <AccordionTrigger>
-        <div className="flex items-center gap-2 text-xl">
+        <div className="flex items-center gap-2 px-2 text-xl">
           <PiMicrophoneStageBold size={23} />
           Artists
         </div>
