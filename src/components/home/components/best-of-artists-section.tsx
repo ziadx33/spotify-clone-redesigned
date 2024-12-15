@@ -132,6 +132,7 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
         />,
       ]}
       cards={cards}
+      id="best-of-artists"
       title="Best of artists"
       cardsContainerClasses="gap-2"
       isLoading={isLoading || !cards}

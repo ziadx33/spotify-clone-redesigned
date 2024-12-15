@@ -40,6 +40,7 @@ export function PlaylistSection({
           />
         );
       })}
+      id={playlist.id}
       title={playlist.title}
     />
   ) : null;

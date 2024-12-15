@@ -17,7 +17,7 @@ export function SidebarPlaylistsAccordion() {
   );
   const pathname = usePathname();
   return (
-    <AccordionItem value="item-2">
+    <AccordionItem value="item-3">
       <AccordionTrigger>
         <div className="flex items-center gap-2 px-2 text-xl">
           <RiFolderMusicLine size={23} />

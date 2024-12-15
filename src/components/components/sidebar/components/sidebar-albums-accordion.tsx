@@ -17,7 +17,7 @@ export function SidebarAlbumsAccordion() {
   );
   const pathname = usePathname();
   return (
-    <AccordionItem value="item-3">
+    <AccordionItem value="item-4">
       <AccordionTrigger>
         <div className="flex items-center gap-2 px-2 text-xl">
           <RiAlbumLine size={23} />

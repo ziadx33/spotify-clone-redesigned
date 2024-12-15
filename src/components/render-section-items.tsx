@@ -16,6 +16,7 @@ type SectionItemsProps = {
   cardsContainerClasses?: string;
   fallbackComponent?: ReactNode;
   buttons?: ReactNode[];
+  id?: string;
 };
 
 export function RenderSectionItems({
@@ -26,13 +27,14 @@ export function RenderSectionItems({
   cardsContainerClasses,
   containerClasses,
   fallbackComponent,
+  id,
   buttons,
 }: SectionItemsProps) {
   const [showMoreButton, setShowButton] = useState(false);
   if (!isLoading && cards?.length === 0) return fallbackComponent;
   return (
     <Dialog>
-      <div className={cn("flex flex-col gap-3", containerClasses)}>
+      <div className={cn("flex flex-col gap-3", containerClasses)} id={id}>
         <div className="flex items-end justify-between">
           <h1 className={cn("pt-8 text-3xl font-bold", titleClasses)}>
             {title}

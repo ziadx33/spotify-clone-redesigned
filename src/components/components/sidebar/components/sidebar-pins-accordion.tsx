@@ -3,33 +3,34 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useFollowing } from "@/hooks/use-following";
 import { usePathname } from "next/navigation";
-import { PiMicrophoneStageBold } from "react-icons/pi";
 import { SidebarItem } from "./sidebar-item";
+import { TiPinOutline } from "react-icons/ti";
+import { usePrefrences } from "@/hooks/use-prefrences";
 
-export function SidebarArtistsAccordion() {
-  const { data } = useFollowing();
+export function SidebarPinsAccordion() {
   const pathname = usePathname();
+  const { data } = usePrefrences();
   return (
-    <AccordionItem value="item-2">
+    <AccordionItem value="item-1">
       <AccordionTrigger>
         <div className="flex items-center gap-2 px-2 text-xl">
-          <PiMicrophoneStageBold size={23} />
-          Artists
+          <TiPinOutline size={23} />
+          Pins
         </div>
       </AccordionTrigger>
       <AccordionContent>
-        {data?.map((artist) => {
-          const isActive = pathname.startsWith(`/artist/${artist.id}`);
+        {data?.pinnedHomeSections?.map((section) => {
+          const parsedSection = section.split(" ").join("-");
+          const isActive = pathname.startsWith(`/#${parsedSection}`);
           return (
             <SidebarItem
               active={isActive}
-              key={artist.id}
-              href={`/artist/${artist.id}?playlist=sidebar`}
+              key={section}
+              href={`/#${parsedSection}`}
             >
-              <PiMicrophoneStageBold size={18} />
-              {artist.name}
+              <TiPinOutline size={18} />
+              {section}
             </SidebarItem>
           );
         })}

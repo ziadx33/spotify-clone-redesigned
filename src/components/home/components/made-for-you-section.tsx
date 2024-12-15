@@ -104,6 +104,7 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
 
   return (
     <RenderSectionItems
+      id="made-for-you"
       buttons={[
         <EditSectionButton
           sectionId="made for you"

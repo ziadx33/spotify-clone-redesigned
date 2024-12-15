@@ -60,6 +60,7 @@ export function YourFavArtists({ userId }: YourFavArtistsProps) {
       })}
       isLoading={isLoading || !data}
       title="Your favorite artists"
+      id="your-favorite-artists"
       fallbackComponent={<PopularArtistsSection />}
     />
   );
