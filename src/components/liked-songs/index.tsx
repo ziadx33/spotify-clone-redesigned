@@ -3,17 +3,17 @@
 import { useUserData } from "@/hooks/use-user-data";
 import { editTrackById, getUserLikedSongs } from "@/server/actions/track";
 import { useQuery } from "@tanstack/react-query";
-import { SortTable } from "../components/sort-table";
-import { DEFAULT_TRACK_FILTERS_DATA } from "@/constants";
-import { useState } from "react";
-import { type TrackFilters } from "@/types";
-import { handleTrackFilterChange } from "@/utils/track";
+import { useEffect } from "react";
 import { SearchTrack } from "../[playlistId]/components/recommended-search";
 import { revalidate } from "@/server/actions/revalidate";
-import { Table } from "../ui/table";
+import { MusicPlayer } from "../[playlistId]/components/music-player";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "@/state/store";
+import { setTracks } from "@/state/slices/tracks";
 
 export function LikedSongs() {
   const user = useUserData();
+  const dispatch = useDispatch<AppDispatch>();
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: [`user-liked-tracks-${user.id}`],
@@ -25,30 +25,22 @@ export function LikedSongs() {
     },
   });
 
-  const [filters, setFilters] = useState<TrackFilters>(
-    DEFAULT_TRACK_FILTERS_DATA,
-  );
-  const handleFilterChange = handleTrackFilterChange(setFilters);
+  useEffect(() => {
+    if (!data) return;
+    if (data.tracks.length > 0)
+      dispatch(setTracks({ status: "success", data, error: null }));
+
+    return () => {
+      dispatch(setTracks({ status: "loading", data: null, error: null }));
+    };
+  }, [data, dispatch]);
 
   return (
-    <div className="py-4">
+    <div className="">
       {(data?.tracks.length ?? 0) > 0 || isLoading ? (
-        <Table>
-          <SortTable
-            data={{
-              albums: data?.albums,
-              authors: data?.authors,
-              tracks: data?.tracks,
-            }}
-            isLoading={isLoading}
-            filters={filters}
-            setFilters={setFilters}
-            handleFilterChange={handleFilterChange}
-            trackQuery={null}
-          />
-        </Table>
+        <MusicPlayer showExploreButton={false} queueTypeId="liked tracks" />
       ) : (
-        <div className="px-4">
+        <div className="p-4">
           <SearchTrack
             addTrackToPlaylistFn={async (track) => {
               await editTrackById({
