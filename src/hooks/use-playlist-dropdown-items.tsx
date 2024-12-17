@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { type DropdownMenuType } from "@/types";
 import { $Enums, type Playlist } from "@prisma/client";
 import { useAddToPlaylist } from "./use-add-to-playlist";
-import { FaCircleCheck } from "react-icons/fa6";
+import { FaCircleCheck, FaRegFolderClosed } from "react-icons/fa6";
 import { FaPlusCircle } from "react-icons/fa";
 import { useQueue } from "./use-queue";
 import { PiQueueBold } from "react-icons/pi";
@@ -34,6 +38,12 @@ import { editPrefrence } from "@/state/slices/prefrence";
 import { usePrefrences } from "./use-prefrences";
 import { editUserPrefrence } from "@/server/actions/prefrence";
 import { useUserData } from "./use-user-data";
+import { useFolders } from "./use-folders";
+import {
+  addPlaylistToFolder,
+  removePlaylistFromFolder,
+} from "@/server/actions/folder";
+import { editFolder } from "@/state/slices/folders";
 
 export function usePlaylistDropdownItems({
   playlist,
@@ -41,6 +51,13 @@ export function usePlaylistDropdownItems({
   playlist?: Playlist | null;
 }): SliceType<DropdownMenuType[]> {
   const user = useUserData();
+  const { data: folders } = useFolders();
+  const nonAddedFolders = playlist
+    ? folders?.filter((folder) => !folder.playlistIds.includes(playlist?.id))
+    : [];
+  const addedFolders = playlist
+    ? folders?.filter((folder) => folder.playlistIds.includes(playlist?.id))
+    : [];
   const { toggle, isAddedToLibrary } = useAddToPlaylist({ playlist });
   const {
     addDataToQueue,
@@ -121,6 +138,32 @@ export function usePlaylistDropdownItems({
     });
     if (location.pathname === `/playlist/${id}`) dispatch(addTracks(data));
     revalidate(`/playlist/${id}`);
+  };
+
+  const addToFolderHandler = async (id: string) => {
+    const folder = nonAddedFolders?.find((folder) => folder.id === id);
+    dispatch(
+      editFolder({
+        id,
+        data: { playlistIds: [...(folder?.playlistIds ?? []), playlist.id] },
+      }),
+    );
+    await addPlaylistToFolder(playlist.id, id);
+    revalidate("/");
+  };
+
+  const removeToFolderHandler = async (id: string) => {
+    const folder = addedFolders?.find((folder) => folder.id === id);
+    dispatch(
+      editFolder({
+        id,
+        data: {
+          playlistIds: folder?.playlistIds.filter((id) => id !== playlist.id),
+        },
+      }),
+    );
+    await removePlaylistFromFolder(playlist.id, id, folder?.playlistIds ?? []);
+    revalidate("/");
   };
 
   const isUserPlaylist = user?.id === playlist.creatorId;
@@ -212,6 +255,38 @@ export function usePlaylistDropdownItems({
           })),
       },
     },
+    ...(isUserPlaylist && (nonAddedFolders?.length ?? 0) > 0
+      ? [
+          {
+            title: `Add to a folder`,
+            icon: FiPlus,
+            nestedMenu: {
+              items:
+                nonAddedFolders?.map((folder) => ({
+                  title: folder.name,
+                  icon: FaRegFolderClosed,
+                  event: () => void addToFolderHandler(folder.id),
+                })) ?? [],
+            },
+          },
+        ]
+      : []),
+    ...(isUserPlaylist && (addedFolders?.length ?? 0) > 0
+      ? [
+          {
+            title: `Remove from a folder`,
+            icon: FiPlus,
+            nestedMenu: {
+              items:
+                addedFolders?.map((folder) => ({
+                  title: folder.name,
+                  icon: FaRegFolderClosed,
+                  event: () => void removeToFolderHandler(folder.id),
+                })) ?? [],
+            },
+          },
+        ]
+      : []),
     {
       title: "Share",
       icon: MdIosShare,

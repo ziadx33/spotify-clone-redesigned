@@ -18,7 +18,7 @@ export function NotificationBell() {
   const isCurrentRoute = pathname === "/notifications";
   const isThereIsNewNotification = useMemo(() => {
     if (!user?.id) return;
-    return notifications.some((notification) =>
+    return notifications?.some((notification) =>
       user?.seenNotifications.includes(notification.id),
     );
   }, [notifications, user?.id, user?.seenNotifications]);

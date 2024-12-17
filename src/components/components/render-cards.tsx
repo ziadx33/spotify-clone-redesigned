@@ -20,7 +20,7 @@ export function RenderCards<
   T extends ReactElement | undefined = ReactElement | undefined,
 >({ cards, setShowMoreButton }: RenderCardsProps<T>) {
   const cardWidth = 240;
-  const cardsWidth = cardWidth * (cards.length + 1);
+  const cardsWidth = cardWidth * cards.length;
   const { width: windowWidth } = useWindow();
   const [showedCards, setShowedCards] = useState<T[] | null>(null);
   useEffect(() => {

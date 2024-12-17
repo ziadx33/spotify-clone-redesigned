@@ -6,21 +6,40 @@ import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Album } from "../artist/components/tabs/albums-tab/components/album";
 import { Separator } from "../ui/separator";
+import { useQuery } from "@tanstack/react-query";
+import { getTracksByPlaylistId } from "@/server/actions/track";
+import Loading from "../ui/loading";
 
 export function Notifications() {
   const notifications = useSelector((state: RootState) => state.notifications);
-  const { update: updateUser } = useUpdateUser();
+  const { update: updateUser, user } = useUpdateUser();
   const isDone = useRef(false);
   useEffect(() => {
     if (!notifications.data) return;
     if (isDone.current) return;
     void updateUser({
       data: {
-        seenNotifications: notifications.data.map((item) => item.id),
+        seenNotifications: notifications.data
+          .filter(
+            (notification) => !user.seenNotifications.includes(notification.id),
+          )
+          .map((item) => item.id),
       },
     });
     isDone.current = true;
-  }, [notifications.data, updateUser]);
+  }, [notifications.data, updateUser, user.seenNotifications]);
+  const { data } = useQuery({
+    queryKey: ["notifications-data"],
+    queryFn: async () => {
+      const { data: playlists } = await getTracksByPlaylistId(
+        notifications.data!.map((notification) => notification.playlistId),
+        undefined,
+        true,
+      );
+      return playlists;
+    },
+    enabled: !!notifications,
+  });
   return (
     <div className="container mx-auto p-8">
       <div className="mb-10 flex flex-col">
@@ -31,22 +50,25 @@ export function Notifications() {
         <Separator className="mt-4" />
       </div>
       <div className="flex flex-col gap-4">
-        {notifications.notificationsData?.albums?.map((album) => (
-          <Album
-            viewAs="list"
-            artist={notifications.notificationsData?.authors?.find(
-              (artist) => album.creatorId === artist.id,
-            )}
-            key={album.id}
-            album={album}
-            addType
-            tracks={
-              notifications?.notificationsData?.tracks?.filter(
-                (track) => track.albumId === album.id,
-              ) ?? []
-            }
-          />
-        ))}
+        {data ? (
+          data?.albums?.map((album) => (
+            <Album
+              viewAs="list"
+              artist={data?.authors?.find(
+                (artist) => album.creatorId === artist.id,
+              )}
+              key={album.id}
+              album={album}
+              addType
+              tracks={
+                data?.tracks?.filter((track) => track.albumId === album.id) ??
+                []
+              }
+            />
+          ))
+        ) : (
+          <Loading className="h-fit" />
+        )}
       </div>
     </div>
   );

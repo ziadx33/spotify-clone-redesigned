@@ -5,26 +5,28 @@ export function useWindow() {
     width?: number;
     height?: number;
   };
+  const container =
+    document.querySelector<HTMLDivElement>("#content-container");
   const [windowSize, setWindowSize] = useState<WindowStateType>({
     width: undefined,
     height: undefined,
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof container !== "undefined") {
       const handleResize = () => {
         setWindowSize({
-          width: window.innerWidth,
-          height: window.innerHeight,
+          width: container?.clientWidth,
+          height: container?.clientHeight,
         });
       };
 
-      window.addEventListener("resize", handleResize);
+      container?.addEventListener("resize", handleResize);
 
       handleResize();
-      return () => window.removeEventListener("resize", handleResize);
+      return () => container?.removeEventListener("resize", handleResize);
     }
-  }, []);
+  }, [container]);
 
   return windowSize;
 }

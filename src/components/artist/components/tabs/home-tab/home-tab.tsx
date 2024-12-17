@@ -21,7 +21,7 @@ type HomeTabProps = {
 export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
   const user = useUserData();
   const { data, isLoading } = useQuery({
-    queryKey: [`home-tab-artist-${artist.id}-${artist.artistPick}`],
+    queryKey: [`home-tab-artist-data-${artist.id}-${artist.artistPick}`],
     queryFn: async () => {
       const [userTopTracks, topTracks, artistPick] = [
         await getUserTopTracks({
@@ -36,7 +36,6 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
       ] as const;
       return { userTopTracks, topTracks, artistPick };
     },
-    enabled: status === "authenticated",
   });
   return (
     <div className="flex min-h-full gap-4 pt-8">
@@ -49,14 +48,14 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
               }}
               title="Your most played"
               data={data?.userTopTracks.data}
-              loading={isLoading || status !== "authenticated"}
+              loading={isLoading}
             />
           )}
           <RenderTracks
             fallback="This artist hasn’t released any tracks yet. Stay tuned—new music might be coming soon!"
             title="Popular"
             data={data?.topTracks}
-            loading={isLoading || status !== "authenticated"}
+            loading={isLoading}
           />
         </div>
       </div>
@@ -64,7 +63,7 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
         {artist.artistPick && (
           <ArtistPickSection
             name={artist.name}
-            loading={isLoading || status !== "authenticated"}
+            loading={isLoading}
             data={data?.artistPick}
           />
         )}

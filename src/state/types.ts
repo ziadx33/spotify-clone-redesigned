@@ -1,5 +1,5 @@
 export type SliceType<T> =
-  | { status: "loading"; data: null; error: null }
+  | { status: "loading" | "idle"; data: null; error: null }
   | {
       status: "success";
       data: T;

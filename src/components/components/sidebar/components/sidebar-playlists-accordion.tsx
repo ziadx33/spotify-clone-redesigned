@@ -8,6 +8,7 @@ import { RiFolderMusicLine } from "react-icons/ri";
 import { SidebarItem } from "./sidebar-item";
 import { usePathname } from "next/navigation";
 import { useUserData } from "@/hooks/use-user-data";
+import { PlaylistContext } from "@/components/contexts/playlist-context";
 
 export function SidebarPlaylistsAccordion() {
   const user = useUserData();
@@ -17,9 +18,9 @@ export function SidebarPlaylistsAccordion() {
   );
   const pathname = usePathname();
   return (
-    <AccordionItem value="item-3">
+    <AccordionItem value="playlists" className="px-2">
       <AccordionTrigger>
-        <div className="flex items-center gap-2 px-2 text-xl">
+        <div className="flex items-center gap-2 text-xl">
           <RiFolderMusicLine size={23} />
           Playlists
         </div>
@@ -28,14 +29,16 @@ export function SidebarPlaylistsAccordion() {
         {playlists?.map((playlist) => {
           const isActive = pathname.startsWith(`/playlist/${playlist.id}`);
           return (
-            <SidebarItem
-              active={isActive}
+            <PlaylistContext
+              playlist={playlist}
+              asChild={false}
               key={playlist.id}
-              href={`/playlist/${playlist.id}`}
             >
-              <RiFolderMusicLine size={18} />
-              {playlist.title}
-            </SidebarItem>
+              <SidebarItem active={isActive} href={`/playlist/${playlist.id}`}>
+                <RiFolderMusicLine size={18} />
+                {playlist.title}
+              </SidebarItem>
+            </PlaylistContext>
           );
         })}
       </AccordionContent>

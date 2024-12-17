@@ -12,9 +12,9 @@ export function SidebarPinsAccordion() {
   const pathname = usePathname();
   const { data } = usePrefrences();
   return (
-    <AccordionItem value="item-1">
+    <AccordionItem value="pins" className="px-2">
       <AccordionTrigger>
-        <div className="flex items-center gap-2 px-2 text-xl">
+        <div className="flex items-center gap-2 text-xl">
           <TiPinOutline size={23} />
           Pins
         </div>

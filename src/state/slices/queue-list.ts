@@ -4,9 +4,10 @@ import {
   type QueueList,
   type Queue,
 } from "@prisma/client";
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { type TracksSliceType } from "./tracks";
 import { type SliceType } from "../types";
+import { getQueue } from "@/server/actions/queue";
 
 export type QueueSliceType = {
   queueData?: Queue;
@@ -22,10 +23,20 @@ export type QueueListSliceType = SliceType<{
 }>;
 
 const initialState: QueueListSliceType = {
-  status: "loading",
+  status: "idle",
   data: null,
   error: null,
 };
+
+export const getSliceQueue = createAsyncThunk(
+  "queue/getSliceQueue",
+  async (userId: string) => {
+    console.log("manzara");
+    const queueData = await getQueue(userId);
+
+    return queueData;
+  },
+);
 
 const queueListSlice = createSlice({
   name: "queue",
@@ -121,6 +132,20 @@ const queueListSlice = createSlice({
           (queue) => !payload.includes(queue.queueData?.id ?? ""),
         );
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getSliceQueue.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getSliceQueue.fulfilled, (state, { payload }) => {
+        state.data = payload.data;
+        state.status = "success";
+      })
+      .addCase(getSliceQueue.rejected, (state, action) => {
+        state.status = "error";
+        state.error = action.error.message ?? "";
+      });
   },
 });
 

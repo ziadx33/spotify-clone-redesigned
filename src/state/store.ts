@@ -11,6 +11,7 @@ import explore from "./slices/explore";
 import notFound from "./slices/not-found";
 import notifications from "./slices/notifications";
 import user from "./slices/user";
+import folders from "./slices/folders";
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     explore,
     notFound,
     notifications,
+    folders,
   },
 });
 

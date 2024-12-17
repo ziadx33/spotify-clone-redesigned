@@ -108,6 +108,7 @@ model User {
 
     seenNotifications String[]       @default([])
     Notification      Notification[]
+    Folder            Folder[]
 }
 
 model Notification {
@@ -169,6 +170,7 @@ model Playlist {
 
     Track        Track[]
     Notification Notification[]
+    folderId     String?
 }
 
 model Track {
@@ -264,4 +266,13 @@ model Queue {
     trackList              String[]    @default([])
 
     QueueList QueueList[]
+}
+
+model Folder {
+    id     String @id @default(cuid())
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String
+    name   String
+
+    playlistIds String[] @default([])
 }
