@@ -45,7 +45,7 @@ export function SidebarFoldersAccordion({
     e.stopPropagation();
     const editingValue = !isEditing;
     setIsEditing(editingValue);
-    if (editingValue) void setValue(["folders"]);
+    if (editingValue) void setValue((v) => [...v, "folders"]);
   };
 
   return (
