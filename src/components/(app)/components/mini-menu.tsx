@@ -28,7 +28,7 @@ export function MiniMenu() {
 
   return (
     <>
-      <div className={`h-full w-[35%] px-2 pb-2 pl-4 ${value ? "" : "hidden"}`}>
+      <div className={`h-full w-full px-2 pb-2 pl-4 ${value ? "" : "hidden"}`}>
         <ScrollArea className="border-lg flex size-full flex-col items-center overflow-hidden rounded-lg bg-muted/40">
           <div className={!showQueue ? "block" : "hidden"}>{<Menu />}</div>
           <div className={showQueue ? "block" : "hidden"}>{<QueueMenu />}</div>

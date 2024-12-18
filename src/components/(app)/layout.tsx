@@ -1,12 +1,9 @@
 import { type ReactNode } from "react";
-import { Sidebar } from "../components/sidebar/sidebar";
 import { ServerAppDataProvider } from "@/providers/server-app-data-provider";
 import { QueueControllerContainer } from "./components/queue-controller-container";
-import { Tabs } from "../components/tabs/tabs";
-import { ChildrenContainer } from "./components/children-container";
 import { AudiosProvider } from "@/providers/audios-provider";
 import { PrefrencesProvider } from "@/providers/prefrences-provider";
-import { Header } from "../components/header/header";
+import { ResizeableContent } from "./components/resizable-content";
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -15,13 +12,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <ServerAppDataProvider>
           <AudiosProvider>
             <QueueControllerContainer>
-              <Sidebar />
-              <div className="flex h-full w-full flex-col overflow-hidden rounded-lg">
-                <Header>
-                  <Tabs />
-                </Header>
-                <ChildrenContainer>{children}</ChildrenContainer>
-              </div>
+              <ResizeableContent>{children}</ResizeableContent>
             </QueueControllerContainer>
           </AudiosProvider>
         </ServerAppDataProvider>
