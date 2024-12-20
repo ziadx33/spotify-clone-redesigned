@@ -24,10 +24,9 @@ export function ChildrenContainer({ children }: ChildrenContainerProps) {
         <ResizablePanel>
           <ScrollArea
             className={cn(
-              "relative min-h-full w-full rounded-lg border-l border-t",
+              "relative size-full rounded-lg border-l border-t",
               value ? "border-r" : "",
             )}
-            id="content-container"
           >
             {children}
           </ScrollArea>

@@ -50,7 +50,7 @@ export function RenderSectionItems({
         </div>
         <div
           className={cn(
-            "flex flex-row gap-2 overflow-hidden",
+            "flex w-full flex-row gap-2 overflow-hidden",
             cardsContainerClasses,
           )}
         >
@@ -60,7 +60,7 @@ export function RenderSectionItems({
               setShowMoreButton={setShowButton}
             />
           ) : (
-            <SectionItemSkeleton amount={5} />
+            <SectionItemSkeleton amount={3} />
           )}
         </div>
       </div>

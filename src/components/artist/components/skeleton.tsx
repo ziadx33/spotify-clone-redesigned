@@ -27,27 +27,31 @@ export function TracksListSkeleton({ amount, title }: TracksListSkeletonProps) {
   );
 }
 
-export function SectionItemSkeleton({ amount }: { amount: number }) {
-  return (
-    <div className="flex gap-2">
-      {Array.from({ length: amount })?.map((_, index) => (
-        <Card
-          key={index}
-          className="group border-none p-0 transition-colors hover:bg-card"
-        >
-          <CardContent className="p-0">
-            <div className="flex h-[295.078px] w-[236.062px] flex-col p-[12px] text-start">
-              <Skeleton className="mb-2 size-[212.062px]" />
-              <div className="flex flex-col gap-1">
-                <Skeleton className="h-3 w-36" />
-                <Skeleton className="h-3 w-14" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
+export function SectionItemSkeleton({
+  amount,
+  returnCards,
+}: {
+  amount: number;
+  returnCards?: boolean;
+}) {
+  const cards = Array.from({ length: amount })?.map((_, index) => (
+    <Card
+      key={index}
+      className="group border-none p-0 transition-colors hover:bg-card"
+    >
+      <CardContent className="p-0">
+        <div className="flex h-[295.078px] w-[236.062px] flex-col p-[12px] text-start">
+          <Skeleton className="mb-2 size-[212.062px]" />
+          <div className="flex flex-col gap-1">
+            <Skeleton className="h-3 w-36" />
+            <Skeleton className="h-3 w-14" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  ));
+
+  return !returnCards ? <div className="flex gap-2">{cards}</div> : cards;
 }
 
 export function LibraryItemSkeleton({ amount }: { amount: number }) {
