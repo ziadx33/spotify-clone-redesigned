@@ -6,7 +6,7 @@ import { useQueueController } from "@/hooks/use-queue-controller";
 import { editQueueController } from "@/state/slices/queue-controller";
 import { type AppDispatch } from "@/state/store";
 import { wait } from "@/utils/wait";
-import { PiSpeakerLowBold } from "react-icons/pi";
+import { PiSpeakerLowBold, PiSpeakerNone } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 
 export function QueueVolumeSlider({ defaultValue }: { defaultValue: number }) {
@@ -36,7 +36,7 @@ export function QueueVolumeSlider({ defaultValue }: { defaultValue: number }) {
   return (
     <div className="mx-2 flex gap-2">
       <Button onClick={resetHandler} size="icon" variant="outline">
-        <PiSpeakerLowBold />
+        {(value?.[0] ?? 1) > 0 ? <PiSpeakerLowBold /> : <PiSpeakerNone />}
       </Button>
       <Slider
         value={value}
