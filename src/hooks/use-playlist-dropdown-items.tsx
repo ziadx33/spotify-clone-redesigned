@@ -66,7 +66,6 @@ export function usePlaylistDropdownItems({
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const {
-    createUserPlaylist,
     data: { data: playlists, status: playlistStatus },
   } = usePlaylists();
   const router = useRouter();
@@ -106,7 +105,7 @@ export function usePlaylistDropdownItems({
       userId: user.id,
     });
     dispatch(editPrefrence(prefrenceData));
-    revalidate("/");
+    void revalidate("/");
     if (location.pathname === `/playlist/${playlist.id}`) router.push("/");
   };
 
@@ -121,7 +120,7 @@ export function usePlaylistDropdownItems({
       },
     };
     await updatePlaylist(data);
-    revalidate("/");
+    void revalidate("/");
     dispatch(editPlaylist(data));
   };
 
@@ -137,7 +136,7 @@ export function usePlaylistDropdownItems({
       playlistId: id,
     });
     if (location.pathname === `/playlist/${id}`) dispatch(addTracks(data));
-    revalidate(`/playlist/${id}`);
+    void revalidate(`/playlist/${id}`);
   };
 
   const addToFolderHandler = async (id: string) => {
@@ -149,7 +148,7 @@ export function usePlaylistDropdownItems({
       }),
     );
     await addPlaylistToFolder(playlist.id, id);
-    revalidate("/");
+    void revalidate("/");
   };
 
   const removeToFolderHandler = async (id: string) => {
@@ -163,7 +162,7 @@ export function usePlaylistDropdownItems({
       }),
     );
     await removePlaylistFromFolder(playlist.id, id, folder?.playlistIds ?? []);
-    revalidate("/");
+    void revalidate("/");
   };
 
   const isUserPlaylist = user?.id === playlist.creatorId;
@@ -218,15 +217,6 @@ export function usePlaylistDropdownItems({
             icon: CiCircleMinus,
             title: "Delete",
             event: () => deleteHandler(),
-          },
-        ]
-      : []),
-    ...(isUserPlaylist
-      ? [
-          {
-            icon: FiPlus,
-            title: "Create playlist",
-            event: () => createUserPlaylist(),
           },
         ]
       : []),

@@ -27,8 +27,8 @@ export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {
     await updateUser({
       data,
     });
-    revalidate("/");
-    revalidate(`/artist/${playlist?.creatorId}`);
+    void revalidate("/");
+    void revalidate(`/artist/${playlist?.creatorId}`);
     dispatch(removePlaylist(playlist?.id ?? ""));
     setIsLoading(false);
   };
@@ -48,8 +48,8 @@ export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {
   const toggle = async () => {
     if (isAddedToLibrary) await handleRemovePlaylist();
     else await handleAddPlaylist();
-    revalidate("/");
-    revalidate(`/artist/${playlist?.creatorId}`);
+    void revalidate("/");
+    void revalidate(`/artist/${playlist?.creatorId}`);
   };
   return {
     isLoading,

@@ -49,7 +49,7 @@ export function SearchHistorySection() {
   const removeFromHistoryHandler = async (id: string) => {
     setCurrentRemovedSearchHistoryIds((v) => [...v, id]);
     await removeSearchHistoryById(id);
-    revalidate(`/search`);
+    void revalidate(`/search`);
   };
   const cards = useMemo(() => {
     return (

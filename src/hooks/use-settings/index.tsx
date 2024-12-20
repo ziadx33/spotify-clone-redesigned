@@ -38,8 +38,8 @@ export function useSettings({ user }: { user?: User | null }) {
           type: "SWITCH",
           value: prefrences?.showPlayingView ?? true,
           onEvent: async (e) => {
-            revalidate(`/artist/${user.id}/settings`);
-            revalidate("/");
+            void revalidate(`/artist/${user.id}/settings`);
+            void revalidate("/");
             const data = { showPlayingView: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -94,8 +94,8 @@ export function useSettings({ user }: { user?: User | null }) {
           type: "BUTTON",
           value: "reset",
           onEvent: async () => {
-            revalidate(`/artist/${user.id}/settings`);
-            revalidate("/");
+            void revalidate(`/artist/${user.id}/settings`);
+            void revalidate("/");
             const data = {
               pinnedHomeSections: [],
               hiddenHomeSections: [],
@@ -119,7 +119,7 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowPlaylistsInProfile ?? true,
           order: 0,
           onEvent: async (e) => {
-            revalidate(`/artist/${user.id}/settings`);
+            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowPlaylistsInProfile: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -134,7 +134,7 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowTopPlayingArtists ?? true,
           order: 1,
           onEvent: async (e) => {
-            revalidate(`/artist/${user.id}/settings`);
+            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowTopPlayingArtists: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -149,7 +149,7 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowFollowingList ?? false,
           order: 2,
           onEvent: async (e) => {
-            revalidate(`/artist/${user.id}/settings`);
+            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowFollowingList: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -164,7 +164,7 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowFollowingList ?? true,
           order: 3,
           onEvent: async (e) => {
-            revalidate(`/artist/${user.id}/settings`);
+            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowFollowersList: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -179,7 +179,7 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowFollowingList ?? false,
           order: 4,
           onEvent: async (e) => {
-            revalidate(`/artist/${user.id}/settings`);
+            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowTopPlayingTracks: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -233,9 +233,9 @@ export function useSettings({ user }: { user?: User | null }) {
           order: 2,
           onEvent: async () => {
             await deleteUserById(user.id);
-            revalidate("/login");
-            revalidate("/register");
-            revalidate("/");
+            void revalidate("/login");
+            void revalidate("/register");
+            void revalidate("/");
             await signOut();
           },
           variant: "destructive",

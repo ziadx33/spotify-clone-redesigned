@@ -7,7 +7,7 @@ export function Sidebar() {
   return (
     <ScrollArea
       className={
-        "relative z-10 h-full w-[20%] w-full overflow-hidden bg-background py-2"
+        "relative z-10 h-full w-full overflow-hidden bg-background py-2"
       }
     >
       <PlaylistSection />

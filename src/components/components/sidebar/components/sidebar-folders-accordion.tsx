@@ -11,12 +11,20 @@ import {
   useState,
   type Dispatch,
   type SetStateAction,
+  type RefObject,
 } from "react";
 import { SidebarSkeletonItem } from "./sidebar-skeleton-item";
 import { SidebarFolderAccordion } from "./sidebar-folder-accordion";
 import { FaPlus } from "react-icons/fa";
 import { cn } from "@/lib/utils";
-import { AddFolderInput } from "./add-folder-input";
+import { AddFolderInput } from "./edit-input";
+import { useUserData } from "@/hooks/use-user-data";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "@/state/store";
+import { toast } from "sonner";
+import { addFolder, editFolder } from "@/state/slices/folders";
+import { createFolder } from "@/server/actions/folder";
+import { revalidate } from "@/server/actions/revalidate";
 
 type SidebarFoldersAccordionProps = {
   setValue: Dispatch<SetStateAction<string[]>>;
@@ -26,6 +34,8 @@ export function SidebarFoldersAccordion({
   setValue,
 }: SidebarFoldersAccordionProps) {
   const { data: folders } = useFolders();
+  const dispatch = useDispatch<AppDispatch>();
+  const userData = useUserData();
   const skeletons = useMemo(() => {
     return (
       <div className="flex flex-col gap-1.5">
@@ -48,6 +58,25 @@ export function SidebarFoldersAccordion({
     if (editingValue) void setValue((v) => [...v, "folders"]);
   };
 
+  const enterHandler = async (inputRef: RefObject<HTMLInputElement>) => {
+    const inputValue = inputRef.current?.value;
+    if (!inputValue || inputValue.length === 0)
+      return toast.error("please enter a valid folder name.");
+    setIsEditing(false);
+    const tempFolderName = `last-created-${crypto.randomUUID()}`;
+    dispatch(
+      addFolder({
+        id: tempFolderName,
+        name: inputValue,
+        playlistIds: [],
+        userId: userData.id,
+      }),
+    );
+    const createdFolder = await createFolder(inputValue, userData.id);
+    void revalidate("/");
+    dispatch(editFolder({ id: tempFolderName, data: createdFolder }));
+  };
+
   return (
     <AccordionItem value="folders" className="px-2">
       <AccordionTrigger>
@@ -68,7 +97,7 @@ export function SidebarFoldersAccordion({
         </div>
       </AccordionTrigger>
       <AccordionContent>
-        {isEditing && <AddFolderInput setIsEditing={setIsEditing} />}
+        {isEditing && <AddFolderInput enterHandler={enterHandler} />}
         {folders ? items : skeletons}
       </AccordionContent>
     </AccordionItem>

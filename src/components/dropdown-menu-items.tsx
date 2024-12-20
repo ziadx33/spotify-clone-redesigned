@@ -32,7 +32,7 @@ export function DropdownMenuItems({ children, items }: DropdownMenuItemsProps) {
     }
   });
   return (
-    <DropdownMenu>
+    <DropdownMenu key="dropdown-menu">
       {children}
       <DropdownMenuContent className="mr-2 w-80">
         {items.map((item, index) =>

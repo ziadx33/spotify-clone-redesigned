@@ -88,7 +88,7 @@ export function EditForm({
     }
     await updatePlaylist({ id: data?.id ?? "", data: uploadData });
     dispatch(editPlaylist({ id: data?.id ?? "", data: formData }));
-    revalidate(`/playlist/${data?.id}`);
+    void revalidate(`/playlist/${data?.id}`);
     closeDialogRef?.current?.click();
     setOpen?.(false);
     setUploadedImage(null);

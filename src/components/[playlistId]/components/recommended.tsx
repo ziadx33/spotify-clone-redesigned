@@ -61,7 +61,7 @@ export function Recommended({
     const addData = { playlistId: playlist?.id ?? "", trackId: track.id };
 
     void addTrackToPlaylistToDB(addData);
-    revalidate(`/playlist/${playlist?.id}`);
+    void revalidate(`/playlist/${playlist?.id}`);
     dispatch(
       addTrack({
         trackData: track,

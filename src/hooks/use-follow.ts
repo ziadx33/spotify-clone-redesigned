@@ -30,8 +30,8 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
   }, [user?.id, artist]);
 
   const reset = () => {
-    revalidate(`/artist/${artist?.id}`);
-    revalidate(`/`);
+    void revalidate(`/artist/${artist?.id}`);
+    void revalidate(`/`);
     setIsFollowed((v) => !v);
     setIsFollowing(false);
   };

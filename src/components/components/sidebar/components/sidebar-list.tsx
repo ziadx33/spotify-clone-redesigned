@@ -14,7 +14,7 @@ export function SidebarList() {
           <SidebarPinsAccordion />
           <SidebarArtistsAccordion />
           <SidebarFoldersAccordion setValue={setValue} />
-          <SidebarPlaylistsAccordion />
+          <SidebarPlaylistsAccordion setValue={setValue} />
           <SidebarAlbumsAccordion />
           <SidebarLikedSongsButton />
         </>

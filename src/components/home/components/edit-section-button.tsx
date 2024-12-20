@@ -51,7 +51,7 @@ export function EditSectionButton({
           : [sectionId],
       },
     });
-    revalidate("/");
+    void revalidate("/");
   };
   return (
     <DropdownMenu>

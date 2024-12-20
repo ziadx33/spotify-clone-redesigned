@@ -66,7 +66,7 @@ export function SelectFromLibraryButton({
         data,
         userId: user?.id ?? "",
       });
-      revalidate("/");
+      void revalidate("/");
     },
     [
       dispatch,

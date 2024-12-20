@@ -47,7 +47,7 @@ export function LikedSongs() {
                 id: track?.id,
                 data: { likedUsers: [...(track?.likedUsers ?? []), user.id] },
               });
-              revalidate("/liked-songs");
+              void revalidate("/liked-songs");
               await refetch();
             }}
             tableProps={{

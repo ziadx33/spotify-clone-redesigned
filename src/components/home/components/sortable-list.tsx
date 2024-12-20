@@ -67,7 +67,7 @@ function SortableItem(item: ItemType) {
       userId: user?.id ?? "",
     });
     if (error) dispatch(editPrefrence(res));
-    revalidate("/");
+    void revalidate("/");
   };
 
   const pinToggle: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -200,7 +200,7 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
           userId: user?.id ?? "",
         });
         if (error) dispatch(editPrefrence(res));
-        revalidate("/");
+        void revalidate("/");
       })();
     },
     [dispatch, error, user?.id],

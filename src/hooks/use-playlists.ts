@@ -10,8 +10,10 @@ export function usePlaylists() {
   const { update: updateUser, user } = useUpdateUser();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const createUserPlaylist = async () => {
-    const createdPlaylist = await createPlaylist(user);
+  const createUserPlaylist = async (
+    data: Parameters<typeof createPlaylist>["0"],
+  ) => {
+    const createdPlaylist = await createPlaylist(data);
     const playlistsData = [...(user?.playlists ?? []), createdPlaylist.id];
     await updateUser({
       data: {

@@ -42,7 +42,7 @@ export function SearchContent({ data, query }: SearchContentProps) {
         userId: user.id,
       },
     });
-    revalidate("/search");
+    void revalidate("/search");
   };
 
   return (

@@ -98,7 +98,7 @@ export function useTrackDropdownItems({
     };
     dispatch(addTrackToPlaylist(dispatchData));
     await addTrackToPlaylistToDB(dispatchData);
-    revalidate(`/playlist/${dispatchData.playlistId}`);
+    void revalidate(`/playlist/${dispatchData.playlistId}`);
     revalidate(
       `/artist/${
         data.data?.find(
@@ -122,7 +122,7 @@ export function useTrackDropdownItems({
       trackId,
       playlists: currentTrack.playlists,
     }).then(() => {
-      revalidate(`/playlist/${playlistId}`);
+      void revalidate(`/playlist/${playlistId}`);
       revalidate(
         `/artist/${
           data.data?.find((playlist) => playlist.creatorId === playlistId)

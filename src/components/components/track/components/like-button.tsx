@@ -33,8 +33,8 @@ export function LikeButton({ track, playlist }: LikeButtonProps) {
         },
       });
 
-    revalidate(`/playlist/${playlist?.id}`);
-    revalidate("/liked-songs");
+    void revalidate(`/playlist/${playlist?.id}`);
+    void revalidate("/liked-songs");
   };
   return (
     <button

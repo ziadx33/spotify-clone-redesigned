@@ -1,6 +1,5 @@
 import { TbBooks } from "react-icons/tb";
 import { PlaylistFilters } from "./playlists-filters";
-import { CreatePlaylistButton } from "./create-playlist-button";
 import { usePrefrences } from "@/hooks/use-prefrences";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
@@ -32,7 +31,6 @@ export function PlaylistSection() {
           <TbBooks size={30} />
           {!data?.showSidebar && <h3>Your library</h3>}
         </button>
-        <CreatePlaylistButton />
       </div>
       <PlaylistFilters />
     </PlaylistsSectionContainer>

@@ -1,5 +1,5 @@
 import { type DropdownMenuType } from "@/types";
-import { useMemo, type ReactNode } from "react";
+import { Fragment, useMemo, type ReactNode } from "react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -39,7 +39,7 @@ export function DropdownContextItems({
   }, [items]);
 
   return (
-    <>
+    <Fragment key="dropdown-context-items">
       <ContextMenu>
         {children}
         <ContextMenuContent className="mr-2 w-80">
@@ -90,7 +90,7 @@ export function DropdownContextItems({
       </ContextMenu>
 
       {allContent}
-    </>
+    </Fragment>
   );
 }
 
