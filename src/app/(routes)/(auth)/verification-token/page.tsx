@@ -1,10 +1,11 @@
 import { VerificationToken } from "@/components/verification-token";
 
-export default function VerificationTokenPage({
-  searchParams: { token },
+export default async function VerificationTokenPage({
+  searchParams,
 }: {
-  searchParams: { token: string | null };
+  searchParams: Promise<{ token: string | null }>;
 }) {
+  const { token } = await searchParams;
   return <VerificationToken token={token} />;
 }
 

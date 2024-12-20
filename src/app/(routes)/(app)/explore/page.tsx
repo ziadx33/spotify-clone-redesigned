@@ -1,11 +1,8 @@
 import { type Metadata } from "next";
 import dynamic from "next/dynamic";
 
-const Explore = dynamic(
-  () => import("@/components/explore").then((file) => file.Explore),
-  {
-    ssr: false,
-  },
+const Explore = dynamic(() =>
+  import("@/components/explore").then((file) => file.Explore),
 );
 
 export const metadata: Metadata = {

@@ -10,11 +10,12 @@ const Genre = dynamic(
   },
 );
 
-export default function GenrePage({
+export default async function GenrePage({
   searchParams,
 }: {
-  searchParams: { genre?: $Enums.GENRES };
+  searchParams: Promise<{ genre?: $Enums.GENRES }>;
 }) {
-  if (!searchParams.genre) redirect("/search?query=&tab=all");
-  return <Genre genre={searchParams.genre} />;
+  const { genre } = await searchParams;
+  if (!genre) redirect("/search?query=&tab=all");
+  return <Genre genre={genre} />;
 }

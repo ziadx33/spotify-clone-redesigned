@@ -3,11 +3,8 @@
 import { editNotFoundType } from "@/state/slices/not-found";
 import dynamic from "next/dynamic";
 
-const PlaylistPage = dynamic(
-  () => import("@/components/[playlistId]").then((file) => file.PlaylistPage),
-  {
-    ssr: false,
-  },
+const PlaylistPage = dynamic(() =>
+  import("@/components/[playlistId]").then((file) => file.PlaylistPage),
 );
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
