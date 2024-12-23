@@ -12,11 +12,8 @@ export function QueueControllerContainer({
 }) {
   const {
     data: { status, data },
-    getTrack,
-    getQueue,
   } = useQueue();
-  const currentQueue = getQueue(data?.queueList.currentQueueId);
-  const currentTrack = getTrack(currentQueue?.queueData?.currentPlaying ?? "");
+
   return (
     <div className="flex size-full flex-col items-start">
       <div
@@ -27,9 +24,7 @@ export function QueueControllerContainer({
       >
         {children}
       </div>
-      {status === "success" && (
-        <QueueController getData={currentTrack} data={data.queueList} />
-      )}
+      {status === "success" && <QueueController data={data} />}
     </div>
   );
 }

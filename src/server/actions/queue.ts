@@ -32,19 +32,27 @@ export const getQueueData = unstable_cache(
       queues,
       queueList,
     }: GetQueueDataParams): Promise<QueueListSliceType> => {
-      const { data: queueTracks } = await getTracksByPlaylistId(
+      const { data: queueTracks, error } = await getTracksByPlaylistId(
         undefined,
         queues?.map((queue) => queue.trackList).flat(),
       );
+      const queuesData = await getQueueTracks({ queues, data: queueTracks });
 
-      return {
-        data: {
-          queueList,
-          queues: await getQueueTracks({ queues, data: queueTracks }),
-        },
-        error: null,
-        status: "success",
-      };
+      console.log("barod", error, queuesData, queueTracks);
+      return !error
+        ? {
+            data: {
+              queueList,
+              queues: queuesData,
+            },
+            error: null,
+            status: "success",
+          }
+        : {
+            data: null,
+            error,
+            status: "error",
+          };
     },
   ),
   ["queue-data"],
@@ -64,10 +72,11 @@ export const getQueue = async (userId: string): Promise<QueueListSliceType> => {
         },
       })
       .queues();
+    console.log("zaton", data, queues, !data || !queues);
     if (!data || !queues) throw "no queue";
     return await getQueueData({ queueList: data, queues });
   } catch (error) {
-    return { data: null, status: "error", error: error as string };
+    throw { data: null, status: "error", error: error as string };
   }
 };
 

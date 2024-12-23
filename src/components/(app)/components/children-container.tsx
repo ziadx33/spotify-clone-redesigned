@@ -10,6 +10,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { useQueue } from "@/hooks/use-queue";
 
 type ChildrenContainerProps = {
   children: ReactNode;
@@ -17,6 +18,9 @@ type ChildrenContainerProps = {
 
 export function ChildrenContainer({ children }: ChildrenContainerProps) {
   const { value } = useMiniMenu();
+  const {
+    data: { status },
+  } = useQueue();
   const menu = <MiniMenu />;
   return (
     <div className="flex h-[93%] w-full">
@@ -33,7 +37,10 @@ export function ChildrenContainer({ children }: ChildrenContainerProps) {
           </ScrollArea>
         </ResizablePanel>
         <ResizableHandle className="bg-transparent" disabled={!value} />
-        <ResizablePanel className={!value ? "hidden" : ""} defaultSize={27}>
+        <ResizablePanel
+          className={!value || status === "loading" ? "hidden" : ""}
+          defaultSize={27}
+        >
           {menu}
         </ResizablePanel>
       </ResizablePanelGroup>

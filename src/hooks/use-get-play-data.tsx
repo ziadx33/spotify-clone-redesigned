@@ -90,6 +90,7 @@ export function useGetPlayData({
     Omit<QueuePlayButtonProps, "children"> | undefined
   > = async () => {
     shouldFetch.current = true;
+
     const nonData = nonPlaylistData ?? (await refetch()).data;
     const usedData = (nonData ? nonData.data.tracks : data?.tracks)?.map(
       (track) => track.id,

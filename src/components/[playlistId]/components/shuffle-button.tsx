@@ -11,7 +11,11 @@ export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {
     editQueueListFn,
   } = useQueue();
 
-  const { playHandler } = usePlayQueue({ playlist, noDefPlaylist: true });
+  const { playHandler } = usePlayQueue({
+    playlist,
+    noDefPlaylist: true,
+    queueTypeId: playlist?.id,
+  });
   const currentQueue = getQueue(data?.queueList.currentQueueId);
 
   const shuffleHandler = async () => {

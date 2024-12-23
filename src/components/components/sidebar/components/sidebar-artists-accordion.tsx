@@ -9,12 +9,26 @@ import { PiMicrophoneStageBold } from "react-icons/pi";
 import { SidebarItem } from "./sidebar-item";
 import { AuthorContext } from "@/components/contexts/author-context";
 import { useMemo } from "react";
+import { useFollow } from "@/hooks/use-follow";
+import { useDrop } from "@/hooks/use-drop";
+import { getUserById } from "@/server/actions/verification-token";
+import { toast } from "sonner";
 
 export function SidebarArtistsAccordion() {
   const { data } = useFollowing();
   const pathname = usePathname();
-  // const {follow} = useFollow({playlistId: "sidebar"});
-  // const test = useDrop("artistId", (artist) => follow(artist));
+  const { follow } = useFollow({ playlistId: "sidebar" });
+  const { ref: dropRef } = useDrop<HTMLDivElement>(
+    "artistId",
+    async (artistId) => {
+      const user = await getUserById({ id: artistId });
+      toast.promise(follow(user), {
+        loading: "Following artist...",
+        success: "Artist followed!",
+        error: "Failed to follow artist",
+      });
+    },
+  );
   const items = useMemo(() => {
     return data?.map((artist) => {
       const isActive = pathname.startsWith(`/artist/${artist.id}`);
@@ -38,7 +52,7 @@ export function SidebarArtistsAccordion() {
   }, [data, pathname]);
 
   return (
-    <AccordionItem value="artists" className="px-2">
+    <AccordionItem value="artists" className="px-2" ref={dropRef}>
       <AccordionTrigger>
         <div className="flex items-center gap-2 text-xl">
           <PiMicrophoneStageBold size={23} />
