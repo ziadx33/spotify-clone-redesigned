@@ -39,7 +39,7 @@ export function PlaylistsSectionContainer({
   return (
     <div
       className={cn(
-        "rounded-lg border-2 border-transparent transition-all",
+        "w-full rounded-lg border-2 border-transparent transition-all",
         isDropping ? "border-primary" : "border-transparent",
         data?.showSidebar ? "w-24 px-2" : "w-full px-4",
       )}
