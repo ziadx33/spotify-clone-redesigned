@@ -1,6 +1,5 @@
 import { useDrop } from "@/hooks/use-drop";
 import { useFollow } from "@/hooks/use-follow";
-import { usePrefrences } from "@/hooks/use-prefrences";
 import { useUserData } from "@/hooks/use-user-data";
 import { cn } from "@/lib/utils";
 import { getArtistById } from "@/server/actions/user";
@@ -12,7 +11,6 @@ export function PlaylistsSectionContainer({
 }: {
   children: ReactNode;
 }) {
-  const { data } = usePrefrences();
   const user = useUserData();
   const { follow } = useFollow({ playlistId: "unkown" });
   const [isDropping, setIsDropping] = useState(false);
@@ -41,7 +39,6 @@ export function PlaylistsSectionContainer({
       className={cn(
         "w-full rounded-lg border-2 border-transparent transition-all",
         isDropping ? "border-primary" : "border-transparent",
-        data?.showSidebar ? "w-24 px-2" : "w-full px-4",
       )}
       ref={ref}
     >
