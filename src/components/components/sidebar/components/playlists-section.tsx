@@ -1,5 +1,4 @@
 import { TbBooks } from "react-icons/tb";
-import { PlaylistFilters } from "./playlists-filters";
 import { usePrefrences } from "@/hooks/use-prefrences";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
@@ -7,6 +6,7 @@ import { editPrefrence } from "@/state/slices/prefrence";
 import { editUserPrefrence } from "@/server/actions/prefrence";
 import { PlaylistsSectionContainer } from "./playlists-section-container";
 import { useUserData } from "@/hooks/use-user-data";
+import { SidebarList } from "./sidebar-list";
 
 export function PlaylistSection() {
   const { data } = usePrefrences();
@@ -32,7 +32,9 @@ export function PlaylistSection() {
           {!data?.showSidebar && <h3>Your library</h3>}
         </button>
       </div>
-      <PlaylistFilters />
+      <div className="flex w-full flex-col">
+        <SidebarList />
+      </div>
     </PlaylistsSectionContainer>
   );
 }

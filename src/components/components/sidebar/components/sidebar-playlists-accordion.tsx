@@ -5,10 +5,7 @@ import {
 } from "@/components/ui/accordion";
 import { usePlaylists } from "@/hooks/use-playlists";
 import { RiFolderMusicLine } from "react-icons/ri";
-import { SidebarItem } from "./sidebar-item";
-import { usePathname } from "next/navigation";
 import { useUserData } from "@/hooks/use-user-data";
-import { PlaylistContext } from "@/components/contexts/playlist-context";
 import {
   type MouseEventHandler,
   useState,
@@ -19,6 +16,7 @@ import {
 import { AddFolderInput } from "./edit-input";
 import { cn } from "@/lib/utils";
 import { FaPlus } from "react-icons/fa";
+import { SidebarPlaylistAccordion } from "./sidebar-playlist-accordion";
 
 type SidebarPlaylistsAccordionProps = {
   setValue: Dispatch<SetStateAction<string[]>>;
@@ -32,7 +30,6 @@ export function SidebarPlaylistsAccordion({
   const playlists = data?.data?.filter(
     (playlist) => playlist.creatorId === user?.id,
   );
-  const pathname = usePathname();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const { createUserPlaylist } = usePlaylists();
   const onCreateFolderClick: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -71,18 +68,8 @@ export function SidebarPlaylistsAccordion({
       <AccordionContent>
         {isEditing && <AddFolderInput enterHandler={enterHandler} />}
         {playlists?.map((playlist) => {
-          const isActive = pathname.startsWith(`/playlist/${playlist.id}`);
           return (
-            <PlaylistContext
-              playlist={playlist}
-              asChild={false}
-              key={playlist.id}
-            >
-              <SidebarItem active={isActive} href={`/playlist/${playlist.id}`}>
-                <RiFolderMusicLine size={18} />
-                {playlist.title}
-              </SidebarItem>
-            </PlaylistContext>
+            <SidebarPlaylistAccordion key={playlist.id} playlist={playlist} />
           );
         })}
       </AccordionContent>
