@@ -93,7 +93,10 @@ export function SubmitForm() {
               )}
             />
           </div>
-          <AuthProviders />
+          <Button asChild variant="link" className="py-6">
+            <Link href="/forgot-password">forgot password?</Link>
+          </Button>
+          <AuthProviders className="mt-0" />
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button disabled={disabled} asChild variant="outline">

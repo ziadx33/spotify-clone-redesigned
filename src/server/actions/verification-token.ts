@@ -2,10 +2,13 @@
 
 import { v4 as uuid } from "uuid";
 import { db } from "../db";
-import { type User, type VerificationToken } from "@prisma/client";
+import { type $Enums, type User, type VerificationToken } from "@prisma/client";
 import { getUserByEmail, updateUserById } from "./user";
 
-export const generateVerificationToken = async (email: string) => {
+export const generateVerificationToken = async (
+  email: string,
+  type?: $Enums.TOKEN_TYPE,
+) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   const token = uuid();
   const expires = new Date(new Date().getTime() + 3600 * 1000);
@@ -20,6 +23,8 @@ export const generateVerificationToken = async (email: string) => {
     email,
     token,
     expires,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    type,
   });
 
   return verificationToken;
@@ -55,12 +60,14 @@ type CreateVerificationToken = {
   email: string;
   expires: VerificationToken["expires"];
   token: VerificationToken["token"];
+  type?: VerificationToken["type"];
 };
 
 export const createVerificationToken = async ({
   email,
   expires,
   token,
+  type,
 }: CreateVerificationToken) => {
   try {
     const verificationToken = await db.verificationToken.create({
@@ -68,6 +75,8 @@ export const createVerificationToken = async ({
         email,
         expires,
         token,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        type: type ?? "RESET_PASSWORD",
       },
     });
     return verificationToken;
@@ -76,9 +85,11 @@ export const createVerificationToken = async ({
   }
 };
 
-export const verifyToken = async (token: string) => {
+export const verifyToken = async (token: string, type?: $Enums.TOKEN_TYPE) => {
   const existingToken = await getVerificationTokenById(token);
   if (!existingToken) return { error: "Token does not exist!" };
+  if (type && existingToken.type !== type)
+    return { error: "Invalid token type!" };
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 

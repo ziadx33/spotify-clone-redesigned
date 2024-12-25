@@ -134,11 +134,17 @@ model Tab {
     userId String?
 }
 
+enum TOKEN_TYPE {
+    RESET_PASSWORD
+    VERIFY_EMAIL
+}
+
 model VerificationToken {
-    id      String   @id @default(cuid())
+    id      String     @id @default(cuid())
     email   String
-    token   String   @unique
+    token   String     @unique
     expires DateTime
+    type    TOKEN_TYPE @default(VERIFY_EMAIL)
 
     @@unique([email, token])
 }

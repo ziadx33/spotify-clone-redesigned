@@ -1,4 +1,4 @@
-import { VerificationToken } from "@/components/verification-token";
+import { VerificationToken } from "@/components/(auth)/verification-token";
 
 export default async function VerificationTokenPage({
   searchParams,

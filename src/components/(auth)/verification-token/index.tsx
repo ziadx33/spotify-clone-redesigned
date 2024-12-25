@@ -26,6 +26,7 @@ export function VerificationToken({ token }: { token: string | null }) {
     const verifyAsyncEffect = async () => {
       const { error, data } = await verifyToken(token);
       if (error) return toast.error(error);
+      console.log("ba33eed", data);
       await signIn("credentials", {
         ...data,
         redirect: false,

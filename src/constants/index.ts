@@ -1,6 +1,11 @@
 import { type TrackFilters } from "@/types";
 
-const AUTH_ROUTES = ["/login", "/register", "/verification-token"];
+const AUTH_ROUTES = [
+  "/login",
+  "/register",
+  "/verification-token",
+  "/forgot-password",
+] as const;
 
 const CATEGORIES = ["Playlists", "Artists", "Albums"] as const;
 

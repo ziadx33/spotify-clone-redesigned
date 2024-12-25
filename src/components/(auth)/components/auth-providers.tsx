@@ -2,6 +2,7 @@ import { BsDiscord, BsGithub, BsGoogle } from "react-icons/bs";
 import { AuthProvider } from "./auth-provider";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 enum PROVIDER {
   GOOGLE = "google",
@@ -10,7 +11,7 @@ enum PROVIDER {
   DISCORD = "discord",
 }
 
-export function AuthProviders() {
+export function AuthProviders({ className }: { className?: string }) {
   const authHandler = async (provider: PROVIDER) => {
     toast.promise(
       signIn(provider, {
@@ -27,7 +28,7 @@ export function AuthProviders() {
     );
   };
   return (
-    <div className="mt-1.5 flex h-12 w-full gap-1.5">
+    <div className={cn("mt-1.5 flex h-12 w-full gap-1.5", className)}>
       <AuthProvider onClick={() => authHandler(PROVIDER.GOOGLE)}>
         <BsGoogle size={20} />
       </AuthProvider>
