@@ -16,12 +16,7 @@ import { editUserPrefrence } from "@/server/actions/prefrence";
 import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
-import {
-  type MouseEventHandler,
-  useCallback,
-  useMemo,
-  type ReactNode,
-} from "react";
+import { type MouseEventHandler, useCallback, type ReactNode } from "react";
 import { BsPinAngle, BsPlus } from "react-icons/bs";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { MdDragIndicator, MdMenu } from "react-icons/md";
@@ -33,6 +28,7 @@ import {
 } from "react-sortable-hoc";
 import { SelectFromLibraryButton } from "./select-from-library-button";
 import { useUserData } from "@/hooks/use-user-data";
+import { SortableListItems } from "./sortable-list-items";
 
 type ItemType = {
   title: string;
@@ -134,17 +130,34 @@ type SortableItemsType = {
   items: ItemType[];
 };
 
-const SortableItems = SortableContainer<SortableItemsType>(
+export const SortableItems = SortableContainer<SortableItemsType>(
   ({ items }: SortableItemsType) => {
     return (
       <div className="w-full">
         {items.map((item, i) => (
-          <Item index={i} {...item} key={item.id} />
+          <Item index={i} key={item.id} {...item} />
         ))}
       </div>
     );
   },
 );
+
+export type GetItemsType = (
+  strings?: string[],
+  showArr?: boolean,
+) => ItemType[];
+
+export type SortEndType = (
+  {
+    oldIndex,
+    newIndex,
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  },
+  strings: string[] | undefined,
+  prop: "pinnedHomeSections" | "homeSectionsSort",
+) => void;
 
 export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
   const { data, error } = usePrefrences();
@@ -168,15 +181,6 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
     },
     [arr, data],
   );
-
-  const items = useMemo(() => {
-    return getItems(data?.homeSectionsSort, true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.homeSectionsSort, getItems]);
-
-  const pinnedSections = useMemo(() => {
-    return getItems(data?.pinnedHomeSections, false);
-  }, [data?.pinnedHomeSections, getItems]);
 
   const sortEnd: (
     { oldIndex, newIndex }: { oldIndex: number; newIndex: number },
@@ -217,25 +221,17 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
           />
         </SelectFromLibraryButton>
       </DropdownMenuSub>
-      <SortableItems
-        items={pinnedSections}
-        helperClass="z-50 bg-muted"
-        onSortEnd={(params) =>
-          sortEnd(params, data?.pinnedHomeSections, "pinnedHomeSections")
-        }
-        lockAxis="y"
-        lockToContainerEdges
+      <SortableListItems
+        getItems={getItems}
+        items={data?.pinnedHomeSections}
+        sortEnd={sortEnd}
       />
-      <SortableItems
-        items={items?.filter(
-          (item) => !data?.pinnedHomeSections.includes(item.id),
-        )}
-        helperClass="z-50 bg-muted"
-        onSortEnd={(params) =>
-          sortEnd(params, data?.homeSectionsSort ?? arr, "homeSectionsSort")
-        }
-        lockAxis="y"
-        lockToContainerEdges
+      <SortableListItems
+        getItems={getItems}
+        items={data?.homeSectionsSort}
+        filter={(item) => !data?.pinnedHomeSections.includes(item.id)}
+        sortEnd={sortEnd}
+        fallback={arr}
       />
     </>
   );

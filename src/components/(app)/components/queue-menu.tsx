@@ -27,15 +27,14 @@ export function QueueMenu() {
         );
       if (!tracks || tracks.length === 0) return null;
 
-      const typeId = queue.queueData?.typeId?.replaceAll("-", " ");
-
       return (
         <div key={queue.queueData?.id} className="flex w-full flex-col">
           <h3 className="mb-2.5 text-lg font-semibold">
-            Next from:{" "}
-            {queue?.artistTypeData?.name ??
-              queue?.playlistTypeData?.title ??
-              typeId}
+            {queue.queueData?.typeId
+              ? `Next from: ${
+                  queue?.artistTypeData?.name ?? queue?.playlistTypeData?.title
+                }`
+              : "Next Up"}
           </h3>
           {tracks.map((track) => {
             const trackData = getTrack(track.id, queue.queueData?.id);

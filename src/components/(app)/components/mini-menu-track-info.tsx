@@ -29,8 +29,7 @@ export function MiniMenuTrackInfo() {
             href={`/${currentQueue?.queueData?.type === "PLAYLIST" ? "playlist" : "artist"}/${currentQueue?.artistTypeData?.id ?? currentQueue?.playlistTypeData?.id}${currentQueue?.queueData?.type === "ARTIST" ? `?playlist=${currentQueue.queueData.currentPlaying}` : ""}`}
           >
             {currentQueue?.playlistTypeData?.title ??
-              currentQueue?.artistTypeData?.name ??
-              currentQueue?.queueData?.typeId}
+              currentQueue?.artistTypeData?.name}
           </Link>
         </PlaylistContext>
         <div className="flex items-center gap-4">

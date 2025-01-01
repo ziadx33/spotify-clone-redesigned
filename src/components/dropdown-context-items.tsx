@@ -1,5 +1,5 @@
 import { type DropdownMenuType } from "@/types";
-import { Fragment, useMemo, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -23,14 +23,18 @@ export function DropdownContextItems({
   const allContent = useMemo(() => {
     const content: ReactNode[] = [];
 
-    items.forEach((item) => {
+    items.forEach((item, index) => {
       if (item.content) {
-        content.push(item.content);
+        content.push(<div key={`content-${index}`}>{item.content}</div>);
       }
       if (item.nestedMenu) {
-        item.nestedMenu.items.forEach((nestedItem) => {
+        item.nestedMenu.items.forEach((nestedItem, nestedIndex) => {
           if (nestedItem.content) {
-            content.push(nestedItem.content);
+            content.push(
+              <div key={`nested-content-${index}-${nestedIndex}`}>
+                {nestedItem.content}
+              </div>,
+            );
           }
         });
       }
@@ -39,13 +43,13 @@ export function DropdownContextItems({
   }, [items]);
 
   return (
-    <Fragment key="dropdown-context-items">
+    <>
       <ContextMenu>
         {children}
         <ContextMenuContent className="mr-2 w-80">
           {items.map((item, index) =>
             item.nestedMenu ? (
-              <ContextMenuSub key={index}>
+              <ContextMenuSub key={`menu-${index}`}>
                 <ContextMenuSubTrigger className="flex h-fit items-center gap-2 py-2">
                   <div className="w-5">
                     <item.icon size={18} />
@@ -55,7 +59,7 @@ export function DropdownContextItems({
                 <ContextMenuSubContent className="w-60">
                   {item.nestedMenu.items.map((nestedItem, nestedIndex) => (
                     <ContextMenuItem
-                      key={nestedIndex}
+                      key={`nested-item-${index}-${nestedIndex}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         nestedItem.event && nestedItem.event(e);
@@ -72,7 +76,7 @@ export function DropdownContextItems({
               </ContextMenuSub>
             ) : (
               <ContextMenuItem
-                key={index}
+                key={`item-${index}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   item.event && item.event(e);
@@ -90,7 +94,7 @@ export function DropdownContextItems({
       </ContextMenu>
 
       {allContent}
-    </Fragment>
+    </>
   );
 }
 

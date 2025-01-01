@@ -2873,6 +2873,7 @@ packages:
 
   react-beautiful-dnd@13.1.1:
     resolution: {integrity: sha512-0Lvs4tq2VcrEjEgDXHjT98r+63drkKEgqyxdA7qD3mvKwga6a5SscbdLPO2IExotU1jW8L0Ksdl0Cj2AF67nPQ==}
+    deprecated: 'react-beautiful-dnd is now deprecated. Context and options: https://github.com/atlassian/react-beautiful-dnd/issues/2672'
     peerDependencies:
       react: ^16.8.5 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.5 || ^17.0.0 || ^18.0.0
