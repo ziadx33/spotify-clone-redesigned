@@ -25,6 +25,8 @@ import { toast } from "sonner";
 import { type SliceType } from "@/state/types";
 import { useRouter } from "next/navigation";
 import { useUserData } from "./use-user-data";
+import { IoMdDownload } from "react-icons/io";
+import { downloadAudios } from "@/utils/download-audios";
 
 type ReturnType = SliceType<{
   events: {
@@ -170,6 +172,13 @@ export function useTrackDropdownItems({
         icon: MdOutlineLibraryMusic,
         event: () => {
           void router.push(`/playlist/${currentTrack.albumId}`);
+        },
+      },
+      {
+        title: "Download track",
+        icon: IoMdDownload,
+        event: () => {
+          void downloadAudios([track]);
         },
       },
       {

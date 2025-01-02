@@ -25,7 +25,7 @@ export function useUpdateUser() {
       id: user?.id,
       data: data.data,
     });
-    void revalidate(`/artist/${user.id}`);
+    void revalidate(`/`);
   };
   return { update, user };
 }

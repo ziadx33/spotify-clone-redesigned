@@ -44,12 +44,16 @@ import {
   removePlaylistFromFolder,
 } from "@/server/actions/folder";
 import { editFolder } from "@/state/slices/folders";
+import { IoMdDownload } from "react-icons/io";
+import { downloadAudios } from "@/utils/download-audios";
+
+type usePlaylistDropdownItemsProps = {
+  playlist?: Playlist | null;
+};
 
 export function usePlaylistDropdownItems({
   playlist,
-}: {
-  playlist?: Playlist | null;
-}): SliceType<DropdownMenuType[]> {
+}: usePlaylistDropdownItemsProps): SliceType<DropdownMenuType[]> {
   const user = useUserData();
   const { data: folders } = useFolders();
   const nonAddedFolders = playlist
@@ -277,6 +281,13 @@ export function usePlaylistDropdownItems({
           },
         ]
       : []),
+    {
+      title: "Download playlist tracks",
+      icon: IoMdDownload,
+      event: () => {
+        void downloadAudios(tracks?.tracks ?? []);
+      },
+    },
     {
       title: "Share",
       icon: MdIosShare,

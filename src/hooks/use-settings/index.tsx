@@ -197,12 +197,17 @@ export function useSettings({ user }: { user?: User | null }) {
               value: "switch",
             }
           : {
-              type: "BUTTON",
+              type: "ALERT",
               order: 5,
-              title: "switch to normal user mode",
+              alertTitle: "switch to user mode",
+              title: "switch to user mode",
               value: "switch",
-              onEvent() {
-                console.log("hi");
+              description:
+                "This action will switch your account to user mode. Are you sure you want to switch?",
+              onEvent: async () => {
+                await updateUser({ data: { type: "USER" } });
+                void revalidate(`/artist/${user.id}/settings`);
+                void revalidate("/");
               },
             },
       ],
