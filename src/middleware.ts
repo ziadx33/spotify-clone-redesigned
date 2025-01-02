@@ -7,7 +7,9 @@ import { AUTH_ROUTES } from "./constants";
 export async function middleware(request: NextRequest) {
   const session = await getToken({ req: request, secret: env.NEXTAUTH_SECRET });
 
-  const isAuthRoute = AUTH_ROUTES.includes(request.nextUrl.pathname);
+  const isAuthRoute = AUTH_ROUTES.includes(
+    request.nextUrl.pathname as (typeof AUTH_ROUTES)[number],
+  );
 
   if (!session && !isAuthRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
