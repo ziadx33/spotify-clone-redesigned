@@ -22,6 +22,7 @@ export type Props = {
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
   intersectLastElementRef?: ReturnType<typeof useIntersectionObserver>["ref"];
   queueTypeId?: string;
+  hideTrackContext?: boolean;
 };
 
 export type TrackProps =

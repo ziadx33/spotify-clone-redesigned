@@ -53,6 +53,7 @@ type PlayerProps = {
   setSelectedTracks?: Dispatch<SetStateAction<string[]>>;
   queueTypeId?: string;
   showExploreButton?: boolean;
+  disabled?: boolean;
 };
 
 export function Comp({
@@ -65,6 +66,7 @@ export function Comp({
   setSelectedTracks,
   queueTypeId,
   showExploreButton,
+  disabled,
 }: PlayerProps) {
   const user = useUserData();
   const isCreatedByUser = user?.id === playlist?.creatorId;
@@ -88,6 +90,7 @@ export function Comp({
               />
             ) : (
               <QueuePlayButton
+                disabled={disabled}
                 queueTypeId={queueTypeId}
                 isCurrent={!!queueTypeId}
                 size={"icon"}
@@ -101,7 +104,7 @@ export function Comp({
               </QueuePlayButton>
             )}
             {(selectedTracks?.length ?? 0) < 1 && (
-              <ShuffleButton playlist={playlist} />
+              <ShuffleButton disabled={disabled} playlist={playlist} />
             )}
             {isCreatedByUser ? (
               <Button
@@ -113,12 +116,16 @@ export function Comp({
               </Button>
             ) : (
               <AddLibraryButton
-                disabled={!playlist}
+                disabled={!playlist || disabled}
                 size={50}
                 playlist={playlist}
               />
             )}
-            <PlaylistDropdown playlist={playlist} asChild={false}>
+            <PlaylistDropdown
+              disabled={disabled}
+              playlist={playlist}
+              asChild={false}
+            >
               <Button
                 size={"icon"}
                 variant="ghost"
@@ -140,9 +147,13 @@ export function Comp({
               </Button>
             ) : (
               <>
-                <SearchInput setTrackQuery={setTrackQuery} />
+                <SearchInput
+                  disabled={disabled}
+                  setTrackQuery={setTrackQuery}
+                />
 
                 <FiltersSelect
+                  disabled={disabled}
                   handleFilterChange={handleFilterChange}
                   filters={filters}
                   setFilters={setFilters}

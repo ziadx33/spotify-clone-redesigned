@@ -10,7 +10,7 @@ import { type Track as TrackType, type Playlist } from "@prisma/client";
 import { BsClock } from "react-icons/bs";
 import { Track } from "./track";
 import { type TrackFilters } from "@/types";
-import { type Dispatch, type SetStateAction } from "react";
+import { memo, type Dispatch, type SetStateAction } from "react";
 import { type useIntersectionObserver } from "usehooks-ts";
 
 export type ReplaceDurationWithButton = {
@@ -36,9 +36,11 @@ export type NonSortTableProps = {
   showCaption?: boolean;
   isLoading?: boolean;
   queueTypeId?: string;
+  showNoTracksMessage?: boolean;
+  hideTrackContext?: boolean;
 };
 
-export function NonSortTable({
+function Comp({
   data,
   playlist,
   viewAs,
@@ -56,6 +58,8 @@ export function NonSortTable({
   showCaption,
   isLoading,
   queueTypeId,
+  showNoTracksMessage = true,
+  hideTrackContext,
 }: NonSortTableProps) {
   const defTrackProps = {
     hidePlayButton: hidePlayButton,
@@ -67,6 +71,7 @@ export function NonSortTable({
     viewAs: viewAs,
     showIndex: showIndex,
     queueTypeId: queueTypeId,
+    hideTrackContext: hideTrackContext,
   };
   return (
     <>
@@ -115,11 +120,11 @@ export function NonSortTable({
                   )}
                 />
               ))
-          ) : (
+          ) : showNoTracksMessage ? (
             <div className="grid h-36 place-items-center lowercase">
               no tracks in the album
             </div>
-          )
+          ) : null
         ) : (
           Array.from({ length: 5 }).map((_, i) => (
             <Track skeleton key={i} {...defTrackProps} />
@@ -129,3 +134,5 @@ export function NonSortTable({
     </>
   );
 }
+
+export const NonSortTable = memo(Comp);

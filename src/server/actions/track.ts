@@ -830,3 +830,14 @@ export const getUserLikedSongs = unstable_cache(
     }
   }),
 );
+
+export const createTracks = async (tracks: Track[]) => {
+  try {
+    const createdTracks = await db.track.createMany({
+      data: tracks,
+    });
+    return createdTracks;
+  } catch (error) {
+    throw { error };
+  }
+};

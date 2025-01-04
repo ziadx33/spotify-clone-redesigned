@@ -24,6 +24,7 @@ function Comp(props: TrackProps) {
     selected,
     setSelectedTracks,
     queueTypeId,
+    hideTrackContext,
   } = props;
 
   const [showButtons, setShowButtons] = useState(false);
@@ -37,6 +38,7 @@ function Comp(props: TrackProps) {
       hidePlayButton={hidePlayButton}
       playlist={!skeleton ? props.playlist : undefined}
       album={!skeleton ? props.album : undefined}
+      hideTrackContext={hideTrackContext}
     >
       <AuthorsContainer
         authors={!skeleton ? props.authors : undefined}
@@ -73,6 +75,7 @@ function Comp(props: TrackProps) {
         skeleton={skeleton}
         replaceDurationWithButton={replaceDurationWithButton}
         track={!skeleton ? props.track : undefined}
+        hideTrackContext={hideTrackContext}
       />
       <SelectCheckbox
         track={!skeleton ? props.track : undefined}

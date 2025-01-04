@@ -11,6 +11,7 @@ type DurationProps = {
   skeleton: boolean;
   replaceDurationWithButton?: TrackProps["replaceDurationWithButton"];
   playlist: Playlist | undefined;
+  hideTrackContext?: boolean;
 };
 
 export function Duration({
@@ -18,6 +19,7 @@ export function Duration({
   skeleton,
   track,
   replaceDurationWithButton,
+  hideTrackContext,
 }: DurationProps) {
   return (
     <TableCell>
@@ -25,7 +27,9 @@ export function Duration({
         !skeleton ? (
           <div className="flex h-full w-24 items-center gap-3">
             {parseDurationTime(track!.duration)}
-            <MoreButtons playlist={playlist} track={track} />
+            {!hideTrackContext && (
+              <MoreButtons playlist={playlist} track={track} />
+            )}
           </div>
         ) : (
           <Skeleton className="h-2.5 w-24" />

@@ -13,6 +13,7 @@ type TrackContainerProps = {
   children: ReactNode[];
   playlist?: Playlist;
   album?: Playlist;
+  hideTrackContext?: boolean;
 };
 
 export function TrackContainer({
@@ -24,30 +25,37 @@ export function TrackContainer({
   children,
   playlist,
   album,
+  hideTrackContext,
 }: TrackContainerProps) {
   const hoverTrackHandler = (value: boolean) => {
     setShowButtons(value);
   };
 
-  return (
+  const content = (
+    <TableRow
+      key={!skeleton ? track!.id : crypto.randomUUID()}
+      onMouseOver={() => hoverTrackHandler(true)}
+      onMouseLeave={() => hoverTrackHandler(false)}
+      className={cn(
+        "group w-full overflow-hidden",
+        hidePlayButton ? "flex w-full justify-between" : "",
+        selected ? "bg-muted" : "",
+      )}
+    >
+      {children}
+    </TableRow>
+  );
+
+  return !hideTrackContext ? (
     <TrackContext
       track={!skeleton ? track : undefined}
       playlist={!skeleton ? playlist : undefined}
       album={!skeleton ? album : undefined}
       dragController={!skeleton}
     >
-      <TableRow
-        key={!skeleton ? track!.id : crypto.randomUUID()}
-        onMouseOver={() => hoverTrackHandler(true)}
-        onMouseLeave={() => hoverTrackHandler(false)}
-        className={cn(
-          "group w-full overflow-hidden",
-          hidePlayButton ? "flex w-full justify-between" : "",
-          selected ? "bg-muted" : "",
-        )}
-      >
-        {children}
-      </TableRow>
+      {content}
     </TrackContext>
+  ) : (
+    content
   );
 }

@@ -10,7 +10,9 @@ type MusicPlayerProps = {
   playlist?: Playlist | null;
   showTrackImage?: boolean;
   queueTypeId?: string;
+  newAlbum?: boolean;
   showExploreButton?: boolean;
+  disabled?: boolean;
 };
 
 export function MusicPlayer({
@@ -18,6 +20,8 @@ export function MusicPlayer({
   showTrackImage,
   queueTypeId,
   showExploreButton = true,
+  newAlbum,
+  disabled,
 }: MusicPlayerProps) {
   const [filters, setFilters] = useState<TrackFilters>(
     DEFAULT_TRACK_FILTERS_DATA,
@@ -27,6 +31,7 @@ export function MusicPlayer({
   return (
     <>
       <Player
+        disabled={disabled}
         showExploreButton={showExploreButton}
         queueTypeId={queueTypeId}
         playlist={playlist}
@@ -35,15 +40,17 @@ export function MusicPlayer({
         handleFilterChange={handleFilterChange}
         filters={filters}
       />
-      <Tracks
-        queueTypeId={queueTypeId}
-        showTrackImage={showTrackImage}
-        handleFilterChange={handleFilterChange}
-        playlist={playlist}
-        trackQuery={trackQuery}
-        setFilters={setFilters}
-        filters={filters}
-      />
+      {!newAlbum && (
+        <Tracks
+          queueTypeId={queueTypeId}
+          showTrackImage={showTrackImage}
+          handleFilterChange={handleFilterChange}
+          playlist={playlist}
+          trackQuery={trackQuery}
+          setFilters={setFilters}
+          filters={filters}
+        />
+      )}
     </>
   );
 }

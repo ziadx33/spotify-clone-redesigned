@@ -26,7 +26,8 @@ export function AddLibraryButton({
     <Button
       size={"icon"}
       variant="ghost"
-      disabled={isLoading ?? disabled ?? !playlist}
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      disabled={disabled || (!!isLoading ?? !playlist)}
       className="rounded-full"
       style={{
         width: `${size}px`,

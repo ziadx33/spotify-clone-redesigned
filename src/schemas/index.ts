@@ -1,3 +1,4 @@
+import { $Enums } from "@prisma/client";
 import { z } from "zod";
 
 export const loginSchema = z.object({
@@ -13,4 +14,9 @@ export const registerSchema = z.object({
 
 export const forgotPasswordSchema = z.object({
   email: z.string().email(),
+});
+
+export const trackDataSchema = z.object({
+  title: z.string().min(1),
+  genre: z.nativeEnum($Enums.GENRES),
 });

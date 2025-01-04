@@ -102,22 +102,18 @@ export const getPlaylist = unstable_cache(
   ["playlist", "id"],
 );
 
-export const createPlaylist = unstable_cache(
-  cache(
-    async (
-      data: Parameters<(typeof db)["playlist"]["create"]>["0"]["data"],
-    ) => {
-      try {
-        const createdPlaylist = db.playlist.create({
-          data,
-        });
-        return createdPlaylist;
-      } catch (error) {
-        throw { error };
-      }
-    },
-  ),
-);
+export const createPlaylist = async (
+  data: Parameters<(typeof db)["playlist"]["create"]>["0"]["data"],
+) => {
+  try {
+    const createdPlaylist = db.playlist.create({
+      data,
+    });
+    return createdPlaylist;
+  } catch (error) {
+    throw { error };
+  }
+};
 
 export const deletePlaylist = async (id: string) => {
   try {

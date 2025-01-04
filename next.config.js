@@ -22,6 +22,11 @@ const config = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "16mb",
+    },
+  },
 };
 
 export default config;

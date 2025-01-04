@@ -16,9 +16,14 @@ type FiltersSelectProps = {
   filters: TrackFilters;
   handleFilterChange?: (name: keyof TrackFilters) => void;
   playlist?: Playlist | null;
+  disabled?: boolean;
 };
 
-export function FiltersSelect({ filters, setFilters }: FiltersSelectProps) {
+export function FiltersSelect({
+  filters,
+  setFilters,
+  disabled,
+}: FiltersSelectProps) {
   return (
     <>
       <Select
@@ -29,6 +34,7 @@ export function FiltersSelect({ filters, setFilters }: FiltersSelectProps) {
             viewAs: e as TrackFilters["viewAs"],
           }));
         }}
+        disabled={disabled}
       >
         <SelectTrigger className="w-[280px]">
           <SelectValue placeholder="custom order" />

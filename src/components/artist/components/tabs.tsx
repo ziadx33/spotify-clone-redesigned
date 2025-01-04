@@ -51,7 +51,11 @@ export function TabsSection({ artist }: TabsSectionProps) {
           </TabsList>
           {(currentTab ?? "home") !== "home" &&
             (currentTab ?? "home") !== "about" && (
-              <SearchInput reverse value={query} setTrackQuery={setQuery} />
+              <SearchInput
+                reverse
+                value={query ?? undefined}
+                setTrackQuery={setQuery}
+              />
             )}
         </div>
         <div>

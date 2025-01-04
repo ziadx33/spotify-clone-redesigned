@@ -167,13 +167,17 @@ export function useTrackDropdownItems({
           );
         },
       },
-      {
-        title: "Go to Album",
-        icon: MdOutlineLibraryMusic,
-        event: () => {
-          void router.push(`/playlist/${currentTrack.albumId}`);
-        },
-      },
+      ...((track?.albumId.length ?? 0) > 0
+        ? [
+            {
+              title: "Go to Album",
+              icon: MdOutlineLibraryMusic,
+              event: () => {
+                void router.push(`/playlist/${currentTrack.albumId}`);
+              },
+            },
+          ]
+        : []),
       {
         title: "Download track",
         icon: IoMdDownload,

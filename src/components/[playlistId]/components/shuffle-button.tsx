@@ -2,9 +2,14 @@ import { Button } from "@/components/ui/button";
 import { usePlayQueue } from "@/hooks/use-play-queue";
 import { useQueue } from "@/hooks/use-queue";
 import { type Playlist } from "@prisma/client";
+import { type ComponentPropsWithoutRef } from "react";
 import { FaShuffle } from "react-icons/fa6";
 
-export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {
+type ShuffleButtonProps = {
+  playlist?: Playlist | null;
+} & ComponentPropsWithoutRef<"button">;
+
+export function ShuffleButton({ playlist, ...restProps }: ShuffleButtonProps) {
   const {
     data: { data },
     getQueue,
@@ -34,6 +39,7 @@ export function ShuffleButton({ playlist }: { playlist?: Playlist | null }) {
       variant={!data?.queueList.randomize ? "ghost" : "secondary"}
       className="size-12 rounded-full"
       onClick={shuffleHandler}
+      {...restProps}
     >
       <FaShuffle size={22} />
     </Button>
