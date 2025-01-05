@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useUpdateUser } from "./use-update-user";
 import { type Playlist } from "@prisma/client";
-import { revalidate } from "@/server/actions/revalidate";
 import { type AppDispatch } from "@/state/store";
 import { useUserData } from "./use-user-data";
 
@@ -27,8 +26,6 @@ export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {
     await updateUser({
       data,
     });
-    void revalidate("/");
-    void revalidate(`/artist/${playlist?.creatorId}`);
     dispatch(removePlaylist(playlist?.id ?? ""));
     setIsLoading(false);
   };
@@ -48,8 +45,6 @@ export function useAddToPlaylist({ playlist }: UseAddPlaylistProps) {
   const toggle = async () => {
     if (isAddedToLibrary) await handleRemovePlaylist();
     else await handleAddPlaylist();
-    void revalidate("/");
-    void revalidate(`/artist/${playlist?.creatorId}`);
   };
   return {
     isLoading,

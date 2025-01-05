@@ -98,8 +98,9 @@ export function useQueue() {
     const updatedData = { ...queueListData, ...editData };
     const id = data.data?.queueList?.id ?? "";
     const runDispatch = () => dispatch(editQueueList(updatedData));
-    const runServer = async () =>
-      await updateQueueList({ data: updatedData, id });
+    const runServer = async () => {
+      await updateQueueList({ data: updatedData, id, userId: user.id });
+    };
     const runBoth = async () => {
       runDispatch();
       await runServer();
@@ -121,7 +122,9 @@ export function useQueue() {
     const id = queueId ?? currentQueue?.queueData?.id ?? "";
     const runDispatch = () =>
       dispatch(editQueueById({ data: updatedData, id }));
-    const runServer = async () => await updateQueue({ data: updatedData, id });
+    const runServer = async () => {
+      await updateQueue({ data: updatedData, id, userId: user.id });
+    };
     const runBoth = async () => {
       runDispatch();
       await runServer();

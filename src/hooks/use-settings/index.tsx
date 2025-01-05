@@ -1,6 +1,5 @@
 import { DEFAULT_SECTIONS } from "@/components/home/components/prefrences-provider";
 import { editUserPrefrence } from "@/server/actions/prefrence";
-import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
 import { useState, useRef, useEffect } from "react";
@@ -38,8 +37,6 @@ export function useSettings({ user }: { user?: User | null }) {
           type: "SWITCH",
           value: prefrences?.showPlayingView ?? true,
           onEvent: async (e) => {
-            void revalidate(`/artist/${user.id}/settings`);
-            void revalidate("/");
             const data = { showPlayingView: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -94,8 +91,6 @@ export function useSettings({ user }: { user?: User | null }) {
           type: "BUTTON",
           value: "reset",
           onEvent: async () => {
-            void revalidate(`/artist/${user.id}/settings`);
-            void revalidate("/");
             const data = {
               pinnedHomeSections: [],
               hiddenHomeSections: [],
@@ -119,7 +114,6 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowPlaylistsInProfile ?? true,
           order: 0,
           onEvent: async (e) => {
-            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowPlaylistsInProfile: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -134,7 +128,6 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowTopPlayingArtists ?? true,
           order: 1,
           onEvent: async (e) => {
-            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowTopPlayingArtists: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -149,7 +142,6 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowFollowingList ?? false,
           order: 2,
           onEvent: async (e) => {
-            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowFollowingList: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -164,7 +156,6 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowFollowingList ?? true,
           order: 3,
           onEvent: async (e) => {
-            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowFollowersList: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -179,7 +170,6 @@ export function useSettings({ user }: { user?: User | null }) {
           value: prefrences?.ShowFollowingList ?? false,
           order: 4,
           onEvent: async (e) => {
-            void revalidate(`/artist/${user.id}/settings`);
             const data = { ShowTopPlayingTracks: e };
             dispatch(editPrefrence(data));
             await editUserPrefrence({
@@ -206,8 +196,6 @@ export function useSettings({ user }: { user?: User | null }) {
                 "This action will switch your account to user mode. Are you sure you want to switch?",
               onEvent: async () => {
                 await updateUser({ data: { type: "USER" } });
-                void revalidate(`/artist/${user.id}/settings`);
-                void revalidate("/");
               },
             },
       ],
@@ -238,9 +226,6 @@ export function useSettings({ user }: { user?: User | null }) {
           order: 2,
           onEvent: async () => {
             await deleteUserById(user.id);
-            void revalidate("/login");
-            void revalidate("/register");
-            void revalidate("/");
             await signOut();
           },
           variant: "destructive",

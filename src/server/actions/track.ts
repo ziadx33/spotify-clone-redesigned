@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, unstable_cache } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { db } from "../db";
 import { type TracksSliceType } from "@/state/slices/tracks";
@@ -53,13 +53,13 @@ export const getTracksData = async ({
   return { authors, playlists };
 };
 
-export const getTracksByPlaylistId = unstable_cache(
-  cache(
-    async (
-      playlistId?: string | string[],
-      trackIds?: string[],
-      albumData?: boolean,
-    ): Promise<TracksSliceType> => {
+export async function getTracksByPlaylistId(
+  playlistId?: string | string[],
+  trackIds?: string[],
+  albumData?: boolean,
+) {
+  return await unstable_cache(
+    async (): Promise<TracksSliceType> => {
       try {
         const isArray =
           typeof playlistId === "string"
@@ -128,9 +128,14 @@ export const getTracksByPlaylistId = unstable_cache(
         };
       }
     },
-  ),
-  ["track", "playlist-id", "id"],
-);
+    ["track", "playlist-id", "id"],
+    {
+      tags: [
+        `playlist-data-${typeof playlistId === "string" ? playlistId : playlistId?.join("-")}`,
+      ],
+    },
+  )();
+}
 
 type GetRecommendedTracksParams = {
   artistIds: string[];
@@ -306,6 +311,7 @@ export const removeTrackFromPlaylistDB = async ({
         playlists: playlists.filter((playlist) => playlist !== playlistId),
       },
     });
+    revalidateTag(`playlist-data-${playlistId}`);
     return updatedTrack;
   } catch (error) {
     return { error };
@@ -332,6 +338,8 @@ export const addTrackToPlaylistToDB = async ({
         },
       },
     });
+
+    revalidateTag(`playlist-data-${playlistId}`);
     return updatedTrack;
   } catch (error) {
     throw { error };
@@ -739,9 +747,14 @@ export const getTracksByArtistId = unstable_cache(
 type EditTrackById = {
   id: string;
   data: NonNullable<Parameters<typeof db.track.update>["0"]>["data"];
+  playlistId?: string | null;
 };
 
-export const editTrackById = async ({ id, data }: EditTrackById) => {
+export const editTrackById = async ({
+  id,
+  data,
+  playlistId,
+}: EditTrackById) => {
   try {
     const editedTrack = await db.track.update({
       where: {
@@ -749,6 +762,8 @@ export const editTrackById = async ({ id, data }: EditTrackById) => {
       },
       data,
     });
+    if (playlistId) revalidateTag(`playlist-data-${playlistId}`);
+    revalidatePath("/liked-songs");
     return editedTrack;
   } catch (error) {
     throw { error };

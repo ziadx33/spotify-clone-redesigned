@@ -14,7 +14,6 @@ import {
   addTrackToPlaylistToDB,
   removeTrackFromPlaylistDB,
 } from "@/server/actions/track";
-import { revalidate } from "@/server/actions/revalidate";
 import { RiPlayListLine } from "react-icons/ri";
 import {
   MdAddToQueue,
@@ -100,14 +99,6 @@ export function useTrackDropdownItems({
     };
     dispatch(addTrackToPlaylist(dispatchData));
     await addTrackToPlaylistToDB(dispatchData);
-    void revalidate(`/playlist/${dispatchData.playlistId}`);
-    void revalidate(
-      `/artist/${
-        data.data?.find(
-          (playlist) => playlist.creatorId === dispatchData.playlistId,
-        )?.creatorId
-      }`,
-    );
     toast.success(`added to ${playlist.title} successfully!`);
   };
 
@@ -123,14 +114,6 @@ export function useTrackDropdownItems({
       playlistId,
       trackId,
       playlists: currentTrack.playlists,
-    }).then(() => {
-      void revalidate(`/playlist/${playlistId}`);
-      void revalidate(
-        `/artist/${
-          data.data?.find((playlist) => playlist.creatorId === playlistId)
-            ?.creatorId
-        }`,
-      );
     });
     toast.success(`removed from ${playlist.title} successfully!`);
   };

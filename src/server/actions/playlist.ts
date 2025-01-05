@@ -2,7 +2,7 @@
 
 import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { db } from "../db";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { type Track, type $Enums, type Playlist } from "@prisma/client";
 import { getArtistsByIds } from "./user";
@@ -13,14 +13,15 @@ type GetPlaylistsParams = {
   type?: Playlist["type"];
   excludedIds?: string[];
 };
-export const getPlaylists = unstable_cache(
-  cache(
-    async ({
-      creatorId,
-      playlistIds,
-      type,
-      excludedIds,
-    }: GetPlaylistsParams): Promise<PlaylistsSliceType> => {
+
+export async function getPlaylists({
+  creatorId,
+  playlistIds,
+  type,
+  excludedIds,
+}: GetPlaylistsParams) {
+  return await unstable_cache(
+    async (): Promise<PlaylistsSliceType> => {
       try {
         const playlists = await db.playlist.findMany({
           where: {
@@ -35,6 +36,9 @@ export const getPlaylists = unstable_cache(
                 },
               },
             ],
+            id: {
+              notIn: excludedIds,
+            },
             type,
           },
         });
@@ -52,9 +56,10 @@ export const getPlaylists = unstable_cache(
         };
       }
     },
-  ),
-  ["playlists-by-ids"],
-);
+    ["playlists-by-ids"],
+    { tags: [`playlists-${creatorId}`] },
+  )();
+}
 
 type GetFeaturingAlbumsProps = {
   artistId: string;
@@ -88,19 +93,22 @@ export const getFeaturingAlbums = unstable_cache(
   ["featuring-artist-albums"],
 );
 
-export const getPlaylist = unstable_cache(
-  cache(async (playlistId: string) => {
-    try {
-      const playlist = await db.playlist.findUnique({
-        where: { id: playlistId },
-      });
-      return playlist;
-    } catch (error) {
-      throw { error };
-    }
-  }),
-  ["playlist", "id"],
-);
+export async function getPlaylist(playlistId: string) {
+  return await unstable_cache(
+    cache(async () => {
+      try {
+        const playlist = await db.playlist.findUnique({
+          where: { id: playlistId },
+        });
+        return playlist;
+      } catch (error) {
+        throw { error };
+      }
+    }),
+    ["playlist"],
+    { tags: [`playlist-${playlistId}`] },
+  )();
+}
 
 export const createPlaylist = async (
   data: Parameters<(typeof db)["playlist"]["create"]>["0"]["data"],
@@ -134,6 +142,7 @@ export const updatePlaylist = unstable_cache(
         where: { id },
         data,
       });
+      revalidateTag(`playlist-${id}`);
       return updatedPlaylist;
     } catch (error) {
       throw { error };
@@ -308,6 +317,7 @@ export const addTracksToPlaylist = async ({
         },
       },
     });
+    revalidateTag(`playlist-data-${playlistId}`);
     return addedTracks;
   } catch (error) {
     throw { error };

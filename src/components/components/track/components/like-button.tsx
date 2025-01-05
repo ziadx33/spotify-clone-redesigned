@@ -1,5 +1,4 @@
 import { useUserData } from "@/hooks/use-user-data";
-import { revalidate } from "@/server/actions/revalidate";
 import { editTrackById } from "@/server/actions/track";
 import { type Playlist, type Track } from "@prisma/client";
 import { useRef, useState } from "react";
@@ -22,6 +21,7 @@ export function LikeButton({ track, playlist }: LikeButtonProps) {
       editedTrack.current = await editTrackById({
         id: track?.id,
         data: { likedUsers: [...(track?.likedUsers ?? []), user.id] },
+        playlistId: playlist?.id,
       });
     else
       editedTrack.current = await editTrackById({
@@ -31,10 +31,8 @@ export function LikeButton({ track, playlist }: LikeButtonProps) {
             (id) => id !== user.id,
           ),
         },
+        playlistId: playlist?.id,
       });
-
-    void revalidate(`/playlist/${playlist?.id}`);
-    void revalidate("/liked-songs");
   };
   return (
     <button

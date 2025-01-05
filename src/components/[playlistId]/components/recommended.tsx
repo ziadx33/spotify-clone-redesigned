@@ -1,6 +1,5 @@
 import { type NonSortTableProps } from "@/components/components/non-sort-table";
 import { Button } from "@/components/ui/button";
-import { revalidate } from "@/server/actions/revalidate";
 import {
   addTrackToPlaylistToDB,
   getRecommendedTracks,
@@ -61,7 +60,6 @@ export function Recommended({
     const addData = { playlistId: playlist?.id ?? "", trackId: track.id };
 
     void addTrackToPlaylistToDB(addData);
-    void revalidate(`/playlist/${playlist?.id}`);
     dispatch(
       addTrack({
         trackData: track,

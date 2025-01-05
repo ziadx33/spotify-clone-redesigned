@@ -25,11 +25,11 @@ export function PrefrencesProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    if (data) dispatch(setPrefrence(data));
+    if (data) {
+      dispatch(setPrefrence(data));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
-
-  console.log(status);
 
   return status === "success" ? children : <Loading />;
 }

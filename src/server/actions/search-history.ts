@@ -1,9 +1,8 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { db } from "../db";
-import { cache } from "react";
 
 export async function AddToSearchHistory(
   data: Parameters<(typeof db)["searchHistory"]["create"]>["0"],
@@ -16,27 +15,39 @@ export async function AddToSearchHistory(
   }
 }
 
-export const getSearchHistory = unstable_cache(
-  cache(async (userId: string) => {
-    try {
-      const data = await db.searchHistory.findMany({
-        where: {
-          userId,
-        },
-      });
-      return data;
-    } catch (error) {
-      throw { error };
-    }
-  }),
-  ["search-history"],
-);
+export async function getSearchHistory(userId: string) {
+  return await unstable_cache(
+    async () => {
+      try {
+        const data = await db.searchHistory.findMany({
+          where: {
+            userId,
+          },
+        });
+        return data;
+      } catch (error) {
+        throw { error };
+      }
+    },
+    ["search-history"],
+    { tags: [`user-search-history-${userId}`] },
+  )();
+}
 
-export async function removeSearchHistoryById(id: string) {
+type removeSearchHistoryByIdParams = {
+  id: string;
+  userId: string;
+};
+
+export async function removeSearchHistoryById({
+  id,
+  userId,
+}: removeSearchHistoryByIdParams) {
   try {
     const removed = await db.searchHistory.delete({
       where: { id },
     });
+    revalidateTag(`user-search-history-${userId}`);
     return removed;
   } catch (error) {
     throw { error };

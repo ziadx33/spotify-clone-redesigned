@@ -17,7 +17,7 @@ export function usePlaylist(id: string): UsePlaylistReturnType {
     isError,
     refetch,
   } = useQuery({
-    queryKey: [],
+    queryKey: [`playlist-${id}`],
     queryFn: async () => {
       if (data) return null;
       const res = await getPlaylist(id);

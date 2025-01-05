@@ -14,7 +14,7 @@ import {
   type QueueList,
   type Playlist,
 } from "@prisma/client";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { type TracksSliceType } from "@/state/slices/tracks";
 import { type PlaylistsSliceType } from "@/state/slices/playlists";
@@ -58,27 +58,28 @@ export const getQueueData = unstable_cache(
   ["queue-data"],
 );
 
-export const getQueue = async (userId: string): Promise<QueueListSliceType> => {
-  try {
-    const data = await db.queueList.findUnique({
-      where: {
-        userId,
-      },
-    });
-    const queues = await db.queueList
-      .findUnique({
-        where: {
-          userId,
-        },
-      })
-      .queues();
-    console.log("zaton", data, queues, !data || !queues);
-    if (!data || !queues) throw "no queue";
-    return await getQueueData({ queueList: data, queues });
-  } catch (error) {
-    throw { data: null, status: "error", error: error as string };
-  }
-};
+export async function getQueue(userId: string) {
+  return await unstable_cache(
+    async (): Promise<QueueListSliceType> => {
+      try {
+        const data = await db.queueList.findUnique({
+          where: { userId },
+        });
+        const queues = await db.queueList
+          .findUnique({ where: { userId } })
+          .queues();
+        if (!data || !queues) throw "no queue";
+        return await getQueueData({ queueList: data, queues });
+      } catch (error) {
+        throw { data: null, status: "error", error: error as string };
+      }
+    },
+    [`queue-${userId}`],
+    {
+      tags: [`user-queue-${userId}`],
+    },
+  )();
+}
 
 type StartQueueParams = {
   data: Parameters<typeof db.queue.create>["0"]["data"];
@@ -139,9 +140,14 @@ export const startQueue = async ({
 type UpdateQueueListParams = {
   data: Parameters<typeof db.queueList.create>["0"]["data"];
   id: string;
+  userId: string;
 };
 
-export const updateQueueList = async ({ data, id }: UpdateQueueListParams) => {
+export const updateQueueList = async ({
+  data,
+  id,
+  userId,
+}: UpdateQueueListParams) => {
   try {
     const updatedQueueList = await db.queueList.update({
       data,
@@ -149,6 +155,7 @@ export const updateQueueList = async ({ data, id }: UpdateQueueListParams) => {
         id,
       },
     });
+    revalidateTag(`user-queue-${userId}`);
     return updatedQueueList;
   } catch (error) {
     throw { error };
@@ -158,9 +165,10 @@ export const updateQueueList = async ({ data, id }: UpdateQueueListParams) => {
 type UpdateQueueParams = {
   data: Parameters<typeof db.queue.create>["0"]["data"];
   id: string;
+  userId: string;
 };
 
-export const updateQueue = async ({ data, id }: UpdateQueueParams) => {
+export const updateQueue = async ({ data, id, userId }: UpdateQueueParams) => {
   try {
     const updatedQueueList = await db.queue.update({
       data,
@@ -168,6 +176,7 @@ export const updateQueue = async ({ data, id }: UpdateQueueParams) => {
         id,
       },
     });
+    revalidateTag(`user-queue-${userId}`);
     return updatedQueueList;
   } catch (error) {
     throw { error };

@@ -24,7 +24,6 @@ import { type AppDispatch } from "@/state/store";
 import { toast } from "sonner";
 import { addFolder, editFolder } from "@/state/slices/folders";
 import { createFolder } from "@/server/actions/folder";
-import { revalidate } from "@/server/actions/revalidate";
 
 type SidebarFoldersAccordionProps = {
   setValue: Dispatch<SetStateAction<string[]>>;
@@ -73,7 +72,6 @@ export function SidebarFoldersAccordion({
       }),
     );
     const createdFolder = await createFolder(inputValue, userData.id);
-    void revalidate("/");
     dispatch(editFolder({ id: tempFolderName, data: createdFolder }));
   };
 

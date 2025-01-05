@@ -16,7 +16,6 @@ import {
 import { usePlaylists } from "@/hooks/use-playlists";
 import { usePrefrences } from "@/hooks/use-prefrences";
 import { editUserPrefrence } from "@/server/actions/prefrence";
-import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
 import { type ReactNode, useMemo, useCallback, useState } from "react";
@@ -66,7 +65,6 @@ export function SelectFromLibraryButton({
         data,
         userId: user?.id ?? "",
       });
-      void revalidate("/");
     },
     [
       dispatch,

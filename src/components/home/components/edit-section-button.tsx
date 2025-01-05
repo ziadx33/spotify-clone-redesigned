@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePrefrences } from "@/hooks/use-prefrences";
 import { editUserPrefrence } from "@/server/actions/prefrence";
-import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
 import { useCallback } from "react";
@@ -51,7 +50,6 @@ export function EditSectionButton({
           : [sectionId],
       },
     });
-    void revalidate("/");
   };
   return (
     <DropdownMenu>

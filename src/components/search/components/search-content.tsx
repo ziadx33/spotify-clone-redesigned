@@ -8,7 +8,6 @@ import { PlaylistsContent } from "./playlists-content";
 import { ArtistsContent } from "./artists-content";
 import { ProfilesContent } from "./profiles-content";
 import { AddToSearchHistory } from "@/server/actions/search-history";
-import { revalidate } from "@/server/actions/revalidate";
 import { type SearchHistory } from "@prisma/client";
 import { useUserData } from "@/hooks/use-user-data";
 
@@ -42,7 +41,6 @@ export function SearchContent({ data, query }: SearchContentProps) {
         userId: user.id,
       },
     });
-    void revalidate("/search");
   };
 
   return (

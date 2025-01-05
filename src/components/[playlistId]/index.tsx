@@ -50,9 +50,5 @@ export function PlaylistPage({ id }: { id: string }) {
     data,
     tracks,
   };
-  return data?.type === "PLAYLIST" || userData?.id === data?.creatorId ? (
-    <Playlist {...props} />
-  ) : (
-    <Album {...props} />
-  );
+  return type === "PLAYLIST" ? <Playlist {...props} /> : <Album {...props} />;
 }

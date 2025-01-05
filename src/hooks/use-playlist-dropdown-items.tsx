@@ -25,7 +25,6 @@ import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { usePlaylists } from "./use-playlists";
 import { FiPlus } from "react-icons/fi";
-import { revalidate } from "@/server/actions/revalidate";
 import { useRouter } from "next/navigation";
 import { TbWorld } from "react-icons/tb";
 import { MdIosShare, MdOutlineBackupTable } from "react-icons/md";
@@ -109,7 +108,6 @@ export function usePlaylistDropdownItems({
       userId: user.id,
     });
     dispatch(editPrefrence(prefrenceData));
-    void revalidate("/");
     if (location.pathname === `/playlist/${playlist.id}`) router.push("/");
   };
 
@@ -124,7 +122,6 @@ export function usePlaylistDropdownItems({
       },
     };
     await updatePlaylist(data);
-    void revalidate("/");
     dispatch(editPlaylist(data));
   };
 
@@ -140,7 +137,6 @@ export function usePlaylistDropdownItems({
       playlistId: id,
     });
     if (location.pathname === `/playlist/${id}`) dispatch(addTracks(data));
-    void revalidate(`/playlist/${id}`);
   };
 
   const addToFolderHandler = async (id: string) => {
@@ -151,8 +147,7 @@ export function usePlaylistDropdownItems({
         data: { playlistIds: [...(folder?.playlistIds ?? []), playlist.id] },
       }),
     );
-    await addPlaylistToFolder(playlist.id, id);
-    void revalidate("/");
+    await addPlaylistToFolder(playlist.id, id, user.id);
   };
 
   const removeToFolderHandler = async (id: string) => {
@@ -165,8 +160,12 @@ export function usePlaylistDropdownItems({
         },
       }),
     );
-    await removePlaylistFromFolder(playlist.id, id, folder?.playlistIds ?? []);
-    void revalidate("/");
+    await removePlaylistFromFolder(
+      playlist.id,
+      id,
+      folder?.playlistIds ?? [],
+      user.id,
+    );
   };
 
   const isUserPlaylist = user?.id === playlist.creatorId;
@@ -186,6 +185,7 @@ export function usePlaylistDropdownItems({
       icon: MdOutlineBackupTable,
       event: () => navigate.apply({}, [, , false]),
     },
+
     ...(!isUserPlaylist
       ? [
           {
@@ -210,8 +210,11 @@ export function usePlaylistDropdownItems({
           {
             icon: IoPencil,
             title: "Edit details",
-            event: () => setDetailsDialogOpen(true),
-            content: playlistDialog,
+            event: () =>
+              playlist.type === "PLAYLIST"
+                ? setDetailsDialogOpen(true)
+                : router.push(`/albums/new?playlist=${playlist.id}`),
+            content: playlist.type === "PLAYLIST" ? playlistDialog : null,
           },
         ]
       : []),

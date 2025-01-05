@@ -5,7 +5,7 @@ import { db } from "../db";
 import { type registerSchema } from "@/schemas";
 import { compare, hash } from "bcrypt";
 import { type $Enums, type User } from "@prisma/client";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import bcrypt from "bcrypt";
 
@@ -63,6 +63,7 @@ export const updateUserById = async ({
       },
       data,
     });
+    revalidateTag(`user-${id}`);
     return updatedUser;
   } catch (error) {
     throw error;

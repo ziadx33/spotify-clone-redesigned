@@ -12,12 +12,14 @@ import { deleteFolder } from "@/server/actions/folder";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { removeFolder } from "@/state/slices/folders";
+import { useUserData } from "@/hooks/use-user-data";
 
 export function SidebarFolderAccordion({ folder }: { folder: Folder }) {
   const dispatch = useDispatch<AppDispatch>();
+  const user = useUserData();
   const deleteHandler = async () => {
     dispatch(removeFolder(folder.id));
-    await deleteFolder(folder.id);
+    await deleteFolder(folder.id, user.id);
   };
   return (
     <Accordion type="multiple" className="w-full" key={folder.id}>

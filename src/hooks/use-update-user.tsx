@@ -1,6 +1,5 @@
 import { type User } from "@prisma/client";
 import { updateUserById } from "@/server/actions/user";
-import { revalidate } from "@/server/actions/revalidate";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { useUserData } from "./use-user-data";
@@ -25,7 +24,6 @@ export function useUpdateUser() {
       id: user?.id,
       data: data.data,
     });
-    void revalidate(`/`);
   };
   return { update, user };
 }

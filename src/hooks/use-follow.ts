@@ -1,7 +1,6 @@
 import { type User } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
 import { updateUserById } from "@/server/actions/user";
-import { revalidate } from "@/server/actions/revalidate";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { followUser, unFollowUser } from "@/state/slices/following";
@@ -30,8 +29,6 @@ export function useFollow({ artist, playlistId }: UseFollowParams) {
   }, [user?.id, artist]);
 
   const reset = () => {
-    void revalidate(`/artist/${artist?.id}`);
-    void revalidate(`/`);
     setIsFollowed((v) => !v);
     setIsFollowing(false);
   };

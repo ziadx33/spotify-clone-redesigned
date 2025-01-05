@@ -5,7 +5,7 @@ import { type SliceType } from "../types";
 export type PrefrenceSliceType = SliceType<Preference>;
 
 const initialState: PrefrenceSliceType = {
-  status: "loading",
+  status: "idle",
   data: null,
   error: null,
 };

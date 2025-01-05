@@ -5,7 +5,6 @@ import { editTrackById, getUserLikedSongs } from "@/server/actions/track";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { SearchTrack } from "../[playlistId]/components/recommended-search";
-import { revalidate } from "@/server/actions/revalidate";
 import { MusicPlayer } from "../[playlistId]/components/music-player";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
@@ -47,7 +46,6 @@ export function LikedSongs() {
                 id: track?.id,
                 data: { likedUsers: [...(track?.likedUsers ?? []), user.id] },
               });
-              void revalidate("/liked-songs");
               await refetch();
             }}
             tableProps={{

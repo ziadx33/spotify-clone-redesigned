@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 import { db } from "../db";
 import { type $Enums, type User, type VerificationToken } from "@prisma/client";
 import { getUserByEmail, updateUserById } from "./user";
+import { unstable_cache } from "next/cache";
 
 export const generateVerificationToken = async (
   email: string,
@@ -120,19 +121,24 @@ export const getVerificationTokenById = async (token: string) => {
   }
 };
 
-export const getUserById = async ({
-  id,
-  type,
-}: {
+type getUserByIdParams = {
   id?: string;
   type?: User["type"];
-}) => {
-  try {
-    const user = await db.user.findUnique({
-      where: { id, type },
-    });
-    return user;
-  } catch (error) {
-    throw { error };
-  }
 };
+
+export async function getUserById({ id, type }: getUserByIdParams) {
+  return await unstable_cache(
+    async () => {
+      try {
+        const user = await db.user.findUnique({
+          where: { id, type },
+        });
+        return user;
+      } catch (error) {
+        throw { error };
+      }
+    },
+    ["user-data"],
+    { tags: [`user-${id}`] },
+  )();
+}

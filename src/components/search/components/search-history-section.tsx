@@ -3,7 +3,6 @@ import { RenderSectionItems } from "@/components/render-section-items";
 import { Button } from "@/components/ui/button";
 import { useUserData } from "@/hooks/use-user-data";
 import { getPlaylists } from "@/server/actions/playlist";
-import { revalidate } from "@/server/actions/revalidate";
 import {
   getSearchHistory,
   removeSearchHistoryById,
@@ -11,7 +10,7 @@ import {
 import { getUserByIds } from "@/server/actions/user";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FaX } from "react-icons/fa6";
 
 export function SearchHistorySection() {
@@ -46,11 +45,13 @@ export function SearchHistorySection() {
     },
     enabled: !!user?.id,
   });
-  const removeFromHistoryHandler = async (id: string) => {
-    setCurrentRemovedSearchHistoryIds((v) => [...v, id]);
-    await removeSearchHistoryById(id);
-    void revalidate(`/search`);
-  };
+  const removeFromHistoryHandler = useCallback(
+    async (id: string) => {
+      setCurrentRemovedSearchHistoryIds((v) => [...v, id]);
+      await removeSearchHistoryById({ id, userId: user.id });
+    },
+    [user.id],
+  );
   const cards = useMemo(() => {
     return (
       data
@@ -102,7 +103,7 @@ export function SearchHistorySection() {
           />
         )) ?? []
     );
-  }, [currentRemovedSearchHistoryIds, data]);
+  }, [currentRemovedSearchHistoryIds, data, removeFromHistoryHandler]);
 
   return (
     <RenderSectionItems

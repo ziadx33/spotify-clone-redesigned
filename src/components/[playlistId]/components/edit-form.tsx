@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SUPABASE_BUCKET_URL } from "@/constants";
 import { updatePlaylist } from "@/server/actions/playlist";
-import { revalidate } from "@/server/actions/revalidate";
 import { uploadPlaylistPic } from "@/server/actions/upload";
 import { editPlaylist } from "@/state/slices/playlists";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -88,7 +87,6 @@ export function EditForm({
     }
     await updatePlaylist({ id: data?.id ?? "", data: uploadData });
     dispatch(editPlaylist({ id: data?.id ?? "", data: formData }));
-    void revalidate(`/playlist/${data?.id}`);
     closeDialogRef?.current?.click();
     setOpen?.(false);
     setUploadedImage(null);

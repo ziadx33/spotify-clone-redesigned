@@ -5,6 +5,7 @@ import { useAudios } from "./use-audios";
 import { editQueueById, getCurrentQueue } from "@/state/slices/queue-list";
 import { updateQueue } from "@/server/actions/queue";
 import { wait } from "@/utils/wait";
+import { useUserData } from "./use-user-data";
 
 export function useQueueController() {
   const data = useSelector((state: RootState) => state.queueController.data);
@@ -14,6 +15,7 @@ export function useQueueController() {
   );
 
   const audios = useAudios();
+  const user = useUserData();
 
   const playAudio = async (
     startTime?: number,
@@ -86,6 +88,7 @@ export function useQueueController() {
       void updateQueue({
         data: { ...currentQueue.queueData, currentPlayingProgress: value },
         id: currentQueue.queueData.id,
+        userId: user.id,
       });
     }
     dispatch(editQueueController({ progress: value }));

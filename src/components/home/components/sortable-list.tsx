@@ -13,7 +13,6 @@ import {
 import { usePrefrences } from "@/hooks/use-prefrences";
 import { cn } from "@/lib/utils";
 import { editUserPrefrence } from "@/server/actions/prefrence";
-import { revalidate } from "@/server/actions/revalidate";
 import { editPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
 import { type MouseEventHandler, useCallback, type ReactNode } from "react";
@@ -63,7 +62,6 @@ function SortableItem(item: ItemType) {
       userId: user?.id ?? "",
     });
     if (error) dispatch(editPrefrence(res));
-    void revalidate("/");
   };
 
   const pinToggle: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -204,7 +202,6 @@ export function SortableList({ comps }: { comps: Record<string, ReactNode> }) {
           userId: user?.id ?? "",
         });
         if (error) dispatch(editPrefrence(res));
-        void revalidate("/");
       })();
     },
     [dispatch, error, user?.id],
