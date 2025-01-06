@@ -56,7 +56,7 @@ export async function getPlaylists({
         };
       }
     },
-    ["playlists-by-ids"],
+    [`playlists-by-ids-${creatorId}`],
     { tags: [`playlists-${creatorId}`] },
   )();
 }

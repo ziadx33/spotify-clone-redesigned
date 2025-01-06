@@ -138,7 +138,7 @@ export async function getUserById({ id, type }: getUserByIdParams) {
         throw { error };
       }
     },
-    ["user-data"],
+    [`user-id-${id}`],
     { tags: [`user-${id}`] },
   )();
 }

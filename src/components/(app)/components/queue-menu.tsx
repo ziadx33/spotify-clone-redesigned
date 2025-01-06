@@ -27,13 +27,14 @@ export function QueueMenu() {
         );
       if (!tracks || tracks.length === 0) return null;
 
+      const nextFromText =
+        queue?.artistTypeData?.name ?? queue?.playlistTypeData?.title;
+
       return (
         <div key={queue.queueData?.id} className="flex w-full flex-col">
           <h3 className="mb-2.5 text-lg font-semibold">
-            {queue.queueData?.typeId
-              ? `Next from: ${
-                  queue?.artistTypeData?.name ?? queue?.playlistTypeData?.title
-                }`
+            {queue.queueData?.typeId && nextFromText
+              ? `Next from: ${nextFromText}`
               : "Next Up"}
           </h3>
           {tracks.map((track) => {

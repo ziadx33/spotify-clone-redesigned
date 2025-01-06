@@ -128,7 +128,11 @@ export async function getTracksByPlaylistId(
         };
       }
     },
-    ["track", "playlist-id", "id"],
+    [
+      "track",
+      `playlist-${typeof playlistId === "string" ? playlistId : playlistId?.join("-")}`,
+      "id",
+    ],
     {
       tags: [
         `playlist-data-${typeof playlistId === "string" ? playlistId : playlistId?.join("-")}`,
