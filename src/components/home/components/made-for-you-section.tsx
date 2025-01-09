@@ -9,9 +9,9 @@ import { enumParser } from "@/utils/enum-parser";
 import { getRandomValue } from "@/utils/get-random-value";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState, useRef } from "react";
-import { PlaylistDialog } from "./playlist-dialog";
 import { EditSectionButton } from "./edit-section-button";
 import { useUserData } from "@/hooks/use-user-data";
+import { MadeForYouSectionDialogContent } from "./made-for-you-section-dialog-content";
 
 type MadeForYouSectionProps = {
   userId: string;
@@ -20,7 +20,7 @@ type MadeForYouSectionProps = {
 export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
   const { tracksHistory } = useUserData();
   const { data } = useQuery({
-    queryKey: [`home-made-for-you-section`],
+    queryKey: [`home-made-for-you-sectionssss`],
     queryFn: async () => {
       const data = getHomeMadeForYouSection(tracksHistory ?? []);
       return data;
@@ -91,10 +91,10 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
                 description={`${enumParser(datum.genre)} mix`}
               />
             </DialogTrigger>
-            <PlaylistDialog
-              queueTypeId={`made-for-you-${index}`}
-              {...datum}
-              isActive={activeDialog === index}
+            <MadeForYouSectionDialogContent
+              activeDialog={activeDialog}
+              genre={datum.genre}
+              index={index}
             />
           </Dialog>
         );

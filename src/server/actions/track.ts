@@ -602,95 +602,79 @@ export const addPlaylistToTracks = async ({
   }
 };
 
-export const getHomeMadeForYouSection = unstable_cache(
-  cache(async (historyTracksIds: string[]) => {
-    try {
-      let historyTracks = await db.track.findMany({
-        where: {
-          id: {
-            in: historyTracksIds.slice(0, 50),
+export async function getHomeMadeForYouSection(historyTracksIds: string[]) {
+  return await unstable_cache(
+    async () => {
+      try {
+        let historyTracks = await db.track.findMany({
+          where: {
+            id: {
+              in: historyTracksIds.slice(0, 50),
+            },
           },
-        },
-      });
-
-      if (historyTracks.length === 0)
-        historyTracks = await db.track.findMany({
-          take: 50,
-          orderBy: { plays: "asc" },
         });
 
-      const historyTracksGenres = [
-        ...new Set(
-          historyTracks
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            .map((track) => track?.genres)
-            .flat()
-            .slice(0, 6),
-        ),
-      ];
-      const allTracksByGenres = await db.track.findMany({
-        where: {
-          genres: {
-            hasSome: historyTracksGenres,
-          },
-        },
-        take: historyTracksGenres.length * 50,
-      });
+        if (historyTracks.length === 0)
+          historyTracks = await db.track.findMany({
+            take: 50,
+            orderBy: { plays: "asc" },
+          });
 
-      const requests = [
-        db.user.findMany({
-          where: {
-            OR: [
-              { id: { in: allTracksByGenres?.map((track) => track.authorId) } },
-              {
-                id: {
-                  in: allTracksByGenres
-                    .map((track) => track?.authorIds ?? [])
-                    .flat(),
-                },
-              },
-            ],
-          },
-        }),
-        getPlaylists({
-          playlistIds: allTracksByGenres?.map((track) => track.albumId),
-        }),
-      ] as const;
-
-      const [authors, albums] = await handleRequests(requests);
-
-      const data = historyTracksGenres.map((genre) => {
-        const tracks = allTracksByGenres.filter((track) =>
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-          track?.genres?.includes(genre),
-        );
-        return {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          genre,
-          tracks,
-          authors: authors.filter((user) =>
-            tracks
-              .map((track) => [track.authorId, ...track.authorIds])
+        const historyTracksGenres = [
+          ...new Set(
+            historyTracks
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              .map((track) => track?.genres)
               .flat()
-              .includes(user.id),
+              .slice(0, 6),
           ),
-          albums:
-            albums.data?.filter((playlist) =>
-              tracks.map((track) => track.albumId).includes(playlist.id),
-            ) ?? [],
-        };
-      });
+        ];
 
-      return data;
-    } catch (error) {
-      throw { error };
-    }
-  }),
-  ["home-made-for-you-section"],
-  {
-    revalidate: 86400,
-  },
-);
+        const authorsSet = [
+          ...new Set(
+            historyTracks
+              ?.map((track) => [track.authorId, ...track.authorIds])
+              .flat(),
+          ),
+        ];
+
+        const authors = await db.user.findMany({
+          where: {
+            id: {
+              in: authorsSet,
+            },
+          },
+        });
+
+        const data = historyTracksGenres.map((genre) => {
+          const tracks = historyTracks.filter((track) =>
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+            track?.genres?.includes(genre),
+          );
+          return {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            genre,
+            tracks,
+            authors: authors.filter((user) =>
+              tracks
+                .map((track) => [track.authorId, ...track.authorIds])
+                .flat()
+                .includes(user.id),
+            ),
+          };
+        });
+
+        return data;
+      } catch (error) {
+        throw { error };
+      }
+    },
+    ["home-made-for-you-section"],
+    {
+      revalidate: 86400,
+    },
+  )();
+}
 
 export const getBestOfArtists = unstable_cache(
   cache(async (id: string) => {
@@ -782,50 +766,59 @@ type GetTracksByGenresParams = {
   };
 };
 
-export const getTracksByGenres = async ({
+export async function getTracksByGenres({
   genres,
   range,
-}: GetTracksByGenresParams) => {
-  try {
-    const tracks = await db.track.findMany({
-      where: {
-        genres: {
-          hasSome: genres,
-        },
-      },
-      skip: range?.from,
-      take: range?.to,
-      orderBy: {
-        dateAdded: "asc",
-      },
-    });
-    const requests = [
-      db.user.findMany({
-        where: {
-          OR: [
-            { id: { in: tracks?.map((track) => track?.authorId ?? "") } },
-            {
-              id: {
-                in: tracks?.map((track) => track?.authorIds ?? []).flat() ?? [],
-              },
+}: GetTracksByGenresParams) {
+  const key = `tracks-by-genre-${genres.join("-")}`;
+  return await unstable_cache(
+    async () => {
+      try {
+        const tracks = await db.track.findMany({
+          where: {
+            genres: {
+              hasSome: genres,
             },
-          ],
-        },
-      }),
-      getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
-    ] as const;
-    const [authors, { data: albums }] = await handleRequests(requests);
-    const data: ExploreSliceData["data"] = {
-      tracks: tracks ?? [],
-      albums: albums ?? [],
-      authors,
-      randomly: true,
-    };
-    return data;
-  } catch (error) {
-    throw { error };
-  }
-};
+          },
+          skip: range?.from,
+          take: range?.to,
+          orderBy: {
+            dateAdded: "asc",
+          },
+        });
+        const requests = [
+          db.user.findMany({
+            where: {
+              OR: [
+                { id: { in: tracks?.map((track) => track?.authorId ?? "") } },
+                {
+                  id: {
+                    in:
+                      tracks?.map((track) => track?.authorIds ?? []).flat() ??
+                      [],
+                  },
+                },
+              ],
+            },
+          }),
+          getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
+        ] as const;
+        const [authors, { data: albums }] = await handleRequests(requests);
+        const data: ExploreSliceData["data"] = {
+          tracks: tracks ?? [],
+          albums: albums ?? [],
+          authors,
+          randomly: true,
+        };
+        return data;
+      } catch (error) {
+        throw { error };
+      }
+    },
+    [key],
+    { tags: [key] },
+  )();
+}
 
 export const getUserLikedSongs = unstable_cache(
   cache(async (userId: string) => {

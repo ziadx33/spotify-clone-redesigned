@@ -8,25 +8,28 @@ import { useDispatch } from "react-redux";
 type PlaylistDialogProps = {
   isActive: boolean;
   queueTypeId: string;
-} & NonNullable<TracksSliceType["data"]>;
+  data?: NonNullable<TracksSliceType["data"]>;
+  isLoading?: boolean;
+};
 
 export function PlaylistDialog({
   isActive,
   queueTypeId,
-  ...data
+  isLoading,
+  data,
 }: PlaylistDialogProps) {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive && isLoading) return;
     dispatch(
       setTracks({
         status: "success",
         error: null,
-        data,
+        data: data!,
       }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isActive]);
+  }, [isActive, isLoading]);
   return (
     <DialogContent className="max-h-[80%] max-w-[1000px] overflow-auto">
       <MusicPlayer
