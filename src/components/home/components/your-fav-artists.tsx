@@ -20,6 +20,7 @@ export function YourFavArtists({ userId }: YourFavArtistsProps) {
     queryFn: async () => {
       const topTracks = await getUserTopTracks({
         user: user,
+        tracksOnly: true,
       });
       const data = getArtistsByIds({
         ids:

@@ -499,6 +499,7 @@ export const getTracksByIds = unstable_cache(
 type GetUserTopTracksProps = {
   user?: User;
   artistId?: string;
+  tracksOnly?: boolean;
 };
 
 type NonNullableProperties<T> = {
@@ -510,6 +511,7 @@ export const getUserTopTracks = unstable_cache(
     async ({
       user,
       artistId,
+      tracksOnly,
     }: GetUserTopTracksProps): Promise<{
       data: NonNullableProperties<NonNullable<TracksSliceType["data"]>>;
       trackIds: ReturnType<typeof getTopRepeatedNumbers>;
@@ -538,12 +540,12 @@ export const getUserTopTracks = unstable_cache(
           }),
           getPlaylists({ playlistIds: tracks?.map((track) => track.albumId) }),
         ] as const;
-        const [authors, { data: albums }] = await handleRequests(requests);
+        const data = !tracksOnly ? await handleRequests(requests) : undefined;
         return {
           data: {
             tracks: tracks ?? [],
-            albums: albums ?? [],
-            authors,
+            albums: data?.[1].data ?? [],
+            authors: data?.[0] ?? [],
           },
           trackIds,
         };
@@ -710,27 +712,32 @@ export const getBestOfArtists = unstable_cache(
   },
 );
 
-export const getTracksByArtistId = unstable_cache(
-  cache(async (id: string) => {
-    try {
-      const tracks = await db.track.findMany({
-        where: {
-          OR: [{ authorId: id }, { authorIds: { has: id } }],
-        },
-      });
+export async function getTracksByArtistId(id: string, take?: number) {
+  const key = `tracks-by-artist-id-${id}`;
+  return await unstable_cache(
+    async () => {
+      try {
+        const tracks = await db.track.findMany({
+          where: {
+            OR: [{ authorId: id }, { authorIds: { has: id } }],
+          },
+          take,
+        });
 
-      const data = await getTracksData({ artistType: "ARTIST", tracks });
+        const data = await getTracksData({ artistType: "ARTIST", tracks });
 
-      return { data, tracks };
-    } catch (error) {
-      throw { error };
-    }
-  }),
-  ["tracks-by-artist-ids"],
-  {
-    revalidate: 86400,
-  },
-);
+        return { data, tracks };
+      } catch (error) {
+        throw { error };
+      }
+    },
+    [key],
+    {
+      revalidate: 86400,
+      tags: [key],
+    },
+  )();
+}
 
 type EditTrackById = {
   id: string;

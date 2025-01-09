@@ -30,7 +30,7 @@ export function MadeForYouSectionDialogContent({
     <PlaylistDialog
       queueTypeId={`made-for-you-${index}`}
       isActive={isActive}
-      isLoading={!tracks}
+      isLoading={!!tracks}
       data={tracks}
     />
   );

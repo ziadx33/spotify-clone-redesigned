@@ -1,16 +1,13 @@
 "use client";
 
-import { AvatarData } from "@/components/avatar-data";
-import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
-import { getBestOfArtists } from "@/server/actions/track";
 import { getRandomValue } from "@/utils/get-random-value";
-import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState, useMemo, useRef } from "react";
-import { PlaylistDialog } from "./playlist-dialog";
 import { EditSectionButton } from "./edit-section-button";
 import { useUserData } from "@/hooks/use-user-data";
+import { getUserFollowing } from "@/server/actions/user";
+import { BestOfArtistsDialog } from "./best-of-artists-dialog";
 
 type BestOfArtistsSectionProps = {
   userId: string;
@@ -22,8 +19,8 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
   const { data, isLoading } = useQuery({
     queryKey: [`best-of-artists-section`],
     queryFn: async () => {
-      const tracksData = await getBestOfArtists(user?.id ?? "");
-      return tracksData;
+      const artists = await getUserFollowing(user?.id ?? "");
+      return artists;
     },
   });
 
@@ -46,78 +43,25 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
     return randomColor;
   }, []);
 
-  const [activeDialog, setActiveDialog] = useState<number | null>(null);
+  const [activeDialog, setActiveDialog] = useState<number | null | undefined>(
+    null,
+  );
 
   const cardsColors = useMemo(() => {
-    return data?.authors?.map(() => getRandomMixColor());
-  }, [data?.authors, getRandomMixColor]);
+    return data?.map(() => getRandomMixColor());
+  }, [data, getRandomMixColor]);
 
   const cards = useMemo(() => {
-    return data?.authors?.map((datum, index) => {
-      const color = cardsColors?.[index];
-
-      const relatedTracks = data.tracks?.filter(
-        (track) =>
-          track.authorId === datum.id || track.authorIds.includes(datum.id),
-      );
-
-      const relatedAlbums = data.albums?.filter(
-        (album) => album.creatorId === datum.id,
-      );
-
-      const relatedAuthorsIds = relatedTracks
-        ?.map((track) => [track.authorId, ...track.authorIds])
-        .flat();
-
-      const relatedAuthors = data.authors?.filter((author) =>
-        relatedAuthorsIds.includes(author.id),
-      );
-
-      const dialogData = {
-        tracks: relatedTracks ?? [],
-        albums: relatedAlbums ?? [],
-        authors: relatedAuthors ?? [],
-      };
-
+    return data?.map((datum, index) => {
       return (
-        <Dialog
+        <BestOfArtistsDialog
           key={index}
-          onOpenChange={(open) => setActiveDialog(open ? index : null)}
-        >
-          <DialogTrigger>
-            <SectionItem
-              disableContext
-              artistData={datum}
-              type="ARTIST"
-              title={datum.name}
-              customImage={
-                <div className="size-full overflow-hidden rounded-sm">
-                  <AvatarData
-                    src={datum?.image ?? ""}
-                    containerClasses="size-full rounded-sm"
-                  />
-                  <div className="absolute bottom-5 flex items-center gap-2">
-                    <div
-                      style={{ backgroundColor: color }}
-                      className="h-5 w-1.5"
-                    />
-                    <h5 className="font-bold">This is {datum.name}</h5>
-                  </div>
-                  <div
-                    style={{ backgroundColor: color }}
-                    className="absolute bottom-0 z-10 h-2.5 w-full rounded-b-sm"
-                  />
-                </div>
-              }
-              description={`This is ${datum.name}`}
-            />
-          </DialogTrigger>
-          <PlaylistDialog
-            queueTypeId={`best-of-artists-${index}`}
-            isActive={activeDialog === index}
-            {...dialogData}
-          />
-        </Dialog>
+          cardsColors={cardsColors}
+          datum={datum}
+          index={index}
+          setActiveDialog={setActiveDialog}
+          activeDialog={activeDialog}
+        />
       );
     });
   }, [activeDialog, data, cardsColors]);

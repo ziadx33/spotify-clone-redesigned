@@ -253,3 +253,21 @@ export const getArtistsByIds = unstable_cache(
 export const hashPassword = async (password: string, salt = 10) => {
   return await bcrypt.hash(password, salt);
 };
+
+export async function getUserFollowing(userId: string) {
+  const key = `user-following-${userId}`;
+  return await unstable_cache(
+    async () => {
+      return await db.user.findMany({
+        where: {
+          type: "ARTIST",
+          followers: {
+            has: userId,
+          },
+        },
+      });
+    },
+    [key],
+    { tags: [key] },
+  )();
+}
