@@ -18,7 +18,6 @@ import { Table } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useNewAlbumActions } from "@/hooks/use-new-album-actions";
 import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 
 export function NewAlbum() {
   const { value: miniMenuValue } = useMiniMenu();
