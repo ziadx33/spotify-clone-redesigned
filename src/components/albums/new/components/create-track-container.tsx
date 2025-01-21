@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { type TracksSliceType } from "@/state/slices/tracks";
-import { MutableRefObject, type Dispatch, type SetStateAction } from "react";
+import type { MutableRefObject, Dispatch, SetStateAction } from "react";
 import { FaPlus } from "react-icons/fa";
 import { TrackForm } from "./track-form";
 

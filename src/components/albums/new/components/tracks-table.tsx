@@ -1,11 +1,11 @@
 import { NonSortTable } from "@/components/components/non-sort-table";
 import { Button } from "@/components/ui/button";
 import { Table } from "@/components/ui/table";
-import { type useNewAlbumActions } from "@/hooks/use-new-album-actions";
-import { type TracksSliceType } from "@/state/slices/tracks";
-import { type TempTrackType } from "..";
-import { MutableRefObject, type Dispatch, type SetStateAction } from "react";
-import { type Track } from "@prisma/client";
+import type { useNewAlbumActions } from "@/hooks/use-new-album-actions";
+import type { TracksSliceType } from "@/state/slices/tracks";
+import type { TempTrackType } from "..";
+import type { MutableRefObject, Dispatch, SetStateAction } from "react";
+import type { Track } from "@prisma/client";
 
 type TracksTableProps = {
   tracks: TracksSliceType["data"];
@@ -32,7 +32,7 @@ export function TracksTable({
     setTempTracksNum((data) => [...data, { id: track.id, edit: true }]);
   };
   const removeHandler = (track: Track) => {
-    deleteTrackHandler(track, playlistId);
+    void deleteTrackHandler(track, playlistId);
     setTempTracksNum((data) => data.filter((item) => item.id !== track.id));
     editedTrackIds.current = editedTrackIds.current.filter(
       (id) => id !== track.id,

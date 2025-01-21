@@ -29,7 +29,7 @@ import { enumParser } from "@/utils/enum-parser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { $Enums } from "@prisma/client";
 import {
-  MutableRefObject,
+  type MutableRefObject,
   useEffect,
   useState,
   useTransition,
