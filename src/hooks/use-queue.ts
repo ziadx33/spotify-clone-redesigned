@@ -143,7 +143,6 @@ export function useQueue() {
           skipToTrack ?? queueData.data.trackList[0],
         )
       : queueData.data.trackList;
-    console.log("testing shit", trackListShuffled);
 
     if (data.error) {
       const startData = await startQueue({

@@ -26,7 +26,6 @@ export function useNewAlbumActions({
   const router = useRouter();
   const submitHandler = () => {
     startSubmitTransition(async () => {
-      console.log("deep", data);
       if (tracks?.tracks?.length === 0) {
         toast.error("Add at least one track");
         return;

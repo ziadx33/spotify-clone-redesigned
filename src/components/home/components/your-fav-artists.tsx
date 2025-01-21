@@ -16,7 +16,7 @@ type YourFavArtistsProps = {
 export function YourFavArtists({ userId }: YourFavArtistsProps) {
   const user = useUserData();
   const { data, isLoading } = useQuery({
-    queryKey: ["fav-artists-home"],
+    queryKey: ["fav-artists-home", user],
     queryFn: async () => {
       const topTracks = await getUserTopTracks({
         user: user,

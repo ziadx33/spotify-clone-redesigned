@@ -24,7 +24,6 @@ export function NewAlbum() {
   const creatorData = useUserData();
   const searchParams = useSearchParams();
   const playlistId = searchParams.get("playlist");
-  console.log("eh el 3amal", playlistId);
   // const {data} = useQuery({
   //   queryKey: ["playlist"]
   // })

@@ -38,7 +38,6 @@ export const getQueueData = unstable_cache(
       );
       const queuesData = await getQueueTracks({ queues, data: queueTracks });
 
-      console.log("barod", error, queuesData, queueTracks);
       return !error
         ? {
             data: {

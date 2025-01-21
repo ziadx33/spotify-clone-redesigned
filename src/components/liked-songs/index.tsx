@@ -17,7 +17,6 @@ export function LikedSongs() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: [`user-liked-tracks-${user.id}`],
     queryFn: async () => {
-      console.log("bes");
       const tracks = await getUserLikedSongs(user.id);
 
       return tracks;

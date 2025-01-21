@@ -17,7 +17,7 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
   const user = useUserData();
 
   const { data, isLoading } = useQuery({
-    queryKey: [`best-of-artists-section`],
+    queryKey: [`best-of-artists-section`, user],
     queryFn: async () => {
       const artists = await getUserFollowing(user?.id ?? "");
       return artists;

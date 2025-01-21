@@ -16,13 +16,14 @@ type MadeForYouSectionProps = {
 export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
   const { tracksHistory } = useUserData();
   const { data } = useQuery({
-    queryKey: [`home-made-for-you-section`],
+    queryKey: [`home-made-for-you-section-${userId}`, tracksHistory],
     queryFn: async () => {
       const data = getHomeMadeForYouSection(tracksHistory ?? []);
       return data;
     },
-    enabled: !!tracksHistory,
   });
+
+  console.log("barap", data);
 
   const colors = useRef([
     "#8BD7CB",

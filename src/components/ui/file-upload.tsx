@@ -43,9 +43,6 @@ export const FileUpload = ({ onChange, file, setFile }: FileUploadProps) => {
     multiple: false,
     noClick: true,
     onDrop: (acceptedFiles) => handleFileChange(acceptedFiles[0] ?? null),
-    onDropRejected: (error) => {
-      console.log(error);
-    },
   });
 
   return (

@@ -17,8 +17,6 @@ export function PlaylistsSection({
   } = usePlaylists();
   const isLoading = status === "loading";
 
-  console.log("agans", data);
-
   const items = data?.slice(0, 6).map((playlist) => (
     <PlaylistContext playlist={playlist} key={playlist.id} asChild={false}>
       <PlaylistItem data={playlist} />
