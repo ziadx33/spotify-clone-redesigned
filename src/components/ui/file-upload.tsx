@@ -21,9 +21,17 @@ type FileUploadProps = {
   onChange?: (file: File | null) => void;
   file: File | null;
   setFile: Dispatch<SetStateAction<File | null>>;
+  loading?: boolean;
+  title: string;
 };
 
-export const FileUpload = ({ onChange, file, setFile }: FileUploadProps) => {
+export const FileUpload = ({
+  onChange,
+  file,
+  setFile,
+  loading,
+  title,
+}: FileUploadProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (newFile: File | null) => {
@@ -59,10 +67,11 @@ export const FileUpload = ({ onChange, file, setFile }: FileUploadProps) => {
           accept="audio/*"
           onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
           className="hidden"
+          disabled={loading}
         />
         <div className="flex flex-col items-center justify-center">
           <p className="relative z-20 font-sans text-base font-bold text-neutral-700 dark:text-neutral-300">
-            Upload Audio
+            {title ?? "Upload Audio"}
           </p>
           <p className="relative z-20 mt-2 font-sans text-base font-normal text-neutral-400 dark:text-neutral-400">
             Drag or drop your file here or click to upload

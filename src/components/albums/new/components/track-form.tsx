@@ -29,6 +29,8 @@ import { enumParser } from "@/utils/enum-parser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { $Enums } from "@prisma/client";
 import {
+  MutableRefObject,
+  useEffect,
   useState,
   useTransition,
   type Dispatch,
@@ -43,28 +45,48 @@ import { uploadAudioFile } from "@/server/actions/uploadthing";
 type TrackFormProps = {
   tracks: TracksSliceType["data"];
   setTracks: Dispatch<SetStateAction<TracksSliceType["data"]>>;
-  setTempTracksNum: Dispatch<SetStateAction<string[]>>;
-  item: string;
+  setTempTracksNum: Dispatch<SetStateAction<{ id: string; edit: boolean }[]>>;
+  item: { id: string; edit: boolean };
+  editedTrackIds: MutableRefObject<string[]>;
 };
 
 export function TrackForm({
   setTempTracksNum,
   item,
   setTracks,
+  tracks,
+  editedTrackIds,
 }: TrackFormProps) {
   const user = useUserData();
+  const editData = item.edit
+    ? tracks?.tracks?.find((track) => track.id === item.id)
+    : undefined;
   const form = useForm<z.infer<typeof trackDataSchema>>({
     resolver: zodResolver(trackDataSchema),
     defaultValues: {
-      title: "",
+      title: editData?.title,
     },
   });
-
   const closeHandler = () => {
-    setTempTracksNum((prev) => prev.filter((itm) => itm !== item));
+    setTempTracksNum((prev) => prev.filter((itm) => itm.id !== item.id));
   };
   const [transition, startTransition] = useTransition();
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [audioFileTransition, setAudioFileTransition] = useTransition();
+  useEffect(() => {
+    setAudioFileTransition(async () => {
+      if (!editData) return;
+      const response = await fetch(editData.trackSrc);
+      if (!response.ok) {
+        throw new Error("Failed to fetch audio file");
+      }
+      const blob = await response.blob();
+      const file = new File([blob], editData.title, {
+        type: blob.type,
+      });
+      setAudioFile(file);
+    });
+  }, [editData]);
   const formHandler = (data: z.infer<typeof trackDataSchema>) => {
     if (!audioFile) return;
 
@@ -75,35 +97,62 @@ export function TrackForm({
 
       startTransition(async () => {
         const id = crypto.randomUUID();
-        const uploadedAudioData = await uploadAudioFile(audioFile, id);
+        const uploadedAudioData =
+          audioFile.name === editData?.title
+            ? audioFile
+            : await uploadAudioFile(audioFile, id);
+        const trackSrc =
+          audioFile.name === editData?.title
+            ? editData.trackSrc
+            : (uploadedAudioData as { url: string }).url;
+        if (!item.edit)
+          setTracks((prev) => ({
+            tracks: [
+              ...(prev?.tracks ?? []),
+              {
+                id,
+                order: prev?.tracks ? prev.tracks.length + 1 : 1,
+                title: data.title,
+                authorId: user.id,
+                authorIds: [],
+                imgSrc: "",
+                trackSrc,
+                albumId: "",
+                playlists: [],
+                dateAdded: new Date(),
+                duration: durationInSeconds,
+                plays: 0,
+                genres: [data.genre],
+                bestTimeStart: null,
+                bestTimeEnd: null,
+                likedUsers: [],
+              },
+            ],
+            albums: [],
+            authors: [user],
+          }));
+        else {
+          editedTrackIds.current = [...editedTrackIds.current, item.id];
+          setTracks((v) => ({
+            ...v,
+            tracks:
+              v?.tracks?.map((track) =>
+                track.id === item.id
+                  ? {
+                      ...track,
+                      title: data.title,
+                      trackSrc: trackSrc,
+                      duration: durationInSeconds,
+                      genres: [data.genre],
+                    }
+                  : track,
+              ) ?? null,
+            authors: v?.authors ?? [],
+            albums: v?.albums ?? [],
+          }));
+        }
 
-        setTracks((prev) => ({
-          tracks: [
-            ...(prev?.tracks ?? []),
-            {
-              id,
-              order: prev?.tracks ? prev.tracks.length + 1 : 1,
-              title: data.title,
-              authorId: user.id,
-              authorIds: [],
-              imgSrc: "",
-              trackSrc: uploadedAudioData?.url ?? "",
-              albumId: "",
-              playlists: [],
-              dateAdded: new Date(),
-              duration: durationInSeconds,
-              plays: 0,
-              genres: [data.genre],
-              bestTimeStart: null,
-              bestTimeEnd: null,
-              likedUsers: [],
-            },
-          ],
-          albums: [],
-          authors: [user],
-        }));
-
-        setTempTracksNum((prev) => prev.filter((itm) => itm !== item));
+        setTempTracksNum((prev) => prev.filter((itm) => itm.id !== item.id));
       });
     };
   };
@@ -149,7 +198,10 @@ export function TrackForm({
                     <FormControl>
                       <Select onValueChange={field.onChange}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select Genre" />
+                          <SelectValue
+                            placeholder="Select Genre"
+                            defaultValue={editData?.genres[0]}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {genres.map((genre) => (
@@ -165,7 +217,12 @@ export function TrackForm({
                 )}
               />
             </div>
-            <FileUpload file={audioFile} setFile={setAudioFile} />
+            <FileUpload
+              loading={audioFileTransition}
+              title={audioFileTransition ? "Loading..." : "Audio Upload"}
+              file={audioFile}
+              setFile={setAudioFile}
+            />
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button

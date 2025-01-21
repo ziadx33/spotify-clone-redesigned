@@ -860,3 +860,31 @@ export const createTracks = async (tracks: Track[]) => {
     throw { error };
   }
 };
+
+export const deleteTracks = async (trackIds: string[]) => {
+  try {
+    const deletedTracks = await db.track.deleteMany({
+      where: {
+        id: {
+          in: trackIds,
+        },
+      },
+    });
+    return deletedTracks;
+  } catch (error) {
+    throw { error };
+  }
+};
+
+export const updateTracks = async (tracks: Track[]) => {
+  try {
+    const updatedTracks = await handleRequests(
+      tracks.map((track) =>
+        db.track.update({ where: { id: track.id }, data: track }),
+      ),
+    );
+    return updatedTracks;
+  } catch (error) {
+    throw { error };
+  }
+};

@@ -3,10 +3,11 @@ import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 
 interface AlbumTitleProps {
   data: Omit<Playlist, "id">;
-  setData: Dispatch<SetStateAction<Omit<Playlist, "id">>>;
+  setData: Dispatch<SetStateAction<Playlist>>;
+  disabled: boolean;
 }
 
-export function AlbumTitle({ data, setData }: AlbumTitleProps) {
+export function AlbumTitle({ data, setData, disabled }: AlbumTitleProps) {
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setData((prev) => ({
       ...prev,
@@ -16,6 +17,7 @@ export function AlbumTitle({ data, setData }: AlbumTitleProps) {
 
   return (
     <input
+      disabled={disabled}
       type="text"
       value={data.title}
       onChange={handleInputChange}

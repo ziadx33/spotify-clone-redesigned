@@ -135,20 +135,24 @@ export const deletePlaylist = async (id: string) => {
   }
 };
 
-export const updatePlaylist = unstable_cache(
-  cache(async ({ id, data }: { id: string; data: Partial<Playlist> }) => {
-    try {
-      const updatedPlaylist = db.playlist.update({
-        where: { id },
-        data,
-      });
-      revalidateTag(`playlist-${id}`);
-      return updatedPlaylist;
-    } catch (error) {
-      throw { error };
-    }
-  }),
-);
+export const updatePlaylist = async ({
+  id,
+  data,
+}: {
+  id: string;
+  data: Partial<Playlist>;
+}) => {
+  try {
+    const updatedPlaylist = db.playlist.update({
+      where: { id },
+      data,
+    });
+    revalidateTag(`playlist-${id}`);
+    return updatedPlaylist;
+  } catch (error) {
+    throw { error };
+  }
+};
 
 export const getAppearsPlaylists = unstable_cache(
   cache(async ({ creatorId }: { creatorId: string }) => {

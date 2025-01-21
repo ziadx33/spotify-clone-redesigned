@@ -35,12 +35,16 @@ export function Duration({
           <Skeleton className="h-2.5 w-24" />
         )
       ) : !skeleton ? (
-        <Button
-          variant="outline"
-          onClick={() => replaceDurationWithButton.fn(track!)}
-        >
-          {replaceDurationWithButton.name}
-        </Button>
+        typeof replaceDurationWithButton !== "function" ? (
+          <Button
+            variant="outline"
+            onClick={() => replaceDurationWithButton.fn(track!)}
+          >
+            {replaceDurationWithButton.name}
+          </Button>
+        ) : (
+          <>{replaceDurationWithButton(track!)}</>
+        )
       ) : (
         <Skeleton className="h-2.5 w-12" />
       )}

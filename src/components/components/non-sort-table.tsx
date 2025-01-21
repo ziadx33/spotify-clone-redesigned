@@ -10,13 +10,21 @@ import { type Track as TrackType, type Playlist } from "@prisma/client";
 import { BsClock } from "react-icons/bs";
 import { Track } from "./track";
 import { type TrackFilters } from "@/types";
-import { memo, type Dispatch, type SetStateAction } from "react";
+import {
+  type ReactNode,
+  memo,
+  type Dispatch,
+  type SetStateAction,
+  forwardRef,
+} from "react";
 import { type useIntersectionObserver } from "usehooks-ts";
 
-export type ReplaceDurationWithButton = {
-  name: string;
-  fn: (track: TrackType) => void | Promise<void>;
-};
+export type ReplaceDurationWithButton =
+  | {
+      name: string;
+      fn: (track: TrackType) => void | Promise<void>;
+    }
+  | ((track: TrackType) => ReactNode);
 
 export type NonSortTableProps = {
   data?: Partial<TracksSliceType["data"]>;
@@ -135,4 +143,4 @@ function Comp({
   );
 }
 
-export const NonSortTable = memo(Comp);
+export const NonSortTable = memo(forwardRef(Comp));

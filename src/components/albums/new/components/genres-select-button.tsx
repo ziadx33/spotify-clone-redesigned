@@ -18,18 +18,23 @@ import { type Dispatch, type SetStateAction, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 
 type GenresSelectButtonProps = {
-  setData: Dispatch<SetStateAction<Omit<Playlist, "id">>>;
+  setData: Dispatch<SetStateAction<Playlist>>;
   data: Omit<Playlist, "id">;
+  disabled: boolean;
 };
 
-export function GenresSelectButton({ setData, data }: GenresSelectButtonProps) {
+export function GenresSelectButton({
+  setData,
+  data,
+  disabled,
+}: GenresSelectButtonProps) {
   const genres = Object.keys($Enums.GENRES).filter(
     (genre) => !data.genres.includes(genre as $Enums.GENRES),
   );
   const [open, setOpen] = useState(false);
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={disabled}>
         <Button className="text-md rounded-full px-4 py-0.5" variant="outline">
           <FaPlus />
         </Button>

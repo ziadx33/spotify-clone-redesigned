@@ -7,10 +7,11 @@ import { FaX } from "react-icons/fa6";
 
 type GenresSelectProps = {
   data: Omit<Playlist, "id">;
-  setData: Dispatch<SetStateAction<Omit<Playlist, "id">>>;
+  setData: Dispatch<SetStateAction<Playlist>>;
+  disabled: boolean;
 };
 
-export function GenresSelect({ data, setData }: GenresSelectProps) {
+export function GenresSelect({ data, setData, disabled }: GenresSelectProps) {
   const removeGenre = (genre: $Enums.GENRES) =>
     setData((prev) => ({
       ...prev,
@@ -31,7 +32,7 @@ export function GenresSelect({ data, setData }: GenresSelectProps) {
           </div>
         </Button>
       ))}
-      <GenresSelectButton data={data} setData={setData} />
+      <GenresSelectButton disabled={disabled} data={data} setData={setData} />
     </div>
   );
 }
