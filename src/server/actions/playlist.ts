@@ -94,6 +94,7 @@ export const getFeaturingAlbums = unstable_cache(
 );
 
 export async function getPlaylist(playlistId: string) {
+  const tag = `playlist-${playlistId}`;
   return await unstable_cache(
     cache(async () => {
       try {
@@ -105,8 +106,8 @@ export async function getPlaylist(playlistId: string) {
         throw { error };
       }
     }),
-    ["playlist"],
-    { tags: [`playlist-${playlistId}`] },
+    [tag],
+    { tags: [tag] },
   )();
 }
 
