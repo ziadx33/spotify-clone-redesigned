@@ -53,7 +53,7 @@ export function QueueProgressBar({
     if (currentPlaying) {
       await editTrackById({
         id: currentPlaying,
-        data: { plays: { decrement: 1 } },
+        data: { plays: { increment: 1 } },
       });
       await update({
         data: {
