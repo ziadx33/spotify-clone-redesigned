@@ -359,9 +359,14 @@ type GetPopularTracks = {
   addAlbums?: boolean;
 };
 
-export const getPopularTracks = unstable_cache(
-  cache(
-    async ({ artistId, range = { from: 0 }, addAlbums }: GetPopularTracks) => {
+export async function getPopularTracks({
+  artistId,
+  range = { from: 0 },
+  addAlbums,
+}: GetPopularTracks) {
+  const key = `popular-tracks-${typeof artistId === "string" ? artistId : artistId.join("-")}-${range.from}-${range.to}`;
+  return await unstable_cache(
+    cache(async () => {
       try {
         const defaultOptions = {
           where: {
@@ -418,10 +423,11 @@ export const getPopularTracks = unstable_cache(
       } catch (error) {
         throw { error };
       }
-    },
-  ),
-  ["popular-tracks"],
-);
+    }),
+    [key],
+    { tags: [key] },
+  )();
+}
 
 type GetSavedTracks = {
   artistId: string;

@@ -1,9 +1,13 @@
+"use client";
+
 import { type User } from "@prisma/client";
 import { Controls } from "./components/controls";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { TabsSection } from "./components/tabs";
 import { AuthorContext } from "../contexts/author-context";
+import { getPopularTracks } from "@/server/actions/track";
+import { useQuery } from "@tanstack/react-query";
 
 type ArtistProps = {
   artist: User;
@@ -11,6 +15,15 @@ type ArtistProps = {
 };
 
 export function Artist({ artist, playlistId }: ArtistProps) {
+  const { data } = useQuery({
+    queryKey: [artist],
+    queryFn: async () => {
+      return await getPopularTracks({
+        artistId: artist.id,
+        range: { from: 0, to: 10 },
+      });
+    },
+  });
   return (
     <div className="flex min-h-full w-full flex-col">
       <div
@@ -43,7 +56,28 @@ export function Artist({ artist, playlistId }: ArtistProps) {
               </b>
             </div>
           </AuthorContext>
-          <Controls playlistId={playlistId} artist={artist} />
+          <Controls
+            data={
+              data?.tracks[0]?.id
+                ? {
+                    typeArtist: artist,
+                    tracks: {
+                      albums: data?.albums ?? [],
+                      authors: data?.authors ?? [],
+                      tracks: data?.tracks ?? [],
+                    },
+                    data: {
+                      currentPlaying: data?.tracks[0]?.id,
+                      trackList: data.tracks.map((track) => track.id),
+                      type: "ARTIST",
+                      typeId: artist.id,
+                    },
+                  }
+                : undefined
+            }
+            playlistId={playlistId}
+            artist={artist}
+          />
         </div>
       </div>
       <div className="size-full px-8 py-5">
