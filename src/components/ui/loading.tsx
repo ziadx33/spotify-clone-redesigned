@@ -1,7 +1,12 @@
 import { cn } from "@/lib/utils";
 import { RotatingLines } from "react-loader-spinner";
 
-export default function Loading({ className }: { className?: string }) {
+type LoadingProps = {
+  className?: string;
+  width?: string;
+};
+
+export default function Loading({ className, width = "70" }: LoadingProps) {
   return (
     <div
       className={cn(
@@ -13,7 +18,7 @@ export default function Loading({ className }: { className?: string }) {
         strokeColor="grey"
         strokeWidth="5"
         animationDuration="0.75"
-        width="70"
+        width={width}
         visible={true}
       />
     </div>

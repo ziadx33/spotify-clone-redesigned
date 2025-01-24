@@ -41,6 +41,8 @@ import { FaX } from "react-icons/fa6";
 import { type z } from "zod";
 import { useUserData } from "@/hooks/use-user-data";
 import { uploadAudioFile } from "@/server/actions/uploadthing";
+import { BestOfTrack } from "./best-of-track";
+import { getAudioDuration } from "@/utils/get-audio-duration";
 
 type TrackFormProps = {
   tracks: TracksSliceType["data"];
@@ -73,7 +75,10 @@ export function TrackForm({
   const [transition, startTransition] = useTransition();
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioFileTransition, setAudioFileTransition] = useTransition();
+  const [startMarker, setStartMarker] = useState(0);
+  const [endMarker, setEndMarker] = useState(0);
   useEffect(() => {
+    if (!editData) return;
     setAudioFileTransition(async () => {
       if (!editData) return;
       const response = await fetch(editData.trackSrc);
@@ -87,15 +92,12 @@ export function TrackForm({
       setAudioFile(file);
     });
   }, [editData]);
-  const formHandler = (data: z.infer<typeof trackDataSchema>) => {
+  const formHandler = async (data: z.infer<typeof trackDataSchema>) => {
     if (!audioFile) return;
 
-    const audio = new Audio(URL.createObjectURL(audioFile));
-
-    audio.onloadedmetadata = async () => {
-      const durationInSeconds = Math.floor(audio.duration);
-
+    try {
       startTransition(async () => {
+        const durationInSeconds = await getAudioDuration(audioFile);
         const id = crypto.randomUUID();
         const uploadedAudioData =
           audioFile.name === editData?.title
@@ -105,6 +107,7 @@ export function TrackForm({
           audioFile.name === editData?.title
             ? editData.trackSrc
             : (uploadedAudioData as { url: string }).url;
+
         if (!item.edit)
           setTracks((prev) => ({
             tracks: [
@@ -123,8 +126,8 @@ export function TrackForm({
                 duration: durationInSeconds,
                 plays: 0,
                 genres: [data.genre],
-                bestTimeStart: null,
-                bestTimeEnd: null,
+                bestTimeStart: startMarker,
+                bestTimeEnd: endMarker,
                 likedUsers: [],
               },
             ],
@@ -144,6 +147,8 @@ export function TrackForm({
                       trackSrc: trackSrc,
                       duration: durationInSeconds,
                       genres: [data.genre],
+                      bestTimeStart: startMarker,
+                      bestTimeEnd: endMarker,
                     }
                   : track,
               ) ?? null,
@@ -154,7 +159,9 @@ export function TrackForm({
 
         setTempTracksNum((prev) => prev.filter((itm) => itm.id !== item.id));
       });
-    };
+    } catch (error) {
+      console.error("Error calculating audio duration:", error);
+    }
   };
 
   const genres = Object.keys($Enums.GENRES);
@@ -223,6 +230,15 @@ export function TrackForm({
               file={audioFile}
               setFile={setAudioFile}
             />
+            {audioFile && (
+              <BestOfTrack
+                endMarker={endMarker}
+                setEndMarker={setEndMarker}
+                setStartMarker={setStartMarker}
+                startMarker={startMarker}
+                file={audioFile}
+              />
+            )}
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button
