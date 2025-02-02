@@ -9,16 +9,12 @@ import { SidebarAccordion } from "./sidebar-accordion";
 export function SidebarList() {
   return (
     <SidebarAccordion>
-      {(_1, setValue) => (
-        <>
-          <SidebarPinsAccordion />
-          <SidebarArtistsAccordion />
-          <SidebarFoldersAccordion setValue={setValue} />
-          <SidebarPlaylistsAccordion setValue={setValue} />
-          <SidebarAlbumsAccordion />
-          <SidebarLikedSongsButton />
-        </>
-      )}
+      <SidebarPinsAccordion />
+      <SidebarArtistsAccordion />
+      <SidebarFoldersAccordion />
+      <SidebarPlaylistsAccordion />
+      <SidebarAlbumsAccordion />
+      <SidebarLikedSongsButton />
     </SidebarAccordion>
   );
 }
