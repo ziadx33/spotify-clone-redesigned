@@ -15,7 +15,6 @@ import {
   memo,
   type Dispatch,
   type SetStateAction,
-  forwardRef,
 } from "react";
 import { type useIntersectionObserver } from "usehooks-ts";
 
@@ -143,4 +142,4 @@ function Comp({
   );
 }
 
-export const NonSortTable = memo(forwardRef(Comp));
+export const NonSortTable = memo(Comp);

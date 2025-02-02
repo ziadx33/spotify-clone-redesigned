@@ -7,16 +7,17 @@ import { usePlaylists } from "@/hooks/use-playlists";
 import { RiFolderMusicLine } from "react-icons/ri";
 import { useUserData } from "@/hooks/use-user-data";
 import {
-  type MouseEventHandler,
   useState,
   type SetStateAction,
   type Dispatch,
   type RefObject,
+  type MouseEvent,
 } from "react";
 import { AddFolderInput } from "./edit-input";
 import { cn } from "@/lib/utils";
 import { FaPlus } from "react-icons/fa";
 import { SidebarPlaylistAccordion } from "./sidebar-playlist-accordion";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 type SidebarPlaylistsAccordionProps = {
   setValue: Dispatch<SetStateAction<string[]>>;
@@ -31,11 +32,16 @@ export function SidebarPlaylistsAccordion({
     (playlist) => playlist.creatorId === user?.id,
   );
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
   const { createUserPlaylist } = usePlaylists();
-  const onCreateFolderClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+  const onCreateFolderClick = (
+    e: MouseEvent,
+    value: boolean,
+    setDataValue: Dispatch<SetStateAction<boolean>>,
+  ) => {
     e.stopPropagation();
-    const editingValue = !isEditing;
-    setIsEditing(editingValue);
+    const editingValue = !value;
+    setDataValue(editingValue);
     if (editingValue) void setValue((v) => [...v, "playlists"]);
   };
   const enterHandler = async (inputRef: RefObject<HTMLInputElement>) => {
@@ -54,15 +60,28 @@ export function SidebarPlaylistsAccordion({
             <RiFolderMusicLine size={18} />
             Playlists
           </div>
-          <button
-            onClick={onCreateFolderClick}
-            className={cn(
-              "grid h-full w-8 place-items-center transition-all duration-300",
-              isEditing ? "rotate-45" : "",
-            )}
-          >
-            <FaPlus size={13} />
-          </button>
+          <div className="flex gap-1">
+            <button
+              onClick={(e) =>
+                onCreateFolderClick(e, isSearching, setIsSearching)
+              }
+              className={cn(
+                "grid h-full w-8 place-items-center transition-all duration-300",
+                isEditing ? "rotate-45" : "",
+              )}
+            >
+              <FaMagnifyingGlass size={13} />
+            </button>
+            <button
+              onClick={(e) => onCreateFolderClick(e, isEditing, setIsEditing)}
+              className={cn(
+                "grid h-full w-8 place-items-center transition-all duration-300",
+                isEditing ? "rotate-45" : "",
+              )}
+            >
+              <FaPlus size={13} />
+            </button>
+          </div>
         </div>
       </AccordionTrigger>
       <AccordionContent>

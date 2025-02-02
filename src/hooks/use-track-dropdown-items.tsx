@@ -1,7 +1,7 @@
 import { type DropdownMenuType } from "@/types";
 import { type Playlist, type Track } from "@prisma/client";
 import { BsShare, BsTrash } from "react-icons/bs";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaStar } from "react-icons/fa";
 import { usePlayQueue } from "./use-play-queue";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { useUserData } from "./use-user-data";
 import { IoMdDownload } from "react-icons/io";
 import { downloadAudios } from "@/utils/download-audios";
+import { useUpdateUser } from "./use-update-user";
 
 type ReturnType = SliceType<{
   events: {
@@ -69,6 +70,7 @@ export function useTrackDropdownItems({
   track?: Track | null;
   isFn?: boolean;
 }): unknown {
+  const { update: updateUser } = useUpdateUser();
   const { data } = usePlaylists();
   const dispatch = useDispatch<AppDispatch>();
   const user = useUserData();
@@ -83,6 +85,8 @@ export function useTrackDropdownItems({
   }
 
   const isInUserPlaylist = playlist?.creatorId === user?.id;
+  const isUserTrack =
+    track?.authorId === user?.id || track?.authorIds.includes(user.id);
 
   if (data.status !== "success") return data;
   if (!track && !isFn) {
@@ -150,6 +154,21 @@ export function useTrackDropdownItems({
           );
         },
       },
+      ...(isUserTrack
+        ? [
+            {
+              title: "Set as Artist Pick",
+              icon: FaStar,
+              event: () => {
+                toast.promise(updateUser({ data: { artistPick: track?.id } }), {
+                  loading: "Updating your Artist Pick...",
+                  success: "Track set as your Artist Pick!",
+                  error: "Failed to update Artist Pick. Please try again.",
+                });
+              },
+            },
+          ]
+        : []),
       ...((track?.albumId.length ?? 0) > 0
         ? [
             {
