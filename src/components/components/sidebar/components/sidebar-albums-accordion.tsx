@@ -9,7 +9,11 @@ export function SidebarAlbumsAccordion() {
   const user = useUserData();
   const { data } = usePlaylists();
   const albums =
-    data?.data?.filter((playlist) => playlist.creatorId !== user?.id) ?? [];
+    data?.data?.filter(
+      (playlist) =>
+        playlist.creatorId !== user?.id ||
+        (playlist.creatorId === user.id && playlist.type !== "PLAYLIST"),
+    ) ?? [];
   const pathname = usePathname();
 
   return (
