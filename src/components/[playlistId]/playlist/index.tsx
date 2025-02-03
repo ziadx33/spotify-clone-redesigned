@@ -1,5 +1,5 @@
 import { type PlaylistPageProps } from "..";
-import { EditableData } from "../components/editable-data";
+import EditableData from "../components/editable-data";
 import { MoreAlbums } from "../components/more-albums";
 import { MusicPlayer } from "../components/music-player";
 import { Recommended } from "../components/recommended";
