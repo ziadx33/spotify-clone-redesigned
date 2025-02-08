@@ -109,6 +109,7 @@ model User {
     seenNotifications String[]       @default([])
     Notification      Notification[]
     Folder            Folder[]
+    Request           Request[]
 }
 
 model Notification {
@@ -281,4 +282,17 @@ model Folder {
     name   String
 
     playlistIds String[] @default([])
+}
+
+enum REQUEST_TYPE {
+    FEAT
+}
+
+model Request {
+    id              String       @id @default(cuid())
+    requester       User         @relation(fields: [requesterId], references: [id])
+    requesterId     String
+    requestedUserId String
+    type            REQUEST_TYPE
+    trackId         String
 }
