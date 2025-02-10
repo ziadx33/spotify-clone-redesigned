@@ -26,7 +26,17 @@ export function LikedSongs() {
   useEffect(() => {
     if (!data) return;
     if (data.tracks.length > 0)
-      dispatch(setTracks({ status: "success", data, error: null }));
+      dispatch(
+        setTracks({
+          status: "success",
+          data: {
+            ...data,
+            authors: data.authors ?? null,
+            albums: data.albums ?? null,
+          },
+          error: null,
+        }),
+      );
 
     return () => {
       dispatch(setTracks({ status: "loading", data: null, error: null }));

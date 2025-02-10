@@ -1,5 +1,6 @@
 import { SUPABASE_BUCKET_URL } from "@/constants";
 import { createPlaylist, updatePlaylist } from "@/server/actions/playlist";
+import { sendFeatRequests } from "@/server/actions/request";
 import {
   createTracks,
   deleteTracks,
@@ -13,6 +14,7 @@ import { type Track, type Playlist } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { type Dispatch, type SetStateAction, useTransition } from "react";
 import { toast } from "sonner";
+import { useUserData } from "./use-user-data";
 
 type useCreateAlbumParams = {
   data: Playlist;
@@ -29,6 +31,7 @@ export function useNewAlbumActions({
 }: useCreateAlbumParams) {
   const [submitTransition, startSubmitTransition] = useTransition();
   const router = useRouter();
+  const userData = useUserData();
   const submitHandler = () => {
     startSubmitTransition(async () => {
       if (tracks?.tracks?.length === 0) {
@@ -56,11 +59,20 @@ export function useNewAlbumActions({
         });
       } else playlist = await createPlaylist(playlistData);
       if (tracks?.tracks) {
+        await sendFeatRequests(
+          tracks.tracks.map((track) => ({
+            requesterId: userData.id,
+            requestedUserIds: track.authorIds,
+            trackId: track.id,
+            type: "FEAT",
+          })),
+        );
         await createTracks(
           tracks.tracks.map((track) => ({
             ...track,
             albumId: playlist.id,
             imgSrc: playlist.imageSrc,
+            authorIds: [track.authorId],
           })),
         );
       }
@@ -119,15 +131,67 @@ export function useNewAlbumActions({
           editedTrackIds.includes(track.id),
         );
 
+        let featRequests: Parameters<typeof sendFeatRequests>["0"] = [];
+
+        if ((newTracks?.length ?? 0) > 0) {
+          featRequests = [
+            ...featRequests,
+            ...(newTracks?.map((track) => ({
+              requesterId: userData.id,
+              requestedUserIds: track.authorIds,
+              trackId: track.id,
+              type: "FEAT" as const,
+            })) ?? []),
+          ];
+        }
+
+        const updatedTracks = editedTracks?.map((editedTrack) => {
+          const oldTrack = (oldData.tracks?.tracks ?? []).find(
+            (oldTrack) => oldTrack.id === editedTrack.id,
+          );
+          if (!oldTrack) return editedTrack;
+
+          const oldAuthorIds = new Set(oldTrack.authorIds);
+          const newAuthorIds = editedTrack.authorIds.filter(
+            (id) => !oldAuthorIds.has(id),
+          );
+
+          return { ...editedTrack, authorIds: newAuthorIds };
+        });
+
+        console.log(updatedTracks);
+
+        if (updatedTracks?.length ?? 0 > 0) {
+          featRequests = [
+            ...featRequests,
+            ...(updatedTracks?.map((track) => ({
+              requesterId: userData.id,
+              requestedUserIds: track.authorIds,
+              trackId: track.id,
+              type: "FEAT" as const,
+            })) ?? []),
+          ];
+        }
+
+        if (featRequests.length > 0) {
+          await sendFeatRequests(featRequests);
+        }
+
         await createTracks(
           newTracks?.map((track) => ({
             ...track,
             albumId: playlist.id,
             imgSrc: playlist.imageSrc,
+            authorIds: [track.authorId],
           })) ?? [],
         );
         await deleteTracks(deletedTracks?.map((track) => track.id) ?? []);
-        await updateTracks(editedTracks ?? []);
+        await updateTracks(
+          (editedTracks ?? []).map((track) => ({
+            ...track,
+            authorIds: [track.authorId],
+          })),
+        );
       } else if (tracks?.tracks) {
         await createTracks(
           tracks.tracks.map((track) => ({

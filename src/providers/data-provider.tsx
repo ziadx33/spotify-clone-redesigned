@@ -4,6 +4,7 @@ import { useUserData } from "@/hooks/use-user-data";
 import { getSliceFolders } from "@/state/slices/folders";
 import { getSliceNotifications } from "@/state/slices/notifications";
 import { getSliceQueue } from "@/state/slices/queue-list";
+import { getSliceRequests } from "@/state/slices/requests";
 import { type AppDispatch } from "@/state/store";
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import { useDispatch } from "react-redux";
@@ -19,6 +20,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       await dispatch(getSliceNotifications(user.id));
       await dispatch(getSliceQueue(user.id));
       await dispatch(getSliceFolders(user.id));
+      await dispatch(getSliceRequests(user.id));
       isDone.current = true;
     };
     void fn();

@@ -8,17 +8,20 @@ import { SectionItem } from "@/components/components/section-item";
 import { CircleItems } from "@/components/ui/circle-items";
 import { Button } from "@/components/ui/button";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
-import { useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { type FiltersStateType } from "../albums-tab";
 import { PlaylistContext } from "@/components/contexts/playlist-context";
 import { enumParser } from "@/utils/enum-parser";
+import { TrackContext } from "@/components/contexts/track-context";
 
 type AlbumProps = {
-  tracks: Track[];
-  album: Playlist;
+  tracks?: Track[];
+  album?: Playlist;
+  track?: Track;
   artist?: User;
   viewAs: FiltersStateType["viewAs"];
   addType?: boolean;
+  buttons?: ReactNode;
 };
 
 export function Album({ viewAs, ...restProps }: AlbumProps) {
@@ -34,10 +37,12 @@ function ListView({
   album,
   artist,
   addType,
+  track,
+  buttons,
 }: Omit<AlbumProps, "viewAs">) {
   const [expanded, setExpanded] = useState(false);
   const table = useMemo(() => {
-    return (
+    return album ? (
       <Table>
         <NonSortTable
           showTrackImage={false}
@@ -46,58 +51,85 @@ function ListView({
           viewAs="LIST"
         />
       </Table>
-    );
+    ) : null;
   }, [tracks, album, artist]);
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex w-full gap-6 px-6">
-        <PlaylistContext
-          linkProps={{ className: "relative h-[150px] w-[180px]" }}
-          playlist={album}
-          asChild
-        >
-          <Image
-            src={album.imageSrc ?? ""}
-            alt={album.title ?? ""}
-            fill
-            className="rounded-md"
-            draggable="false"
-          />
-        </PlaylistContext>
+        {album ? (
+          <PlaylistContext
+            linkProps={{ className: "relative h-[150px] w-[180px]" }}
+            playlist={album}
+            asChild
+          >
+            <Image
+              src={album?.imageSrc ?? ""}
+              alt={album?.title ?? ""}
+              fill
+              className="rounded-md"
+              draggable="false"
+            />
+          </PlaylistContext>
+        ) : (
+          <TrackContext
+            linkProps={{ className: "relative h-[150px] w-[180px]" }}
+            track={track}
+            asChild
+          >
+            <Image
+              src={track?.imgSrc ?? ""}
+              alt={track?.title ?? ""}
+              fill
+              className="rounded-md"
+              draggable="false"
+            />
+          </TrackContext>
+        )}
         <div className="flex w-full flex-col justify-between">
           <div className="flex w-full justify-between">
             <div className="flex flex-col">
               <PlaylistContext playlist={album} linkProps={{}}>
                 <span className="text-3xl font-bold hover:underline">
-                  {album.title}
+                  {(track ?? album)?.title}
                 </span>
               </PlaylistContext>
               <CircleItems
                 items={[
-                  addType && (
-                    <span key={album.type} className="">
+                  addType && album && (
+                    <span key={album?.type} className="">
                       {enumParser(album.type)}
                     </span>
                   ),
-                  <span key={album.createdAt.toString()}>
-                    {format(new Date(album.createdAt), "yyy")}
+                  <span key={(album ?? track)!.createdAt.toString() ?? ""}>
+                    {format(new Date((album ?? track)!.createdAt), "yyy")}
                   </span>,
-                  <span key={tracks.length}>
-                    {tracks.length} {tracks.length > 1 ? "tracks" : "track"}
-                  </span>,
+                  !track && tracks && (
+                    <span key={tracks?.length}>
+                      {tracks.length} {tracks.length > 1 ? "tracks" : "track"}
+                    </span>
+                  ),
                 ]}
               />
             </div>
-            <Button
-              variant="outline"
-              className="gap-2.5"
-              onClick={() => setExpanded((v) => !v)}
-            >
-              expand{" "}
-              {!expanded ? <FaArrowDown size={12} /> : <FaArrowUp size={12} />}
-            </Button>
+            {buttons ?? (
+              <Button
+                variant="outline"
+                className="gap-2.5"
+                onClick={() => setExpanded((v) => !v)}
+              >
+                expand{" "}
+                {!expanded ? (
+                  <FaArrowDown size={12} />
+                ) : (
+                  <FaArrowUp size={12} />
+                )}
+              </Button>
+            )}
           </div>
-          <AlbumControl author={artist} tracks={tracks} playlist={album} />
+          {album && tracks && (
+            <AlbumControl author={artist} tracks={tracks} playlist={album} />
+          )}
         </div>
       </div>
       {expanded ? table : null}
@@ -105,16 +137,16 @@ function ListView({
   );
 }
 
-function GridView({ album }: Omit<AlbumProps, "viewAs">) {
+function GridView({ album, track }: Omit<AlbumProps, "viewAs">) {
   return (
     <SectionItem
-      alt={album.title}
+      alt={(album ?? track)?.title}
       showPlayButton
-      title={album.title}
-      image={album.imageSrc}
+      title={(album ?? track)?.title ?? ""}
+      image={album?.imageSrc ?? track?.imgSrc}
       playlistData={album}
-      description={`${format(new Date(album.createdAt), "yyy")} - ${album.type.toLowerCase()}`}
-      link={`/playlist/${album.id}`}
+      description={`${format(new Date((album ?? track)!.createdAt), "yyy")}${album && ` - ${album.type.toLowerCase()}`}`}
+      link={album ? `/playlist/${album.id}` : `/playlist/${track?.albumId}`}
     />
   );
 }

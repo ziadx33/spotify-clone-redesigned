@@ -62,7 +62,14 @@ export function SearchContent({ data, query }: SearchContentProps) {
         )}
       </TabsContent>
       <TabsContent value="tracks">
-        <TracksContent query={query} tracks={data.tracks} />
+        <TracksContent
+          query={query}
+          tracks={{
+            tracks: data.tracks.tracks,
+            albums: data.tracks.albums,
+            authors: data.tracks.authors ?? [],
+          }}
+        />
       </TabsContent>
       <TabsContent value="albums">
         <AlbumsContent

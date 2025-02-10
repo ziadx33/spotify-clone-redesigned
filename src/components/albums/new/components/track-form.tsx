@@ -17,6 +17,7 @@ import { type z } from "zod";
 
 import { TrackFormCompForm } from "./track-form-comp-form";
 import { getAudioSrcFile } from "@/utils/get-audio-src-file";
+import { type Playlist } from "@prisma/client";
 
 type TrackFormProps = {
   tracks: TracksSliceType["data"];
@@ -24,6 +25,7 @@ type TrackFormProps = {
   setTempTracksNum: Dispatch<SetStateAction<{ id: string; edit: boolean }[]>>;
   item: { id: string; edit: boolean };
   editedTrackIds: MutableRefObject<string[]>;
+  playlist: Playlist;
 };
 
 export function TrackForm({
@@ -32,6 +34,7 @@ export function TrackForm({
   setTracks,
   tracks,
   editedTrackIds,
+  playlist,
 }: TrackFormProps) {
   const editData = item.edit
     ? tracks?.tracks?.find((track) => track.id === item.id)
@@ -70,6 +73,8 @@ export function TrackForm({
         </Button>
       </CardHeader>
       <TrackFormCompForm
+        playlist={playlist}
+        tracks={tracks}
         form={form}
         setTracks={setTracks}
         editedTrackIds={editedTrackIds}

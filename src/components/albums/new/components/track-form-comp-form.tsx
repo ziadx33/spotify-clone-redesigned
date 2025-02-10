@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { $Enums, type Track } from "@prisma/client";
+import { $Enums, type User, type Track, type Playlist } from "@prisma/client";
 import {
   type Dispatch,
   type SetStateAction,
@@ -34,11 +34,13 @@ import {
 } from "react";
 import { type TracksSliceType } from "@/state/slices/tracks";
 import { useUserData } from "@/hooks/use-user-data";
+import { TrackFormArtists } from "./track-form-artists";
 
 type TrackDataSchemaData = z.infer<typeof trackDataSchema>;
 
 type TrackFormCompFormProps = {
   form: UseFormReturn<TrackDataSchemaData>;
+  tracks: TracksSliceType["data"];
   setTracks: Dispatch<SetStateAction<TracksSliceType["data"]>>;
   editedTrackIds: MutableRefObject<string[]>;
   audioFileTransition: boolean;
@@ -47,10 +49,12 @@ type TrackFormCompFormProps = {
   editData: Track | undefined;
   item: { id: string; edit: boolean };
   setTempTracksNum: Dispatch<SetStateAction<{ id: string; edit: boolean }[]>>;
+  playlist: Playlist;
 };
 
 export function TrackFormCompForm({
   form,
+  tracks,
   setTracks,
   editedTrackIds,
   audioFileTransition,
@@ -59,12 +63,14 @@ export function TrackFormCompForm({
   setAudioFile,
   item,
   setTempTracksNum,
+  playlist,
 }: TrackFormCompFormProps) {
   const user = useUserData();
   const genres = Object.keys($Enums.GENRES);
   const [transition, startTransition] = useTransition();
   const [startMarker, setStartMarker] = useState(0);
   const [endMarker, setEndMarker] = useState(0);
+  const [artists, setArtists] = useState<User[]>(tracks?.authors ?? [user]);
   const formHandler = async (data: z.infer<typeof trackDataSchema>) => {
     if (!audioFile) return;
 
@@ -90,7 +96,7 @@ export function TrackFormCompForm({
                 order: prev?.tracks ? prev.tracks.length + 1 : 1,
                 title: data.title,
                 authorId: user.id,
-                authorIds: [],
+                authorIds: artists.map((artist) => artist.id),
                 imgSrc: "",
                 trackSrc,
                 albumId: "",
@@ -102,10 +108,11 @@ export function TrackFormCompForm({
                 bestTimeStart: startMarker,
                 bestTimeEnd: endMarker,
                 likedUsers: [],
+                createdAt: new Date(),
               },
             ],
             albums: [],
-            authors: [user],
+            authors: artists,
           }));
         else {
           editedTrackIds.current = [...editedTrackIds.current, item.id];
@@ -120,12 +127,13 @@ export function TrackFormCompForm({
                       trackSrc: trackSrc,
                       duration: durationInSeconds,
                       genres: [data.genre],
+                      authorIds: artists.map((artist) => artist.id),
                       bestTimeStart: startMarker,
                       bestTimeEnd: endMarker,
                     }
                   : track,
               ) ?? null,
-            authors: v?.authors ?? [],
+            authors: artists,
             albums: v?.albums ?? [],
           }));
         }
@@ -197,6 +205,11 @@ export function TrackFormCompForm({
               file={audioFile}
             />
           )}
+          <TrackFormArtists
+            artists={artists}
+            playlist={playlist}
+            setArtists={setArtists}
+          />
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button

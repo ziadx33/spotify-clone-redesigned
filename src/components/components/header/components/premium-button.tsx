@@ -9,5 +9,5 @@ export function PremiumButton() {
 }
 
 function Comp() {
-  return <Button variant="secondary">Explore Premium</Button>;
+  return <Button variant="secondary">Requests</Button>;
 }

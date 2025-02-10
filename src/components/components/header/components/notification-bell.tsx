@@ -13,15 +13,21 @@ export function NotificationBell() {
   const notifications = useSelector(
     (state: RootState) => state.notifications.data,
   );
+  const requests = useSelector((state: RootState) => state.requests.data);
+  console.log("yeaaa", requests);
   const user = useUserData();
   const pathname = usePathname();
   const isCurrentRoute = pathname === "/notifications";
   const isThereIsNewNotification = useMemo(() => {
     if (!user?.id) return;
-    return notifications?.some((notification) =>
-      user?.seenNotifications.includes(notification.id),
+    return (
+      (notifications?.some(
+        (notification) => !user?.seenNotifications.includes(notification.id),
+      ) ??
+        false) ||
+      (requests?.length ?? 0) > 0
     );
-  }, [notifications, user?.id, user?.seenNotifications]);
+  }, [notifications, requests?.length, user?.id, user?.seenNotifications]);
   return (
     <Link href="/notifications" className="size-full">
       <Button

@@ -51,7 +51,7 @@ export function NewAlbum() {
     type: "ALBUM",
   });
   const [tracks, setTracks] = useState<TracksSliceType["data"]>({
-    albums: [],
+    albums: [data],
     authors: [creatorData],
     tracks: [],
   });
@@ -103,6 +103,7 @@ export function NewAlbum() {
             />
             {!isLoading && (
               <CreateTrackContainer
+                playlist={data}
                 editedTrackIds={editedTrackIds}
                 setTempTracksNum={setTempTracksNum}
                 tempTracksNum={tempTracksNum}

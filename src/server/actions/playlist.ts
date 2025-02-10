@@ -83,6 +83,9 @@ export const getFeaturingAlbums = unstable_cache(
           id: {
             in: tracks.map((track) => track.playlists).flat(),
           },
+          type: {
+            not: "PLAYLIST",
+          },
         },
       });
       return { albums };

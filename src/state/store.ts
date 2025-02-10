@@ -12,6 +12,7 @@ import notFound from "./slices/not-found";
 import notifications from "./slices/notifications";
 import user from "./slices/user";
 import folders from "./slices/folders";
+import requests from "./slices/requests";
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ export const store = configureStore({
     notFound,
     notifications,
     folders,
+    requests,
   },
 });
 

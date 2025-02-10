@@ -1,5 +1,5 @@
 import { useTrackDropdownItems } from "@/hooks/use-track-dropdown-items";
-import { useState, type ReactNode } from "react";
+import { type ComponentPropsWithoutRef, useState, type ReactNode } from "react";
 import { DropdownContextItems } from "../dropdown-context-items";
 import { ContextMenuPortal, ContextMenuTrigger } from "../ui/context-menu";
 import { type Playlist, type Track } from "@prisma/client";
@@ -7,6 +7,7 @@ import { useDrag } from "@/hooks/use-drag";
 import { badgeVariants } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { CircleItems } from "../ui/circle-items";
+import Link, { type LinkProps } from "next/link";
 
 type TrackContextProps = {
   children?: ReactNode;
@@ -16,6 +17,7 @@ type TrackContextProps = {
   asChild?: boolean;
   className?: string;
   dragController?: boolean;
+  linkProps?: Omit<LinkProps, "href"> & ComponentPropsWithoutRef<"a">;
 };
 
 export function TrackContext({
@@ -26,6 +28,7 @@ export function TrackContext({
   className,
   dragController,
   album,
+  linkProps,
 }: TrackContextProps) {
   const { data: dropdownItems } = useTrackDropdownItems({
     track,
@@ -45,7 +48,13 @@ export function TrackContext({
   return (
     <DropdownContextItems items={dropdownItems.data}>
       <ContextMenuTrigger asChild={asChild} className={className} ref={addRef}>
-        {children}
+        {linkProps ? (
+          <Link {...linkProps} href={`/playlist/${playlist?.id}`}>
+            {children}
+          </Link>
+        ) : (
+          children
+        )}
       </ContextMenuTrigger>
       <ContextMenuPortal
         forceMount
