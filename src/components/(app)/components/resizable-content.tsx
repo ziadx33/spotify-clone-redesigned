@@ -13,6 +13,7 @@ import { type ReactNode } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Loading from "@/components/ui/loading";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { MobileSidebar } from "@/components/components/mobile-sidebar";
 
 export function ResizeableContent({ children }: { children: ReactNode }) {
   const isMobile = useIsMobile();
@@ -37,14 +38,14 @@ export function ResizeableContent({ children }: { children: ReactNode }) {
   ) : !isMobile ? (
     pcResize
   ) : (
-    <div className="flex w-full flex-col-reverse">
-      {/* <Sidebar /> */}
+    <div className="flex w-full flex-col">
       <ScrollArea
         className="relative size-full rounded-lg border-l border-t"
         id="content-container"
       >
         {children}
       </ScrollArea>
+      <MobileSidebar />
     </div>
   );
 }
