@@ -1,3 +1,5 @@
+"use client";
+
 import { type ReactNode } from "react";
 import { ProfileDropdownMenu } from "./components/profile-dropdown-menu";
 import { NotificationBell } from "./components/notification-bell";

@@ -62,7 +62,7 @@ export function SectionItem({
   const router = useRouter();
   const content = (
     <>
-      <div className="relative mb-1 size-[212.062px] overflow-hidden">
+      <div className="section-item max-lg:[] relative mb-1 size-[212.062px] overflow-hidden">
         {!customImage ? (
           <AvatarData
             containerClasses={cn("size-full rounded-sm", imageClasses)}

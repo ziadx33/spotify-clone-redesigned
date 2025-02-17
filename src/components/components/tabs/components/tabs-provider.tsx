@@ -9,14 +9,15 @@ export function TabsProvider({
   tabs,
   children,
 }: {
-  tabs: TabsSliceType;
+  tabs?: TabsSliceType;
   children: ReactNode;
 }) {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
+    if (!tabs) return;
     dispatch(setTabs(tabs));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tabs]);
   return children;
 }

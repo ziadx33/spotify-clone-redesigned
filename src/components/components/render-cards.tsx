@@ -28,7 +28,8 @@ export function RenderCards<
     const containerWidth = windowWidth - (windowWidth * 0.2 + 110);
 
     if (cardsWidth > containerWidth) {
-      setShowedCards(cards.slice(0, Math.floor(containerWidth / cardWidth)));
+      const length = Math.floor(containerWidth / cardWidth);
+      setShowedCards(cards.slice(0, length === 0 ? 1 : length));
       setShowMoreButton?.(true);
     } else {
       setShowedCards(cards);

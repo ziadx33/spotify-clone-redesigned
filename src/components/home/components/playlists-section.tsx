@@ -17,15 +17,19 @@ export function PlaylistsSection({
   } = usePlaylists();
   const isLoading = status === "loading";
 
-  const items = data?.slice(0, 6).map((playlist) => (
-    <PlaylistContext playlist={playlist} key={playlist.id} asChild={false}>
-      <PlaylistItem data={playlist} />
-    </PlaylistContext>
-  ));
+  const items = (data?.length ?? 0 >= 6 ? data?.slice(0, 6) : data)?.map(
+    (playlist) => (
+      <PlaylistContext playlist={playlist} key={playlist.id} asChild={false}>
+        <PlaylistItem data={playlist} />
+      </PlaylistContext>
+    ),
+  );
+
+  console.log("bard", items);
 
   return (items?.length ?? 0) > 0 ? (
-    <div className="flex gap-2 pt-4">
-      <div className="flex w-full flex-wrap  gap-2.5 px-2">
+    <div className="flex w-full gap-2 pt-4">
+      <div className="flex h-fit w-full flex-wrap gap-2 px-2 [&>div]:hidden">
         {!isLoading ? items : <SkeletonPlaylists amount={6} />}
       </div>
 

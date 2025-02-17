@@ -8,7 +8,7 @@ export function PlaylistItem({ data }: { data: Playlist }) {
   return (
     <Link
       href={`/playlist/${data.id}`}
-      className="group relative flex h-12 w-[320px] min-w-[300px] max-w-[600px] gap-2 overflow-hidden rounded-sm bg-secondary/70 transition-colors hover:bg-secondary hover:no-underline"
+      className="group relative flex h-12 w-[320px] min-w-[300px] max-w-[600px] gap-2 overflow-hidden rounded-sm bg-secondary/70 transition-colors hover:bg-secondary hover:no-underline max-lg:w-full max-lg:max-w-full"
     >
       <div className="relative h-full w-14">
         <Image src={data.imageSrc} fill alt={data.title} />

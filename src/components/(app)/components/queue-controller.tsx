@@ -13,6 +13,7 @@ export function Comp({ data }: { data: QueueListSliceType["data"] }) {
   const { getTrack, getQueue } = useQueue();
   const currentQueue = getQueue(data?.queueList?.currentQueueId);
   const currentTrack = getTrack(currentQueue?.queueData?.currentPlaying ?? "");
+  return;
   return (
     <div className="flex h-[10%] w-full border-t p-4">
       <div className="flex h-full w-56 gap-2">

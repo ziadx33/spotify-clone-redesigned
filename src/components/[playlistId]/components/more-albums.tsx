@@ -73,7 +73,7 @@ export function MoreAlbums({ data, playlist, artist }: MoreAlbumsProps) {
             <RenderCards
               setShowMoreButton={setShowMoreButton}
               cards={
-                data?.map((album) => {
+                [...data, ...data, ...data]?.map((album) => {
                   return (
                     <SectionItem
                       key={album.id}

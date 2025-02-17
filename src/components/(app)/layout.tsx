@@ -8,7 +8,7 @@ import { ResizeableContent } from "./components/resizable-content";
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <PrefrencesProvider>
-      <main className="flex h-screen w-screen overflow-hidden">
+      <main className="flex h-screen w-full overflow-hidden">
         <ServerAppDataProvider>
           <AudiosProvider>
             <QueueControllerContainer>
