@@ -1,5 +1,5 @@
 import { type DropdownMenuType } from "@/types";
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -20,81 +20,90 @@ export function DropdownContextItems({
   items,
   children,
 }: ContextMenuItemsProps) {
-  const allContent = useMemo(() => {
-    const content: ReactNode[] = [];
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
-    items.forEach((item, index) => {
-      if (item.content) {
-        content.push(<div key={`content-${index}`}>{item.content}</div>);
-      }
-      if (item.nestedMenu) {
-        item.nestedMenu.items.forEach((nestedItem, nestedIndex) => {
-          if (nestedItem.content) {
-            content.push(
-              <div key={`nested-content-${index}-${nestedIndex}`}>
-                {nestedItem.content}
-              </div>,
-            );
-          }
-        });
-      }
-    });
-    return content;
+  const isTouchDevice =
+    typeof window !== "undefined" && "ontouchstart" in window;
+
+  const handleOpen = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setMenuPosition({ x: e.clientX, y: e.clientY });
+    setMenuOpen(true);
+  };
+
+  const allContent = useMemo(() => {
+    return items.flatMap((item, index) => [
+      item.content && <div key={`content-${index}`}>{item.content}</div>,
+      item.nestedMenu?.items.map(
+        (nestedItem, nestedIndex) =>
+          nestedItem.content && (
+            <div key={`nested-content-${index}-${nestedIndex}`}>
+              {nestedItem.content}
+            </div>
+          ),
+      ),
+    ]);
   }, [items]);
 
   return (
-    <>
-      <ContextMenu>
+    <ContextMenu>
+      <div
+        onContextMenu={handleOpen}
+        onClick={(e) => isTouchDevice && handleOpen(e)}
+      >
         {children}
-        <ContextMenuContent className="mr-2 w-80">
-          {items.map((item, index) =>
-            item.nestedMenu ? (
-              <ContextMenuSub key={`menu-${index}`}>
-                <ContextMenuSubTrigger className="flex h-fit items-center gap-2 py-2">
-                  <div className="w-5">
-                    <item.icon size={18} />
-                  </div>
-                  {item.title}
-                </ContextMenuSubTrigger>
-                <ContextMenuSubContent className="w-60">
-                  {item.nestedMenu.items.map((nestedItem, nestedIndex) => (
-                    <ContextMenuItem
-                      key={`nested-item-${index}-${nestedIndex}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        nestedItem.event && nestedItem.event(e);
-                      }}
-                      className="flex h-fit items-center gap-2 py-2"
-                    >
-                      <div className="w-5">
-                        <nestedItem.icon size={18} />
-                      </div>
-                      {nestedItem.title}
-                    </ContextMenuItem>
-                  ))}
-                </ContextMenuSubContent>
-              </ContextMenuSub>
-            ) : (
-              <ContextMenuItem
-                key={`item-${index}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  item.event && item.event(e);
-                }}
-                className="flex h-fit items-center gap-2 py-2"
-              >
+      </div>
+      <ContextMenuContent
+        className="mr-2 w-80"
+        onInteractOutside={() => setMenuOpen(false)}
+      >
+        {items.map((item, index) =>
+          item.nestedMenu ? (
+            <ContextMenuSub key={`menu-${index}`}>
+              <ContextMenuSubTrigger className="flex h-fit items-center gap-2 py-2">
                 <div className="w-5">
                   <item.icon size={18} />
                 </div>
                 {item.title}
-              </ContextMenuItem>
-            ),
-          )}
-        </ContextMenuContent>
-      </ContextMenu>
-
+              </ContextMenuSubTrigger>
+              <ContextMenuSubContent className="w-60">
+                {item.nestedMenu.items.map((nestedItem, nestedIndex) => (
+                  <ContextMenuItem
+                    key={`nested-item-${index}-${nestedIndex}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nestedItem.event && nestedItem.event(e);
+                    }}
+                    className="flex h-fit items-center gap-2 py-2"
+                  >
+                    <div className="w-5">
+                      <nestedItem.icon size={18} />
+                    </div>
+                    {nestedItem.title}
+                  </ContextMenuItem>
+                ))}
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          ) : (
+            <ContextMenuItem
+              key={`item-${index}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                item.event && item.event(e);
+              }}
+              className="flex h-fit items-center gap-2 py-2"
+            >
+              <div className="w-5">
+                <item.icon size={18} />
+              </div>
+              {item.title}
+            </ContextMenuItem>
+          ),
+        )}
+      </ContextMenuContent>
       {allContent}
-    </>
+    </ContextMenu>
   );
 }
 

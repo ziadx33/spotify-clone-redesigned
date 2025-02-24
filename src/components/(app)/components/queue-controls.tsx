@@ -5,6 +5,7 @@ import { FaRandom } from "react-icons/fa";
 import { MdOutlineRepeat, MdOutlineRepeatOne } from "react-icons/md";
 import { QueueControlsPlayButton } from "./queue-controls-play-button";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type QueueControlsProps = {
   className?: string;
@@ -22,6 +23,7 @@ export function QueueControls({ className }: QueueControlsProps) {
   const currentQueue = getQueue(data?.queueList.currentQueueId);
   const { isFirstTrack, isLastTrack, nextQueue, isLastQueue } =
     getCurrentData(currentQueue);
+  const isMobile = useIsMobile();
 
   const shuffleHandler = () => {
     void shuffleQueue({ value: (v) => !v });
@@ -57,37 +59,41 @@ export function QueueControls({ className }: QueueControlsProps) {
         size="icon"
         variant={data?.queueList.randomize ? "secondary" : "outline"}
         onClick={shuffleHandler}
+        className="max-lg:size-14"
       >
-        <FaRandom />
+        <FaRandom size={!isMobile ? undefined : 23} />
       </Button>
       <Button
         size="icon"
         variant="outline"
         disabled={isFirstTrack}
         onClick={goBackwardHandler}
+        className="max-lg:size-14"
       >
-        <BsFillSkipBackwardFill />
+        <BsFillSkipBackwardFill size={!isMobile ? undefined : 23} />
       </Button>
       <QueueControlsPlayButton />
       <Button
         size="icon"
         variant="outline"
         disabled={isLastTrack && isLastQueue}
+        className="max-lg:size-14"
         onClick={goForwardHandler}
       >
-        <BsFillSkipForwardFill />
+        <BsFillSkipForwardFill size={!isMobile ? undefined : 23} />
       </Button>
       <Button
         size="icon"
         variant={data?.queueList?.repeatQueue ? "secondary" : "outline"}
         onClick={repeatHandler}
+        className="max-lg:size-14"
       >
         {data?.queueList.repeatQueue === "PLAYLIST" ? (
-          <MdOutlineRepeat size={20} />
+          <MdOutlineRepeat size={!isMobile ? 20 : 30} />
         ) : data?.queueList.repeatQueue === "TRACK" ? (
-          <MdOutlineRepeatOne size={20} />
+          <MdOutlineRepeatOne size={!isMobile ? 20 : 30} />
         ) : (
-          <MdOutlineRepeat size={20} />
+          <MdOutlineRepeat size={!isMobile ? 20 : 30} />
         )}
       </Button>
     </div>

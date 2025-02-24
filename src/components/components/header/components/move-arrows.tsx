@@ -8,7 +8,7 @@ export function MoveArrows() {
   const router = useRouter();
 
   return (
-    <div className="flex items-center gap-2 pr-2">
+    <div className="flex items-center gap-2">
       <Button
         variant="outline"
         className="rounded-full"

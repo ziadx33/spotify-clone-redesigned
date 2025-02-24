@@ -11,9 +11,9 @@ export function Header({ children }: { children: ReactNode }) {
       <div className="flex w-full max-w-[90%] items-center gap-3">
         {children}
         {/* <PremiumButton /> */}
-        <MoveArrows />
       </div>
       <div className="flex items-center gap-2">
+        <MoveArrows />
         <NotificationBell />
         <ProfileDropdownMenu />
       </div>

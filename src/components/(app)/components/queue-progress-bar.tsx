@@ -16,6 +16,7 @@ type QueueSliderProps = {
   progressClassName?: string;
   queueControlsClassName?: string;
   handleQueueControls?: (children: ReactNode) => ReactNode;
+  className?: string;
 };
 
 export function QueueProgressBar({
@@ -23,6 +24,7 @@ export function QueueProgressBar({
   progressClassName,
   queueControlsClassName,
   handleQueueControls,
+  className,
 }: QueueSliderProps) {
   const {
     data: { progress, isPlaying },
@@ -180,10 +182,12 @@ export function QueueProgressBar({
 
   return (
     <>
-      {!handleQueueControls
-        ? queueControls
-        : handleQueueControls(queueControls)}
-      <div className="flex gap-2">
+      <div className={className}>
+        {!handleQueueControls
+          ? queueControls
+          : handleQueueControls(queueControls)}
+      </div>
+      <div className={cn("flex gap-2", className)}>
         <h5 className="w-10">{parseDurationTime(value)}</h5>
         <Slider
           disabled={disablePlayButton}
