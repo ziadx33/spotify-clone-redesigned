@@ -24,7 +24,7 @@ export function ScrollContainer({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const event = (event: WheelEvent) => {
+    const handleWheel = (event: WheelEvent) => {
       if (!exploreData.tracks?.length) return;
 
       scrollLengthRef.current += event.deltaY > 0 ? -1 : 1;
@@ -46,11 +46,54 @@ export function ScrollContainer({
       event.preventDefault();
     };
 
+    let startX = 0;
+    let startY = 0;
+    let endX = 0;
+    let endY = 0;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      startX = event?.touches?.[0]?.clientX ?? 0;
+      startY = event?.touches?.[0]?.clientY ?? 0;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      endX = event?.touches?.[0]?.clientX ?? 0;
+      endY = event?.touches?.[0]?.clientY ?? 0;
+    };
+
+    const handleTouchEnd = () => {
+      const deltaX = startX - endX;
+      const deltaY = startY - endY;
+
+      if (Math.abs(deltaY) > Math.abs(deltaX)) {
+        if (deltaY > 50) {
+          if (
+            currentItemNumRef.current <
+            (exploreData?.tracks?.length ?? 0) - 1
+          ) {
+            currentItemNumRef.current += 1;
+            setCurrentItem(exploreData.tracks?.[currentItemNumRef.current]);
+          }
+        } else if (deltaY < -50) {
+          if (currentItemNumRef.current > 0) {
+            currentItemNumRef.current -= 1;
+            setCurrentItem(exploreData.tracks?.[currentItemNumRef.current]);
+          }
+        }
+      }
+    };
+
     const containerElement = containerRef.current;
-    containerElement?.addEventListener("wheel", event);
+    containerElement?.addEventListener("wheel", handleWheel);
+    containerElement?.addEventListener("touchstart", handleTouchStart);
+    containerElement?.addEventListener("touchmove", handleTouchMove);
+    containerElement?.addEventListener("touchend", handleTouchEnd);
 
     return () => {
-      containerElement?.removeEventListener("wheel", event);
+      containerElement?.removeEventListener("wheel", handleWheel);
+      containerElement?.removeEventListener("touchstart", handleTouchStart);
+      containerElement?.removeEventListener("touchmove", handleTouchMove);
+      containerElement?.removeEventListener("touchend", handleTouchEnd);
     };
   }, [exploreData.tracks, setCurrentItem]);
 
