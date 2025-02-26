@@ -43,7 +43,7 @@ export function TopArtists({ artists, user }: TopArtistsProps) {
           )}
         </Button>
         {showMoreButton && (
-          <Button asChild variant="link">
+          <Button asChild variant="link" className="max-lg:hidden">
             <Navigate
               data={{
                 href: `/artist/${user?.id}/top-artists`,

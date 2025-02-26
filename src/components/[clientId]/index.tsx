@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { getUserById } from "@/server/actions/verification-token";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/loading";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { editNotFoundType } from "@/state/slices/not-found";
@@ -23,35 +23,38 @@ export function Client({ artistId, playlistId }: ClientProps) {
   const user = useUserData();
 
   const { data, isLoading } = useQuery({
-    queryKey: [`artist-page-data-${artistId}`],
+    queryKey: [`client-page-${artistId}`],
     queryFn: async () => {
       const user = await getUserById({ id: artistId });
-      if (!user) {
-        dispatch(editNotFoundType("ARTIST"));
-        return router.push("/404-error");
-      }
+
       return { user, isUser: user?.type === "USER" };
     },
   });
 
-  const content = useMemo(() => {
+  useEffect(() => {
+    if (!data) return;
+
+    if (!data.user) {
+      dispatch(editNotFoundType("ARTIST"));
+      router.push("/404-error");
+      return;
+    }
+
     if (
       !playlistId &&
-      data?.user?.type === "ARTIST" &&
+      data.user.type === "ARTIST" &&
       data.user.id !== user?.id
     ) {
       router.push("/");
-      return null;
     }
-    if (isLoading || !data?.user) return <Loading />;
-    if (!data.user) router.push("/");
-    return data.user.type === "ARTIST" && !data.isUser && playlistId ? (
-      <Artist playlistId={playlistId} artist={data.user} />
-    ) : (
-      <User isUser={data?.isUser ?? false} user={data.user} />
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isLoading]);
+  }, [data, dispatch, router, playlistId, user?.id]);
 
-  return content;
+  if (isLoading) return <Loading />;
+  if (!data?.user) return null;
+
+  return data.user.type === "ARTIST" && data.user.id !== user?.id ? (
+    <Artist playlistId={playlistId ?? "unknown"} artist={data.user} />
+  ) : (
+    <User isUser={data.isUser} user={data.user} />
+  );
 }

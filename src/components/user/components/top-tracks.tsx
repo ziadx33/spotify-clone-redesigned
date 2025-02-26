@@ -21,7 +21,7 @@ export function TopTracks({ data, user }: TopTracksProps) {
           <Button
             variant="link"
             className={cn(
-              "mb-4 pl-0 text-3xl font-semibold text-white",
+              "mb-4 pl-0 text-3xl font-semibold text-white ",
               showMoreButton
                 ? "hover:underline"
                 : " cursor-default hover:no-underline",
@@ -44,7 +44,7 @@ export function TopTracks({ data, user }: TopTracksProps) {
             )}
           </Button>
           {showMoreButton && (
-            <Button asChild variant="link">
+            <Button asChild variant="link" className="max-lg:hidden">
               <Navigate
                 data={{
                   href: `/artist/${user?.id}/top-tracks`,

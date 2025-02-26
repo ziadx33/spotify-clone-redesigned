@@ -18,7 +18,7 @@ type ProfileProps = {
   isUser: boolean;
 };
 
-export async function User({ user, isUser }: ProfileProps) {
+export function User({ user, isUser }: ProfileProps) {
   const { data } = useQuery({
     queryKey: [`user-data-${user?.id}`],
     queryFn: async () => {

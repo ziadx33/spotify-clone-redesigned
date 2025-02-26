@@ -74,10 +74,10 @@ export function AllContent({
 
   return (
     <div className="flex size-full flex-col">
-      <div className="flex w-full gap-6">
+      <div className="flex w-full gap-6 max-lg:flex-col">
         <div className="flex flex-col">
           <b className="mb-2 text-3xl">Top result</b>
-          <Card className="h-[217px] w-[437.688px] border-none bg-background transition-colors hover:bg-muted">
+          <Card className="h-[217px] w-[437.688px] border-none bg-background transition-colors hover:bg-muted max-lg:w-full">
             <CardContent className="size-full p-0">
               <Navigate
                 data={{

@@ -8,6 +8,7 @@ import { useSearch } from "@/hooks/use-search";
 import { useRef } from "react";
 import Loading from "../ui/loading";
 import { BrowsePage } from "./components/browse-page";
+import { SearchInput } from "./components/search-input";
 
 export function Search() {
   const searchParams = useSearchParams();
@@ -33,6 +34,7 @@ export function Search() {
   });
   return (
     <div className="flex h-full flex-col p-4">
+      <SearchInput />
       {!isLoading ? (
         queryRef.current ? (
           data && <SearchContent query={queryRef.current ?? ""} data={data} />

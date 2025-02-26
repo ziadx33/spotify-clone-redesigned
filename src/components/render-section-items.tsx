@@ -35,7 +35,7 @@ export function RenderSectionItems({
   return (
     <Dialog>
       <div className={cn("flex flex-col gap-3", containerClasses)} id={id}>
-        <div className="flex items-end justify-between">
+        <div className="flex w-full items-end justify-between">
           <h1 className={cn("pt-8 text-3xl font-bold", titleClasses)}>
             {title}
           </h1>

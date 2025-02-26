@@ -6,8 +6,6 @@ import Image from "next/image";
 import { TopArtists } from "./top-artists";
 import { type TracksSliceType } from "@/state/slices/tracks";
 import { TopTracks } from "./top-tracks";
-import { EditProfile } from "./edit-profile";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PublicPlaylists } from "./public-playlists";
 import { UsersSection } from "./users-section";
 import { useQuery } from "@tanstack/react-query";
@@ -48,115 +46,104 @@ export function UserContent({
     enabled: !isCurUser && !!user?.id,
   });
   return (
-    <Dialog>
-      <div className="flex min-h-full w-full flex-col">
-        <div
-          style={{
-            background: `url(${userData?.coverImage}) no-repeat`,
-            backgroundSize: "cover",
-            backgroundPosition: "top center",
-          }}
-          className={cn(
-            "flex  w-full  border-b p-8",
-            userData?.coverImage
-              ? "h-[30rem] items-end"
-              : "h-96 place-items-end",
+    <div className="flex min-h-full w-full flex-col">
+      <div
+        style={{
+          background: `url(${userData?.coverImage}) no-repeat`,
+          backgroundSize: "cover",
+          backgroundPosition: "top center",
+        }}
+        className={cn(
+          "flex  w-full  border-b p-8",
+          userData?.coverImage ? "h-[30rem] items-end" : "h-96 place-items-end",
+        )}
+      >
+        <div className="flex items-center  gap-6">
+          {!userData?.coverImage && (
+            <Image
+              src={image ?? ""}
+              width={200}
+              height={200}
+              alt={userData?.name ?? ""}
+              className="size-[200px] rounded-full"
+            />
           )}
-        >
-          <div className="flex items-center  gap-6">
-            {!userData?.coverImage && (
-              <Image
-                src={image ?? ""}
-                width={200}
-                height={200}
-                alt={userData?.name ?? ""}
-                className="size-[200px] rounded-full"
-              />
-            )}
-            <div className="flex flex-col">
-              <p>profile</p>
-              <b className="mb-4 mt-2 text-8xl">{userData?.name}</b>
-              <p>
-                {publicPlaylists?.length} Public Playlists
-                {isUser && ` - ${followedArtists?.length} Following`}
-              </p>
-            </div>
+          <div className="flex flex-col">
+            <p>profile</p>
+            <b className="mb-4 mt-2 text-8xl">{userData?.name}</b>
+            <p>
+              {publicPlaylists?.length} Public Playlists
+              {isUser && ` - ${followedArtists?.length} Following`}
+            </p>
           </div>
         </div>
-        <div className="flex flex-col gap-12 p-8">
-          {userData?.type === "USER" && <EditDropdown userData={userData} />}
-          {!isCurUser && !userPrefrence ? (
-            <RenderSectionItems
-              cards={[]}
-              title="Top artists this month"
-              cardsContainerClasses="gap-2"
-              isLoading={true}
-            />
-          ) : (
-              !isCurUser ? userPrefrence?.data?.ShowTopPlayingArtists : true
-            ) ? (
-            <TopArtists artists={topArtists} user={userData} />
-          ) : null}
-
-          {!isCurUser && !userPrefrence ? (
-            <RenderSectionItems
-              cards={[]}
-              title="Top artists this month"
-              cardsContainerClasses="gap-2"
-              isLoading={true}
-            />
-          ) : (
-              !isCurUser ? userPrefrence?.data?.ShowTopPlayingTracks : true
-            ) ? (
-            <TopTracks user={userData} data={topTracks} />
-          ) : null}
-
-          {!isCurUser && !userPrefrence ? (
-            <RenderSectionItems
-              cards={[]}
-              title="Top artists this month"
-              cardsContainerClasses="gap-2"
-              isLoading={true}
-            />
-          ) : (
-              !isCurUser ? userPrefrence?.data?.ShowPlaylistsInProfile : true
-            ) ? (
-            <PublicPlaylists playlists={publicPlaylists} user={userData} />
-          ) : null}
-          {!isCurUser && !userPrefrence ? (
-            <RenderSectionItems
-              cards={[]}
-              title="Top artists this month"
-              cardsContainerClasses="gap-2"
-              isLoading={true}
-            />
-          ) : (!isCurUser ? userPrefrence?.data?.ShowFollowingList : true) ? (
-            <UsersSection
-              users={followedArtists}
-              user={userData}
-              title="Following"
-            />
-          ) : null}
-
-          {!isCurUser && !userPrefrence ? (
-            <RenderSectionItems
-              cards={[]}
-              title="Top artists this month"
-              cardsContainerClasses="gap-2"
-              isLoading={true}
-            />
-          ) : (!isCurUser ? userPrefrence?.data?.ShowFollowersList : true) ? (
-            <UsersSection
-              users={followerUsers}
-              user={userData}
-              title="Followers"
-            />
-          ) : null}
-        </div>
       </div>
-      <DialogContent className="flex h-[26rem] w-[45rem] flex-col">
-        <EditProfile user={userData} />
-      </DialogContent>
-    </Dialog>
+      <div className="flex flex-col gap-12 p-8 max-lg:w-screen">
+        {userData?.type === "USER" && <EditDropdown userData={userData} />}
+        {!isCurUser && !userPrefrence ? (
+          <RenderSectionItems
+            cards={[]}
+            title="Top artists this month"
+            cardsContainerClasses="gap-2"
+            isLoading={true}
+          />
+        ) : (!isCurUser ? userPrefrence?.data?.ShowTopPlayingArtists : true) ? (
+          <TopArtists artists={topArtists} user={userData} />
+        ) : null}
+
+        {!isCurUser && !userPrefrence ? (
+          <RenderSectionItems
+            cards={[]}
+            title="Top artists this month"
+            cardsContainerClasses="gap-2"
+            isLoading={true}
+          />
+        ) : (!isCurUser ? userPrefrence?.data?.ShowTopPlayingTracks : true) ? (
+          <TopTracks user={userData} data={topTracks} />
+        ) : null}
+
+        {!isCurUser && !userPrefrence ? (
+          <RenderSectionItems
+            cards={[]}
+            title="Top artists this month"
+            cardsContainerClasses="gap-2"
+            isLoading={true}
+          />
+        ) : (
+            !isCurUser ? userPrefrence?.data?.ShowPlaylistsInProfile : true
+          ) ? (
+          <PublicPlaylists playlists={publicPlaylists} user={userData} />
+        ) : null}
+        {!isCurUser && !userPrefrence ? (
+          <RenderSectionItems
+            cards={[]}
+            title="Top artists this month"
+            cardsContainerClasses="gap-2"
+            isLoading={true}
+          />
+        ) : (!isCurUser ? userPrefrence?.data?.ShowFollowingList : true) ? (
+          <UsersSection
+            users={followedArtists}
+            user={userData}
+            title="Following"
+          />
+        ) : null}
+
+        {!isCurUser && !userPrefrence ? (
+          <RenderSectionItems
+            cards={[]}
+            title="Top artists this month"
+            cardsContainerClasses="gap-2"
+            isLoading={true}
+          />
+        ) : (!isCurUser ? userPrefrence?.data?.ShowFollowersList : true) ? (
+          <UsersSection
+            users={followerUsers}
+            user={userData}
+            title="Followers"
+          />
+        ) : null}
+      </div>
+    </div>
   );
 }
