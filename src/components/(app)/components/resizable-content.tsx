@@ -12,8 +12,8 @@ import { Tabs } from "@/components/components/tabs/tabs";
 import { type ReactNode } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Loading from "@/components/ui/loading";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { MobileSidebar } from "@/components/components/mobile-sidebar";
+import { MobileContentScrollArea } from "./mobile-content-scroll-area";
 
 export function ResizeableContent({ children }: { children: ReactNode }) {
   const isMobile = useIsMobile();
@@ -39,12 +39,7 @@ export function ResizeableContent({ children }: { children: ReactNode }) {
     pcResize
   ) : (
     <div className="flex w-full flex-col">
-      <ScrollArea
-        className="relative size-full rounded-lg border-l border-t max-lg:pb-16"
-        id="content-container"
-      >
-        {children}
-      </ScrollArea>
+    <MobileContentScrollArea>{children}</MobileContentScrollArea>
       <MobileSidebar />
     </div>
   );
