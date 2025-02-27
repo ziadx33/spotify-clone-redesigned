@@ -19,7 +19,7 @@ export function Playlist({
         tracks={tracks?.data?.tracks ?? []}
         type={type}
       />
-      <div className="flex h-fit w-full flex-col gap-4 px-8 pb-4">
+      <div className="flex h-fit w-full flex-col gap-4 px-8 pb-4 max-lg:px-4">
         <MusicPlayer playlist={data} />
         {type === "ALBUM" ? (
           <MoreAlbums

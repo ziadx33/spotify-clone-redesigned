@@ -11,23 +11,19 @@ export function Authors({ authors, playlistId }: TrackAuthorsProps) {
   return (
     <>
       {authors.map((author, index) => (
-        <div
+        <AuthorContext
+          artist={author}
           key={author.id}
-          className="line-clamp-1 flex text-muted-foreground"
+          playlistId={playlistId ?? "liked-tracks"}
         >
-          <AuthorContext
-            artist={author}
-            playlistId={playlistId ?? "liked-tracks"}
+          <Link
+            className="line-clamp-1 flex text-nowrap text-muted-foreground"
+            href={`/artist/${author.id}?playlist=${playlistId ?? "liked-tracks"}`}
           >
-            <Link
-              href={`/artist/${author.id}?playlist=${playlistId ?? "liked-tracks"}`}
-            >
-              {author.name}
-            </Link>
-          </AuthorContext>
-
-          {index === authors.length - 1 ? "" : ","}
-        </div>
+            {author.name}
+            {index === authors.length - 1 ? "" : ","}
+          </Link>
+        </AuthorContext>
       ))}
     </>
   );

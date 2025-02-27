@@ -16,7 +16,7 @@ function EditableImage({ data, isEditable, isLoading }: EditableImageProps) {
   return (
     <DialogTrigger
       disabled={!isEditable || isLoading}
-      className="group relative h-full"
+      className="group relative mx-auto h-full"
     >
       {!isLoading ? (
         <AvatarData

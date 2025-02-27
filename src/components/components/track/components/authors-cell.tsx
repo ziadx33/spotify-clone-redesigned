@@ -19,9 +19,11 @@ export function AuthorsCell({
     !isAlbum && (
       <>
         {!isList ? (
-          <TableCell className="flex gap-1">{authorsElement}</TableCell>
+          <TableCell>
+            <p className="inline">{authorsElement}</p>
+          </TableCell>
         ) : skeleton ? (
-          <div className="flex gap-1">
+          <div>
             <SkeletonList amount={2} className="mt-2 h-2.5 w-10" />
           </div>
         ) : null}

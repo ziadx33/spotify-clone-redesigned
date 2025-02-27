@@ -22,15 +22,15 @@ function EditableTitle({
   return (
     <>
       {!isLoading ? (
-        <h3 className="mb-2 mt-auto">{type}</h3>
+        <h3 className="mb-2 mt-auto max-lg:hidden">{type}</h3>
       ) : (
-        <Skeleton className="mb-2 h-2.5 w-16" />
+        <Skeleton className="mb-2 h-2.5 w-16 max-lg:hidden" />
       )}
       <PlaylistContext playlist={data}>
         <DialogTrigger
           disabled={!isEditable || isLoading}
           title={data?.title}
-          className="mb-4 line-clamp-1 w-full overflow-visible text-start text-8xl font-bold"
+          className="mb-4 line-clamp-1 w-full max-lg:mt-6 overflow-visible text-start max-lg:text-2xl text-8xl font-bold"
         >
           {!isLoading ? (
             clampText(data?.title ?? "", 23)

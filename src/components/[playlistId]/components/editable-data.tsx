@@ -33,13 +33,13 @@ function EditableData({ data, type, creatorData, tracks }: EditableDataProps) {
 
   return (
     <Dialog>
-      <div className="flex h-[24rem] w-full gap-8 p-8 pb-6">
+      <div className="flex lg:h-[24rem] max-lg:flex-col w-full lg:gap-8 max-lg:pb-2 p-8 lg:pb-6">
         <EditableImage
           data={data}
           isEditable={isEditable}
           isLoading={isLoading}
         />
-        <div className="flex flex-col pt-[6.2rem]">
+        <div className="flex flex-col lg:pt-[6.2rem]">
           <EditableTitle
             data={data}
             type={type}

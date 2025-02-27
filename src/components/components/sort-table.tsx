@@ -14,6 +14,7 @@ import { Track } from "./track";
 import { type Playlist } from "@prisma/client";
 import { FilterButton } from "./filter-button";
 import { DoubleFilter } from "./double-filter";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type SortTableProps = {
   handleFilterChange: (name: keyof TrackFilters) => void;
@@ -41,6 +42,7 @@ export function SortTable({
   showCaption,
   isLoading,
 }: SortTableProps) {
+  const isMobile = useIsMobile();
   const memoizedTracks = useMemo(() => {
     return !isLoading
       ? sortTracks({
@@ -76,7 +78,7 @@ export function SortTable({
         <TableCaption>No tracks in this playlist.</TableCaption>
       )}
       <TableHeader>
-        <TableRow>
+        {!isMobile && <TableRow>
           <TableHead className="w-0 pl-4 pr-0">#</TableHead>
           <DoubleFilter
             handleFilterChange={handleFilterChange}
@@ -106,7 +108,7 @@ export function SortTable({
             propertyName="duration"
             className="w-10"
           />
-        </TableRow>
+        </TableRow>}
       </TableHeader>
       <TableBody>{memoizedTracks}</TableBody>
     </>
