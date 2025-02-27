@@ -17,6 +17,7 @@ import {
   type SetStateAction,
 } from "react";
 import { type useIntersectionObserver } from "usehooks-ts";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export type ReplaceDurationWithButton =
   | {
@@ -80,12 +81,13 @@ function Comp({
     queueTypeId: queueTypeId,
     hideTrackContext: hideTrackContext,
   };
+  const isMobile = useIsMobile();
   return (
     <>
       {(data?.tracks?.length ?? 0) === 0 && showCaption && !isLoading && (
         <TableCaption>no tracks in the album</TableCaption>
       )}
-      {showHead && (
+      {showHead && !isMobile && (
         <TableHeader>
           <TableRow>
             {showIndex && <TableHead className="w-0 pl-4 pr-0">#</TableHead>}

@@ -40,7 +40,7 @@ export function ResizeableContent({ children }: { children: ReactNode }) {
   ) : (
     <div className="flex w-full flex-col">
       <ScrollArea
-        className="relative size-full rounded-lg border-l border-t"
+        className="relative size-full rounded-lg border-l border-t max-lg:pb-16"
         id="content-container"
       >
         {children}

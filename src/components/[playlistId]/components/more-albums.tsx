@@ -54,7 +54,7 @@ export function MoreAlbums({ data, playlist, artist }: MoreAlbumsProps) {
             )}
           </Button>
           {showMoreButton && (
-            <Button asChild variant="link">
+            <Button asChild variant="link" className="max-lg:hidden">
               <Navigate
                 data={{
                   href: `/artist/${artist?.id}?playlist=${playlist?.id}`,

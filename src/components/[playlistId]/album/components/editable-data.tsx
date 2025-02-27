@@ -19,6 +19,7 @@ import { useMiniMenu } from "@/hooks/use-mini-menu";
 import { cn } from "@/lib/utils";
 import { AuthorContext } from "@/components/contexts/author-context";
 import { PlaylistContext } from "@/components/contexts/playlist-context";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type EditableDataProps = {
   data?: Playlist | null;
@@ -41,22 +42,24 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
 
   const isDoneLoading =
     !isLoading && !!data && !!creatorData && status !== "loading";
+  const isMobile = useIsMobile();
 
   const { value: miniMenuValue } = useMiniMenu();
+  const split = miniMenuValue || isMobile;
 
   return (
     <div>
       <div
         className={cn(
-          "flex justify-between gap-8 p-8 pb-6",
-          miniMenuValue ? "flex-col" : "",
+          "flex justify-between gap-8 p-8 pb-6 max-lg:p-5",
+          split ? "flex-col" : "",
         )}
       >
         <div className="flex w-[95%] flex-col">
           <PlaylistContext playlist={data}>
             <h1
               title={data?.title}
-              className="mb-5 line-clamp-1 w-[59rem] overflow-visible text-start text-6xl font-bold"
+              className="mb-5 line-clamp-1 overflow-visible text-start text-6xl font-bold max-lg:text-2xl"
             >
               {isDoneLoading ? (
                 data?.title
@@ -98,14 +101,14 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
         </div>
         <div
           className={cn(
-            "flex w-fit gap-4",
-            !miniMenuValue ? "flex-col" : "w-full flex-row border-t pt-4",
+            "flex w-fit gap-4 max-lg:flex-col",
+            !split ? "flex-col" : "w-full flex-row border-t pt-4",
           )}
         >
           <div
             className={cn(
-              "group relative",
-              !miniMenuValue ? "size-[500px]" : "size-[300px]",
+              "group relative max-lg:h-[400px] max-lg:w-full",
+              !split ? "size-[500px]" : "size-[300px]",
             )}
           >
             {isDoneLoading ? (
@@ -123,7 +126,7 @@ function EditableDataComp({ data, creatorData, children }: EditableDataProps) {
           <div
             className={cn(
               "flex gap-4",
-              !miniMenuValue ? "mb-auto flex-col-reverse" : "flex-col",
+              !split ? "mb-auto flex-col-reverse" : "flex-col",
             )}
           >
             {data?.genres && (

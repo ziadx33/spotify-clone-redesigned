@@ -8,6 +8,7 @@ import { Duration } from "./components/duration";
 import { AlbumLinkCell } from "./components/album-link-cell";
 import { TrackContainer } from "./components/track-container";
 import { AuthorsContainer } from "./components/authors-container";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function Comp(props: TrackProps) {
   const {
@@ -28,6 +29,7 @@ function Comp(props: TrackProps) {
   } = props;
 
   const [showButtons, setShowButtons] = useState(false);
+  const isMobile = useIsMobile();
 
   return (
     <TrackContainer
@@ -55,21 +57,25 @@ function Comp(props: TrackProps) {
         hidePlayButton={hidePlayButton}
         isAlbum={isAlbum}
       />
-      <AlbumLinkCell
-        skeleton={skeleton}
-        track={!skeleton ? props.track : undefined}
-        album={!skeleton ? props.album : undefined}
-        isAlbum={isAlbum}
-      />
-      <PlaysRow
-        hidePlayButton={hidePlayButton}
-        hideViews={hideViews}
-        isAlbum={isAlbum}
-        skeleton={skeleton}
-        album={!skeleton ? props.album : undefined}
-        track={!skeleton ? props.track : undefined}
-        replacePlaysWithPlaylist={replacePlaysWithPlaylist}
-      />
+      {!isMobile && (
+        <>
+          <AlbumLinkCell
+            skeleton={skeleton}
+            track={!skeleton ? props.track : undefined}
+            album={!skeleton ? props.album : undefined}
+            isAlbum={isAlbum}
+          />
+          <PlaysRow
+            hidePlayButton={hidePlayButton}
+            hideViews={hideViews}
+            isAlbum={isAlbum}
+            skeleton={skeleton}
+            album={!skeleton ? props.album : undefined}
+            track={!skeleton ? props.track : undefined}
+            replacePlaysWithPlaylist={replacePlaysWithPlaylist}
+          />
+        </>
+      )}
       <Duration
         playlist={!skeleton ? props.playlist : undefined}
         skeleton={skeleton}

@@ -42,6 +42,7 @@ import { ShuffleButton } from "./shuffle-button";
 import { PlaylistDropdown } from "@/components/dropdowns/playlist-dropdown";
 import { ExploreButton } from "./explore-button";
 import { useUserData } from "@/hooks/use-user-data";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type PlayerProps = {
   filters: TrackFilters;
@@ -68,6 +69,7 @@ export function Comp({
   showExploreButton,
   disabled,
 }: PlayerProps) {
+  const isMobile = useIsMobile();
   const user = useUserData();
   const isCreatedByUser = user?.id === playlist?.creatorId;
 
@@ -76,91 +78,97 @@ export function Comp({
       <div className="flex w-full items-center justify-between">
         <div
           className={cn(
-            "mt-2 flex h-fit w-full justify-between  rounded-full px-4 py-3",
+            "mt-2 flex h-fit w-full justify-between  rounded-full py-3 lg:px-4",
             selectedTracks?.length ?? 0 > 0 ? "bg-muted" : "",
           )}
         >
-          <div className="flex h-fit w-full gap-1">
-            {showExploreButton && <ExploreButton playlist={playlist} />}
-            {selectedTracks?.length ?? 0 > 0 ? (
-              <AddTracksToPlaylist
-                playlist={playlist}
-                selectedTracksIds={selectedTracks}
-                setSelectedTracks={setSelectedTracks}
-              />
-            ) : (
-              <QueuePlayButton
+          <div className="flex h-fit w-full max-lg:justify-between [&>*]:flex [&>*]:gap-1">
+            <div>
+              {showExploreButton && <ExploreButton playlist={playlist} />}
+              {selectedTracks?.length ?? 0 > 0 ? (
+                <AddTracksToPlaylist
+                  playlist={playlist}
+                  selectedTracksIds={selectedTracks}
+                  setSelectedTracks={setSelectedTracks}
+                />
+              ) : (
+                <QueuePlayButton
+                  disabled={disabled}
+                  queueTypeId={queueTypeId}
+                  isCurrent={!!queueTypeId}
+                  size={"icon"}
+                  className="mr-2 size-12 rounded-full"
+                  playlist={playlist}
+                  noDefPlaylist
+                >
+                  {(isPlaying) =>
+                    !isPlaying ? <FaPlay size={18} /> : <FaPause size={18} />
+                  }
+                </QueuePlayButton>
+              )}
+              {(selectedTracks?.length ?? 0) < 1 && (
+                <ShuffleButton disabled={disabled} playlist={playlist} />
+              )}
+            </div>
+            <div>
+              {isCreatedByUser ? (
+                <Button
+                  size={"icon"}
+                  variant="ghost"
+                  className="size-12 rounded-full"
+                >
+                  <IoPersonAddOutline size={22} />
+                </Button>
+              ) : (
+                <AddLibraryButton
+                  disabled={!playlist || disabled}
+                  size={50}
+                  playlist={playlist}
+                />
+              )}
+              <PlaylistDropdown
                 disabled={disabled}
-                queueTypeId={queueTypeId}
-                isCurrent={!!queueTypeId}
-                size={"icon"}
-                className="mr-2 size-12 rounded-full"
                 playlist={playlist}
-                noDefPlaylist
+                asChild={false}
               >
-                {(isPlaying) =>
-                  !isPlaying ? <FaPlay size={18} /> : <FaPause size={18} />
-                }
-              </QueuePlayButton>
-            )}
-            {(selectedTracks?.length ?? 0) < 1 && (
-              <ShuffleButton disabled={disabled} playlist={playlist} />
-            )}
-            {isCreatedByUser ? (
-              <Button
-                size={"icon"}
-                variant="ghost"
-                className="size-12 rounded-full"
-              >
-                <IoPersonAddOutline size={22} />
-              </Button>
-            ) : (
-              <AddLibraryButton
-                disabled={!playlist || disabled}
-                size={50}
-                playlist={playlist}
-              />
-            )}
-            <PlaylistDropdown
-              disabled={disabled}
-              playlist={playlist}
-              asChild={false}
-            >
-              <Button
-                size={"icon"}
-                variant="ghost"
-                className="size-12 rounded-full"
-              >
-                <BsThreeDots size={22} />
-              </Button>
-            </PlaylistDropdown>
+                <Button
+                  size={"icon"}
+                  variant="ghost"
+                  className="size-12 rounded-full"
+                >
+                  <BsThreeDots size={22} />
+                </Button>
+              </PlaylistDropdown>
+            </div>
           </div>
-          <div className="flex w-full items-center justify-end gap-2">
-            {selectedTracks?.length ?? 0 > 0 ? (
-              <Button
-                size={"icon"}
-                variant="ghost"
-                onClick={() => setSelectedTracks?.([])}
-                className="h-full w-8 rounded-full"
-              >
-                <FaCircleMinus className="size-full" />
-              </Button>
-            ) : (
-              <>
-                <SearchInput
-                  disabled={disabled}
-                  setTrackQuery={setTrackQuery}
-                />
+          {!isMobile && (
+            <div className="flex w-full items-center justify-end gap-2">
+              {selectedTracks?.length ?? 0 > 0 ? (
+                <Button
+                  size={"icon"}
+                  variant="ghost"
+                  onClick={() => setSelectedTracks?.([])}
+                  className="h-full w-8 rounded-full"
+                >
+                  <FaCircleMinus className="size-full" />
+                </Button>
+              ) : (
+                <>
+                  <SearchInput
+                    disabled={disabled}
+                    setTrackQuery={setTrackQuery}
+                  />
 
-                <FiltersSelect
-                  disabled={disabled}
-                  handleFilterChange={handleFilterChange}
-                  filters={filters}
-                  setFilters={setFilters}
-                />
-              </>
-            )}
-          </div>
+                  <FiltersSelect
+                    disabled={disabled}
+                    handleFilterChange={handleFilterChange}
+                    filters={filters}
+                    setFilters={setFilters}
+                  />
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

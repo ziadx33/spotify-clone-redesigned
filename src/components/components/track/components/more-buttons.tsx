@@ -14,7 +14,7 @@ export function MoreButtons({ playlist, track }: MoreButtonsProps) {
       <TrackMoreButton
         playlist={playlist}
         track={track}
-        className=" opacity-0 transition-opacity group-hover:opacity-100"
+        className=" transition-opacity lg:opacity-0 lg:group-hover:opacity-100"
       />
     </>
   );
