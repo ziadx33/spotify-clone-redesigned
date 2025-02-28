@@ -44,9 +44,11 @@ export function LikedSongs() {
   }, [data, dispatch]);
 
   return (
-    <div className="">
+    <div>
       {(data?.tracks.length ?? 0) > 0 || isLoading ? (
-        <MusicPlayer showExploreButton={false} queueTypeId="liked tracks" />
+        <div className="max-lg:px-4">
+          <MusicPlayer showExploreButton={false} queueTypeId="liked tracks" />
+        </div>
       ) : (
         <div className="p-4">
           <SearchTrack
