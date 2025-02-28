@@ -32,7 +32,7 @@ export function MobileSidebar() {
         <span className="text-xs">Search</span>
       </Link>
       <Link
-        href="/search"
+        href="/library"
         className="flex flex-col items-center gap-2 text-muted-foreground"
       >
         <TbBooks size={30} />
