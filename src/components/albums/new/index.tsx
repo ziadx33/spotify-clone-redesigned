@@ -81,11 +81,11 @@ export function NewAlbum() {
     <div>
       <div
         className={cn(
-          "flex justify-between gap-x-4 p-8 pb-6",
+          "flex justify-between gap-x-4 p-8 pb-6 max-lg:flex-col max-lg:px-4",
           miniMenuValue ? "flex-col" : "",
         )}
       >
-        <div className="flex w-[95%] flex-col">
+        <div className="flex w-full flex-col lg:w-[95%]">
           <AlbumTitle data={data} setData={setData} disabled={isLoading} />
           <div className="flex gap-1.5">
             <TracksData data={data} tracks={tracks} />
@@ -115,7 +115,7 @@ export function NewAlbum() {
         </div>
         <div
           className={cn(
-            "flex w-fit gap-4",
+            "flex w-fit gap-4 max-lg:w-full max-lg:flex-col",
             !miniMenuValue ? "flex-col" : "w-full flex-row border-t  pt-4",
           )}
         >

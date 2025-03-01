@@ -27,8 +27,8 @@ export function Comp({
     <>
       <button
         className={cn(
-          "group relative",
-          !miniMenuValue ? "size-[500px]" : "size-[300px]",
+          "group relative w-full max-lg:h-[350px] max-lg:w-full",
+          !miniMenuValue ? "h-[500px] lg:w-[500px]" : "h-[300px] lg:w-[300px]",
         )}
         onClick={() => inputRef.current?.click()}
       >

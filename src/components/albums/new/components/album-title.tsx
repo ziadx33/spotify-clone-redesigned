@@ -21,7 +21,7 @@ export function AlbumTitle({ data, setData, disabled }: AlbumTitleProps) {
       type="text"
       value={data.title}
       onChange={handleInputChange}
-      className="mb-5 w-[59rem] overflow-visible border-none bg-transparent text-start text-6xl font-bold outline-none"
+      className="mb-5 overflow-visible border-none bg-transparent text-start text-6xl font-bold outline-none max-lg:w-full max-lg:text-4xl xl:w-[59rem]"
       placeholder="Enter album title"
     />
   );
