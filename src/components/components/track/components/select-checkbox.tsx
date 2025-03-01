@@ -8,7 +8,7 @@ type TrackSelectCheckboxProps = {
   showButtons: boolean;
   selected?: boolean;
   track?: Track;
-  setSelectedTracks?: TrackProps["setSelectedTracks"];
+  setSelectedTracks: NonNullable<TrackProps["setSelectedTracks"]>;
 };
 
 export function SelectCheckbox({
@@ -20,7 +20,7 @@ export function SelectCheckbox({
 }: TrackSelectCheckboxProps) {
   return (
     <TableCell>
-      {setSelectedTracks && !skeleton && (showButtons || selected) && (
+      {!skeleton && (showButtons || selected) && (
         <Checkbox
           onCheckedChange={(e) =>
             setSelectedTracks((v) =>

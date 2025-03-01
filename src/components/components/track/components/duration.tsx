@@ -12,6 +12,7 @@ type DurationProps = {
   skeleton: boolean;
   replaceDurationWithButton?: TrackProps["replaceDurationWithButton"];
   playlist: Playlist | undefined;
+  hideViews?: boolean;
   hideTrackContext?: boolean;
 };
 
@@ -20,6 +21,7 @@ export function Duration({
   skeleton,
   track,
   replaceDurationWithButton,
+  hideViews,
   hideTrackContext,
 }: DurationProps) {
   const isMobile = useIsMobile();
@@ -30,7 +32,11 @@ export function Duration({
           <div className="flex h-full w-24 items-center gap-3">
             <span>{!isMobile && parseDurationTime(track!.duration)}</span>
             {!hideTrackContext && (
-              <MoreButtons playlist={playlist} track={track} />
+              <MoreButtons
+                hideViews={hideViews}
+                playlist={playlist}
+                track={track}
+              />
             )}
           </div>
         ) : (

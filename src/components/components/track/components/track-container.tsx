@@ -31,7 +31,6 @@ export function TrackContainer({
     setShowButtons(value);
   };
 
-
   const content = (
     <TableRow
       key={!skeleton ? track!.id : crypto.randomUUID()}

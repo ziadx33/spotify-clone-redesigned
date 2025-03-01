@@ -58,38 +58,39 @@ function Comp(props: TrackProps) {
         isAlbum={isAlbum}
       />
       {!isMobile && (
-        <>
-          <AlbumLinkCell
-            skeleton={skeleton}
-            track={!skeleton ? props.track : undefined}
-            album={!skeleton ? props.album : undefined}
-            isAlbum={isAlbum}
-          />
-          <PlaysRow
-            hidePlayButton={hidePlayButton}
-            hideViews={hideViews}
-            isAlbum={isAlbum}
-            skeleton={skeleton}
-            album={!skeleton ? props.album : undefined}
-            track={!skeleton ? props.track : undefined}
-            replacePlaysWithPlaylist={replacePlaysWithPlaylist}
-          />
-        </>
+        <AlbumLinkCell
+          skeleton={skeleton}
+          track={!skeleton ? props.track : undefined}
+          album={!skeleton ? props.album : undefined}
+          isAlbum={isAlbum}
+        />
       )}
+      <PlaysRow
+        hidePlayButton={hidePlayButton}
+        hideViews={hideViews}
+        isAlbum={isAlbum}
+        skeleton={skeleton}
+        album={!skeleton ? props.album : undefined}
+        track={!skeleton ? props.track : undefined}
+        replacePlaysWithPlaylist={replacePlaysWithPlaylist}
+      />
       <Duration
+        hideViews={hideViews}
         playlist={!skeleton ? props.playlist : undefined}
         skeleton={skeleton}
         replaceDurationWithButton={replaceDurationWithButton}
         track={!skeleton ? props.track : undefined}
         hideTrackContext={hideTrackContext}
       />
-      <SelectCheckbox
-        track={!skeleton ? props.track : undefined}
-        selected={selected}
-        showButtons={showButtons}
-        skeleton={skeleton}
-        setSelectedTracks={setSelectedTracks}
-      />
+      {setSelectedTracks && (
+        <SelectCheckbox
+          track={!skeleton ? props.track : undefined}
+          selected={selected}
+          showButtons={showButtons}
+          skeleton={skeleton}
+          setSelectedTracks={setSelectedTracks}
+        />
+      )}
     </TrackContainer>
   );
 }
