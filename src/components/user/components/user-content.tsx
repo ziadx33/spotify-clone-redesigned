@@ -18,6 +18,7 @@ import { accordionTriggerClasses } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BsBell } from "react-icons/bs";
+import { FaGear } from "react-icons/fa6";
 
 type UserContentProps = {
   user?: User;
@@ -86,21 +87,38 @@ export function UserContent({
       </div>
       <div className="flex flex-col gap-12 p-8 max-lg:w-screen">
         {isCurUser && isMobile && (
-          <Button
-            variant="ghost"
-            className={cn(
-              accordionTriggerClasses,
-              "h-12 w-full  px-2 hover:bg-secondary",
-            )}
-            asChild
-          >
-            <Link href="/notifications">
-              <div className="flex items-center gap-2 text-xl">
-                <BsBell size={23} />
-                What&apos;s new
-              </div>
-            </Link>
-          </Button>
+          <>
+            <Button
+              variant="ghost"
+              className={cn(
+                accordionTriggerClasses,
+                "h-12 w-full  px-2 hover:bg-secondary",
+              )}
+              asChild
+            >
+              <Link href="/notifications">
+                <div className="flex items-center gap-2 text-xl">
+                  <BsBell size={23} />
+                  What&apos;s new
+                </div>
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className={cn(
+                accordionTriggerClasses,
+                "h-12 w-full  px-2 hover:bg-secondary",
+              )}
+              asChild
+            >
+              <Link href="/notifications">
+                <div className="flex items-center gap-2 text-xl">
+                  <FaGear size={23} />
+                  Settings
+                </div>
+              </Link>
+            </Button>
+          </>
         )}
         {userData?.type === "USER" && <EditDropdown userData={userData} />}
         {!isCurUser && !userPrefrence ? (
