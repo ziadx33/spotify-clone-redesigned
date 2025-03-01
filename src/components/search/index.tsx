@@ -34,6 +34,7 @@ export function Search() {
   });
   return (
     <div className="flex h-full flex-col p-4">
+      {""}
       <SearchInput />
       {!isLoading ? (
         queryRef.current ? (
