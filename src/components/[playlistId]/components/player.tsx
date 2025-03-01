@@ -74,7 +74,7 @@ export function Comp({
   const isCreatedByUser = user?.id === playlist?.creatorId;
 
   return (
-    <div className="flex w-full items-center">
+    <div className="flex w-full items-center max-lg:px-4">
       <div className="flex w-full items-center justify-between">
         <div
           className={cn(

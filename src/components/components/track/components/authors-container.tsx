@@ -3,6 +3,8 @@ import { Authors } from "./authors";
 import { AuthorsCell, type AuthorsCellProps } from "./authors-cell";
 import { IndexImage, type IndexImageProps } from "./index-image";
 import { type Props } from "../types";
+import { useIsMobile } from "@/hooks/use-mobile";
+import Link from "next/link";
 
 type CompTypes = IndexImageProps & AuthorsCellProps;
 
@@ -14,10 +16,22 @@ type AuthorsContainerProps = {
 
 export function AuthorsContainer(props: AuthorsContainerProps) {
   const isList = props.viewAs === "LIST";
-
-  const authorsElement = !props.skeleton && (
-    <Authors authors={props.authors!} playlistId={props.playlist?.id} />
+  const isMobile = useIsMobile();
+  console.log(
+    "yesebek",
+    !props.skeleton && !isMobile && (props.authors?.length ?? 0) > 0,
   );
+  const authorsElement =
+    !props.skeleton && !(isMobile && (props.authors?.length ?? 0) > 1) ? (
+      <Authors authors={props.authors!} playlistId={props.playlist?.id} />
+    ) : (
+      <Link
+        href={`/playlist/${props.track?.albumId}`}
+        className="text-muted-foreground"
+      >
+        various artists
+      </Link>
+    );
   return (
     <>
       <IndexImage {...props} authorsElement={authorsElement} isList={isList} />

@@ -22,7 +22,7 @@ export function RenderTracks({
 }: RenderTracksProps) {
   return !loading ? (
     <div className="w-full flex-col">
-      <h1 className="mb-4 text-3xl font-semibold">{title}</h1>
+      <h1 className="mb-4 text-3xl font-semibold max-lg:px-4">{title}</h1>
       <Table>
         <TableBody>
           {data!.tracks.length > 0

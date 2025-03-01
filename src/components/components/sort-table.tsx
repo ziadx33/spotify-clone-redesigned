@@ -77,39 +77,42 @@ export function SortTable({
       {(data?.tracks?.length ?? 0) === 0 && showCaption && (
         <TableCaption>No tracks in this playlist.</TableCaption>
       )}
-      <TableHeader>
-        {!isMobile && <TableRow>
-          <TableHead className="w-0 pl-4 pr-0">#</TableHead>
-          <DoubleFilter
-            handleFilterChange={handleFilterChange}
-            filters={filters}
-            setFilters={setFilters}
-          />
-          <FilterButton
-            filters={filters}
-            handleFilterChange={handleFilterChange}
-            setFilters={setFilters}
-            title="Album"
-            propertyName="album"
-          />
-          <FilterButton
-            filters={filters}
-            handleFilterChange={handleFilterChange}
-            setFilters={setFilters}
-            title="Date Added"
-            propertyName="dateAdded"
-            className="w-32"
-          />
-          <FilterButton
-            filters={filters}
-            handleFilterChange={handleFilterChange}
-            setFilters={setFilters}
-            title={<BsClock size={15} />}
-            propertyName="duration"
-            className="w-10"
-          />
-        </TableRow>}
-      </TableHeader>
+      {!isMobile && (
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-0 pl-4 pr-0">#</TableHead>
+            <DoubleFilter
+              handleFilterChange={handleFilterChange}
+              filters={filters}
+              setFilters={setFilters}
+            />
+            <FilterButton
+              filters={filters}
+              handleFilterChange={handleFilterChange}
+              setFilters={setFilters}
+              title="Album"
+              propertyName="album"
+            />
+            <FilterButton
+              filters={filters}
+              handleFilterChange={handleFilterChange}
+              setFilters={setFilters}
+              title="Date Added"
+              propertyName="dateAdded"
+              className="w-32"
+            />
+            <FilterButton
+              filters={filters}
+              handleFilterChange={handleFilterChange}
+              setFilters={setFilters}
+              title={<BsClock size={15} />}
+              propertyName="duration"
+              className="w-10"
+            />
+          </TableRow>
+        </TableHeader>
+      )}
+
       <TableBody>{memoizedTracks}</TableBody>
     </>
   );

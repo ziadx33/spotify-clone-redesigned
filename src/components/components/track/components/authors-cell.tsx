@@ -20,7 +20,7 @@ export function AuthorsCell({
       <>
         {!isList ? (
           <TableCell>
-            <p className="inline">{authorsElement}</p>
+            <p className="block">{authorsElement}</p>
           </TableCell>
         ) : skeleton ? (
           <div>

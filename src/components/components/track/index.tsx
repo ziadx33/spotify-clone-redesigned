@@ -65,15 +65,17 @@ function Comp(props: TrackProps) {
           isAlbum={isAlbum}
         />
       )}
-      <PlaysRow
-        hidePlayButton={hidePlayButton}
-        hideViews={hideViews}
-        isAlbum={isAlbum}
-        skeleton={skeleton}
-        album={!skeleton ? props.album : undefined}
-        track={!skeleton ? props.track : undefined}
-        replacePlaysWithPlaylist={replacePlaysWithPlaylist}
-      />
+      {!hideViews && !replacePlaysWithPlaylist && (
+        <PlaysRow
+          hidePlayButton={hidePlayButton}
+          hideViews={hideViews}
+          isAlbum={isAlbum}
+          skeleton={skeleton}
+          album={!skeleton ? props.album : undefined}
+          track={!skeleton ? props.track : undefined}
+          replacePlaysWithPlaylist={replacePlaysWithPlaylist}
+        />
+      )}
       <Duration
         hideViews={hideViews}
         playlist={!skeleton ? props.playlist : undefined}

@@ -37,7 +37,7 @@ export function FeaturingTab({ artist, query }: FeaturingTabProps) {
   }, [query, isLoading]);
 
   return (
-    <div className="mt-8 flex flex-col">
+    <div className="mt-8 flex flex-col max-lg:px-4">
       <h1 className="mb-4 text-3xl font-bold">Featuring</h1>
       <div className="flex flex-wrap">
         {!isLoading && data ? (

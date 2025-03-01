@@ -36,7 +36,7 @@ export function RecommendedTracks({
 
   return (
     <>
-      <div className="mb-4 flex flex-col">
+      <div className="mb-4 flex flex-col max-lg:px-4">
         <b className="text-3xl">Recommended</b>
         <p className="text-sm text-muted-foreground">
           Based on what&apos;s in this playlist

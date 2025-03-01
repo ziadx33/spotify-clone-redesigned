@@ -41,8 +41,11 @@ export function TabsSection({ artist }: TabsSectionProps) {
       }}
     >
       <div className="flex justify-between">
-        <div className="flex items-center gap-2">
-          <TabsList defaultValue={currentTab ?? "home"} className="flex w-fit">
+        <div className="flex items-center gap-2 max-lg:flex-col max-lg:px-4">
+          <TabsList
+            defaultValue={currentTab ?? "home"}
+            className="flex h-fit w-fit flex-wrap"
+          >
             {tabs.map((tab) => (
               <TabsTrigger key={tab} value={tab} className="w-fit min-w-36">
                 {tab}

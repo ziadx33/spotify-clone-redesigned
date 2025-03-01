@@ -56,7 +56,9 @@ export function IndexImage({
             <TableCell className="w-12 pl-4 pr-4">{playButton}</TableCell>
           )
         : undefined}
-      <TableCell className={cn("font-medium", className)}>
+      <TableCell
+        className={cn("font-medium max-lg:w-fit max-lg:min-w-12", className)}
+      >
         <div className="flex w-full gap-2">
           {isList &&
             showImage &&

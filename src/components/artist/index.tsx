@@ -37,7 +37,7 @@ export function Artist({ artist, playlistId }: ArtistProps) {
           artist.coverImage ? "h-[30rem] items-end" : "h-72 items-center gap-8",
         )}
       >
-        <div className="flex h-full w-full items-end justify-between">
+        <div className="flex h-full w-full items-end justify-between max-lg:flex-col max-lg:items-start">
           <AuthorContext artist={artist} playlistId="artist-page">
             <div
               className={!artist.coverImage ? "flex items-center gap-3" : ""}
@@ -51,7 +51,7 @@ export function Artist({ artist, playlistId }: ArtistProps) {
                   className="size-[200px] rounded-full"
                 />
               )}
-              <b className="text-8xl text-secondary-foreground">
+              <b className="text-8xl text-secondary-foreground max-lg:text-5xl">
                 {artist.name}
               </b>
             </div>
@@ -80,7 +80,7 @@ export function Artist({ artist, playlistId }: ArtistProps) {
           />
         </div>
       </div>
-      <div className="size-full px-8 py-5">
+      <div className="size-full py-5 lg:px-8">
         <TabsSection artist={artist} />
       </div>
     </div>

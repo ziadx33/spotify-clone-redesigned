@@ -23,7 +23,7 @@ export function SearchInput({
   return (
     <div
       className={cn(
-        "flex items-center gap-2",
+        "mr-auto flex items-center gap-2",
         reverse ? "flex-row-reverse" : "",
       )}
     >
@@ -35,7 +35,7 @@ export function SearchInput({
             setTrackQuery?.(e.target.value === "" ? null : e.target.value)
           }
           placeholder="Search"
-          className="w-72"
+          className="w-24"
         />
       )}
       <Button

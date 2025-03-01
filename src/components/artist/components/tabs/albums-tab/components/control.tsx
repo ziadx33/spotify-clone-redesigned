@@ -10,7 +10,7 @@ type ControlProps = {
 
 export function Control({ filters, setFilters }: ControlProps) {
   return (
-    <div className="flex w-fit items-center justify-start gap-2">
+    <div className="flex w-fit items-center justify-start gap-2 max-lg:mr-2">
       <ToggleGroup
         value={filters.viewAs}
         onValueChange={(e) =>

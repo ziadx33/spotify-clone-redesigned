@@ -26,36 +26,38 @@ export function Duration({
 }: DurationProps) {
   const isMobile = useIsMobile();
   return (
-    <TableCell>
-      {!replaceDurationWithButton ? (
-        !skeleton ? (
-          <div className="flex h-full w-24 items-center gap-3">
-            <span>{!isMobile && parseDurationTime(track!.duration)}</span>
-            {!hideTrackContext && (
-              <MoreButtons
-                hideViews={hideViews}
-                playlist={playlist}
-                track={track}
-              />
-            )}
-          </div>
+    !(isMobile && !hideViews) && (
+      <TableCell>
+        {!replaceDurationWithButton ? (
+          !skeleton ? (
+            <div className="flex h-full w-24 items-center gap-3">
+              <span>{!isMobile && parseDurationTime(track!.duration)}</span>
+              {!hideTrackContext && (
+                <MoreButtons
+                  hideViews={hideViews}
+                  playlist={playlist}
+                  track={track}
+                />
+              )}
+            </div>
+          ) : (
+            <Skeleton className="h-2.5 w-24 max-lg:w-6" />
+          )
+        ) : !skeleton ? (
+          typeof replaceDurationWithButton !== "function" ? (
+            <Button
+              variant="outline"
+              onClick={() => replaceDurationWithButton.fn(track!)}
+            >
+              {replaceDurationWithButton.name}
+            </Button>
+          ) : (
+            <>{replaceDurationWithButton(track!)}</>
+          )
         ) : (
-          <Skeleton className="h-2.5 w-24 max-lg:w-6" />
-        )
-      ) : !skeleton ? (
-        typeof replaceDurationWithButton !== "function" ? (
-          <Button
-            variant="outline"
-            onClick={() => replaceDurationWithButton.fn(track!)}
-          >
-            {replaceDurationWithButton.name}
-          </Button>
-        ) : (
-          <>{replaceDurationWithButton(track!)}</>
-        )
-      ) : (
-        <Skeleton className="h-2.5 w-6" />
-      )}
-    </TableCell>
+          <Skeleton className="h-2.5 w-6" />
+        )}
+      </TableCell>
+    )
   );
 }

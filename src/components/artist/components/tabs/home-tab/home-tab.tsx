@@ -38,7 +38,7 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
     },
   });
   return (
-    <div className="flex min-h-full gap-4 pt-8">
+    <div className="flex min-h-full gap-4 pt-8 max-xl:flex-col">
       <div className="flex-1">
         <div className="flex flex-col gap-2">
           {(data?.userTopTracks.data.tracks?.length ?? 0) > 1 && (
@@ -59,7 +59,7 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
           />
         </div>
       </div>
-      <div className="flex w-96 flex-col gap-8">
+      <div className="flex w-full max-w-96 flex-col gap-8 max-lg:pl-4">
         {artist.artistPick && (
           <ArtistPickSection
             name={artist.name}

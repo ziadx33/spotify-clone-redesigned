@@ -34,7 +34,7 @@ export function AlbumsTab({ artist, filters, query }: AlbumsTabProps) {
   });
 
   return (
-    <div className="flex flex-col gap-6 pt-2">
+    <div className="flex flex-col gap-6 pt-2 max-lg:px-4">
       <section className="flex justify-between"></section>
       <div
         className={cn(
