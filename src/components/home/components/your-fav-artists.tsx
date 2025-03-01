@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PopularArtistsSection } from "./popular-artists-section";
 import { EditSectionButton } from "./edit-section-button";
 import { useUserData } from "@/hooks/use-user-data";
+import { wait } from "@/utils/wait";
 
 type YourFavArtistsProps = {
   userId: string;
@@ -16,8 +17,9 @@ type YourFavArtistsProps = {
 export function YourFavArtists({ userId }: YourFavArtistsProps) {
   const user = useUserData();
   const { data, isLoading } = useQuery({
-    queryKey: ["fav-artists-home", user],
+    queryKey: [`fav-user-artist-home`],
     queryFn: async () => {
+      await wait(1000);
       const topTracks = await getUserTopTracks({
         user: user,
         tracksOnly: true,
@@ -34,7 +36,6 @@ export function YourFavArtists({ userId }: YourFavArtistsProps) {
       });
       return data;
     },
-    enabled: !!user,
   });
   return (
     <RenderSectionItems

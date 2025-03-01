@@ -8,6 +8,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { type TracksSliceType } from "./tracks";
 import { type SliceType } from "../types";
 import { getQueue } from "@/server/actions/queue";
+import { wait } from "@/utils/wait";
 
 export type QueueSliceType = {
   queueData?: Queue;
@@ -31,6 +32,7 @@ const initialState: QueueListSliceType = {
 export const getSliceQueue = createAsyncThunk(
   "queue/getSliceQueue",
   async (userId: string) => {
+    await wait(1000);
     const queueData = await getQueue(userId);
 
     return queueData;

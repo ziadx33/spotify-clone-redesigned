@@ -8,6 +8,7 @@ import { EditSectionButton } from "./edit-section-button";
 import { useUserData } from "@/hooks/use-user-data";
 import { getUserFollowing } from "@/server/actions/user";
 import { BestOfArtistsDialog } from "./best-of-artists-dialog";
+import { wait } from "@/utils/wait";
 
 type BestOfArtistsSectionProps = {
   userId: string;
@@ -17,8 +18,9 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
   const user = useUserData();
 
   const { data, isLoading } = useQuery({
-    queryKey: [`best-of-artists-section`, user],
+    queryKey: [`best-of-artists-section`],
     queryFn: async () => {
+      await wait(1000);
       const artists = await getUserFollowing(user?.id ?? "");
       return artists;
     },
