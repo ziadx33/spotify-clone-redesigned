@@ -19,13 +19,19 @@ import { useSelector } from "react-redux";
 export function FeatureRequestsTab() {
   const { data: requests } = useSelector((state: RootState) => state.requests);
   const user = useUserData();
+  const requestsLength = requests?.length ?? 0;
   const { data } = useQuery({
     queryKey: ["feat-requests-data"],
     queryFn: async () => {
-      const tracks = await getTracksByIds({
-        ids: requests?.map((request) => request.trackId),
-      });
-      const tracksData = await getTracksData({ tracks });
+      const tracks =
+        requestsLength > 0
+          ? await getTracksByIds({
+              ids: requests?.map((request) => request.trackId),
+            })
+          : [];
+      const tracksData = requestsLength
+        ? await getTracksData({ tracks })
+        : { authors: [], playlists: [] };
       return { tracks, ...tracksData };
     },
   });

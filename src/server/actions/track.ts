@@ -435,24 +435,31 @@ export const getTracksByIds = unstable_cache(
     try {
       const tracks = await db.track.findMany({
         where: {
-          OR: data.artistId
-            ? [
-                {
-                  authorIds: {
-                    has: data.artistId,
-                  },
-                },
-                { authorId: data.artistId },
-              ]
-            : undefined,
-          id: {
-            in: data.ids,
-          },
-          album: data.type
-            ? {
-                type: data.type,
-              }
-            : undefined,
+          AND: [
+            {
+              id: {
+                in: data.ids,
+              },
+            },
+            {
+              OR: data.artistId
+                ? [
+                    {
+                      authorIds: {
+                        has: data.artistId,
+                      },
+                    },
+                    { authorId: data.artistId },
+                  ]
+                : undefined,
+
+              album: data.type
+                ? {
+                    type: data.type,
+                  }
+                : undefined,
+            },
+          ],
         },
       });
       return tracks;

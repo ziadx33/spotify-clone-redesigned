@@ -13,6 +13,7 @@ import { type FiltersStateType } from "../albums-tab";
 import { PlaylistContext } from "@/components/contexts/playlist-context";
 import { enumParser } from "@/utils/enum-parser";
 import { TrackContext } from "@/components/contexts/track-context";
+import { cn } from "@/lib/utils";
 
 type AlbumProps = {
   tracks?: Track[];
@@ -56,10 +57,13 @@ function ListView({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex w-full gap-6 px-6">
+      <div className="flex w-full gap-6 px-6 max-lg:flex-col">
         {album ? (
           <PlaylistContext
-            linkProps={{ className: "relative h-[150px] w-[180px]" }}
+            linkProps={{
+              className:
+                "relative h-[160px] w-full max-lg:mx-auto max-w-[180px]",
+            }}
             playlist={album}
             asChild
           >
@@ -87,7 +91,12 @@ function ListView({
           </TrackContext>
         )}
         <div className="flex w-full flex-col justify-between">
-          <div className="flex w-full justify-between">
+          <div
+            className={cn(
+              "flex w-full justify-between max-lg:gap-2",
+              buttons && "max-lg:flex-col",
+            )}
+          >
             <div className="flex flex-col">
               <PlaylistContext playlist={album} linkProps={{}}>
                 <span className="text-3xl font-bold hover:underline">
@@ -112,24 +121,28 @@ function ListView({
                 ]}
               />
             </div>
-            {buttons ?? (
-              <Button
-                variant="outline"
-                className="gap-2.5"
-                onClick={() => setExpanded((v) => !v)}
-              >
-                expand{" "}
-                {!expanded ? (
-                  <FaArrowDown size={12} />
-                ) : (
-                  <FaArrowUp size={12} />
-                )}
-              </Button>
+            <div className={cn(buttons && "max-lg:mx-auto")}>
+              {buttons ?? (
+                <Button
+                  variant="outline"
+                  className="gap-2.5"
+                  onClick={() => setExpanded((v) => !v)}
+                >
+                  expand{" "}
+                  {!expanded ? (
+                    <FaArrowDown size={12} />
+                  ) : (
+                    <FaArrowUp size={12} />
+                  )}
+                </Button>
+              )}
+            </div>
+          </div>
+          <div className="max-lg:mt-4">
+            {album && tracks && (
+              <AlbumControl author={artist} tracks={tracks} playlist={album} />
             )}
           </div>
-          {album && tracks && (
-            <AlbumControl author={artist} tracks={tracks} playlist={album} />
-          )}
         </div>
       </div>
       {expanded ? table : null}

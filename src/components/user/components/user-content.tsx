@@ -13,6 +13,11 @@ import { getPrefrence } from "@/server/actions/prefrence";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { EditDropdown } from "./edit-dropdown";
 import { useUserData } from "@/hooks/use-user-data";
+import Link from "next/link";
+import { accordionTriggerClasses } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { BsBell } from "react-icons/bs";
 
 type UserContentProps = {
   user?: User;
@@ -45,6 +50,7 @@ export function UserContent({
     },
     enabled: !isCurUser && !!user?.id,
   });
+  const isMobile = useIsMobile();
   return (
     <div className="flex min-h-full w-full flex-col">
       <div
@@ -79,6 +85,23 @@ export function UserContent({
         </div>
       </div>
       <div className="flex flex-col gap-12 p-8 max-lg:w-screen">
+        {isCurUser && isMobile && (
+          <Button
+            variant="ghost"
+            className={cn(
+              accordionTriggerClasses,
+              "h-12 w-full  px-2 hover:bg-secondary",
+            )}
+            asChild
+          >
+            <Link href="/notifications">
+              <div className="flex items-center gap-2 text-xl">
+                <BsBell size={23} />
+                What&apos;s new
+              </div>
+            </Link>
+          </Button>
+        )}
         {userData?.type === "USER" && <EditDropdown userData={userData} />}
         {!isCurUser && !userPrefrence ? (
           <RenderSectionItems
@@ -90,7 +113,6 @@ export function UserContent({
         ) : (!isCurUser ? userPrefrence?.data?.ShowTopPlayingArtists : true) ? (
           <TopArtists artists={topArtists} user={userData} />
         ) : null}
-
         {!isCurUser && !userPrefrence ? (
           <RenderSectionItems
             cards={[]}
@@ -101,7 +123,6 @@ export function UserContent({
         ) : (!isCurUser ? userPrefrence?.data?.ShowTopPlayingTracks : true) ? (
           <TopTracks user={userData} data={topTracks} />
         ) : null}
-
         {!isCurUser && !userPrefrence ? (
           <RenderSectionItems
             cards={[]}
@@ -128,7 +149,6 @@ export function UserContent({
             title="Following"
           />
         ) : null}
-
         {!isCurUser && !userPrefrence ? (
           <RenderSectionItems
             cards={[]}
