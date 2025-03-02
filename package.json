@@ -50,6 +50,7 @@
     "@types/react-sortable-hoc": "^0.7.1",
     "@types/uuid": "^9.0.8",
     "@uploadthing/react": "^7.1.5",
+    "axios": "^1.8.1",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

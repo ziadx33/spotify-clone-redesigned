@@ -32,7 +32,6 @@ const initialState: QueueListSliceType = {
 export const getSliceQueue = createAsyncThunk(
   "queue/getSliceQueue",
   async (userId: string) => {
-    await wait(1000);
     const queueData = await getQueue(userId);
 
     return queueData;

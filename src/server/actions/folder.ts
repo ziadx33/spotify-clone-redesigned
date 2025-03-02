@@ -1,26 +1,7 @@
 "use server";
 
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { db } from "../db";
-
-export async function getFolders(userId: string) {
-  return await unstable_cache(
-    async () => {
-      try {
-        const folders = await db.folder.findMany({
-          where: {
-            userId,
-          },
-        });
-        return folders;
-      } catch (error) {
-        throw { error };
-      }
-    },
-    ["folders"],
-    { tags: [`user-folders-${userId}`] },
-  )();
-}
 
 export const addPlaylistToFolder = async (
   playlistId: string,

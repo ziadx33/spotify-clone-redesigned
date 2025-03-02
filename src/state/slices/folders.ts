@@ -1,7 +1,7 @@
 import { type Folder } from "@prisma/client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { type SliceType } from "../types";
-import { getFolders } from "@/server/actions/folder";
+import { getFolders } from "@/server/queries/folder";
 
 export type FoldersSliceType = SliceType<Folder[]>;
 

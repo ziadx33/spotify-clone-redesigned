@@ -19,7 +19,6 @@ export function YourFavArtists({ userId }: YourFavArtistsProps) {
   const { data, isLoading } = useQuery({
     queryKey: [`fav-user-artist-home`],
     queryFn: async () => {
-      await wait(1000);
       const topTracks = await getUserTopTracks({
         user: user,
         tracksOnly: true,

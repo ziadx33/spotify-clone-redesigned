@@ -20,7 +20,6 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
   const { data, isLoading } = useQuery({
     queryKey: [`best-of-artists-section`],
     queryFn: async () => {
-      await wait(1000);
       const artists = await getUserFollowing(user?.id ?? "");
       return artists;
     },
