@@ -33,7 +33,7 @@ export function PlaylistsSection({
         {!isLoading ? items : <SkeletonPlaylists amount={6} />}
       </div>
 
-      <SortableList comps={comps} />
+      {/* <SortableList comps={comps} /> */}
     </div>
   ) : null;
 }

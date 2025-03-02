@@ -70,13 +70,13 @@ export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
 
   return (
     <RenderSectionItems
-      buttons={[
-        <EditSectionButton
-          key="edit-button"
-          userId={userId}
-          sectionId="best of artists"
-        />,
-      ]}
+      // buttons={[
+      //   <EditSectionButton
+      //     key="edit-button"
+      //     userId={userId}
+      //     sectionId="best of artists"
+      //   />,
+      // ]}
       cards={cards}
       id="best-of-artists"
       title="Best of artists"

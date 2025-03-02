@@ -69,13 +69,13 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
   return (
     <RenderSectionItems
       id="made-for-you"
-      buttons={[
-        <EditSectionButton
-          sectionId="made for you"
-          key="edit-button"
-          userId={userId}
-        />,
-      ]}
+      // buttons={[
+      //   <EditSectionButton
+      //     sectionId="made for you"
+      //     key="edit-button"
+      //     userId={userId}
+      //   />,
+      // ]}
       cards={cards}
       title="Made for you"
       cardsContainerClasses="gap-2"

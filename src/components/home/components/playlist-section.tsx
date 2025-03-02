@@ -19,13 +19,13 @@ export function PlaylistSection({
 }: PlaylistsSectionProps) {
   return content.length > 0 ? (
     <RenderSectionItems
-      buttons={[
-        <EditSectionButton
-          key="edit-button"
-          sectionId={sectionId}
-          userId={userId}
-        />,
-      ]}
+      // buttons={[
+      //   <EditSectionButton
+      //     key="edit-button"
+      //     sectionId={sectionId}
+      //     userId={userId}
+      //   />,
+      // ]}
       cards={content?.map((playlist) => {
         return (
           <SectionItem

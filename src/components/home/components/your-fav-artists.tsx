@@ -39,13 +39,13 @@ export function YourFavArtists({ userId }: YourFavArtistsProps) {
   });
   return (
     <RenderSectionItems
-      buttons={[
-        <EditSectionButton
-          key="edit-button"
-          sectionId="your favorite artists"
-          userId={userId}
-        />,
-      ]}
+      // buttons={[
+      //   <EditSectionButton
+      //     key="edit-button"
+      //     sectionId="your favorite artists"
+      //     userId={userId}
+      //   />,
+      // ]}
       cards={data?.map((artist) => {
         return (
           <SectionItem
