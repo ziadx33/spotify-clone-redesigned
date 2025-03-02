@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { type Notification } from "@prisma/client";
-import { getNotificationsByUserId } from "@/server/actions/notification";
 import { type SliceType } from "../types";
+import { getNotifications } from "@/server/queries/notification";
 
 const initialState: SliceType<Notification[]> = {
   status: "idle",
@@ -12,7 +12,7 @@ const initialState: SliceType<Notification[]> = {
 export const getSliceNotifications = createAsyncThunk(
   "notifications/getSliceNotifications",
   async (userId: string) => {
-    const notifications = await getNotificationsByUserId(userId);
+    const notifications = await getNotifications(userId);
 
     return notifications;
   },
