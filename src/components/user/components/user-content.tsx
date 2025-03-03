@@ -9,7 +9,6 @@ import { TopTracks } from "./top-tracks";
 import { PublicPlaylists } from "./public-playlists";
 import { UsersSection } from "./users-section";
 import { useQuery } from "@tanstack/react-query";
-import { getPrefrence } from "@/server/actions/prefrence";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { EditDropdown } from "./edit-dropdown";
 import { useUserData } from "@/hooks/use-user-data";
@@ -19,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BsBell } from "react-icons/bs";
 import { FaGear } from "react-icons/fa6";
+import { getPrefrence } from "@/server/queries/prefrence";
 
 type UserContentProps = {
   user?: User;

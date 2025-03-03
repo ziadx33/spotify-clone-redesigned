@@ -2,7 +2,8 @@
 
 import Loading from "@/components/ui/loading";
 import { useUserData } from "@/hooks/use-user-data";
-import { createPrefrence, getPrefrence } from "@/server/actions/prefrence";
+import { createPrefrence } from "@/server/actions/prefrence";
+import { getPrefrence } from "@/server/queries/prefrence";
 import { setPrefrence } from "@/state/slices/prefrence";
 import { type AppDispatch } from "@/state/store";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +19,14 @@ export function PrefrencesProvider({ children }: { children: ReactNode }) {
     queryFn: async () => {
       if (!user?.id) throw new Error("User not authenticated");
       let userPrefrence = await getPrefrence(user?.id);
-      if (!userPrefrence.data) userPrefrence = await createPrefrence(user?.id);
+      if (!userPrefrence.data) {
+        const newPrefrence = await createPrefrence(user?.id);
+        userPrefrence = {
+          status: "success",
+          data: newPrefrence.data!,
+          error: null,
+        };
+      }
       return userPrefrence;
     },
     enabled: !!user?.id,
