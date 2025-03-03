@@ -7,7 +7,7 @@ import { type User } from "@prisma/client";
 import { useState } from "react";
 
 type TopArtistsProps = {
-  users: User[];
+  users: User[] | null;
   user?: User;
   title: string;
 };
@@ -15,7 +15,7 @@ type TopArtistsProps = {
 export function UsersSection({ users, user, title }: TopArtistsProps) {
   const [showMoreButton, setShowMoreButton] = useState(false);
 
-  return users.length > 0 ? (
+  return users?.length ?? 0 > 0 ? (
     <div className="w-full flex-col">
       <div className="flex items-center justify-between">
         <Button
@@ -61,22 +61,24 @@ export function UsersSection({ users, user, title }: TopArtistsProps) {
       <div className="flex gap-2 overflow-x-hidden">
         <RenderCards
           setShowMoreButton={setShowMoreButton}
-          cards={users.map((user: User) => {
-            return (
-              <SectionItem
-                imageClasses="rounded-full"
-                key={user.id}
-                alt={user.name ?? ""}
-                title={user.name ?? ""}
-                image={user.image ?? ""}
-                showPlayButton
-                description="artist"
-                artistData={user}
-                type="ARTIST"
-                link={`/artist/${user.id}?playlist=${title}`}
-              />
-            );
-          })}
+          cards={
+            users?.map((user: User) => {
+              return (
+                <SectionItem
+                  imageClasses="rounded-full"
+                  key={user.id}
+                  alt={user.name ?? ""}
+                  title={user.name ?? ""}
+                  image={user.image ?? ""}
+                  showPlayButton
+                  description="artist"
+                  artistData={user}
+                  type="ARTIST"
+                  link={`/artist/${user.id}?playlist=${title}`}
+                />
+              );
+            }) ?? []
+          }
         />
       </div>
     </div>

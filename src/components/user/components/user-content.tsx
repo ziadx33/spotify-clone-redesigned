@@ -24,7 +24,7 @@ type UserContentProps = {
   user?: User;
   publicPlaylists: Playlist[];
   followedArtists: User[];
-  followerUsers: User[];
+  followerUsers: User[] | null;
   isUser: boolean;
   topArtists: User[];
   topTracks: TracksSliceType["data"];

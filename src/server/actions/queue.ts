@@ -7,7 +7,6 @@ import {
   type QueueSliceType,
   type QueueListSliceType,
 } from "@/state/slices/queue-list";
-import { getUserByIds } from "./user";
 import {
   type User,
   type Queue,
@@ -20,6 +19,7 @@ import { type TracksSliceType } from "@/state/slices/tracks";
 import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { type Nullable } from "@/types";
 import { shuffleArray } from "@/utils/shuffle-array";
+import { getUserByIds } from "../queries/user";
 
 type GetQueueDataParams = {
   queues: Queue[];
@@ -199,7 +199,7 @@ export async function getQueueTracks({ queues, data }: GetTrackSliceParams) {
     ?.filter((queue) => queue.type === "ARTIST" && queue.typeId !== null)
     .map((queue) => queue.typeId!);
 
-  const queueArtistTypeData = await getUserByIds(userIds ?? []);
+  const queueArtistTypeData = await getUserByIds({ ids: userIds ?? [] });
   return queues?.map((queue) => {
     const tracks =
       data?.tracks?.filter((track) => {
@@ -219,7 +219,7 @@ export async function getQueueTracks({ queues, data }: GetTrackSliceParams) {
           .flat()
           .includes(album.id);
       }) ?? null;
-    const artistTypeData = queueArtistTypeData.find(
+    const artistTypeData = queueArtistTypeData!.find(
       (artist) => artist.id === queue.typeId,
     )!;
     const playlistTypeData = queuePlaylistTypeData?.data?.find(

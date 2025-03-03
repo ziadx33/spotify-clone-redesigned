@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { AppProvider } from "./app-provider";
 import { getPlaylists } from "@/server/actions/playlist";
 import { getServerAuthSession } from "@/server/auth";
-import { getFollowedArtists } from "@/server/actions/user";
+import { getUserFollowing } from "@/server/queries/user";
 
 export async function ServerAppDataProvider({
   children,
@@ -16,8 +16,9 @@ export async function ServerAppDataProvider({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     playlistIds: user?.playlists ?? [],
   });
-  const following = await getFollowedArtists({
-    userId: userData?.user.id ?? "",
+  const following = await getUserFollowing({
+    id: userData?.user.id ?? "",
+    userType: "ARTIST",
   });
   return (
     <AppProvider playlists={playlists} following={following ?? []}>

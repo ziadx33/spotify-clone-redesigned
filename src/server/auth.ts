@@ -8,12 +8,12 @@ import { type Adapter } from "next-auth/adapters";
 import { type User } from "@prisma/client";
 
 import { db } from "@/server/db";
-import { getUserByEmail } from "./actions/user";
 import { getUserById } from "./actions/verification-token";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import DiscordProvider from "next-auth/providers/discord";
 import { env } from "@/env";
+import { getUser } from "./queries/user";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials) return null;
         if (!credentials.email || !credentials.password) return null;
 
-        const user = await getUserByEmail(credentials.email);
+        const user = await getUser({ email: credentials.email });
 
         if (!user) {
           console.error("User not found for email:", credentials.email);

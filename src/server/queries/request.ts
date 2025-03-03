@@ -1,9 +1,9 @@
 import { type Request } from "@prisma/client";
-import axios from "axios";
+import { baseAPI } from "../api";
 
 export async function getRequests(userId: string): Promise<Request[] | null> {
   try {
-    const response = await axios.get<Request[]>(
+    const response = await baseAPI.get<Request[]>(
       `/api/requests?userId=${userId}`,
     );
     return response.data;

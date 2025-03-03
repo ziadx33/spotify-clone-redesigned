@@ -1,9 +1,10 @@
 import { type loginSchema } from "@/schemas";
-import { comparePassword, getUserByEmail } from "@/server/actions/user";
+import { comparePassword } from "@/server/actions/user";
+import { getUser } from "@/server/queries/user";
 import { type z } from "zod";
 
 export const login = async (data: z.infer<typeof loginSchema>) => {
-  const user = await getUserByEmail(data.email);
+  const user = await getUser({ email: data.email });
   if (!user?.emailVerified) {
     throw { error: "email does not exist!" };
   }

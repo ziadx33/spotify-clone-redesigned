@@ -13,8 +13,8 @@ import {
 import { ShowInput } from "@/components/ui/show-input";
 import { sendEmail } from "@/lib/send-email";
 import { forgotPasswordSchema } from "@/schemas";
-import { getUserByEmail } from "@/server/actions/user";
 import { generateVerificationToken } from "@/server/actions/verification-token";
+import { getUser } from "@/server/queries/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -30,7 +30,7 @@ export function SubmitForm() {
   });
   const formHandler = ({ email }: z.infer<typeof forgotPasswordSchema>) => {
     const req = async () => {
-      const user = await getUserByEmail(email);
+      const user = await getUser({ email });
       if (!user?.email) {
         throw "";
       }

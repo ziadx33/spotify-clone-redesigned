@@ -7,7 +7,7 @@ import {
   getSearchHistory,
   removeSearchHistoryById,
 } from "@/server/actions/search-history";
-import { getUserByIds } from "@/server/actions/user";
+import { getUserByIds } from "@/server/queries/user";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useCallback, useMemo, useState } from "react";
@@ -28,15 +28,15 @@ export function SearchHistorySection() {
           )
           .map((history) => history.searchPlaylist!),
       });
-      const users = await getUserByIds(
-        searchHistory
+      const users = await getUserByIds({
+        ids: searchHistory
           .filter((history) => history.type === "ARTIST" && history.searchUser)
           .map((history) => history.searchUser!),
-      );
+      });
       return searchHistory.map((item) => {
         return {
           searchItem: item,
-          user: users.find((user) => user.id === item.searchUser),
+          user: users?.find((user) => user.id === item.searchUser),
           playlist: playlists?.find(
             (playlist) => playlist.id === item.searchPlaylist,
           ),

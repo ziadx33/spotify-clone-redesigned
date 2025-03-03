@@ -3,27 +3,21 @@
 import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { getUserTopTracks } from "@/server/actions/track";
-import { getArtistsByIds } from "@/server/actions/user";
 import { useQuery } from "@tanstack/react-query";
 import { PopularArtistsSection } from "./popular-artists-section";
-import { EditSectionButton } from "./edit-section-button";
 import { useUserData } from "@/hooks/use-user-data";
-import { wait } from "@/utils/wait";
+import { getUserByIds } from "@/server/queries/user";
 
-type YourFavArtistsProps = {
-  userId: string;
-};
-
-export function YourFavArtists({ userId }: YourFavArtistsProps) {
+export function YourFavArtists() {
   const user = useUserData();
   const { data, isLoading } = useQuery({
-    queryKey: [`fav-user-artist-home`],
+    queryKey: [`user-fav-artists-home`],
     queryFn: async () => {
       const topTracks = await getUserTopTracks({
         user: user,
         tracksOnly: true,
       });
-      const data = getArtistsByIds({
+      const data = getUserByIds({
         ids:
           topTracks?.data?.tracks
             ?.map((track) =>
@@ -33,6 +27,7 @@ export function YourFavArtists({ userId }: YourFavArtistsProps) {
             )
             .flat() ?? [],
       });
+      console.log("dkaksdfjaksdjf", data);
       return data;
     },
   });

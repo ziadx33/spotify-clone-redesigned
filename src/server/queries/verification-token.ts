@@ -1,11 +1,11 @@
 import { type VerificationToken } from "@prisma/client";
-import axios from "axios";
+import { baseAPI } from "../api";
 
 export async function getVerificationTokenById(
   tokenId: string,
 ): Promise<VerificationToken | null> {
   try {
-    const response = await axios.get<VerificationToken>(
+    const response = await baseAPI.get<VerificationToken>(
       `/api/verification-tokens?token=${tokenId}`,
     );
     return response.data;
@@ -19,7 +19,7 @@ export async function getVerificationTokenByEmail(
   email: string,
 ): Promise<VerificationToken | null> {
   try {
-    const response = await axios.get<VerificationToken>(
+    const response = await baseAPI.get<VerificationToken>(
       `/api/verification-tokens?email=${email}`,
     );
     return response.data;

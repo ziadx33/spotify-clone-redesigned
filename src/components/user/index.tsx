@@ -3,15 +3,11 @@
 import { type User } from "@prisma/client";
 import { UserContent } from "./components/user-content";
 import { getPlaylists } from "@/server/actions/playlist";
-import {
-  getArtistsByIds,
-  getFollowedArtists,
-  getUserByIds,
-} from "@/server/actions/user";
 import { getUserTopTracks } from "@/server/actions/track";
 import { getTopArtists } from "@/utils/get-top-artists";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/loading";
+import { getUserByIds, getUserFollowing } from "@/server/queries/user";
 
 type ProfileProps = {
   user?: User;
@@ -30,9 +26,9 @@ export function User({ user, isUser }: ProfileProps) {
         artists,
       ] = [
         await getPlaylists({ creatorId: user?.id ?? "", playlistIds: [] }),
-        await getFollowedArtists({ userId: user?.id ?? "" }),
-        await getUserByIds(user?.followers ?? []),
-        await getArtistsByIds({
+        await getUserFollowing({ id: user?.id ?? "", userType: "ARTIST" }),
+        await getUserByIds({ ids: user?.followers ?? [] }),
+        await getUserByIds({
           ids:
             TopTracks?.data?.tracks
               ?.map((track) =>
@@ -45,7 +41,7 @@ export function User({ user, isUser }: ProfileProps) {
       ] as const;
 
       const topArtists = getTopArtists({
-        artists,
+        artists: artists ?? [],
         trackIds: TopTracks.trackIds,
         tracks: TopTracks.data.tracks,
       });
@@ -65,7 +61,7 @@ export function User({ user, isUser }: ProfileProps) {
   return (
     <UserContent
       isUser={isUser}
-      followedArtists={data.followedArtists}
+      followedArtists={data.followedArtists ?? []}
       followerUsers={data.followerUsers}
       publicPlaylists={data.publicPlaylists ?? []}
       user={user}

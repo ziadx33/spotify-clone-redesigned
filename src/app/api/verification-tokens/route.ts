@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const token = searchParams.get("token");
   const email = searchParams.get("email");
   if (!token && !email)
-    return NextResponse.json({ error: "token is required" });
+    return NextResponse.json({ error: "missing required args" });
   try {
     const verificationToken = email
       ? await db.verificationToken?.findFirst({

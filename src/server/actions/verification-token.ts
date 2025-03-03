@@ -3,12 +3,13 @@
 import { v4 as uuid } from "uuid";
 import { db } from "../db";
 import { type $Enums, type User, type VerificationToken } from "@prisma/client";
-import { getUserByEmail, updateUserById } from "./user";
+import { updateUserById } from "./user";
 import { unstable_cache } from "next/cache";
 import {
   getVerificationTokenByEmail,
   getVerificationTokenById,
-} from "../queries/verification-tokens";
+} from "../queries/verification-token";
+import { getUser } from "../queries/user";
 
 export const generateVerificationToken = async (
   email: string,
@@ -87,7 +88,7 @@ export const verifyToken = async (token: string, type?: $Enums.TOKEN_TYPE) => {
 
   if (hasExpired) return { error: "Token has expired" };
 
-  const existingUser = await getUserByEmail(existingToken.email);
+  const existingUser = await getUser({ email: existingToken.email });
 
   if (!existingUser) return { error: "Email does not exist!" };
 

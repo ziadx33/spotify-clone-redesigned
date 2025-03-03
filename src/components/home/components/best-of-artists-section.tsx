@@ -4,23 +4,18 @@ import { RenderSectionItems } from "@/components/render-section-items";
 import { getRandomValue } from "@/utils/get-random-value";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState, useMemo, useRef } from "react";
-import { EditSectionButton } from "./edit-section-button";
-import { useUserData } from "@/hooks/use-user-data";
-import { getUserFollowing } from "@/server/actions/user";
 import { BestOfArtistsDialog } from "./best-of-artists-dialog";
-import { wait } from "@/utils/wait";
+import { getUserFollowing } from "@/server/queries/user";
 
 type BestOfArtistsSectionProps = {
   userId: string;
 };
 
 export function BestOfArtistsSection({ userId }: BestOfArtistsSectionProps) {
-  const user = useUserData();
-
   const { data, isLoading } = useQuery({
     queryKey: [`best-of-artists-section`],
     queryFn: async () => {
-      const artists = await getUserFollowing(user?.id ?? "");
+      const artists = await getUserFollowing({ id: userId ?? "" });
       return artists;
     },
   });

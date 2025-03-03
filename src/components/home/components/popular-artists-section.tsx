@@ -1,7 +1,7 @@
 import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
 import { useUserData } from "@/hooks/use-user-data";
-import { getPopularUsers } from "@/server/actions/user";
+import { getPopularUsers } from "@/server/queries/user";
 import { useQuery } from "@tanstack/react-query";
 
 export function PopularArtistsSection() {

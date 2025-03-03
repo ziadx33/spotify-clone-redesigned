@@ -5,7 +5,7 @@ import { db } from "../db";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { type Track, type $Enums, type Playlist } from "@prisma/client";
-import { getArtistsByIds } from "./user";
+import { getUserByIds } from "../queries/user";
 
 type GetPlaylistsParams = {
   creatorId?: string | null;
@@ -187,7 +187,6 @@ export const getAppearsPlaylists = unstable_cache(
 export const getPlaylistsBySearchQuery = async ({
   query,
   amount,
-  type,
   restartLength,
 }: {
   query: string;
@@ -217,9 +216,8 @@ export const getPlaylistsBySearchQuery = async ({
       ].filter((v) => v) as Playlist[];
     }
 
-    const authors = await getArtistsByIds({
+    const authors = await getUserByIds({
       ids: playlists.map((playlist) => playlist.creatorId),
-      type: type,
     });
     return { playlists, authors };
   } catch (error) {
@@ -241,7 +239,7 @@ export const getNewPlaylists = unstable_cache(
         take: 31,
       });
       if (playlists.length === 0) playlists = await db.playlist.findMany();
-      const authors = await getArtistsByIds({
+      const authors = await getUserByIds({
         ids: playlists.map((playlist) => playlist.creatorId),
       });
       return { playlists, authors };

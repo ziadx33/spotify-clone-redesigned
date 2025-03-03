@@ -1,18 +1,19 @@
 import { sendEmail } from "@/lib/send-email";
 import { type registerSchema } from "@/schemas";
 import { createPrefrence } from "@/server/actions/prefrence";
-import { createUser, getUserByEmail } from "@/server/actions/user";
+import { createUser } from "@/server/actions/user";
 import {
   deleteVerificationTokenById,
   generateVerificationToken,
 } from "@/server/actions/verification-token";
-import { getVerificationTokenByEmail } from "@/server/queries/verification-tokens";
+import { getUser } from "@/server/queries/user";
+import { getVerificationTokenByEmail } from "@/server/queries/verification-token";
 import { type z } from "zod";
 
 export const register = async (
   data: z.infer<typeof registerSchema> & { origin: string },
 ) => {
-  const user = await getUserByEmail(data.email);
+  const user = await getUser({ email: data.email });
   if (!user) {
     const createdUser = await createUser({
       email: data.email,
