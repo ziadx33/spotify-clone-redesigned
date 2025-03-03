@@ -5,8 +5,7 @@ import { db } from "../db";
 import { type registerSchema } from "@/schemas";
 import { compare, hash } from "bcrypt";
 import { type $Enums, type User } from "@prisma/client";
-import { revalidateTag, unstable_cache } from "next/cache";
-import { cache } from "react";
+import { revalidateTag } from "next/cache";
 import bcrypt from "bcrypt";
 
 export const deleteUserById = async (id: string) => {
@@ -63,11 +62,6 @@ export const comparePassword = async (
 ) => {
   const comparison = await compare(firstPass, secondPass);
   return comparison;
-};
-
-type GetArtistFansFollowingParams = {
-  followers: string[];
-  artistId: string;
 };
 
 export const getUsersBySearchQuery = async ({
