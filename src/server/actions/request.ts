@@ -21,27 +21,3 @@ export const deleteRequest = async (data: string) => {
     throw { error };
   }
 };
-
-export const getFeatRequests = async (data: { userId: string }) => {
-  try {
-    const requests = await db.request.findMany({
-      where: {
-        AND: [
-          {
-            requestedUserIds: {
-              has: data.userId,
-            },
-          },
-          {
-            requesterId: {
-              not: data.userId,
-            },
-          },
-        ],
-      },
-    });
-    return requests;
-  } catch (error) {
-    throw { error };
-  }
-};

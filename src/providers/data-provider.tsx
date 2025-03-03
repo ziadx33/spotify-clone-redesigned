@@ -25,7 +25,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       isDone.current = true;
     };
     void fn();
-  }, [dispatch, user?.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const content = useMemo(() => {
     return children;

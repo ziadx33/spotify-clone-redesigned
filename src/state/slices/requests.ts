@@ -1,7 +1,7 @@
 import { type Request } from "@prisma/client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { type SliceType } from "../types";
-import { getFeatRequests } from "@/server/actions/request";
+import { getRequests } from "@/server/queries/request";
 
 export type RequestsSliceType = SliceType<Request[]>;
 
@@ -14,7 +14,7 @@ const initialState: RequestsSliceType = {
 export const getSliceRequests = createAsyncThunk(
   "requests/getSliceRequests",
   async (userId: string) => {
-    const requests = await getFeatRequests({ userId });
+    const requests = await getRequests(userId);
     return requests;
   },
 );
