@@ -44,7 +44,7 @@ export async function getUserFollowing({
 }): Promise<User[] | null> {
   try {
     const response = await baseAPI.get<User[]>(
-      `http://localhost:3000/api/users/${id}/following${userType ? `?userType=${userType}` : ""}`,
+      `/api/users/${id}/following${userType ? `?userType=${userType}` : ""}`,
     );
     return response.data ?? [];
   } catch (error) {
@@ -85,6 +85,38 @@ export const getPopularUsers = async ({
     return response.data;
   } catch (error) {
     console.error("Error fetching popular users:", error);
+    return null;
+  }
+};
+
+type GetUsersBySearchQueryParams = {
+  query: string;
+  amount?: number;
+  type?: $Enums.USER_TYPE;
+  restartLength?: number;
+};
+
+export const getUsersBySearchQuery = async ({
+  query,
+  amount,
+  type,
+  restartLength,
+}: GetUsersBySearchQueryParams) => {
+  try {
+    const params = new URLSearchParams();
+
+    if (query) params.append("query", query);
+    if (amount) params.append("amount", amount.toString());
+    if (type) params.append("type", type);
+    if (restartLength) params.append("userType", restartLength.toString());
+
+    const response = await baseAPI.get<User[]>(
+      `/users/search?${params.toString()}`,
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error searching users:", error);
     return null;
   }
 };

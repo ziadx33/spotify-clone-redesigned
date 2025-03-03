@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useDebounceState } from "@/hooks/use-debounce-state";
 import { useInitRender } from "@/hooks/use-init-render";
 import { useUserData } from "@/hooks/use-user-data";
-import { getUsersBySearchQuery } from "@/server/actions/user";
+import { getUsersBySearchQuery } from "@/server/queries/user";
 import { type Playlist, type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";

@@ -3,9 +3,9 @@
 import { getTracksBySearchQuery } from "./track";
 import { handleRequests } from "@/utils/handle-requests";
 import { getPlaylistsBySearchQuery } from "./playlist";
-import { getUsersBySearchQuery } from "./user";
 import { type Playlist, type Track, type User } from "@prisma/client";
 import { getUserById } from "./verification-token";
+import { getUsersBySearchQuery } from "../queries/user";
 
 export const getSearchQueryData = async ({ query }: { query: string }) => {
   try {

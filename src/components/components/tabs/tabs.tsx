@@ -1,8 +1,8 @@
 "use client";
 
+import { getTabs } from "@/server/queries/tab";
 import { TabsContent } from "./components/tabs-content";
 import { TabsProvider } from "./components/tabs-provider";
-import { getTabs } from "@/server/actions/tab";
 import { useUserData } from "@/hooks/use-user-data";
 import { useQuery } from "@tanstack/react-query";
 

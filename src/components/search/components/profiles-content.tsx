@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
 import { SectionItem } from "@/components/components/section-item";
-import { getUsersBySearchQuery } from "@/server/actions/user";
 import { type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 import { type SearchClickFnType } from "./search-content";
+import { getUsersBySearchQuery } from "@/server/queries/user";
 
 type ProfilesContentProps = {
   users: User[];

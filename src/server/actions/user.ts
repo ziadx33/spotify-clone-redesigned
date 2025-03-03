@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { db } from "../db";
 import { type registerSchema } from "@/schemas";
 import { compare, hash } from "bcrypt";
-import { type $Enums, type User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { revalidateTag } from "next/cache";
 import bcrypt from "bcrypt";
 
@@ -62,45 +62,6 @@ export const comparePassword = async (
 ) => {
   const comparison = await compare(firstPass, secondPass);
   return comparison;
-};
-
-export const getUsersBySearchQuery = async ({
-  query,
-  amount,
-  type,
-  restartLength,
-}: {
-  query: string;
-  amount?: number;
-  type?: $Enums.USER_TYPE;
-  restartLength?: number;
-}) => {
-  try {
-    let users = await db.user.findMany({
-      where: {
-        name: {
-          contains: query,
-          mode: "insensitive",
-        },
-        type,
-      },
-      take: amount,
-    });
-
-    if (users.length === 0 || (restartLength ?? 0) >= users.length) {
-      const firstUser = users.length > 0 ? (users as [User])[0] : false;
-      users = [
-        firstUser,
-        ...(await db.user.findMany({ take: amount })).filter(
-          (user) => user.id !== (firstUser ? firstUser.id : null),
-        ),
-      ].filter((v) => v) as User[];
-    }
-
-    return users;
-  } catch (error) {
-    throw { error };
-  }
 };
 
 export const hashPassword = async (password: string, salt = 10) => {
