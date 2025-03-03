@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidateTag } from "next/cache";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { db } from "../db";
 
@@ -13,25 +13,6 @@ export async function AddToSearchHistory(
   } catch (error) {
     throw { error };
   }
-}
-
-export async function getSearchHistory(userId: string) {
-  return await unstable_cache(
-    async () => {
-      try {
-        const data = await db.searchHistory.findMany({
-          where: {
-            userId,
-          },
-        });
-        return data;
-      } catch (error) {
-        throw { error };
-      }
-    },
-    ["search-history"],
-    { tags: [`user-search-history-${userId}`] },
-  )();
 }
 
 type removeSearchHistoryByIdParams = {

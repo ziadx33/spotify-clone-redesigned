@@ -3,10 +3,8 @@ import { RenderSectionItems } from "@/components/render-section-items";
 import { Button } from "@/components/ui/button";
 import { useUserData } from "@/hooks/use-user-data";
 import { getPlaylists } from "@/server/actions/playlist";
-import {
-  getSearchHistory,
-  removeSearchHistoryById,
-} from "@/server/actions/search-history";
+import { removeSearchHistoryById } from "@/server/actions/search-history";
+import { getSearchHistory } from "@/server/queries/search-history";
 import { getUserByIds } from "@/server/queries/user";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -23,17 +21,17 @@ export function SearchHistorySection() {
       const searchHistory = await getSearchHistory(user?.id ?? "");
       const { data: playlists } = await getPlaylists({
         playlistIds: searchHistory
-          .filter(
+          ?.filter(
             (history) => history.type === "PLAYLIST" && history.searchPlaylist,
           )
           .map((history) => history.searchPlaylist!),
       });
       const users = await getUserByIds({
         ids: searchHistory
-          .filter((history) => history.type === "ARTIST" && history.searchUser)
+          ?.filter((history) => history.type === "ARTIST" && history.searchUser)
           .map((history) => history.searchUser!),
       });
-      return searchHistory.map((item) => {
+      return searchHistory?.map((item) => {
         return {
           searchItem: item,
           user: users?.find((user) => user.id === item.searchUser),
