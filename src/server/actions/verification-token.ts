@@ -5,6 +5,10 @@ import { db } from "../db";
 import { type $Enums, type User, type VerificationToken } from "@prisma/client";
 import { getUserByEmail, updateUserById } from "./user";
 import { unstable_cache } from "next/cache";
+import {
+  getVerificationTokenByEmail,
+  getVerificationTokenById,
+} from "../queries/verification-tokens";
 
 export const generateVerificationToken = async (
   email: string,
@@ -29,19 +33,6 @@ export const generateVerificationToken = async (
   });
 
   return verificationToken;
-};
-
-export const getVerificationTokenByEmail = async (email: string) => {
-  try {
-    const verificationToken = await db.verificationToken.findFirst({
-      where: {
-        email,
-      },
-    });
-    return verificationToken;
-  } catch (error) {
-    throw error;
-  }
 };
 
 export const deleteVerificationTokenById = async (id: string) => {
@@ -106,19 +97,6 @@ export const verifyToken = async (token: string, type?: $Enums.TOKEN_TYPE) => {
   });
 
   return { success: "email verified", data: existingUser };
-};
-
-export const getVerificationTokenById = async (token: string) => {
-  try {
-    const verificationToken = await db.verificationToken.findUnique({
-      where: {
-        token,
-      },
-    });
-    return verificationToken;
-  } catch (error) {
-    throw error;
-  }
 };
 
 type getUserByIdParams = {

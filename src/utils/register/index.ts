@@ -5,8 +5,8 @@ import { createUser, getUserByEmail } from "@/server/actions/user";
 import {
   deleteVerificationTokenById,
   generateVerificationToken,
-  getVerificationTokenByEmail,
 } from "@/server/actions/verification-token";
+import { getVerificationTokenByEmail } from "@/server/queries/verification-tokens";
 import { type z } from "zod";
 
 export const register = async (
