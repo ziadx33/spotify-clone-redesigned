@@ -21,7 +21,6 @@ export async function ServerAppDataProvider({
     id: userData?.user.id ?? "",
     userType: "ARTIST",
   });
-  console.log("babababab", playlists);
   return (
     <AppProvider
       playlists={playlists as PlaylistsSliceType}

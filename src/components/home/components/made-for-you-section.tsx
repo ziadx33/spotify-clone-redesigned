@@ -5,7 +5,6 @@ import { getHomeMadeForYouSection } from "@/server/actions/track";
 import { getRandomValue } from "@/utils/get-random-value";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState, useRef } from "react";
-import { EditSectionButton } from "./edit-section-button";
 import { useUserData } from "@/hooks/use-user-data";
 import { MadeForYouDialog } from "./made-for-you-dialog";
 
@@ -22,8 +21,6 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
       return data;
     },
   });
-
-  console.log("barap", data);
 
   const colors = useRef([
     "#8BD7CB",

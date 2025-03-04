@@ -17,7 +17,5 @@ export function useIsMobile() {
     return () => mql.removeEventListener("change", onChange);
   }, []);
 
-  console.log("asfat", isMobile);
-
   return !!isMobile;
 }

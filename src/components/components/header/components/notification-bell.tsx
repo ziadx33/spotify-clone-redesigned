@@ -14,7 +14,6 @@ export function NotificationBell() {
     (state: RootState) => state.notifications.data,
   );
   const requests = useSelector((state: RootState) => state.requests.data);
-  console.log("yeaaa", requests);
   const user = useUserData();
   const pathname = usePathname();
   const isCurrentRoute = pathname === "/notifications";

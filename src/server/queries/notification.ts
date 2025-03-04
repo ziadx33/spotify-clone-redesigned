@@ -8,7 +8,6 @@ export async function getNotifications(
     const response = await baseAPI.get<Notification[]>(
       `/api/notifications?userId=${userId}`,
     );
-    console.log("naar", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching notifications:", error);

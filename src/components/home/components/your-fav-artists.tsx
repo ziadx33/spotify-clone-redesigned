@@ -27,7 +27,6 @@ export function YourFavArtists() {
             )
             .flat() ?? [],
       });
-      console.log("dkaksdfjaksdjf", data);
       return data;
     },
   });

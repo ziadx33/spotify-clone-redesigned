@@ -159,8 +159,6 @@ export function useNewAlbumActions({
           return { ...editedTrack, authorIds: newAuthorIds };
         });
 
-        console.log(updatedTracks);
-
         if (updatedTracks?.length ?? 0 > 0) {
           featRequests = [
             ...featRequests,

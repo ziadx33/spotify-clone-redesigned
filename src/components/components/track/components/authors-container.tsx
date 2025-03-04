@@ -17,10 +17,6 @@ type AuthorsContainerProps = {
 export function AuthorsContainer(props: AuthorsContainerProps) {
   const isList = props.viewAs === "LIST";
   const isMobile = useIsMobile();
-  console.log(
-    "yesebek",
-    !props.skeleton && !isMobile && (props.authors?.length ?? 0) > 0,
-  );
   const authorsElement =
     !props.skeleton && !(isMobile && (props.authors?.length ?? 0) > 1) ? (
       <Authors authors={props.authors!} playlistId={props.playlist?.id} />

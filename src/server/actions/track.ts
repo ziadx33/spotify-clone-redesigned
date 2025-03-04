@@ -490,7 +490,6 @@ export const getUserTopTracks = unstable_cache(
       data: NonNullableProperties<NonNullable<TracksSliceType["data"]>>;
       trackIds: ReturnType<typeof getTopRepeatedNumbers>;
     }> => {
-      console.log("leltak fol");
       try {
         const trackHistory = user?.tracksHistory ?? [];
         const trackIds = getTopRepeatedNumbers(trackHistory);
