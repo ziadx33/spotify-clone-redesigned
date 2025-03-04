@@ -1,9 +1,9 @@
-import { getPlaylist } from "@/server/actions/playlist";
 import { usePlaylists } from "./use-playlists";
 import { useQuery } from "@tanstack/react-query";
 import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { type Playlist } from "@prisma/client";
 import { useEffect } from "react";
+import { getPlaylist } from "@/server/queries/playlist";
 
 type UsePlaylistReturnType = Omit<PlaylistsSliceType, "data"> & {
   data: Playlist | null;
@@ -20,7 +20,7 @@ export function usePlaylist(id: string): UsePlaylistReturnType {
     queryKey: [`playlist-${id}`, data],
     queryFn: async () => {
       if (data) return null;
-      const res = await getPlaylist(id);
+      const res = await getPlaylist({ id });
       return res;
     },
   });

@@ -17,10 +17,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
     if (!user?.id) return;
     if (isDone.current) return;
     const fn = async () => {
-      console.log("zero goooo");
-      void dispatch(getSliceNotifications(user.id));
-      void dispatch(getSliceQueue(user.id));
-      void dispatch(getSliceFolders(user.id));
+      await dispatch(getSliceNotifications(user.id));
+      await dispatch(getSliceQueue(user.id));
+      await dispatch(getSliceFolders(user.id));
       await dispatch(getSliceRequests(user.id));
       isDone.current = true;
     };

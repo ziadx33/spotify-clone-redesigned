@@ -2,12 +2,12 @@
 
 import { type User } from "@prisma/client";
 import { UserContent } from "./components/user-content";
-import { getPlaylists } from "@/server/actions/playlist";
 import { getUserTopTracks } from "@/server/actions/track";
 import { getTopArtists } from "@/utils/get-top-artists";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/loading";
 import { getUserByIds, getUserFollowing } from "@/server/queries/user";
+import { getPlaylists } from "@/server/queries/playlist";
 
 type ProfileProps = {
   user?: User;

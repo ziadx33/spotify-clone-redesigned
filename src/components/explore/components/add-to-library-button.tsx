@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAddToPlaylist } from "@/hooks/use-add-to-playlist";
-import { getNumberSavedPlaylist } from "@/server/actions/playlist";
+import { getNumberSavedPlaylist } from "@/server/queries/playlist";
 import { type TrackSliceType } from "@/state/slices/tracks";
 import { ClampNumber } from "@/utils/clamp-number";
 import { useQuery } from "@tanstack/react-query";
@@ -27,7 +27,7 @@ export function AddToLibraryButton({
   const { data, isLoading: isSavedNumLoading } = useQuery({
     queryKey: [`saved-album-num-${currentItemData?.album?.id}`],
     queryFn: async () => {
-      const data = getNumberSavedPlaylist({
+      const data = await getNumberSavedPlaylist({
         playlistId: currentItemData!.album!.id,
       });
       return data;
@@ -35,7 +35,7 @@ export function AddToLibraryButton({
     enabled: !!currentItemData?.album?.id && !isExploreFetchLoading,
   });
 
-  const savedNumberClamp = useMemo(() => ClampNumber(data), [data]);
+  const savedNumberClamp = useMemo(() => ClampNumber(data ?? 0), [data]);
   return (
     <button
       disabled={isLoading || isExploreFetchLoading}

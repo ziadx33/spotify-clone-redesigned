@@ -18,8 +18,8 @@ import { useNewAlbumActions } from "@/hooks/use-new-album-actions";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getTracksByPlaylistId } from "@/server/actions/track";
-import { getPlaylist } from "@/server/actions/playlist";
 import { TracksTable } from "./components/tracks-table";
+import { getPlaylist } from "@/server/queries/playlist";
 
 export type TempTrackType = { id: string; edit: boolean };
 
@@ -33,7 +33,7 @@ export function NewAlbum() {
     queryFn: async () => {
       if (!playlistId) return null;
       const tracks = await getTracksByPlaylistId(playlistId);
-      const playlist = await getPlaylist(playlistId);
+      const playlist = await getPlaylist({ id: playlistId });
       return { tracks, playlist };
     },
     enabled: !!playlistId,

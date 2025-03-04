@@ -1,12 +1,12 @@
 import { SectionItemSkeleton } from "@/components/artist/components/skeleton";
 import { SectionItem } from "@/components/components/section-item";
-import { getPlaylistsBySearchQuery } from "@/server/actions/playlist";
 import { type Playlist, type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useEffect, useMemo, useRef } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 import { type SearchClickFnType } from "./search-content";
+import { getPlaylistsBySearchQuery } from "@/server/queries/playlist";
 
 type PlaylistsContentProps = {
   playlists: { playlists: Playlist[]; authors: User[] };

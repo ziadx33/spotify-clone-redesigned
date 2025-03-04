@@ -7,8 +7,8 @@ import { type TracksSliceType } from "@/state/slices/tracks";
 import { handleRequests } from "@/utils/handle-requests";
 import { type Track, type $Enums, type User } from "@prisma/client";
 import { getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
-import { getPlaylists } from "./playlist";
 import { type ExploreSliceData } from "@/state/slices/explore";
+import { getPlaylists } from "../queries/playlist";
 
 type GetTracksDataParams = {
   tracks: Track[];

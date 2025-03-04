@@ -17,8 +17,8 @@ import { usePrefrences } from "@/hooks/use-prefrences";
 import { type Playlist } from "@prisma/client";
 import { PlaylistSection } from "./playlist-section";
 import { useQuery } from "@tanstack/react-query";
-import { getPlaylists } from "@/server/actions/playlist";
 import { getTracksByPlaylistIds } from "@/server/actions/track";
+import { getPlaylists } from "@/server/queries/playlist";
 
 export type PlaylistSectionType = {
   playlist: Playlist;
@@ -41,7 +41,7 @@ export function PrefrencesProvider({ userId }: PrefrencesProviderProps) {
 
   const [components, setComponents] = useState({
     "made for you": <MadeForYouSection userId={userId} />,
-    "your favorite artists": <YourFavArtists userId={userId} />,
+    "your favorite artists": <YourFavArtists />,
     "best of artists": <BestOfArtistsSection userId={userId} />,
   });
 
@@ -55,19 +55,19 @@ export function PrefrencesProvider({ userId }: PrefrencesProviderProps) {
         return [];
       }
 
-      const playlists = await getPlaylists({
+      const { data: playlists } = await getPlaylists({
         playlistIds: sections ?? [],
       });
 
       const playlistsTracks = await getTracksByPlaylistIds({
-        playlistIds: playlists.data?.map((playlist) => playlist.id) ?? [],
+        playlistIds: playlists?.map((playlist) => playlist.id) ?? [],
       });
 
-      const playlistsContent = await getPlaylists({
+      const { data: playlistsContent } = await getPlaylists({
         playlistIds: playlistsTracks.map((track) => track.albumId) ?? [],
       });
 
-      const returnedData = playlists.data?.map((playlist) => {
+      const returnedData = playlists?.map((playlist) => {
         const tracks = playlistsTracks.filter((track) =>
           track.playlists.includes(playlist.id),
         );
@@ -76,7 +76,7 @@ export function PrefrencesProvider({ userId }: PrefrencesProviderProps) {
         return {
           playlist,
           content:
-            playlistsContent.data?.filter((playlist) =>
+            playlistsContent?.filter((playlist) =>
               tracksAlbumIds.includes(playlist.id),
             ) ?? [],
         };

@@ -2,10 +2,10 @@
 
 import { getTracksBySearchQuery } from "./track";
 import { handleRequests } from "@/utils/handle-requests";
-import { getPlaylistsBySearchQuery } from "./playlist";
 import { type Playlist, type Track, type User } from "@prisma/client";
 import { getUserById } from "./verification-token";
 import { getUsersBySearchQuery } from "../queries/user";
+import { getPlaylistsBySearchQuery } from "../queries/playlist";
 
 export const getSearchQueryData = async ({ query }: { query: string }) => {
   try {
@@ -26,7 +26,7 @@ export const getSearchQueryData = async ({ query }: { query: string }) => {
       text.toLowerCase().includes(query.toLowerCase());
 
     const topTrack = tracks.tracks.find((track) => containsQuery(track.title));
-    const topPlaylist = playlists.playlists.find((playlist) =>
+    const topPlaylist = playlists?.playlists.find((playlist) =>
       containsQuery(playlist.title),
     );
     const topAuthor = returnAuthors.find((author) =>

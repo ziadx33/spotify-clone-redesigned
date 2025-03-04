@@ -6,8 +6,8 @@ import {
   getTracksByArtistId,
   getTracksByPlaylistId,
 } from "@/server/actions/track";
-import { getPlaylist } from "@/server/actions/playlist";
 import { type QueuePlayButtonProps } from "@/components/queue-play-button";
+import { getPlaylist } from "@/server/queries/playlist";
 
 type UseGetPlayData = {
   playlist?: Playlist | null;
@@ -56,7 +56,7 @@ export function useGetPlayData({
 
       if (track) {
         const res = await getTracksByPlaylistId(track.albumId);
-        const playlistData = await getPlaylist(track.albumId);
+        const playlistData = await getPlaylist({ id: track.albumId });
         return {
           data: {
             tracks: res.data?.tracks ?? [],

@@ -2,7 +2,6 @@
 
 import { db } from "../db";
 import { getTracksByArtistId, getTracksByPlaylistId } from "./track";
-import { getPlaylists } from "./playlist";
 import {
   type QueueSliceType,
   type QueueListSliceType,
@@ -20,6 +19,7 @@ import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { type Nullable } from "@/types";
 import { shuffleArray } from "@/utils/shuffle-array";
 import { getUserByIds } from "../queries/user";
+import { getPlaylists } from "../queries/playlist";
 
 type GetQueueDataParams = {
   queues: Queue[];

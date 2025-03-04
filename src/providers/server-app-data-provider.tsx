@@ -1,8 +1,9 @@
 import { type ReactNode } from "react";
 import { AppProvider } from "./app-provider";
-import { getPlaylists } from "@/server/actions/playlist";
 import { getServerAuthSession } from "@/server/auth";
 import { getUserFollowing } from "@/server/queries/user";
+import { getPlaylists } from "@/server/queries/playlist";
+import { type PlaylistsSliceType } from "@/state/slices/playlists";
 
 export async function ServerAppDataProvider({
   children,
@@ -20,8 +21,12 @@ export async function ServerAppDataProvider({
     id: userData?.user.id ?? "",
     userType: "ARTIST",
   });
+  console.log("babababab", playlists);
   return (
-    <AppProvider playlists={playlists} following={following ?? []}>
+    <AppProvider
+      playlists={playlists as PlaylistsSliceType}
+      following={following ?? []}
+    >
       {children}
     </AppProvider>
   );

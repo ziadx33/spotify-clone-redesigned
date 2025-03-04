@@ -1,10 +1,10 @@
-import { getPlaylists } from "@/server/actions/playlist";
 import { type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { Albums } from "./components/albums";
 import { cn } from "@/lib/utils";
 import { getTracksByPlaylistIds } from "@/server/actions/track";
 import { SectionItemSkeleton } from "../../skeleton";
+import { getPlaylists } from "@/server/queries/playlist";
 
 type AlbumsTabProps = {
   artist: User;
@@ -20,7 +20,7 @@ export function AlbumsTab({ artist, filters, query }: AlbumsTabProps) {
   const { data, isLoading } = useQuery({
     queryKey: [`albums-tab-${artist.id}`],
     queryFn: async () => {
-      const { data } = await getPlaylists({
+      const { data: data } = await getPlaylists({
         creatorId: artist.id,
         playlistIds: [],
         type: "ALBUM",

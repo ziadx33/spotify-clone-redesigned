@@ -1,18 +1,21 @@
-import {
-  getNewPlaylists,
-  getPopularPlaylists,
-} from "@/server/actions/playlist";
 import { enumParser } from "@/utils/enum-parser";
-import { type $Enums } from "@prisma/client";
+import { type Playlist, type User, type $Enums } from "@prisma/client";
 import { SectionItem } from "../components/section-item";
-import { getPopularUsers } from "@/server/actions/user";
 import { RenderSectionItems } from "../render-section-items";
+import { getPopularUsers } from "@/server/queries/user";
+import { getPlaylists, getPopularPlaylists } from "@/server/queries/playlist";
 
 export async function Genre({ genre }: { genre: $Enums.GENRES }) {
   const genreTitle = enumParser(genre);
-  const newReleases = await getNewPlaylists({ type: genre });
+  const { data: playlists } = await getPlaylists({
+    range: { to: 31 },
+    orderByDate: "asc",
+    genre,
+    addAuthors: true,
+  });
+  const newReleases = playlists as { playlists: Playlist[]; authors: User[] };
   const popularPlaylists = await getPopularPlaylists({ type: genre });
-  const popularUsers = await getPopularUsers({ type: genre });
+  const popularUsers = await getPopularUsers({ genre });
   return (
     <div className="flex flex-col">
       <div className="flex h-72 items-end border-b pb-8 pl-4">
@@ -20,12 +23,12 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
       </div>
       <div className="flex flex-col pb-3 pl-6">
         <RenderSectionItems
-          cards={newReleases?.playlists.map((playlist) => (
+          cards={newReleases.playlists?.map((playlist) => (
             <SectionItem
               playlistData={playlist}
               key={playlist.id}
               description={
-                newReleases.authors.find(
+                newReleases.authors?.find(
                   (author) => playlist.creatorId === author.id,
                 )?.name ?? ""
               }

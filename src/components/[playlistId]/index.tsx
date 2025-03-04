@@ -4,11 +4,11 @@ import { usePlaylist } from "@/hooks/use-playlist";
 import { useQuery } from "@tanstack/react-query";
 import { useTracks } from "@/hooks/use-tracks";
 import { getUserById } from "@/server/actions/verification-token";
-import { getPlaylists } from "@/server/actions/playlist";
 import { type Playlist as PlaylistType, type User } from "@prisma/client";
 import { Album } from "./album";
 import { Playlist } from "./playlist";
 import { useUserData } from "@/hooks/use-user-data";
+import { getPlaylists } from "@/server/queries/playlist";
 
 export type PlaylistPageProps = {
   creatorData?: {
@@ -36,7 +36,7 @@ export function PlaylistPage({ id }: { id: string }) {
         playlistIds: [],
         excludedIds: [id],
       });
-      return { creatorData: res, playlists: playlists! };
+      return { creatorData: res!, playlists: playlists! };
     },
     enabled: !!data?.creatorId,
   });

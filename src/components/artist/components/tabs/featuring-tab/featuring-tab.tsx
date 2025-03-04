@@ -3,8 +3,8 @@ import { type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { SectionItemSkeleton } from "../../skeleton";
-import { getFeaturingAlbums } from "@/server/actions/playlist";
 import { useMemo } from "react";
+import { getFeaturingAlbums } from "@/server/queries/user";
 
 type FeaturingTabProps = {
   artist: User;
@@ -16,9 +16,9 @@ export function FeaturingTab({ artist, query }: FeaturingTabProps) {
     queryKey: [`featuring-tab-${artist.id}`],
     queryFn: async () => {
       const res = await getFeaturingAlbums({
-        artistId: artist.id,
+        id: artist.id,
       });
-      return res.albums;
+      return res;
     },
   });
   const albums = useMemo(() => {

@@ -1,4 +1,4 @@
-import { type $Enums, type User } from "@prisma/client";
+import { type Playlist, type $Enums, type User } from "@prisma/client";
 import { baseAPI } from "../api";
 
 export async function getUser({
@@ -120,3 +120,15 @@ export const getUsersBySearchQuery = async ({
     return null;
   }
 };
+
+export async function getFeaturingAlbums({ id }: { id?: string }) {
+  try {
+    const response = await baseAPI.get<Playlist[]>(
+      `/api/users/${id}/featuring`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error featuring albums:", error);
+    return null;
+  }
+}
