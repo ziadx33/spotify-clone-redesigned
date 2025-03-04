@@ -153,7 +153,7 @@ export function Comp({
                   <FaCircleMinus className="size-full" />
                 </Button>
               ) : (
-                <>
+                <div className="flex gap-1">
                   <SearchInput
                     disabled={disabled}
                     setTrackQuery={setTrackQuery}
@@ -165,7 +165,7 @@ export function Comp({
                     filters={filters}
                     setFilters={setFilters}
                   />
-                </>
+                </div>
               )}
             </div>
           )}
