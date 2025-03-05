@@ -139,7 +139,7 @@ export async function getTracks({
   if (artistId) searchParams.append("artistId", artistId);
   if (type) searchParams.append("type", type);
 
-  const response = await baseAPI.get<TracksDataType>(
+  const response = await baseAPI.get<TracksDataType & { error?: string }>(
     `/api/tracks?${searchParams.toString()}`,
   );
   return response.data;

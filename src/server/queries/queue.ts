@@ -1,9 +1,10 @@
 import { type QueueListSliceType } from "@/state/slices/queue-list";
 import { type User, type Queue, type QueueList } from "@prisma/client";
-import { getPlaylistTracks, getPlaylists } from "./playlist";
+import { getPlaylists } from "./playlist";
 import { getUserByIds } from "./user";
 import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { type TracksSliceType } from "@/state/slices/tracks";
+import { getTracks } from "./track";
 
 type GetQueueDataParams = {
   queues: Queue[];
@@ -14,12 +15,12 @@ export const getQueueData = async ({
   queues,
   queueList,
 }: GetQueueDataParams): Promise<QueueListSliceType> => {
-  const { data: queueTracks, error } = await getPlaylistTracks({
-    trackIds: queues?.map((queue) => queue.trackList).flat(),
+  const queueTracks = await getTracks({
+    ids: queues?.map((queue) => queue.trackList).flat(),
   });
   const queuesData = await getQueueTracks({ queues, data: queueTracks });
 
-  return !error
+  return !queueTracks.error
     ? {
         data: {
           queueList,
@@ -30,7 +31,7 @@ export const getQueueData = async ({
       }
     : {
         data: null,
-        error,
+        error: queueTracks.error,
         status: "error",
       };
 };
@@ -51,8 +52,8 @@ export async function getQueueTracks({ queues, data }: GetTrackSliceParams) {
   const userIds = queues
     ?.filter((queue) => queue.type === "ARTIST" && queue.typeId !== null)
     .map((queue) => queue.typeId!);
-
-  const queueArtistTypeData = await getUserByIds({ ids: userIds ?? [] });
+  const queueArtistTypeData =
+    userIds.length > 0 ? await getUserByIds({ ids: userIds ?? [] }) : [];
   return queues?.map((queue) => {
     const tracks =
       data?.tracks?.filter((track) => {

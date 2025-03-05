@@ -8,7 +8,7 @@ import { baseAPI } from "../api";
 import { type TracksDataType } from "@/types";
 import { type getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { type TracksSliceType } from "@/state/slices/tracks";
-import { type getQueueData } from "./queue";
+import { type QueueListSliceType } from "@/state/slices/queue-list";
 
 export async function getUser({
   email,
@@ -64,7 +64,7 @@ export async function getUserFollowing({
 
 export async function getUserQueue({ id }: { id: string }) {
   try {
-    const response = await baseAPI.get<ReturnType<typeof getQueueData>>(
+    const response = await baseAPI.get<QueueListSliceType>(
       `/api/users/${id}/queue`,
     );
     return response.data;

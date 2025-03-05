@@ -16,8 +16,11 @@ export async function GET(
       .findUnique({ where: { userId: value } })
       .queues();
     if (!data || !queues) throw "no queue";
-    return NextResponse.json(await getQueueData({ queueList: data, queues }));
+    const returnData = await getQueueData({ queueList: data, queues });
+    console.log("kefyyy", returnData);
+    return NextResponse.json(returnData);
   } catch (error) {
+    console.log("as you need", error);
     return NextResponse.json({ error });
   }
 }
