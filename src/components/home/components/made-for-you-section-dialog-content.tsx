@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { PlaylistDialog } from "./playlist-dialog";
 import { type $Enums } from "@prisma/client";
-import { getTracksByGenres } from "@/server/actions/track";
+import { getTracks } from "@/server/queries/track";
 
 type MadeForYouSectionDialogContentProps = {
   activeDialog?: number;
@@ -18,7 +18,7 @@ export function MadeForYouSectionDialogContent({
   const { data: tracks } = useQuery({
     queryKey: [`home-made-for-you-section-${index}`],
     queryFn: async () => {
-      const tracks = await getTracksByGenres({
+      const tracks = await getTracks({
         genres: [genre],
         range: { from: 0, to: 50 },
       });

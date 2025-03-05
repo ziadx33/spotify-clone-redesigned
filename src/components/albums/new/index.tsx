@@ -17,9 +17,8 @@ import { Button } from "@/components/ui/button";
 import { useNewAlbumActions } from "@/hooks/use-new-album-actions";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { getTracksByPlaylistId } from "@/server/actions/track";
 import { TracksTable } from "./components/tracks-table";
-import { getPlaylist } from "@/server/queries/playlist";
+import { getPlaylist, getPlaylistTracks } from "@/server/queries/playlist";
 
 export type TempTrackType = { id: string; edit: boolean };
 
@@ -32,7 +31,7 @@ export function NewAlbum() {
     queryKey: [`artist-album-edit`, playlistId],
     queryFn: async () => {
       if (!playlistId) return null;
-      const tracks = await getTracksByPlaylistId(playlistId);
+      const tracks = await getPlaylistTracks({ playlistId });
       const playlist = await getPlaylist({ id: playlistId });
       return { tracks, playlist };
     },

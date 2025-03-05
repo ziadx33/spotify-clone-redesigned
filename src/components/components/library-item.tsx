@@ -11,7 +11,7 @@ import { useTrackDropdownItems } from "@/hooks/use-track-dropdown-items";
 import { toast } from "sonner";
 import { usePrefrences } from "@/hooks/use-prefrences";
 import { useDrop } from "@/hooks/use-drop";
-import { getTrackById } from "@/server/actions/track";
+import { getTrackById } from "@/server/queries/track";
 
 type PlaylistProps = {
   userData?: User;
@@ -38,7 +38,7 @@ export function LibraryItem({
     async (trackId) => {
       setIsDraggingOver(false);
       if (isArtist) return;
-      const track = await getTrackById(trackId);
+      const track = await getTrackById({ id: trackId });
       if (!track) return toast.error("Something went wrong");
       const { data: items } = getTrackItems(track);
       const event = items?.events.addToPlaylistHandler;

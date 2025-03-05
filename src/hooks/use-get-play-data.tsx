@@ -2,12 +2,9 @@ import { type Track, type User, type Playlist } from "@prisma/client";
 import { useTracks } from "./use-tracks";
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getTracksByArtistId,
-  getTracksByPlaylistId,
-} from "@/server/actions/track";
 import { type QueuePlayButtonProps } from "@/components/queue-play-button";
-import { getPlaylist } from "@/server/queries/playlist";
+import { getPlaylist, getPlaylistTracks } from "@/server/queries/playlist";
+import { getArtistTracks } from "@/server/queries/user";
 
 type UseGetPlayData = {
   playlist?: Playlist | null;
@@ -42,12 +39,12 @@ export function useGetPlayData({
     queryFn: async () => {
       if (!shouldFetch.current) return null;
       if (artist) {
-        const res = await getTracksByArtistId(artist.id);
+        const res = await getArtistTracks(artist.id);
         return {
           data: {
-            tracks: res.tracks ?? [],
-            authors: res.data.authors ?? [],
-            albums: res.data.playlists ?? [],
+            tracks: res?.tracks ?? [],
+            authors: res?.data.authors ?? [],
+            albums: res?.data.playlists ?? [],
           },
           artist,
           playlist: undefined,
@@ -55,7 +52,7 @@ export function useGetPlayData({
       }
 
       if (track) {
-        const res = await getTracksByPlaylistId(track.albumId);
+        const res = await getPlaylistTracks({ playlistId: track.albumId });
         const playlistData = await getPlaylist({ id: track.albumId });
         return {
           data: {
@@ -69,7 +66,7 @@ export function useGetPlayData({
       }
 
       if (playlist && noDefPlaylist && !queueTypeId) {
-        const res = await getTracksByPlaylistId(playlist.id);
+        const res = await getPlaylistTracks({ playlistId: playlist.id });
         return {
           data: {
             tracks: res.data?.tracks ?? [],

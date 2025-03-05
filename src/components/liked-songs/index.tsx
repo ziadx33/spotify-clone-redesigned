@@ -1,7 +1,7 @@
 "use client";
 
 import { useUserData } from "@/hooks/use-user-data";
-import { editTrackById, getUserLikedSongs } from "@/server/actions/track";
+import { editTrackById } from "@/server/actions/track";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { SearchTrack } from "../[playlistId]/components/recommended-search";
@@ -9,6 +9,7 @@ import { MusicPlayer } from "../[playlistId]/components/music-player";
 import { useDispatch } from "react-redux";
 import { type AppDispatch } from "@/state/store";
 import { setTracks } from "@/state/slices/tracks";
+import { getUserLikedSongs } from "@/server/queries/user";
 
 export function LikedSongs() {
   const user = useUserData();
@@ -17,7 +18,7 @@ export function LikedSongs() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: [`user-liked-tracks-${user.id}`],
     queryFn: async () => {
-      const tracks = await getUserLikedSongs(user.id);
+      const tracks = await getUserLikedSongs({ id: user.id });
 
       return tracks;
     },

@@ -17,8 +17,7 @@ import { usePrefrences } from "@/hooks/use-prefrences";
 import { type Playlist } from "@prisma/client";
 import { PlaylistSection } from "./playlist-section";
 import { useQuery } from "@tanstack/react-query";
-import { getTracksByPlaylistIds } from "@/server/actions/track";
-import { getPlaylists } from "@/server/queries/playlist";
+import { getPlaylistTracks, getPlaylists } from "@/server/queries/playlist";
 
 export type PlaylistSectionType = {
   playlist: Playlist;
@@ -59,9 +58,11 @@ export function PrefrencesProvider({ userId }: PrefrencesProviderProps) {
         playlistIds: sections ?? [],
       });
 
-      const playlistsTracks = await getTracksByPlaylistIds({
+      const { data: playlistsDataTracks } = await getPlaylistTracks({
         playlistIds: playlists?.map((playlist) => playlist.id) ?? [],
+        tracksData: false,
       });
+      const playlistsTracks = playlistsDataTracks?.tracks ?? [];
 
       const { data: playlistsContent } = await getPlaylists({
         playlistIds: playlistsTracks.map((track) => track.albumId) ?? [],

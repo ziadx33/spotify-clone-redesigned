@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { PlaylistDialog } from "./playlist-dialog";
-import { getTracksByArtistId } from "@/server/actions/track";
+import { getArtistTracks } from "@/server/queries/user";
 
 type BestOfArtistsSectionDialogContentProps = {
   activeDialog?: number | null;
@@ -17,11 +17,11 @@ export function BestOfArtistsSectionDialogContent({
   const { data: tracks } = useQuery({
     queryKey: [`best-of-artists-section-${index}`],
     queryFn: async () => {
-      const data = await getTracksByArtistId(artistId, 50);
+      const data = await getArtistTracks(artistId, 50);
       return {
-        tracks: data.tracks,
-        authors: data.data.authors ?? [],
-        albums: data.data.playlists ?? [],
+        tracks: data?.tracks ?? [],
+        authors: data?.data.authors ?? [],
+        albums: data?.data.playlists ?? [],
       };
     },
     enabled: isActive,

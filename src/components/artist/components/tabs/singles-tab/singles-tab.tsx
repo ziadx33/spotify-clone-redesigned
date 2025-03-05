@@ -3,8 +3,8 @@ import { type Track, type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { SectionItemSkeleton } from "../../skeleton";
-import { getTracksByIds } from "@/server/actions/track";
 import { useMemo } from "react";
+import { getTracks } from "@/server/queries/track";
 
 type SinglesTab = {
   artist: User;
@@ -15,11 +15,12 @@ export function SinglesTab({ artist, query }: SinglesTab) {
   const { data, isLoading } = useQuery({
     queryKey: [`singles-tab-${artist.id}`],
     queryFn: async () => {
-      const res = await getTracksByIds({
+      const { tracks } = await getTracks({
         artistId: artist.id,
         type: "SINGLE",
+        addTracksData: false,
       });
-      return res;
+      return tracks;
     },
   });
   const tracks = useMemo(() => {

@@ -9,9 +9,9 @@ import { type TrackSliceType } from "@/state/slices/tracks";
 import { useTracks } from "@/hooks/use-tracks";
 import { ScrollContainer } from "./components/scroll-container";
 import { useQuery } from "@tanstack/react-query";
-import { getTracksByGenres, getTracksByIds } from "@/server/actions/track";
 import { type ExploreSliceData } from "@/state/slices/explore";
 import { useUserData } from "@/hooks/use-user-data";
+import { getTracks } from "@/server/queries/track";
 
 export function Explore() {
   const {
@@ -32,7 +32,7 @@ export function Explore() {
     queryKey: ["explore-data", scrollFetchRef.current],
     queryFn: async () => {
       const userData = user;
-      const userTracks = await getTracksByIds({
+      const { tracks: userTracks } = await getTracks({
         ids: userData.tracksHistory.slice(0, 30),
       });
       let genres: $Enums.GENRES[] = userTracks
@@ -41,7 +41,7 @@ export function Explore() {
       if (genres.length === 0)
         genres = Object.keys($Enums.GENRES) as $Enums.GENRES[];
       const curScrollValue = scrollFetchRef.current;
-      const tracks = await getTracksByGenres({
+      const tracks = await getTracks({
         genres,
         range: {
           from: curScrollValue,

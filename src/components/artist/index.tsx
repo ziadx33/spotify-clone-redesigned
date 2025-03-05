@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { TabsSection } from "./components/tabs";
 import { AuthorContext } from "../contexts/author-context";
-import { getPopularTracks } from "@/server/actions/track";
 import { useQuery } from "@tanstack/react-query";
+import { getPopularTracks } from "@/server/queries/track";
 
 type ArtistProps = {
   artist: User;

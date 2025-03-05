@@ -2,7 +2,7 @@
 
 import { TopTracks } from "@/components/top-tracks";
 import { useUserData } from "@/hooks/use-user-data";
-import { getUserTopTracks } from "@/server/actions/track";
+import { getUserTopTracks } from "@/server/queries/user";
 import { useQuery } from "@tanstack/react-query";
 
 export default function TopTracksPage() {
@@ -10,7 +10,7 @@ export default function TopTracksPage() {
   const { data } = useQuery({
     queryKey: [`top-user-tracks-${user?.id}`],
     queryFn: async () => {
-      const data = await getUserTopTracks({ user: user });
+      const data = await getUserTopTracks({ userId: user.id });
       return data.data;
     },
   });

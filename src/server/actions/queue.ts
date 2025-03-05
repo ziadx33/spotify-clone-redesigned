@@ -1,7 +1,6 @@
 "use server";
 
 import { db } from "../db";
-import { getTracksByArtistId, getTracksByPlaylistId } from "./track";
 import {
   type QueueSliceType,
   type QueueListSliceType,
@@ -18,8 +17,8 @@ import { type TracksSliceType } from "@/state/slices/tracks";
 import { type PlaylistsSliceType } from "@/state/slices/playlists";
 import { type Nullable } from "@/types";
 import { shuffleArray } from "@/utils/shuffle-array";
-import { getUserByIds } from "../queries/user";
-import { getPlaylists } from "../queries/playlist";
+import { getArtistTracks, getUserByIds } from "../queries/user";
+import { getPlaylistTracks, getPlaylists } from "../queries/playlist";
 
 type GetQueueDataParams = {
   queues: Queue[];
@@ -32,10 +31,9 @@ export const getQueueData = unstable_cache(
       queues,
       queueList,
     }: GetQueueDataParams): Promise<QueueListSliceType> => {
-      const { data: queueTracks, error } = await getTracksByPlaylistId(
-        undefined,
-        queues?.map((queue) => queue.trackList).flat(),
-      );
+      const { data: queueTracks, error } = await getPlaylistTracks({
+        trackIds: queues?.map((queue) => queue.trackList).flat(),
+      });
       const queuesData = await getQueueTracks({ queues, data: queueTracks });
 
       return !error
@@ -265,7 +263,7 @@ export async function addToQueue(
     let dataTracks: Nullable<QueueSliceType["dataTracks"]>;
     let createdQueue: Queue;
     if (params.type === "PLAYLIST") {
-      const { data } = await getTracksByPlaylistId(params.data.id);
+      const { data } = await getPlaylistTracks({ playlistId: params.data.id });
       const trackList = data?.tracks?.map((track) => track.id) ?? [];
       createdQueue = await createQueue({
         data: {
@@ -281,8 +279,8 @@ export async function addToQueue(
 
       dataTracks = data!;
     } else {
-      const data = await getTracksByArtistId(params.data.id);
-      const trackList = data.tracks?.map((track) => track.id) ?? [];
+      const data = await getArtistTracks(params.data.id);
+      const trackList = data?.tracks?.map((track) => track.id) ?? [];
       const shuffledTrackList = params.queueList.randomize
         ? shuffleArray(trackList)
         : trackList;
@@ -299,9 +297,9 @@ export async function addToQueue(
       });
 
       dataTracks = {
-        albums: data.data.playlists,
-        authors: data.data.authors,
-        tracks: data.tracks,
+        albums: data?.data.playlists,
+        authors: data?.data.authors,
+        tracks: data?.tracks,
       };
     }
 

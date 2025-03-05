@@ -2,11 +2,10 @@
 
 import { SectionItem } from "@/components/components/section-item";
 import { RenderSectionItems } from "@/components/render-section-items";
-import { getUserTopTracks } from "@/server/actions/track";
 import { useQuery } from "@tanstack/react-query";
 import { PopularArtistsSection } from "./popular-artists-section";
 import { useUserData } from "@/hooks/use-user-data";
-import { getUserByIds } from "@/server/queries/user";
+import { getUserByIds, getUserTopTracks } from "@/server/queries/user";
 
 export function YourFavArtists() {
   const user = useUserData();
@@ -14,7 +13,7 @@ export function YourFavArtists() {
     queryKey: [`user-fav-artists-home`],
     queryFn: async () => {
       const topTracks = await getUserTopTracks({
-        user: user,
+        userId: user.id,
         tracksOnly: true,
       });
       const data = getUserByIds({

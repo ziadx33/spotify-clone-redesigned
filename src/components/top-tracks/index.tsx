@@ -1,4 +1,4 @@
-import { type getUserTopTracks } from "@/server/actions/track";
+import { type getUserTopTracks } from "@/server/queries/user";
 import { NonSortTable } from "../components/non-sort-table";
 import { Table } from "../ui/table";
 

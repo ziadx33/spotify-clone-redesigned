@@ -3,15 +3,12 @@
 import { type User } from "@prisma/client";
 import { ArtistPickSection } from "./components/artist-pick-section";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getPopularTracks,
-  getTrackById,
-  getUserTopTracks,
-} from "@/server/actions/track";
 import { RenderTracks } from "../../render-tracks";
 import { AboutSection } from "./components/about-section";
 import { type tabs } from "../../tabs";
 import { useUserData } from "@/hooks/use-user-data";
+import { getPopularTracks, getTrackById } from "@/server/queries/track";
+import { getUserTopTracks } from "@/server/queries/user";
 
 type HomeTabProps = {
   artist: User;
@@ -25,14 +22,16 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
     queryFn: async () => {
       const [userTopTracks, topTracks, artistPick] = [
         await getUserTopTracks({
-          user,
+          userId: user.id,
           artistId: artist.id,
         }),
         await getPopularTracks({
           artistId: artist.id,
           range: { from: 0, to: 10 },
         }),
-        artist.artistPick ? await getTrackById(artist.artistPick) : undefined,
+        artist.artistPick
+          ? await getTrackById({ id: artist.artistPick })
+          : undefined,
       ] as const;
       return { userTopTracks, topTracks, artistPick };
     },
@@ -47,7 +46,10 @@ export function HomeTab({ artist, setCurrentTab }: HomeTabProps) {
                 hideViews: true,
               }}
               title="Your most played"
-              data={data?.userTopTracks.data}
+              data={{
+                authors: data?.userTopTracks.data.authors ?? [],
+                tracks: data?.userTopTracks.data.tracks ?? [],
+              }}
               loading={isLoading}
             />
           )}

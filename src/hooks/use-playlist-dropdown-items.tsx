@@ -29,7 +29,6 @@ import { useRouter } from "next/navigation";
 import { TbWorld } from "react-icons/tb";
 import { MdIosShare, MdOutlineBackupTable } from "react-icons/md";
 import { RiPlayListLine } from "react-icons/ri";
-import { getTracksByPlaylistId } from "@/server/actions/track";
 import { type TracksSliceType, addTracks } from "@/state/slices/tracks";
 import { useTracks } from "./use-tracks";
 import { useNavigate } from "./use-navigate";
@@ -45,6 +44,7 @@ import {
 import { editFolder } from "@/state/slices/folders";
 import { IoMdDownload } from "react-icons/io";
 import { downloadAudios } from "@/utils/download-audios";
+import { getPlaylistTracks } from "@/server/queries/playlist";
 
 type usePlaylistDropdownItemsProps = {
   playlist?: Playlist | null;
@@ -128,7 +128,7 @@ export function usePlaylistDropdownItems({
   const addToPlaylistHandler = async (id: string) => {
     let data: TracksSliceType["data"];
     if (location.pathname !== `/playlist/${playlist.id}`) {
-      data = (await getTracksByPlaylistId(playlist.id)).data;
+      data = (await getPlaylistTracks({ playlistId: playlist.id })).data;
     } else {
       data = tracks;
     }

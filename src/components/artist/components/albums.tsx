@@ -4,9 +4,10 @@ import { RenderTracks } from "./render-tracks";
 import Loading from "@/components/ui/loading";
 import { useQuery } from "@tanstack/react-query";
 import { type User } from "@prisma/client";
-import { getPopularTracks, getUserTopTracks } from "@/server/actions/track";
 import { handleRequests } from "@/utils/handle-requests";
 import { useUserData } from "@/hooks/use-user-data";
+import { getPopularTracks } from "@/server/queries/track";
+import { getUserTopTracks } from "@/server/queries/user";
 
 export function HomeTab({ artist }: { artist: User }) {
   const user = useUserData();
@@ -20,7 +21,7 @@ export function HomeTab({ artist }: { artist: User }) {
           range: { from: 0, to: 10 },
         }),
         await getUserTopTracks({
-          user,
+          userId: user.id,
           artistId: artist.id,
         }).then((res) => {
           return res;
@@ -43,7 +44,10 @@ export function HomeTab({ artist }: { artist: User }) {
                 hideViews: true,
               }}
               title="Your most played"
-              data={data?.artistTopListened}
+              data={{
+                authors: data?.artistTopListened.authors ?? [],
+                tracks: data?.artistTopListened.tracks ?? [],
+              }}
             />
             <RenderTracks title="Popular" data={data?.popular} />
           </div>

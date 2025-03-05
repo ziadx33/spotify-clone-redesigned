@@ -1,9 +1,6 @@
 import { type NonSortTableProps } from "@/components/components/non-sort-table";
 import { Button } from "@/components/ui/button";
-import {
-  addTrackToPlaylistToDB,
-  getRecommendedTracks,
-} from "@/server/actions/track";
+import { addTrackToPlaylistToDB } from "@/server/actions/track";
 import { addTrack } from "@/state/slices/tracks";
 import { type AppDispatch } from "@/state/store";
 import { type Track, type User, type Playlist } from "@prisma/client";
@@ -13,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { RecommendedTracks } from "./recommended-tracks";
 import { SearchTrack } from "./recommended-search";
+import { getRecommendedTracks } from "@/server/queries/track";
 
 type RecommendProps = {
   playlist?: Playlist | null;

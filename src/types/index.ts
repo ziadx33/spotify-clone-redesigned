@@ -1,3 +1,4 @@
+import { type Playlist, type Track, type User } from "@prisma/client";
 import { type MouseEventHandler, type ReactNode } from "react";
 import { type IconType } from "react-icons/lib";
 
@@ -45,4 +46,10 @@ export type DropdownMenuType =
 export type GenerateMetadataProps<T extends object> = {
   params: Promise<T>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export type TracksDataType = {
+  tracks: Track[];
+  authors: User[];
+  albums: Playlist[];
 };

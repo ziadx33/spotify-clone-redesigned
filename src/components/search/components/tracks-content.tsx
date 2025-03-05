@@ -1,7 +1,7 @@
 import { TracksListSkeleton } from "@/components/artist/components/skeleton";
 import { NonSortTable } from "@/components/components/non-sort-table";
 import { Table } from "@/components/ui/table";
-import { getTracksBySearchQuery } from "@/server/actions/track";
+import { getTracksBySearchQuery } from "@/server/queries/track";
 import { type TracksSliceType } from "@/state/slices/tracks";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";

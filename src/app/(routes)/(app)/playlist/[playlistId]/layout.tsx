@@ -1,5 +1,5 @@
 import { PlaylistIdLayout } from "@/components/[playlistId]/layout";
-import { getTracksByPlaylistId } from "@/server/actions/track";
+import { getPlaylistTracks } from "@/server/queries/playlist";
 import { type ReactNode } from "react";
 
 type LayoutProps = {
@@ -9,7 +9,7 @@ type LayoutProps = {
 
 export default async function Layout({ children, params }: LayoutProps) {
   const { playlistId } = await params;
-  const tracks = await getTracksByPlaylistId(playlistId);
+  const tracks = await getPlaylistTracks({ playlistId });
 
   return (
     <PlaylistIdLayout tracks={tracks} id={playlistId}>

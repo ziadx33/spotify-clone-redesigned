@@ -2,9 +2,8 @@ import { type User } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { Albums } from "./components/albums";
 import { cn } from "@/lib/utils";
-import { getTracksByPlaylistIds } from "@/server/actions/track";
 import { SectionItemSkeleton } from "../../skeleton";
-import { getPlaylists } from "@/server/queries/playlist";
+import { getPlaylistTracks, getPlaylists } from "@/server/queries/playlist";
 
 type AlbumsTabProps = {
   artist: User;
@@ -25,7 +24,7 @@ export function AlbumsTab({ artist, filters, query }: AlbumsTabProps) {
         playlistIds: [],
         type: "ALBUM",
       });
-      const tracks = await getTracksByPlaylistIds({
+      const { data: tracks } = await getPlaylistTracks({
         authorId: artist.id,
         playlistIds: data?.map((playlist) => playlist.id) ?? [],
       });
@@ -48,7 +47,7 @@ export function AlbumsTab({ artist, filters, query }: AlbumsTabProps) {
             filters={filters}
             artist={artist}
             data={data?.data ?? []}
-            tracks={data?.tracks ?? []}
+            tracks={data?.tracks?.tracks ?? []}
           />
         ) : (
           <SectionItemSkeleton amount={5} />

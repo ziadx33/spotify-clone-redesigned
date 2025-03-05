@@ -6,9 +6,9 @@ import { useDebounceState } from "@/hooks/use-debounce-state";
 import { Table } from "@/components/ui/table";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getTracksBySearchQuery } from "@/server/actions/track";
 import Loading from "@/components/ui/loading";
 import { useTracks } from "@/hooks/use-tracks";
+import { getTracksBySearchQuery } from "@/server/queries/track";
 
 type SearchTrackProps = {
   tableProps: TablePropsType;

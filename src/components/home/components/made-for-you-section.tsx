@@ -1,12 +1,12 @@
 "use client";
 
 import { RenderSectionItems } from "@/components/render-section-items";
-import { getHomeMadeForYouSection } from "@/server/actions/track";
 import { getRandomValue } from "@/utils/get-random-value";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState, useRef } from "react";
 import { useUserData } from "@/hooks/use-user-data";
 import { MadeForYouDialog } from "./made-for-you-dialog";
+import { getHomeMadeForYouSectionData } from "@/server/queries/sections";
 
 type MadeForYouSectionProps = {
   userId: string;
@@ -17,7 +17,9 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
   const { data } = useQuery({
     queryKey: [`home-made-for-you-section-${userId}`, tracksHistory],
     queryFn: async () => {
-      const data = getHomeMadeForYouSection(tracksHistory ?? []);
+      const data = getHomeMadeForYouSectionData({
+        historyTracksIds: tracksHistory ?? [],
+      });
       return data;
     },
   });

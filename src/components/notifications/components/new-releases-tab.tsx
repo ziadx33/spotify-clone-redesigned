@@ -3,10 +3,10 @@ import { type RootState } from "@/state/store";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
-import { getTracksByPlaylistId } from "@/server/actions/track";
 import Loading from "@/components/ui/loading";
 import { Album } from "@/components/artist/components/tabs/albums-tab/components/album";
 import { Separator } from "@/components/ui/separator";
+import { getPlaylistTracks } from "@/server/queries/playlist";
 
 export function NewReleasesTab() {
   const notifications = useSelector((state: RootState) => state.notifications);
@@ -29,11 +29,12 @@ export function NewReleasesTab() {
   const { data } = useQuery({
     queryKey: ["notifications-data"],
     queryFn: async () => {
-      const { data: playlists } = await getTracksByPlaylistId(
-        notifications.data!.map((notification) => notification.playlistId),
-        undefined,
-        true,
-      );
+      const { data: playlists } = await getPlaylistTracks({
+        playlistIds: notifications.data!.map(
+          (notification) => notification.playlistId,
+        ),
+        albumData: true,
+      });
       return playlists;
     },
     enabled: !!notifications,

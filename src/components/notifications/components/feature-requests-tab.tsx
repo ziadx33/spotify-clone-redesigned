@@ -4,11 +4,8 @@ import Loading from "@/components/ui/loading";
 import { Separator } from "@/components/ui/separator";
 import { useUserData } from "@/hooks/use-user-data";
 import { deleteRequest } from "@/server/actions/request";
-import {
-  editTrackById,
-  getTracksByIds,
-  getTracksData,
-} from "@/server/actions/track";
+import { editTrackById } from "@/server/actions/track";
+import { getTracks } from "@/server/queries/track";
 import { type RootState } from "@/state/store";
 import { handleToastPromise } from "@/utils/toast-promise";
 import { useQuery } from "@tanstack/react-query";
@@ -25,14 +22,12 @@ export function FeatureRequestsTab() {
     queryFn: async () => {
       const tracks =
         requestsLength > 0
-          ? await getTracksByIds({
+          ? await getTracks({
               ids: requests?.map((request) => request.trackId),
             })
-          : [];
-      const tracksData = requestsLength
-        ? await getTracksData({ tracks })
-        : { authors: [], playlists: [] };
-      return { tracks, ...tracksData };
+          : { tracks: [], albums: [], authors: [] };
+
+      return tracks;
     },
   });
   const acceptHandler = async (trackId: string) => {
@@ -82,7 +77,7 @@ export function FeatureRequestsTab() {
       </div>
       <div className="flex flex-col gap-4">
         {data ? (
-          data.tracks?.map((track) => (
+          data?.tracks.map((track) => (
             <Album
               viewAs="list"
               artist={data?.authors?.find(

@@ -1,5 +1,6 @@
 import { type $Enums, type User, type Playlist } from "@prisma/client";
 import { baseAPI } from "../api";
+import { type TracksSliceType } from "@/state/slices/tracks";
 
 type GetPlaylistsParams = {
   creatorId?: string | null;
@@ -144,3 +145,33 @@ export const getNumberSavedPlaylist = async ({
     return null;
   }
 };
+type GetPlaylistTracksParams = {
+  playlistId?: string;
+  playlistIds?: string[];
+  trackIds?: string[];
+  albumData?: boolean;
+  tracksData?: boolean;
+  authorId?: string;
+};
+
+export async function getPlaylistTracks({
+  playlistId,
+  playlistIds,
+  trackIds,
+  albumData,
+  tracksData,
+  authorId,
+}: GetPlaylistTracksParams) {
+  const params = new URLSearchParams();
+
+  if (playlistIds) params.append("playlistIds", playlistIds?.join(","));
+  if (trackIds) params.append("trackIds", trackIds.join(","));
+  if (albumData) params.append("albumData", albumData ? "1" : "0");
+  if (tracksData) params.append("tracksData", tracksData ? "1" : "0");
+  if (authorId) params.append("authorId", authorId);
+
+  const response = await baseAPI.get<TracksSliceType>(
+    `/api/playlists/${playlistId}/tracks?${params.toString()}`,
+  );
+  return response.data;
+}

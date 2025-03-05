@@ -1,5 +1,13 @@
-import { type Playlist, type $Enums, type User } from "@prisma/client";
+import {
+  type Playlist,
+  type $Enums,
+  type User,
+  type Track,
+} from "@prisma/client";
 import { baseAPI } from "../api";
+import { type TracksDataType } from "@/types";
+import { type getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
+import { type TracksSliceType } from "@/state/slices/tracks";
 
 export async function getUser({
   email,
@@ -128,7 +136,56 @@ export async function getFeaturingAlbums({ id }: { id?: string }) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error featuring albums:", error);
+    console.error("Error fetching featuring albums:", error);
     return null;
   }
 }
+
+export async function getUserLikedSongs({ id }: { id?: string }) {
+  try {
+    const response = await baseAPI.get<TracksDataType>(
+      `/api/users/${id}/liked-songs`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching liked songs:", error);
+    return null;
+  }
+}
+
+export async function getArtistTracks(id: string, take?: number) {
+  try {
+    const response = await baseAPI.get<{
+      tracks: Track[];
+      data: { authors: User[]; playlists: Playlist[] };
+    }>(`/api/users/${id}/tracks${take ? `?take=${take}` : ""}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching artist tracks:", error);
+    return null;
+  }
+}
+
+type GetUserTopTracksProps = {
+  userId?: string;
+  artistId?: string;
+  tracksOnly?: boolean;
+};
+
+export const getUserTopTracks = async ({
+  userId,
+  artistId,
+  tracksOnly,
+}: GetUserTopTracksProps) => {
+  const params = new URLSearchParams();
+
+  if (tracksOnly) params.append("tracksOnly", tracksOnly ? "1" : "0");
+  if (artistId) params.append("artistId", artistId);
+
+  const response = await baseAPI.get<{
+    data: NonNullable<TracksSliceType["data"]>;
+    trackIds: ReturnType<typeof getTopRepeatedNumbers>;
+  }>(`/users/${userId}?${params.toString()}`);
+
+  return response.data;
+};
