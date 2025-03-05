@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get("query");
   const amount = searchParams.get("amount");
-  const type = searchParams.get("amount") as $Enums.USER_TYPE | null;
+  const type = searchParams.get("type") as $Enums.USER_TYPE | null;
   const restartLength = searchParams.get("restartLength");
 
   if (!query) return NextResponse.json({ error: "missing required args" });
