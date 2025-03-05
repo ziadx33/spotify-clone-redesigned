@@ -1,9 +1,7 @@
-"use server";
-
 import { NextResponse, type NextRequest } from "next/server";
 import { db } from "@/server/db";
 import { type $Enums } from "@prisma/client";
-import { getTracksData } from "@/server/queries/track";
+import { getTracksData } from "@/server/queries/server";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const from = searchParams.get("from");

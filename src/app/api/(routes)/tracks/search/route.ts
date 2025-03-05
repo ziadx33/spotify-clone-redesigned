@@ -1,5 +1,5 @@
 import { db } from "@/server/db";
-import { getTracksData } from "@/server/queries/track";
+import { getTracksData } from "@/server/queries/server";
 import { type $Enums, type Track } from "@prisma/client";
 import { NextResponse, type NextRequest } from "next/server";
 

@@ -1,11 +1,11 @@
 import { NonSortTable } from "@/components/components/non-sort-table";
-import { type getRecommendedTracks } from "@/server/actions/track";
 import { type Playlist, type Track } from "@prisma/client";
 import { Table } from "@/components/ui/table";
 import { type User } from "next-auth";
 import { useMemo } from "react";
 import { type TablePropsType } from "./recommended";
 import { TracksListSkeleton } from "@/components/artist/components/skeleton";
+import { type getRecommendedTracks } from "@/server/queries/track";
 
 type RecommendedTracksProps = {
   playlist?: Playlist | null;

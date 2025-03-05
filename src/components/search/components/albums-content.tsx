@@ -10,7 +10,7 @@ import { useUserData } from "@/hooks/use-user-data";
 import { getPlaylistsBySearchQuery } from "@/server/queries/playlist";
 
 type AlbumsContentProps = {
-  playlists: { playlists: Playlist[]; authors: User[] };
+  playlists: { playlists: Playlist[]; authors: User[] } | null;
   query: string;
   searchClickFn: SearchClickFnType;
 };

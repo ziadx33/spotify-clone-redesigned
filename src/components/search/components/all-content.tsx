@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CircleItems } from "@/components/ui/circle-items";
 import { Table } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { type SearchQueryReturn } from "@/server/actions/search";
 import { enumParser } from "@/utils/enum-parser";
 import { type Track } from "@prisma/client";
 import { useMemo } from "react";
@@ -17,6 +16,7 @@ import Link from "next/link";
 import { AvatarData } from "@/components/avatar-data";
 import { QueuePlayButton } from "@/components/queue-play-button";
 import { type SearchClickFnType } from "./search-content";
+import { type SearchQueryReturn } from "@/server/queries/search";
 
 type AllContentProps = SearchQueryReturn & {
   searchClickFn: SearchClickFnType;

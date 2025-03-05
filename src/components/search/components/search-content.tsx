@@ -1,4 +1,3 @@
-import { type SearchQueryReturn } from "@/server/actions/search";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useSearch } from "@/hooks/use-search";
 import { AllContent } from "./all-content";
@@ -10,6 +9,7 @@ import { ProfilesContent } from "./profiles-content";
 import { AddToSearchHistory } from "@/server/actions/search-history";
 import { type SearchHistory } from "@prisma/client";
 import { useUserData } from "@/hooks/use-user-data";
+import { type SearchQueryReturn } from "@/server/queries/search";
 
 type SearchContentProps = {
   data: SearchQueryReturn;

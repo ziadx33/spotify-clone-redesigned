@@ -13,7 +13,7 @@ export const getHomeMadeForYouSectionData = async ({
 
   const response = await baseAPI.get<
     { tracks: Track[]; authors: User[]; genre: $Enums.GENRES }[]
-  >(`/sections/made-for-you?${params.toString()}`);
+  >(`/api/sections/made-for-you?${params.toString()}`);
 
   return response.data;
 };

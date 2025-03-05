@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
 import { getUserByIds } from "@/server/queries/user";
-import { Playlist } from "@prisma/client";
+import { type Playlist } from "@prisma/client";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {

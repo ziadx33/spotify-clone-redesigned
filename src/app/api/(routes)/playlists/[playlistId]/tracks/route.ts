@@ -1,7 +1,5 @@
-"use server";
-
 import { db } from "@/server/db";
-import { getTracksData } from "@/server/queries/track";
+import { getTracksData } from "@/server/queries/server";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(
@@ -72,10 +70,10 @@ export async function GET(
       error: null,
     });
   } catch (error) {
-    return {
+    return NextResponse.json({
       status: "error",
       error: (error as { message: string }).message,
       data: null,
-    };
+    });
   }
 }

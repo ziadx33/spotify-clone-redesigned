@@ -9,7 +9,7 @@ import { type SearchClickFnType } from "./search-content";
 import { getPlaylistsBySearchQuery } from "@/server/queries/playlist";
 
 type PlaylistsContentProps = {
-  playlists: { playlists: Playlist[]; authors: User[] };
+  playlists: { playlists: Playlist[]; authors: User[] } | null;
   query: string;
   searchClickFn: SearchClickFnType;
 };

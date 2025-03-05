@@ -1,6 +1,5 @@
-"use server";
-
-import { getTracks, getTracksData } from "@/server/queries/track";
+import { getTracksData } from "@/server/queries/server";
+import { getTracks } from "@/server/queries/track";
 import { getUser } from "@/server/queries/user";
 import { getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { NextResponse, type NextRequest } from "next/server";

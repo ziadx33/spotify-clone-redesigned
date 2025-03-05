@@ -1,5 +1,3 @@
-"use server";
-
 import { db } from "@/server/db";
 import { getUserByIds } from "@/server/queries/user";
 import { type $Enums } from "@prisma/client";

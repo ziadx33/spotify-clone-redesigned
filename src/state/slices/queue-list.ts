@@ -8,7 +8,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { type TracksSliceType } from "./tracks";
 import { type SliceType } from "../types";
 import { getQueue } from "@/server/actions/queue";
-import { wait } from "@/utils/wait";
 
 export type QueueSliceType = {
   queueData?: Queue;

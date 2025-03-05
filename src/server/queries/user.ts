@@ -87,7 +87,7 @@ export const getPopularUsers = async ({
     if (genre) params.append("genre", genre);
 
     const response = await baseAPI.get<User[]>(
-      `/users/followers?${params.toString()}`,
+      `/api/users/followers?${params.toString()}`,
     );
 
     return response.data;
@@ -119,7 +119,7 @@ export const getUsersBySearchQuery = async ({
     if (restartLength) params.append("userType", restartLength.toString());
 
     const response = await baseAPI.get<User[]>(
-      `/users/search?${params.toString()}`,
+      `/api/users/search?${params.toString()}`,
     );
 
     return response.data;
@@ -185,7 +185,7 @@ export const getUserTopTracks = async ({
   const response = await baseAPI.get<{
     data: NonNullable<TracksSliceType["data"]>;
     trackIds: ReturnType<typeof getTopRepeatedNumbers>;
-  }>(`/users/${userId}?${params.toString()}`);
+  }>(`/api/users/${userId}/top-tracks?${params.toString()}`);
 
   return response.data;
 };

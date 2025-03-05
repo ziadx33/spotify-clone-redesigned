@@ -13,7 +13,10 @@ export async function Genre({ genre }: { genre: $Enums.GENRES }) {
     genre,
     addAuthors: true,
   });
-  const newReleases = playlists as { playlists: Playlist[]; authors: User[] };
+  const newReleases = playlists as unknown as {
+    playlists: Playlist[];
+    authors: User[];
+  };
   const popularPlaylists = await getPopularPlaylists({ type: genre });
   const popularUsers = await getPopularUsers({ genre });
   return (

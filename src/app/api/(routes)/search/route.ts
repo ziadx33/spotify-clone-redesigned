@@ -1,5 +1,3 @@
-"use server";
-
 import { getPlaylistsBySearchQuery } from "@/server/queries/playlist";
 import { getTracksBySearchQuery } from "@/server/queries/track";
 import { getUser, getUsersBySearchQuery } from "@/server/queries/user";

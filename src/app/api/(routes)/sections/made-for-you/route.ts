@@ -1,5 +1,3 @@
-"use server";
-
 import { db } from "@/server/db";
 import { NextResponse, type NextRequest } from "next/server";
 

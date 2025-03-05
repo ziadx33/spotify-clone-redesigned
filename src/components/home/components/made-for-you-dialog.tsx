@@ -4,13 +4,13 @@ import { enumParser } from "@/utils/enum-parser";
 import { AvatarData } from "@/components/avatar-data";
 import { SectionItem } from "@/components/components/section-item";
 import { type Dispatch, type SetStateAction } from "react";
-import { type getHomeMadeForYouSection } from "@/server/actions/track";
+import { type getHomeMadeForYouSectionData } from "@/server/queries/sections";
 
 type MadeForYouDialogProps = {
   setActiveDialog: Dispatch<SetStateAction<number | undefined>>;
   activeDialog: number | undefined;
   index: number;
-  datum: Awaited<ReturnType<typeof getHomeMadeForYouSection>>[number];
+  datum: Awaited<ReturnType<typeof getHomeMadeForYouSectionData>>[number];
   cardsColors: string[] | undefined;
 };
 

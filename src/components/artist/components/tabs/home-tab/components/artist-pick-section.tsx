@@ -1,8 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { type getTrackById } from "@/server/actions/track";
 import Image from "next/image";
 import Link from "next/link";
 import { SkeletonList } from "../../../skeleton";
+import { type getTrackById } from "@/server/queries/track";
 
 type ArtistPickSectionProps = {
   loading: boolean;

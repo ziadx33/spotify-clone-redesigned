@@ -7,7 +7,7 @@ import { type SearchClickFnType } from "./search-content";
 import { useUserData } from "@/hooks/use-user-data";
 
 type ArtistsSectionProps = {
-  data?: { playlists: Playlist[]; authors: User[] };
+  data?: { playlists: Playlist[]; authors: User[] } | null;
   searchClickFn: SearchClickFnType;
 };
 
