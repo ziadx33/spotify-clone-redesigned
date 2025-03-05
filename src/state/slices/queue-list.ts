@@ -7,7 +7,7 @@ import {
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { type TracksSliceType } from "./tracks";
 import { type SliceType } from "../types";
-import { getQueue } from "@/server/actions/queue";
+import { getUserQueue } from "@/server/queries/user";
 
 export type QueueSliceType = {
   queueData?: Queue;
@@ -31,8 +31,7 @@ const initialState: QueueListSliceType = {
 export const getSliceQueue = createAsyncThunk(
   "queue/getSliceQueue",
   async (userId: string) => {
-    const queueData = await getQueue(userId);
-
+    const queueData = await getUserQueue({ id: userId });
     return queueData;
   },
 );
@@ -138,7 +137,7 @@ const queueListSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getSliceQueue.fulfilled, (state, { payload }) => {
-        state.data = payload.data;
+        state.data = payload?.data ?? null;
         state.status = "success";
       })
       .addCase(getSliceQueue.rejected, (state, action) => {

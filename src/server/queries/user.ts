@@ -8,6 +8,7 @@ import { baseAPI } from "../api";
 import { type TracksDataType } from "@/types";
 import { type getTopRepeatedNumbers } from "@/utils/get-top-repeated-numbers";
 import { type TracksSliceType } from "@/state/slices/tracks";
+import { type getQueueData } from "./queue";
 
 export async function getUser({
   email,
@@ -57,6 +58,18 @@ export async function getUserFollowing({
     return response.data ?? [];
   } catch (error) {
     console.error("Error fetching following users:", error);
+    return null;
+  }
+}
+
+export async function getUserQueue({ id }: { id: string }) {
+  try {
+    const response = await baseAPI.get<ReturnType<typeof getQueueData>>(
+      `/api/users/${id}/queue`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user queue:", error);
     return null;
   }
 }
