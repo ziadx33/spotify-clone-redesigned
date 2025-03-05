@@ -11,7 +11,7 @@ export async function GET(
   const { value } = await params;
   if (!value) return NextResponse.json({ error: "missing required args" });
   const searchParams = request.nextUrl.searchParams;
-  const tracksOnly = Boolean(searchParams.get("tracksOnly") ?? "0");
+  const tracksOnly = Boolean(parseInt(searchParams.get("tracksOnly") ?? "0"));
   const artistId = searchParams.get("artistId");
   const user = await getUser({ id: value });
   try {
@@ -22,7 +22,6 @@ export async function GET(
       artistId: artistId ?? undefined,
     });
     const data = !tracksOnly ? await getTracksData({ tracks }) : undefined;
-
     return NextResponse.json({
       data: {
         tracks: tracks ?? [],

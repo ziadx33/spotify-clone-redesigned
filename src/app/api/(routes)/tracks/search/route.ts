@@ -10,7 +10,9 @@ export async function GET(request: NextRequest) {
   const restartLength = searchParams.get("restartLength");
   const skip = searchParams.get("skip");
   const type = searchParams.get("type") as $Enums.USER_TYPE | null;
-  const disablePlaylists = searchParams.get("disablePlaylists") ?? "0";
+  const disablePlaylists = Boolean(
+    parseInt(searchParams.get("disablePlaylists") ?? "0"),
+  );
 
   if (!query) return NextResponse.json({ error: "missing required args" });
   try {

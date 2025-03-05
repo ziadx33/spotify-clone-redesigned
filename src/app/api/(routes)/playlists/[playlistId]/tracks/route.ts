@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const { playlistId } = await params;
   const searchParams = request.nextUrl.searchParams;
-  const albumData = Boolean(searchParams.get("albumData") ?? "0");
+  const albumData = Boolean(parseInt(searchParams.get("albumData") ?? "0"));
   const playlistIds = searchParams.get("playlistIds");
   const trackIds = searchParams.get("trackIds");
   const authorId = searchParams.get("authorId");

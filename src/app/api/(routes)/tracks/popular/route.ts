@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const to = searchParams.get("to");
   const artistIds = searchParams.get("artistIds");
   const artistId = searchParams.get("artistId");
-  const addAlbums = Boolean(searchParams.get("addAlbums") ?? "0");
+  const addAlbums = Boolean(parseInt(searchParams.get("addAlbums") ?? "0"));
   if (!artistIds && !artistId)
     return NextResponse.json({ error: "missing required args" });
   const parsedArtistIds = artistIds?.split(",");
