@@ -1,13 +1,37 @@
 "use server";
 
+import { getPlaylistsBySearchQuery } from "@/server/queries/playlist";
+import { getTracksBySearchQuery } from "@/server/queries/track";
+import { getUser, getUsersBySearchQuery } from "@/server/queries/user";
 import { handleRequests } from "@/utils/handle-requests";
 import { type Playlist, type Track, type User } from "@prisma/client";
-import { getUserById } from "./verification-token";
-import { getUsersBySearchQuery } from "../queries/user";
-import { getPlaylistsBySearchQuery } from "../queries/playlist";
-import { getTracksBySearchQuery } from "../queries/track";
+import { NextResponse, type NextRequest } from "next/server";
 
-export const getSearchQueryData = async ({ query }: { query: string }) => {
+type TopSearchType =
+  | { data: Track; type: "track" }
+  | { data: User; type: "author" }
+  | { data: Playlist; type: "playlist" };
+
+export type SearchResponse = {
+  topSearch?: TopSearchType;
+  topSearchCreator?: User | null;
+  tracks: {
+    tracks: Track[];
+    authors: User[];
+    albums: Playlist[];
+  };
+  playlists: {
+    playlists: Playlist[];
+    authors: User[];
+  } | null;
+  authors: User[];
+};
+
+export async function GET(
+  request: NextRequest,
+): Promise<NextResponse<SearchResponse | { error: unknown }>> {
+  const searchParams = request.nextUrl.searchParams;
+  const query = searchParams.get("query") ?? "";
   try {
     const requests = [
       getTracksBySearchQuery({
@@ -33,11 +57,6 @@ export const getSearchQueryData = async ({ query }: { query: string }) => {
       containsQuery(author.name),
     );
 
-    type TopSearchType =
-      | { data: Track; type: "track" }
-      | { data: User; type: "author" }
-      | { data: Playlist; type: "playlist" };
-
     const topSearch: TopSearchType | undefined = topTrack
       ? { data: topTrack, type: "track" }
       : topPlaylist
@@ -56,7 +75,7 @@ export const getSearchQueryData = async ({ query }: { query: string }) => {
     const topSearchCreator =
       topSearch?.type !== "author"
         ? returnAuthors.find((author) => author.id === userId) ??
-          (await getUserById({ id: userId, type: "ARTIST" }))
+          (await getUser({ id: userId }))
         : undefined;
     const sortedTracks = {
       ...tracks,
@@ -66,16 +85,14 @@ export const getSearchQueryData = async ({ query }: { query: string }) => {
         return 0;
       }),
     };
-    return {
+    return NextResponse.json({
       topSearch,
       topSearchCreator,
       tracks: sortedTracks,
       playlists,
       authors: returnAuthors,
-    };
+    });
   } catch (error) {
-    throw { error };
+    return NextResponse.json({ error });
   }
-};
-
-export type SearchQueryReturn = Awaited<ReturnType<typeof getSearchQueryData>>;
+}

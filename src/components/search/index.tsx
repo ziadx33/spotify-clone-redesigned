@@ -2,13 +2,13 @@
 
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { getSearchQueryData } from "@/server/actions/search";
 import { SearchContent } from "./components/search-content";
 import { useSearch } from "@/hooks/use-search";
 import { useRef } from "react";
 import Loading from "../ui/loading";
 import { BrowsePage } from "./components/browse-page";
 import { SearchInput } from "./components/search-input";
+import { getSearchQueryData } from "@/server/queries/search";
 
 export function Search() {
   const searchParams = useSearchParams();
