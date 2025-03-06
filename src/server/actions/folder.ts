@@ -19,7 +19,7 @@ export const addPlaylistToFolder = async (
         },
       },
     });
-    revalidateTag(`/user-folders-${userId}`);
+    revalidateTag(`user-folders-${userId}`);
     return editedFolder;
   } catch (error) {
     throw { error };
@@ -43,7 +43,7 @@ export const removePlaylistFromFolder = async (
         },
       },
     });
-    revalidateTag(`/user-folders-${userId}`);
+    revalidateTag(`user-folders-${userId}`);
     return editedFolder;
   } catch (error) {
     throw { error };
@@ -57,7 +57,7 @@ export const deleteFolder = async (id: string, userId: string) => {
         id,
       },
     });
-    revalidateTag(`/user-folders-${userId}`);
+    revalidateTag(`user-folders-${userId}`);
     return deletedFolder;
   } catch (error) {
     throw { error };
@@ -72,7 +72,7 @@ export const createFolder = async (name: string, userId: string) => {
         userId,
       },
     });
-    revalidateTag(`/user-folders-${userId}`);
+    revalidateTag(`user-folders-${userId}`);
     return createdFolder;
   } catch (error) {
     throw { error };
