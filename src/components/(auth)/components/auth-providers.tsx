@@ -35,9 +35,9 @@ export function AuthProviders({ className }: { className?: string }) {
       <AuthProvider onClick={() => authHandler(PROVIDER.GITHUB)}>
         <BsGithub size={20} />
       </AuthProvider>
-      <AuthProvider onClick={() => authHandler(PROVIDER.DISCORD)}>
+      {/* <AuthProvider onClick={() => authHandler(PROVIDER.DISCORD)}>
         <BsDiscord size={20} />
-      </AuthProvider>
+      </AuthProvider> */}
     </div>
   );
 }
