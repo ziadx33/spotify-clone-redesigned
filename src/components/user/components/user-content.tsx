@@ -65,19 +65,21 @@ export function UserContent({
           userData?.coverImage ? "h-[30rem] items-end" : "h-96 place-items-end",
         )}
       >
-        <div className="flex items-center  gap-6">
+        <div className="flex items-center gap-6 max-lg:flex-col">
           {!userData?.coverImage && (
             <Image
               src={image ?? ""}
               width={200}
               height={200}
               alt={userData?.name ?? ""}
-              className="size-[200px] rounded-full"
+              className="size-[200px] rounded-full max-lg:size-[180px]"
             />
           )}
           <div className="flex flex-col">
             <p>profile</p>
-            <b className="mb-4 mt-2 text-8xl">{userData?.name}</b>
+            <b className="mb-4 mt-2 text-8xl max-lg:text-4xl">
+              {userData?.name}
+            </b>
             <p>
               {publicPlaylists?.length} Public Playlists
               {isUser && ` - ${followedArtists?.length} Following`}
