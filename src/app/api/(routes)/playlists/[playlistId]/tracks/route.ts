@@ -1,5 +1,6 @@
 import { db } from "@/server/db";
 import { getTracksData } from "@/server/queries/server";
+import { unstable_cache } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(
@@ -22,44 +23,52 @@ export async function GET(
       parsedPlaylistIds?.length ?? 0 > 0
         ? { hasSome: parsedPlaylistIds }
         : { has: playlistId };
-    const tracks = await db.track.findMany({
-      where: {
-        ...(playlistId !== "undefined"
-          ? !albumData
-            ? {
-                OR: [
-                  {
-                    playlists: isArray,
-                  },
-                  {
-                    albumId: playlistId,
-                  },
-                ],
-              }
-            : {
-                albumId:
-                  playlistId !== "undefined"
-                    ? playlistId
-                    : {
-                        in: parsedPlaylistIds,
+    const keys = [`playlist-data-${playlistId}`];
+    const { authors, data, tracks } = await unstable_cache(
+      async () => {
+        const tracks = await db.track.findMany({
+          where: {
+            ...(playlistId !== "undefined"
+              ? !albumData
+                ? {
+                    OR: [
+                      {
+                        playlists: isArray,
                       },
-              }
-          : {
-              id: {
-                in: parsedTrackIds,
-              },
-            }),
-        authorId: authorId ?? undefined,
+                      {
+                        albumId: playlistId,
+                      },
+                    ],
+                  }
+                : {
+                    albumId:
+                      playlistId !== "undefined"
+                        ? playlistId
+                        : {
+                            in: parsedPlaylistIds,
+                          },
+                  }
+              : {
+                  id: {
+                    in: parsedTrackIds,
+                  },
+                }),
+            authorId: authorId ?? undefined,
+          },
+          orderBy: {
+            order: "asc",
+          },
+        });
+        const { authors, playlists: data } = tracksData
+          ? await getTracksData({
+              tracks: tracks,
+            })
+          : { authors: [], playlists: [] };
+        return { authors, data, tracks };
       },
-      orderBy: {
-        order: "asc",
-      },
-    });
-    const { authors, playlists: data } = tracksData
-      ? await getTracksData({
-          tracks: tracks,
-        })
-      : { authors: [], playlists: [] };
+      keys,
+      { tags: keys },
+    )();
     return NextResponse.json({
       data: {
         tracks: tracks ?? [],
