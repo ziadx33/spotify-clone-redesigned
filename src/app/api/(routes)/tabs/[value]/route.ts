@@ -1,4 +1,5 @@
 import { db } from "@/server/db";
+import { unstable_cache } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(
@@ -11,10 +12,17 @@ export async function GET(
   const type = (searchParams.get("type") as ValueType | null) ?? "id";
   if (!value) return NextResponse.json({ error: "missing required args" });
   try {
-    const user = await db.tab.findMany({
-      where: type === "id" ? { id: value } : { User: { email: value } },
-    });
-    return NextResponse.json(user);
+    const keys = [`user-tabs-${value}`];
+    const tabs = await unstable_cache(
+      async () => {
+        return await db.tab.findMany({
+          where: type === "id" ? { id: value } : { User: { email: value } },
+        });
+      },
+      keys,
+      { tags: keys },
+    )();
+    return NextResponse.json(tabs);
   } catch (error) {
     return NextResponse.json({ error });
   }

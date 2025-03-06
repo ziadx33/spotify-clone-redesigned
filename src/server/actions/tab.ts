@@ -1,37 +1,8 @@
 "use server";
 
-import { type TabsSliceType } from "@/state/slices/tabs";
+import { revalidateTag } from "next/cache";
 import { db } from "../db";
 import { type Tab } from "@prisma/client";
-
-export const getTabs = async ({
-  userId,
-  email,
-}: {
-  userId?: string;
-  email?: string;
-}): Promise<TabsSliceType> => {
-  try {
-    const tabs = await db.tab.findMany({
-      where: {
-        userId,
-        User: { email },
-      },
-    });
-
-    return {
-      data: tabs,
-      status: "success",
-      error: null,
-    };
-  } catch (error) {
-    throw {
-      status: "error",
-      error: (error as { message: string }).message,
-      data: null,
-    };
-  }
-};
 
 export type AddTabToUserTabsParams = Parameters<
   (typeof db)["tab"]["create"]
@@ -42,6 +13,7 @@ export const addTabToUserTabs = async (data: AddTabToUserTabsParams) => {
     const createdTab = await db.tab.create({
       data,
     });
+    revalidateTag(`user-tabs-${data?.userId}`);
     return createdTab;
   } catch (error) {
     throw { error };
@@ -55,6 +27,7 @@ export const removeTabFromUserTabs = async (id: string) => {
         id,
       },
     });
+    revalidateTag(`user-tabs-${removedTab.userId}`);
     return removedTab;
   } catch (error) {
     throw { error };
@@ -75,6 +48,7 @@ export const updateTabFromUserTabs = async ({
       },
       data: updateData,
     });
+    revalidateTag(`user-tabs-${updatedTab.userId}`);
     return updatedTab;
   } catch (error) {
     throw { error };
