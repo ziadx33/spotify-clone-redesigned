@@ -1,4 +1,5 @@
 import { db } from "@/server/db";
+import { unstable_cache } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(
@@ -8,11 +9,18 @@ export async function GET(
   const { userId } = await params;
   if (!userId) return NextResponse.json({ error: "userId is required" });
   try {
-    const searchHistory = await db.searchHistory.findMany({
-      where: {
-        userId,
+    const keys = [`user-search-history-${userId}`];
+    const searchHistory = await unstable_cache(
+      async () => {
+        return await db.searchHistory.findMany({
+          where: {
+            userId,
+          },
+        });
       },
-    });
+      keys,
+      { tags: keys },
+    )();
     return NextResponse.json(searchHistory);
   } catch (error) {
     return NextResponse.json({ error });
