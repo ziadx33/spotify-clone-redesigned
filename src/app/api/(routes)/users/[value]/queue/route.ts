@@ -29,6 +29,6 @@ export async function GET(
 
     return NextResponse.json(returnData);
   } catch (error) {
-    return NextResponse.json({ error }, { status: 400 });
+    return NextResponse.json({ error });
   }
 }

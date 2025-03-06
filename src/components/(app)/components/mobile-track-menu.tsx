@@ -3,7 +3,6 @@ import { LikeButton } from "@/components/components/track/components/like-button
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useQueue } from "@/hooks/use-queue";
-import Image from "next/image";
 import Link from "next/link";
 import { LuClipboardCopy } from "react-icons/lu";
 import { RiAlbumLine } from "react-icons/ri";
@@ -39,7 +38,7 @@ export function MobileTrackMenu() {
               <img
                 src={currentData.track?.imgSrc ?? ""}
                 alt={currentData.track?.title ?? ""}
-                className="w-[80%] sm:w-[50%]"
+                className="w-[80%] rounded-md sm:w-[50%]"
               />
             </Link>
             <div className="flex h-fit w-full justify-between">
