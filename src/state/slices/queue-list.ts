@@ -32,7 +32,6 @@ export const getSliceQueue = createAsyncThunk(
   "queue/getSliceQueue",
   async (userId: string) => {
     const queueData = await getUserQueue({ id: userId });
-    console.log("ehda w roo2", queueData);
     return queueData;
   },
 );

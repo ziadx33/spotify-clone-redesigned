@@ -20,7 +20,6 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
       const data = await getHomeMadeForYouSectionData({
         historyTracksIds: tracksHistory ?? [],
       });
-      console.log("bagg", data);
       return data;
     },
   });
