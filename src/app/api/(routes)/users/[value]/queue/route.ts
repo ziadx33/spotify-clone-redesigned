@@ -1,5 +1,6 @@
 import { db } from "@/server/db";
 import { getQueueData } from "@/server/queries/queue";
+import { unstable_cache } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(
@@ -9,18 +10,25 @@ export async function GET(
   const { value } = await params;
   if (!value) return NextResponse.json({ error: "missing required args" });
   try {
-    const data = await db.queueList.findUnique({
-      where: { userId: value },
-    });
-    const queues = await db.queueList
-      .findUnique({ where: { userId: value } })
-      .queues();
-    if (!data || !queues) throw "no queue";
-    const returnData = await getQueueData({ queueList: data, queues });
-    console.log("kefyyy", returnData);
+    const keys = [`user-queue-${value}`];
+    const returnData = await unstable_cache(
+      async () => {
+        const data = await db.queueList.findUnique({
+          where: { userId: value },
+        });
+        const queues = await db.queueList
+          .findUnique({ where: { userId: value } })
+          .queues();
+
+        if (!data || !queues) throw "no queue";
+        return await getQueueData({ queueList: data, queues });
+      },
+      keys,
+      { tags: keys },
+    )();
+
     return NextResponse.json(returnData);
   } catch (error) {
-    console.log("as you need", error);
     return NextResponse.json({ error });
   }
 }
