@@ -4,9 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const historyTracksIds = searchParams.get("historyTracksIds");
-  if (!historyTracksIds)
-    return NextResponse.json({ error: "missing required args" });
-  const parsedHistoryTracksIds = historyTracksIds.split(",");
+  const parsedHistoryTracksIds = historyTracksIds?.split(",") ?? [];
   try {
     let historyTracks = await db.track.findMany({
       where: {

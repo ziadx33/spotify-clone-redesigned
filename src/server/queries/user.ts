@@ -70,7 +70,11 @@ export async function getUserQueue({ id }: { id: string }) {
     return response.data;
   } catch (error) {
     console.error("Error fetching user queue:", error);
-    return null;
+    return {
+      error,
+      status: "error",
+      data: null,
+    };
   }
 }
 

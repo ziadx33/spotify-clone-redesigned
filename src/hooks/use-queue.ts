@@ -144,7 +144,7 @@ export function useQueue() {
         )
       : queueData.data.trackList;
 
-    if (data.error) {
+    if (data.status === "error") {
       const startData = await startQueue({
         data: {
           ...queueData.data,

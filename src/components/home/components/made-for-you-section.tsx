@@ -17,9 +17,10 @@ export function MadeForYouSection({ userId }: MadeForYouSectionProps) {
   const { data } = useQuery({
     queryKey: [`home-made-for-you-section-${userId}`, tracksHistory],
     queryFn: async () => {
-      const data = getHomeMadeForYouSectionData({
+      const data = await getHomeMadeForYouSectionData({
         historyTracksIds: tracksHistory ?? [],
       });
+      console.log("bagg", data);
       return data;
     },
   });

@@ -32,6 +32,7 @@ export const getSliceQueue = createAsyncThunk(
   "queue/getSliceQueue",
   async (userId: string) => {
     const queueData = await getUserQueue({ id: userId });
+    console.log("ehda w roo2", queueData);
     return queueData;
   },
 );
@@ -137,6 +138,11 @@ const queueListSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getSliceQueue.fulfilled, (state, { payload }) => {
+        if (payload.status === "error") {
+          state.status = "error";
+          state.error = state.error ?? "";
+          return;
+        }
         state.data = payload?.data ?? null;
         state.status = "success";
       })
