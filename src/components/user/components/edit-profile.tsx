@@ -72,7 +72,7 @@ export function EditProfile({ user }: { user: Session["user"] }) {
       </DialogHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(formHandler)} className="size-full">
-          <div className="flex size-full gap-4 [&>*]:h-full [&>*]:w-1/2">
+          <div className="flex size-full gap-4 max-lg:flex-col max-lg:items-center [&>*]:h-full [&>*]:w-1/2">
             <button
               onClick={() => uploadInputRef.current?.click()}
               className="group relative"
