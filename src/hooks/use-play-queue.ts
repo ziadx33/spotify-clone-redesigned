@@ -8,6 +8,17 @@ import { type QueuePlayButtonProps } from "@/components/queue-play-button";
 import { wait } from "@/utils/wait";
 import { type QueueList } from "@prisma/client";
 
+let globalController: AbortController | null = null;
+
+const withAbortCheck = async <T>(
+  promise: Promise<T> | undefined,
+  signal: AbortSignal,
+): Promise<Awaited<T> | undefined> => {
+  const result = await promise;
+  if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+  return result;
+};
+
 export function usePlayQueue({
   playlist,
   artist,
@@ -60,38 +71,67 @@ export function usePlayQueue({
     playAudio = true,
     queueListData?: Partial<QueueList>,
   ) => {
-    const returnedData = await getData();
-    const returnData = (data ? data : returnedData!.data)!;
-    if (
-      !isCurrent
-        ? isCurrentPlaying
-        : queueTypeId === currentQueue?.queueData?.typeId
-    ) {
+    if (globalController) {
+      globalController.abort();
+    }
+
+    globalController = new AbortController();
+    const signal = globalController.signal;
+    try {
+      const returnedData = await withAbortCheck(getData(), signal);
+      const returnData = (data ? data : returnedData!.data)!;
+
       if (
-        skipToTrack &&
-        skipToTrack !== currentQueue?.queueData?.currentPlaying
+        !isCurrent
+          ? isCurrentPlaying
+          : queueTypeId === currentQueue?.queueData?.typeId
       ) {
-        await skipBy(skipToTrack);
+        if (
+          skipToTrack &&
+          skipToTrack !== currentQueue?.queueData?.currentPlaying
+        ) {
+          await withAbortCheck(skipBy(skipToTrack), signal);
+          return;
+        }
+        await withAbortCheck(toggle(), signal);
         return;
       }
-      await toggle();
-      return;
+
+      pause();
+      const playData = await withAbortCheck(
+        play(returnData, queueListData, skipToTrack),
+        signal,
+      );
+
+      dispatch(
+        editQueueController({
+          isPlaying: false,
+          progress: 0,
+          currentTrackId: playData?.trackId,
+        }),
+      );
+
+      if (
+        skipToTrack &&
+        currentQueue?.queueData?.trackList.includes(skipToTrack)
+      )
+        await withAbortCheck(wait(300), signal);
+      else
+        await withAbortCheck(
+          audios?.loadTracks(returnData.tracks?.tracks ?? []),
+          signal,
+        );
+
+      if (playAudio)
+        await withAbortCheck(playTrack(true, playData?.trackId, 0), signal);
+      if (playAudio) await playTrack(true, playData?.trackId, 0);
+    } catch (error) {
+      if (signal.aborted) {
+        console.log("Previous playHandler call aborted");
+      } else {
+        console.error(error);
+      }
     }
-    pause();
-    const playData = await play(returnData, queueListData, skipToTrack);
-
-    dispatch(
-      editQueueController({
-        isPlaying: false,
-        progress: 0,
-        currentTrackId: playData?.trackId,
-      }),
-    );
-
-    if (skipToTrack && currentQueue?.queueData?.trackList.includes(skipToTrack))
-      await wait(300);
-    else await audios?.loadTracks(returnData.tracks?.tracks ?? []);
-    if (playAudio) await playTrack(true, playData?.trackId, 0);
   };
   return {
     isPlaying,
