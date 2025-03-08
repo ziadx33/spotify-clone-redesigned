@@ -6,7 +6,12 @@ import {
 import { FaMagnifyingGlass, FaPlus } from "react-icons/fa6";
 import { useSidebarSearch } from "./hooks/use-sidebar-search";
 import { SearchInput } from "./search-input";
-import { type MouseEvent, type ReactNode, useState } from "react";
+import {
+  type MouseEvent,
+  type ReactNode,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -17,8 +22,10 @@ type SidebarItemAccordionProps<T> = {
   filterKey: keyof T;
   renderItem: (item: T) => ReactNode;
   createLink?: string;
-  onCreate?: () => void;
-  customCreateUI?: ReactNode;
+  onCreate?: (value: string) => void;
+  customCreateUI?: (
+    onCreate: (e: KeyboardEvent, value: string) => void,
+  ) => ReactNode;
   isLoading?: boolean;
   loadingPlaceholder?: ReactNode;
 };
@@ -42,17 +49,17 @@ export function SidebarItemAccordion<T>({
     setIsSearching,
     setSearchValue,
   } = useSidebarSearch(items, filterKey);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const toggleSearch = (e: MouseEvent) => {
     e.stopPropagation();
     setIsSearching((prev) => !prev);
   };
 
-  const handleCreateClick = (e: MouseEvent) => {
+  const handleCreateClick = (e: KeyboardEvent, value: string) => {
     e.stopPropagation();
-    setIsEditing((prev) => !prev);
-    onCreate?.();
+    onCreate?.(value);
+    setIsCreating(false);
   };
 
   return (
@@ -76,10 +83,13 @@ export function SidebarItemAccordion<T>({
             </button>
             {customCreateUI ? (
               <button
-                onClick={handleCreateClick}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsCreating((v) => !v);
+                }}
                 className={cn(
                   "grid h-full w-8 place-items-center transition-all duration-300",
-                  isEditing ? "rotate-45" : "",
+                  isCreating ? "rotate-45" : "",
                 )}
               >
                 <FaPlus size={13} />
@@ -96,7 +106,7 @@ export function SidebarItemAccordion<T>({
         </div>
       </AccordionTrigger>
       <AccordionContent>
-        {customCreateUI}
+        {isCreating && customCreateUI?.(handleCreateClick)}
         {isLoading ? loadingPlaceholder : filteredItems.map(renderItem)}
       </AccordionContent>
     </AccordionItem>

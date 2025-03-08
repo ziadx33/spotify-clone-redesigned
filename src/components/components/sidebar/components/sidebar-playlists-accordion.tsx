@@ -4,6 +4,7 @@ import { usePlaylists } from "@/hooks/use-playlists";
 import { useUserData } from "@/hooks/use-user-data";
 import { SidebarItem } from "./sidebar-item";
 import { usePathname } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 export function SidebarPlaylistsAccordion() {
   const user = useUserData();
@@ -31,13 +32,29 @@ export function SidebarPlaylistsAccordion() {
           {playlist.title}
         </SidebarItem>
       )}
-      onCreate={() =>
+      onCreate={(value) =>
         createUserPlaylist({
-          title: "New Playlist",
+          title: value ?? "New Playlist",
           creatorId: user.id,
           description: "",
         })
       }
+      customCreateUI={(onCreate) => (
+        <SidebarItem key={"creating"}>
+          <div className="flex">
+            <RiFolderMusicLine size={18} />
+            <Input
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  onCreate(e, e.currentTarget.value);
+                }
+              }}
+              placeholder="enter playlist name..."
+              className="h-5 border-none bg-transparent pl-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+          </div>
+        </SidebarItem>
+      )}
     />
   );
 }
