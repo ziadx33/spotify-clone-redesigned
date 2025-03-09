@@ -45,7 +45,7 @@ export function Settings({ user }: { user?: User | null }) {
         <h1 className="text-3xl font-bold">Settings</h1>
       </div>
       <div className={cn("flex flex-col", settingsItems ? "gap-4" : "gap-2")}>
-        {settingsItems && !!user ? settingsContent : <SkeletonSettings />}
+        {settingsContent}
       </div>
     </div>
   );
