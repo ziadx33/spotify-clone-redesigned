@@ -31,9 +31,9 @@ export function LikedSongs() {
         setTracks({
           status: "success",
           data: {
-            ...data,
-            authors: data.authors ?? null,
-            albums: data.albums ?? null,
+            tracks: data.tracks ?? [],
+            authors: data.authors ?? [],
+            albums: data.albums ?? [],
           },
           error: null,
         }),
