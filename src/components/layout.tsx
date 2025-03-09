@@ -15,12 +15,12 @@ export function Layout({ children }: { children: ReactNode }) {
         <AuthProvider>
           <ReduxProvider>
             <UserThemeProvider>
-              <ReduxUserDataProvider>
-                <QueryProvider>
+              <QueryProvider>
+                <ReduxUserDataProvider>
                   <DataProvider>{children}</DataProvider>
-                </QueryProvider>
-                <Toaster />
-              </ReduxUserDataProvider>
+                  <Toaster />
+                </ReduxUserDataProvider>
+              </QueryProvider>
             </UserThemeProvider>
           </ReduxProvider>
         </AuthProvider>
