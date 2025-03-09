@@ -14,7 +14,7 @@ export function ReduxUserDataProvider({ children }: { children: ReactNode }) {
   const { data: userData } = useQuery({
     queryKey: [`user-${user?.user?.id}`],
     queryFn: async () => {
-      return getUser({ id: user?.user?.id });
+      return await getUser({ id: user?.user?.id });
     },
     enabled: !!user?.user,
   });
