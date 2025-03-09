@@ -1,5 +1,5 @@
 import { db } from "@/server/db";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(
@@ -22,6 +22,7 @@ export async function GET(
       keys,
       { tags: keys },
     )();
+    if (!prefrence) revalidateTag(`user-prefrence-${userId}`);
     return NextResponse.json(prefrence);
   } catch (error) {
     return NextResponse.json({ error });

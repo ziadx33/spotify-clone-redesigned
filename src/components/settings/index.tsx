@@ -4,7 +4,6 @@
 import { useMemo } from "react";
 import { Setting } from "./components/setting";
 import { type User } from "@prisma/client";
-import { SkeletonSettings } from "./components/skeleton-setting";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/hooks/use-settings";
 
