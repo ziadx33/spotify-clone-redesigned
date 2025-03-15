@@ -18,7 +18,10 @@ export function Setting({
   itemSettingsKey,
 }: SettingProps) {
   return (
-    <div key={setting.title} className="flex items-center justify-between">
+    <div
+      key={setting.title}
+      className="flex items-center justify-between rounded-lg border bg-muted px-4 py-2.5 dark:bg-muted/50"
+    >
       <h4 className="text-muted-foreground">{setting.title}</h4>
       {setting.type === "SWITCH" ? (
         <SettingSwitch
