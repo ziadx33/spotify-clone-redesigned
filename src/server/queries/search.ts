@@ -9,7 +9,7 @@ export const getSearchQueryData = async ({ query }: { query: string }) => {
 
     return response.data;
   } catch (error) {
-    return null;
+    throw null;
   }
 };
 
