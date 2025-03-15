@@ -22,7 +22,7 @@ export function Settings({ user }: { user?: User | null }) {
           value={key}
           key={key}
           defaultChecked={key === "display"}
-          className="w-full lg:justify-start"
+          className="w-full capitalize lg:justify-start"
         >
           {key}
         </TabsTrigger>
@@ -38,7 +38,7 @@ export function Settings({ user }: { user?: User | null }) {
       return (
         <TabsContent value={key} key={key} className="w-full">
           <div key={key} className="flex w-full flex-col">
-            <h2 className="mb-6 text-3xl font-semibold">{key}</h2>
+            <h2 className="mb-6 text-3xl font-semibold capitalize">{key}</h2>
             <div className="flex flex-col gap-3">
               {itemSettings
                 ?.sort((a, b) => a.order - b.order)

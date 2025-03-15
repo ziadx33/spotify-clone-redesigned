@@ -33,7 +33,7 @@ export function useSettings({ user }: { user?: User | null }) {
       display: [
         {
           order: 0,
-          title: "show the now-playing panel on click of play",
+          title: "Show the now-playing panel on click of play",
           type: "SWITCH",
           value: prefrences?.showPlayingView ?? true,
           onEvent: async (e) => {
@@ -47,7 +47,7 @@ export function useSettings({ user }: { user?: User | null }) {
         },
         {
           order: 1,
-          title: "choose your preferred theme",
+          title: "Choose your preferred theme",
           type: "DROPDOWN",
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           defaultOption: user.theme ?? "dark",
@@ -87,7 +87,7 @@ export function useSettings({ user }: { user?: User | null }) {
         },
         {
           order: 2,
-          title: "reset home page prefrences",
+          title: "Reset home page prefrences",
           type: "BUTTON",
           value: "reset",
           onEvent: async () => {
@@ -109,7 +109,7 @@ export function useSettings({ user }: { user?: User | null }) {
       ],
       social: [
         {
-          title: "publish my playlists on my profile",
+          title: "Publish my playlists on my profile",
           type: "SWITCH",
           value: prefrences?.ShowPlaylistsInProfile ?? true,
           order: 0,
@@ -123,7 +123,7 @@ export function useSettings({ user }: { user?: User | null }) {
           },
         },
         {
-          title: "show my top playing artists on my public profile",
+          title: "Show my top playing artists on my public profile",
           type: "SWITCH",
           value: prefrences?.ShowTopPlayingArtists ?? true,
           order: 1,
@@ -137,7 +137,7 @@ export function useSettings({ user }: { user?: User | null }) {
           },
         },
         {
-          title: "show my following list on my public profile",
+          title: "Show my following list on my public profile",
           type: "SWITCH",
           value: prefrences?.ShowFollowingList ?? false,
           order: 2,
@@ -151,7 +151,7 @@ export function useSettings({ user }: { user?: User | null }) {
           },
         },
         {
-          title: "show my followers list on my public profile",
+          title: "Show my followers list on my public profile",
           type: "SWITCH",
           value: prefrences?.ShowFollowingList ?? true,
           order: 3,
@@ -165,7 +165,7 @@ export function useSettings({ user }: { user?: User | null }) {
           },
         },
         {
-          title: "show my top playing tracks list on my public profile",
+          title: "Show my top playing tracks list on my public profile",
           type: "SWITCH",
           value: prefrences?.ShowFollowingList ?? false,
           order: 4,
@@ -201,7 +201,7 @@ export function useSettings({ user }: { user?: User | null }) {
       ],
       ["account management"]: [
         {
-          title: "sign out of your account",
+          title: "Sign out of your account",
           type: "BUTTON",
           value: "logout",
           order: 0,
@@ -211,7 +211,7 @@ export function useSettings({ user }: { user?: User | null }) {
           },
         },
         {
-          title: "update your password",
+          title: "Update your password",
           type: "BUTTON",
           value: "change password",
           order: 1,
