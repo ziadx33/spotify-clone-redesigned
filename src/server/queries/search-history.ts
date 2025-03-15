@@ -6,7 +6,7 @@ export async function getSearchHistory(
 ): Promise<SearchHistory[] | null> {
   try {
     const response = await baseAPI.get<SearchHistory[]>(
-      `/api/search-history?userId=${userId}`,
+      `/api/search-history/${userId}`,
     );
     return response.data;
   } catch (error) {

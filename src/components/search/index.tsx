@@ -17,6 +17,7 @@ export function Search() {
   const { data, refetch } = useQuery({
     queryKey: ["search"],
     queryFn: async () => {
+      console.log("msrrr");
       const data = await getSearchQueryData({
         query: queryRef.current ?? "",
       });
@@ -27,6 +28,7 @@ export function Search() {
   useSearch({
     onChange: async ({ query }) => {
       queryRef.current = query ?? queryRef.current;
+      if (!enabledState) return;
       await refetch();
     },
     controllers: {
@@ -35,7 +37,6 @@ export function Search() {
   });
   return (
     <div className="flex h-full flex-col p-4">
-      {""}
       <SearchInput />
       {data ? (
         <SearchContent query={queryRef.current ?? ""} data={data} />
