@@ -9,6 +9,8 @@ export const getSearchQueryData = async ({ query }: { query: string }) => {
       `/api/search?query=${query}`,
     );
 
+    console.log("can't wait", response.data);
+
     return response.data;
   } catch (error) {
     throw { error };

@@ -31,15 +31,17 @@ export function SearchHistorySection() {
           ?.filter((history) => history.type === "ARTIST" && history.searchUser)
           .map((history) => history.searchUser!),
       });
-      return searchHistory?.map((item) => {
-        return {
-          searchItem: item,
-          user: users?.find((user) => user.id === item.searchUser),
-          playlist: playlists?.find(
-            (playlist) => playlist.id === item.searchPlaylist,
-          ),
-        };
-      });
+      return (
+        searchHistory?.map((item) => {
+          return {
+            searchItem: item,
+            user: users?.find((user) => user.id === item.searchUser),
+            playlist: playlists?.find(
+              (playlist) => playlist.id === item.searchPlaylist,
+            ),
+          };
+        }) ?? []
+      );
     },
     enabled: !!user?.id,
   });

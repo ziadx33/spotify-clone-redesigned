@@ -13,16 +13,19 @@ import { getSearchQueryData } from "@/server/queries/search";
 export function Search() {
   const searchParams = useSearchParams();
   const queryRef = useRef(searchParams.get("query") ?? null);
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: [],
+  const enabledState = !["", null].includes(queryRef.current);
+  const { data, refetch } = useQuery({
+    queryKey: ["search"],
     queryFn: async () => {
+      console.log("darweesh");
       const data = await getSearchQueryData({
         query: queryRef.current ?? "",
       });
       return data;
     },
-    enabled: !queryRef.current || queryRef.current !== "",
+    enabled: enabledState,
   });
+  console.log("yahhh", data, enabledState);
   useSearch({
     onChange: async ({ query }) => {
       queryRef.current = query ?? queryRef.current;
@@ -36,14 +39,12 @@ export function Search() {
     <div className="flex h-full flex-col p-4">
       {""}
       <SearchInput />
-      {!isLoading ? (
-        queryRef.current ? (
-          data && <SearchContent query={queryRef.current ?? ""} data={data} />
-        ) : (
-          <BrowsePage />
-        )
-      ) : (
+      {data ? (
+        <SearchContent query={queryRef.current ?? ""} data={data} />
+      ) : queryRef.current ? (
         <Loading />
+      ) : (
+        <BrowsePage />
       )}
     </div>
   );
