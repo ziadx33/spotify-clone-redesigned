@@ -19,8 +19,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const fn = async () => {
       await dispatch(getSliceNotifications(user.id));
       await dispatch(getSliceQueue(user.id));
-      await dispatch(getSliceFolders(user.id));
       await dispatch(getSliceRequests(user.id));
+      await dispatch(getSliceFolders(user.id));
       isDone.current = true;
     };
     void fn();

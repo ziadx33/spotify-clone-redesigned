@@ -135,6 +135,7 @@ export async function getTracks({
   if (genres) searchParams.append("genres", genres.join(","));
   if (addTracksData)
     searchParams.append("addTracksData", addTracksData ? "1" : "0");
+  console.log("ghame2", ids);
   if (ids) searchParams.append("ids", ids.join(","));
   if (artistId) searchParams.append("artistId", artistId);
   if (type) searchParams.append("type", type);

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
         ],
       },
     });
-    return NextResponse.json({ requests });
+    return NextResponse.json(requests);
   } catch (error) {
     return NextResponse.json({ error });
   }

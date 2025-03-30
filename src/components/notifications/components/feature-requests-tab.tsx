@@ -20,6 +20,7 @@ export function FeatureRequestsTab() {
   const { data } = useQuery({
     queryKey: ["feat-requests-data"],
     queryFn: async () => {
+      console.log("ganna", requestsLength);
       const tracks =
         requestsLength > 0
           ? await getTracks({
