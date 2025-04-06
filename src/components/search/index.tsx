@@ -17,7 +17,6 @@ export function Search() {
   const { data, refetch } = useQuery({
     queryKey: ["search"],
     queryFn: async () => {
-      console.log("msrrr");
       const data = await getSearchQueryData({
         query: queryRef.current ?? "",
       });

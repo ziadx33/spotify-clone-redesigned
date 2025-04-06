@@ -30,7 +30,6 @@ export async function GET(
 ): Promise<NextResponse<SearchResponse | { error: unknown }>> {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get("query") ?? "";
-  console.log("men embare7", query);
   try {
     const requests = [
       getTracksBySearchQuery({
@@ -42,7 +41,6 @@ export async function GET(
       getUsersBySearchQuery({ query, amount: 15 }),
     ] as const;
 
-    console.log("fk off");
     const [tracks, playlists, authors] = await handleRequests(requests);
     const returnAuthors = authors instanceof Array ? authors : [];
 
