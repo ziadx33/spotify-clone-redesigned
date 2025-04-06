@@ -24,7 +24,7 @@ const config = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: "16mb",
+      bodySizeLimit: "20mb",
     },
   },
 };
