@@ -4,6 +4,7 @@ import {
   DialogClose,
   DialogContent,
   DialogFooter,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -91,6 +92,7 @@ export function SwitchToArtistDialog() {
 
   return (
     <DialogContent className="max-w-[50rem]">
+      <DialogTitle />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(formHandler)}>
           <div className="mt-4 w-full space-y-4">

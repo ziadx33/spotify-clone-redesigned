@@ -2,7 +2,12 @@
 
 import { RenderCards } from "@/components/components/render-cards";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { type ReactNode, useState, type ReactElement } from "react";
 import { SectionItemSkeleton } from "./artist/components/skeleton";
 import { cn } from "@/lib/utils";
@@ -65,6 +70,7 @@ export function RenderSectionItems({
         </div>
       </div>
       <DialogContent className="flex h-[70%] w-full max-w-[70rem] flex-wrap items-start overflow-y-scroll">
+        <DialogTitle />
         {cards}
       </DialogContent>
     </Dialog>

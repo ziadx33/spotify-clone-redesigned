@@ -1,5 +1,5 @@
 import { MusicPlayer } from "@/components/[playlistId]/components/music-player";
-import { DialogContent } from "@/components/ui/dialog";
+import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { type TracksSliceType, setTracks } from "@/state/slices/tracks";
 import { type AppDispatch } from "@/state/store";
 import { useEffect } from "react";
@@ -32,6 +32,7 @@ export function PlaylistDialog({
   }, [isActive, isLoading]);
   return (
     <DialogContent className="max-h-[80%] max-w-[1000px] overflow-auto">
+      <DialogTitle />
       <MusicPlayer
         showExploreButton={false}
         queueTypeId={queueTypeId}

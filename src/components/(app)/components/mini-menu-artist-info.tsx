@@ -1,6 +1,11 @@
 import { AvatarData } from "@/components/avatar-data";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useFollow } from "@/hooks/use-follow";
 import { useQueue } from "@/hooks/use-queue";
 import { cn } from "@/lib/utils";
@@ -80,6 +85,7 @@ export function MiniMenuArtistInfo() {
 
   const dialogContent = (
     <DialogContent className="flex h-[694.391px] w-full max-w-[768px] flex-col overflow-y-scroll">
+      <DialogTitle />
       {currentData.author?.aboutImage && (
         <Image
           src={currentData.author?.aboutImage ?? ""}

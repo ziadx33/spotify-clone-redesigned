@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { type User } from "@prisma/client";
 import Image from "next/image";
 
@@ -20,6 +25,7 @@ export function AboutSection({ artist }: { artist: User }) {
           </p>
         </DialogTrigger>
         <DialogContent className="flex h-[694.391px] w-full max-w-[768px] flex-col overflow-y-scroll">
+          <DialogTitle />
           <Image
             src={artist.aboutImage ?? ""}
             width={320}

@@ -1,4 +1,4 @@
-import { DialogContent } from "@/components/ui/dialog";
+import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { EditForm } from "./edit-form";
 import { type Playlist } from "@prisma/client";
 import {
@@ -27,6 +27,7 @@ export function EditPlaylistDialogContent({
   );
   return (
     <DialogContent className="flex h-fit w-[68rem]  flex-col items-start">
+      <DialogTitle />
       <EditForm
         setOpen={setOpen}
         closeDialogRef={closeButtonRef}
