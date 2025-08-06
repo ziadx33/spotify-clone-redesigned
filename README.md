@@ -1,6 +1,6 @@
-# Spotify Clone Redesigned 🎵
+# Spotiq 🎵
 
-A modern redesign of Spotify, built using React, Next.js, TypeScript, and Tailwind CSS. This project mimics Spotify's core functionalities with a fresh, sleek interface.
+A modern Spotiq, built using React, Next.js, TypeScript, and Tailwind CSS. This project mimics Spotify's core functionalities with a fresh, sleek interface.
 
 ## Features
 
@@ -14,9 +14,7 @@ A modern redesign of Spotify, built using React, Next.js, TypeScript, and Tailwi
 
 ## Videos
 
-- **Redesign Video:** View the redesign process and features here: [Watch the Video](https://www.youtube.com/watch?v=suhEIUapSJQ&pp=ygURc3BvdGlmeSByZS1kZXNpZ24%3D) (Note: This video is not created by me.)
-
-- **Project Introduction:** Get an overview of the project and its features: [Watch the Introduction Video](https://youtube.com) ( soon )
+- **Project Introduction:** Get an overview of the project and its features: [Watch the Introduction Video](https://youtu.be/TkTtpf5ez_0?si=LkYhASLqIal4765C)
 
 ## Tech Stack
 

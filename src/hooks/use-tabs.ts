@@ -20,7 +20,6 @@ export function useTabs() {
   const dispatch = useDispatch<AppDispatch>();
   const user = useUserData();
   const router = useRouter();
-
   const addTabFn = async (data: AddTabToUserTabsParams) => {
     router.push(data?.href ?? "");
     const id = crypto.randomUUID();
