@@ -36,7 +36,7 @@ export function Loading() {
             <div className="flex items-center justify-between">
               <h1 className="flex gap-2 pt-8 text-3xl font-bold">
                 Most Streamed <Skeleton className="h-10 w-24" />
-                artists on spotify
+                artists on spotiq
               </h1>
             </div>
             <div className="flex flex-row overflow-hidden">

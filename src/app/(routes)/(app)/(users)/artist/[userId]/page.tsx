@@ -12,7 +12,7 @@ export async function generateMetadata({
   const user = await getUserById({ id });
 
   return {
-    title: `${user?.name} | Spotify Clone`,
+    title: `${user?.name} | Spotiq`,
   };
 }
 

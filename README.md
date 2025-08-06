@@ -1,6 +1,6 @@
 # Spotiq 🎵
 
-A modern Spotiq, built using React, Next.js, TypeScript, and Tailwind CSS. This project mimics Spotify's core functionalities with a fresh, sleek interface.
+A fully custom music streaming platform built with React, Next.js, TypeScript, and Tailwind CSS. Designed from the ground up with a unique UI and essential features like playback, queue management, and user profiles.
 
 ## Features
 

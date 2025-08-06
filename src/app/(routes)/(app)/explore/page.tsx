@@ -6,9 +6,9 @@ const Explore = dynamic(() =>
 );
 
 export const metadata: Metadata = {
-  title: "Spotify Clone - Explore",
+  title: "Spotiq - Explore",
   description:
-    "Spotify is a digital music service that gives you access to millions of songs in reels.",
+    "A web-based music streaming platform that lets users play tracks, manage queues, follow artists, and enjoy a personalized listening experience.",
 };
 
 export default function ExplorePage() {

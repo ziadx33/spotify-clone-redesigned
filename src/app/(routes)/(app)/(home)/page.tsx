@@ -6,9 +6,9 @@ const Home = dynamic(() =>
 );
 
 export const metadata: Metadata = {
-  title: "Spotify Clone - Web Player: Music for everyone",
+  title: "Spotiq - Web Player: Music for everyone",
   description:
-    "Spotify is a digital music service that gives you access to millions of songs.",
+    "A web-based music streaming platform that lets users play tracks, manage queues, follow artists, and enjoy a personalized listening experience.",
 };
 
 export default function HomePage() {
